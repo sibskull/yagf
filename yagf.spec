@@ -1,18 +1,18 @@
 Summary: Yet Another Graphic Front-end for Cuneiform
 Name: yagf
 Version: 0.5.0
-Release: 0
+Release: alt1
 License: GPL
-Group: Applications/Text
+Group: Graphics
 URL: http://symmetrica.net/cuneiform-linux/yagf-ru.html
 
 Source: http://symmetrica.net/cuneiform-linux/yagf-%{version}-Source.tar.gz
-BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 
-BuildRequires: qt4-x11-tools
+BuildRequires: gcc-c++ libqt4-devel
 BuildRequires: cmake
+Requires: cuneiform
 
-Packager: Andrei Borovsky
+Packager: Andrey Cherepanov <cas@altlinux.org>
 
 %description
 YAGF is a graphical front-end for cuneiform OCR tool.
@@ -25,33 +25,22 @@ YAGF is free software released under the GNU General Public License (GPL).
 
 %prep
 %setup -q
-
+rm -f src/moc_mainform.cxx
+subst "s,/usr/local,%buildroot/usr/,g" ./CMakeLists.txt
 
 %build
-%{__make} CPACK_PREFX=/usr/
+CPACK_PREFX=%buildroot/usr/ make
 
 %install
-%{__rm} -rf %{buildroot}
-%makeinstall
-#%find_lang %{name}
-
-%clean
-%{__rm} -rf %{buildroot}
+make install INSTALL_ROOT=%buildroot
+%__install -pD -m755 %name %buildroot%_bindir/%name
 
 %files 
-    %{_prefix}/local/bin/yagf
-    %{_prefix}/local/share/yagf/translations/*.qm
-    %{_prefix}/local/share/yagf/COPYING
-    %{_prefix}/local/share/yagf/DESCRIPTION
-    %{_prefix}/local/share/yagf/README
-
-%defattr(-, root, root, 0755)
-%doc README COPYING
-
-#%{_datadir}/icons/hicolor/*
-#%{_datadir}/applications/subtitleeditor.desktop
+%doc README COPYING DESCRIPTION
+%_bindir/%name
+%_datadir/%name/translations/*.qm
 
 %changelog
-* Fri Aug 3 2007 - chantra AatT rpm-based DdOoTt org 0.20.alpha4-1.rb
-- Initial release.
+* Mon Jul 06 2009 Andrey Cherepanov <cas@altlinux.org> 0.5.0-alt1
+- First version for Sisyphus 
  

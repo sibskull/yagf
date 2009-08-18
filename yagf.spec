@@ -31,7 +31,6 @@ Authors:
 
 %prep
 %setup -q
-<<<<<<< HEAD:yagf.spec
 subst "s,/usr/local,%buildroot/usr/,g" ./CMakeLists.txt
 
 %build

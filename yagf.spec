@@ -8,7 +8,7 @@ URL: http://symmetrica.net/cuneiform-linux/yagf-ru.html
 
 Source: http://symmetrica.net/cuneiform-linux/yagf-%{version}-Source.tar.gz
 
-BuildRequires: gcc-c++ libqt4-devel >= 4.4.0
+BuildRequires: gcc-c++ libqt4-devel
 BuildRequires: cmake libaspell-devel
 Requires: cuneiform libaspell
 
@@ -31,19 +31,15 @@ Authors:
 
 %prep
 %setup -q
+<<<<<<< HEAD:yagf.spec
 subst "s,/usr/local,%buildroot/usr/,g" ./CMakeLists.txt
 
 %build
 cmake ./
 %make
 
-#CPACK_PREFX=%buildroot/usr/ make
-#cmake CPACK_PREFIX=%buildroot/usr/
-
 %install
 make install DESTDIR=%buildroot
-#make install INSTALL_ROOT=%buildroot
-#%__install -pD -m755 %name %buildroot%_bindir/%name
 
 %files 
 %doc README COPYING DESCRIPTION AUTHORS ChangeLog

@@ -17,5 +17,14 @@
         <file>images/filesaveas.png</file>
         <file>images/forward.png</file>
         <file>images/scanner.png</file>
+        <file alias="warning.png" >images/warning.png</file>
+        <file alias="critical.png" >images/critical.png</file>
+        <file alias="info.png" >images/info.png</file>
+        <file alias="resize.png" >images/resize.png</file>
+        <file alias="resize_block.png" >images/resize_block.png</file>
+        <file alias="save_all.png" >images/save_all.png</file>
+        <file alias="clear.png" >images/editclear.png</file>
+        <file alias="batch.png" >images/batch.png</file>
+        <file alias="remove.png" >images/remove.png</file>
     </qresource>
 </RCC>

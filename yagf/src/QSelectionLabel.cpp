@@ -30,6 +30,11 @@ QSelectionLabel::QSelectionLabel(QWidget *parent, Qt::WindowFlags f):QLabel(pare
 	oldCopy = 0;
 	selecting = started = selected = false;
 	this->setAlignment(Qt::AlignLeft|Qt::AlignTop);
+        setFocusPolicy(Qt::ClickFocus);
+        setPixmap(QPixmap(0, 0));
+        resizing = false;
+        cursorSet = false;
+        setMouseTracking(true);
 }
 
 bool QSelectionLabel::isSelectionEmpty()
@@ -91,36 +96,77 @@ QRect QSelectionLabel::getSelectedRect()
 
 void QSelectionLabel::mousePressEvent(QMouseEvent *ev)
 {
-	if (ev->button() == Qt::LeftButton) {
-		if (started||selected) 
-			resetSelection(true);
+        if (pixmap()->isNull())
+            return;
+        if (ev->button() == Qt::LeftButton) {
+                if (started||selected) {
+                        bool included = ((abs(ev->x() - x0) <8)||(abs(ev->x() - x1) <8)) || ((abs(ev->y() - y0) <8) || (abs(ev->y() - y1) <8));
+                        if (included) {
+                            emit selectionResized();
+                            resizing = true;
+                        }
+                        else
+                            resetSelection(true);
+                    }
 		if (pixmap()->isNull())
 			return;
-		started = true;
-		selected = false;
-		x0 = ev->x();
-		y0 = ev->y();
-		x1 = x0;
-		y1 = y0;
-		drawRect();
+                if (!resizing) {
+                    started = true;
+                    selected = false;
+                    x0 = ev->x();
+                    y0 = ev->y();
+                    x1 = x0;
+                    y1 = y0;
+                    drawRect();
+                }
 	}
 }
 
 void QSelectionLabel::mouseMoveEvent(QMouseEvent *ev)
 {
-	if (started) {
+     if (!started) {
+        bool included = ((abs(ev->x() - x0) <8)||(abs(ev->x() - x1) <8)) || ((abs(ev->y() - y0) <8) || (abs(ev->y() - y1) <8));
+        if (included) {
+            emit selectionResized();
+            cursorSet = true;
+        }
+        else
+            if (cursorSet) {
+                 emit selectionUnresized();
+                  cursorSet = false;
+            }
+    }
+        if (started) {
 		restoreRect();
 		if ((ev->x() >= 0) && (ev->x() <= pixmap()->width()))
 			x1 = ev->x();
 		if ((ev->y() >= 0) && (ev->y() <= pixmap()->height()))
 			y1 = ev->y();
 		drawRect();
-	}
+        } else
+            if (resizing) {
+                restoreRect();
+                if ((ev->x() >=0) && (ev->x() <= pixmap()->width()))
+                    if ((ev->y() >= 0) && (ev->y() <= pixmap()->height())) {
+                        if (abs(ev->x() - x0) < 20)
+                            x0 = ev->x();
+                        if (abs(ev->x() - x1) < 20)
+                            x1 = ev->x();
+                        if (abs(ev->y() - y0) < 20)
+                            y0 = ev->y();
+                        if (abs(ev->y() - y1) < 20)
+                            y1 = ev->y();
+                    }
+                drawRect();
+            }
 }
 
 void QSelectionLabel::mouseReleaseEvent(QMouseEvent *ev)
 {
-	if ((ev->button() == Qt::LeftButton)  && started) {
+        if (pixmap()->isNull())
+        return;
+
+        if ((ev->button() == Qt::LeftButton)  && started) {
 		selected = true;
 		started = false;
 		restoreRect();
@@ -132,7 +178,11 @@ void QSelectionLabel::mouseReleaseEvent(QMouseEvent *ev)
 		if ((abs(x1-x0) < 3) || (abs(y1-y0) < 3)) {
 			resetSelection(true);
 		}
-	}
+        }
+        if (resizing) {
+            resizing = false;
+            emit selectionUnresized();
+        }
 }
 
 void QSelectionLabel::drawRect() 
@@ -156,15 +206,17 @@ void QSelectionLabel::drawRect()
 		yt = y1;
 		h = y0-y1;
 	}
-	oldCopy = new QPixmap((pixmap()->copy(xt, yt, w, h)));
+        oldCopy = new QPixmap((pixmap()->copy(xt, yt, w, h)));
 	QPainter painter;
 	painter.begin((QPaintDevice *) pixmap());
-	painter.setPen(Qt::NoPen);
-	painter.setBrush(QBrush(QColor(0, 0, 255), Qt::Dense5Pattern));
+        QPen pen(QColor(0,0,255));
+        pen.setWidth(2);
 	if ((x1-x0) >= 0) {
 		xt = x0;
 		w = x1-x0;
-	} else {
+        }
+        else
+        {
 		xt = x1;
 		w = x0-x1;
 	}
@@ -175,8 +227,14 @@ void QSelectionLabel::drawRect()
 		yt = y1;
 		h = y0-y1;
 	}
-	painter.drawRect(xt, yt, w, h);
-	painter.end();
+        painter.setPen(Qt::NoPen);
+        painter.setBrush(QBrush(QColor(0, 0, 255), Qt::Dense5Pattern));
+        painter.drawRect(xt, yt, w, h);
+        painter.setPen(pen);
+        painter.setBrush(Qt::NoBrush);
+        if ((w > 4)&&(h > 4))
+            painter.drawRect(xt+2, yt+2, w-4, h-4);
+        painter.end();
 	update();
 		
 }
@@ -202,7 +260,7 @@ void QSelectionLabel::restoreRect()
 				yt = y1;
 				h = y0-y1;
 			}
-			painter.drawPixmap(xt, yt, w, h, (*oldCopy));
+                        painter.drawPixmap(xt, yt, w, h, (*oldCopy));
 		}
 	painter.end();
 	update();
@@ -211,4 +269,22 @@ void QSelectionLabel::restoreRect()
 QSelectionLabel::~QSelectionLabel() {
 	if (oldCopy) 
 		delete oldCopy;
+}
+
+void QSelectionLabel::keyPressEvent ( QKeyEvent * event ) {
+    if (pixmap()->isNull()) {
+        event->ignore();
+        return;
+    }
+    event->accept();
+    QLabel::keyPressEvent(event);
+}
+
+void QSelectionLabel::keyReleaseEvent ( QKeyEvent * event ) {
+      if (pixmap()->isNull()) {
+          event->ignore();
+        return;
+    }
+    event->accept();
+    QLabel::keyReleaseEvent(event);
 }

@@ -22,10 +22,17 @@
 #include "ui_mainform.h" 
 
 class QComboBox;
+class QCheckBox;
 class QLabel;
 class QCloseEvent;
 class QPixmap;
 class QSettings;
+class QProcess;
+class FileChannel;
+class QByteArray;
+class QFile;
+class SpellChecker;
+class QCursor;
 
 class MainForm : public QMainWindow, public Ui::MainWindow
 {
@@ -45,15 +52,20 @@ private slots:
 	void loadNextPage();
 	void loadPreviousPage();
 	void recognize();
+        void recognizeAll();
 	void saveText();
 	void showAboutDlg();
 	void showHelp();
         void copyClipboard();
         void copyAvailable(bool yes);
         void textChanged();
+        void enlargeFont();
+        void decreaseFont();
+protected:
+        bool eventFilter(QObject *object, QEvent *event);
 private:
 	virtual void closeEvent(QCloseEvent * event);
-	void rotateImage(int deg);
+        void rotateImage(int deg);
 	void scaleImage(double sf);
 	void initSettings();
 	void readSettings();
@@ -62,10 +74,13 @@ private:
 	void loadFile(const QString &fn);
 	void delTmpFiles();
 	void loadNext(int number);
+        void saveHtml(QFile * file);
+        void delTmpDir();
 	bool imageLoaded;
         bool hasCopy;
 	QComboBox * selectLangsBox;
 	QComboBox * selectFormatBox;
+        QCheckBox * spellCheckBox;
 	QPixmap * pixmap;
 	double scaleFactor;
 	bool singleColumn;
@@ -76,7 +91,21 @@ private:
 	QString workingDir;
 	QString fileName;
 	QSettings * settings;
+        QCursor * resizeCursor;
+        QCursor * resizeBlockCursor;
 	bool useXSane;
 	bool textSaved;
+        QProcess * scanProcess;
+        FileChannel * fileChannel;
+        QByteArray * ba;
+        SpellChecker * spellChecker;
+        int rotation;
+        QToolBar * m_toolBar;
 //	QLabel * displayLabel;
+private slots:
+        void readyRead();
+        void updateSP();
+        void setResizingCusor();
+        void setUnresizingCusor();
+        void fileSelected(const QString &path);
 };

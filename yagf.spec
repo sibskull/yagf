@@ -1,57 +1,63 @@
 Summary: Yet Another Graphic Front-end for Cuneiform
 Name: yagf
-Version: 0.5.0
-Release: 0
+Version: 0.8.1
+Release: alt1
 License: GPL
-Group: Applications/Text
+Group: Graphics
 URL: http://symmetrica.net/cuneiform-linux/yagf-ru.html
 
 Source: http://symmetrica.net/cuneiform-linux/yagf-%{version}-Source.tar.gz
-BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 
-BuildRequires: qt4-x11-tools
-BuildRequires: cmake
+BuildRequires: gcc-c++ libqt4-devel >= 4.4.0
+BuildRequires: cmake libaspell-devel
+Requires: cuneiform libaspell
 
-Packager: Andrei Borovsky
+Packager: Andrey Cherepanov <cas@altlinux.org>
 
 %description
 YAGF is a graphical front-end for cuneiform OCR tool.
-With YAGF you can open already scanned image files or obtain new images via XSane (scanning results are automatically passed to YAGF).
-Once you have a scanned image you can prepare it for recognition, select particular image areas for recognition, set the recognition language and so no.
-Recognized text is displayed in a editor window where it can be corrected, saved to disk or copied to clipboard.  
-YAGF also provides some facilities for a multi-page recognition (see the online help for more details).
-
-YAGF is free software released under the GNU General Public License (GPL).
+With YAGF you can open already scanned image files or obtain new images
+via XSane (scanning results are automatically passed to YAGF).
+Once you have a scanned image you can prepare it for recognition,
+select particular image areas for recognition,
+set the recognition language and so no.
+Recognized text is displayed in a editor window where it can be corrected,
+saved to disk or copied to clipboard.
+YAGF also provides some facilities for a multi-page recognition
+(see the online help for more details).
+Authors:
+--------
+    Andrei Borovsky <anb@symmetrica.net>
 
 %prep
 %setup -q
-
+subst "s,/usr/local,%buildroot/usr/,g" ./CMakeLists.txt
 
 %build
-%{__make} CPACK_PREFX=/usr/
+cmake ./
+%make
+
+#CPACK_PREFX=%buildroot/usr/ make
+#cmake CPACK_PREFIX=%buildroot/usr/
 
 %install
-%{__rm} -rf %{buildroot}
-%makeinstall
-#%find_lang %{name}
-
-%clean
-%{__rm} -rf %{buildroot}
+make install DESTDIR=%buildroot
+#make install INSTALL_ROOT=%buildroot
+#%__install -pD -m755 %name %buildroot%_bindir/%name
 
 %files 
-    %{_prefix}/local/bin/yagf
-    %{_prefix}/local/share/yagf/translations/*.qm
-    %{_prefix}/local/share/yagf/COPYING
-    %{_prefix}/local/share/yagf/DESCRIPTION
-    %{_prefix}/local/share/yagf/README
-
-%defattr(-, root, root, 0755)
-%doc README COPYING
-
-#%{_datadir}/icons/hicolor/*
-#%{_datadir}/applications/subtitleeditor.desktop
+%doc README COPYING DESCRIPTION AUTHORS ChangeLog
+%_bindir/%name
+%_libdir/%name/libxspreload.so
+%_datadir/%name/translations/*.qm
+%_datadir/pixmaps/yagf.png
+%_datadir/icons/hicolor/96x96/apps/yagf.png
+%_datadir/applications/YAGF.desktop
 
 %changelog
-* Fri Aug 3 2007 - chantra AatT rpm-based DdOoTt org 0.20.alpha4-1.rb
-- Initial release.
+* Tue Aug 18 2009 Andrey Cherepanov <cas@altlinux.org> 0.8.1-alt1
+- Version 0.8.1 
+
+* Mon Jul 06 2009 Andrey Cherepanov <cas@altlinux.org> 0.5.0-alt1
+- First version for Sisyphus 
  

@@ -1,0 +1,13 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=YAGF
+GenericName=A graphical front-end for Cuneiform OCR tool
+GenericName[ru]=Графическая оболочка для Cuneiform
+GenericName[lt]=Grafinė teksto atpažinimo programos Cuneiform sąsaja
+Type=Application
+Exec=yagf
+Icon=yagf
+Categories=Graphics;Scanning;OCR;Qt;
+Comment=A graphical front-end for Cuneiform OCR tool
+Comment[ru]=Графическая оболочка для системы распознования текстов Cuneiform
+StartupNotify=true

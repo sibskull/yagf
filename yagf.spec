@@ -1,7 +1,7 @@
 Summary: Yet Another Graphic Front-end for Cuneiform
 Name: yagf
 Version: 0.8.1
-Release: alt0.M40.1
+Release: alt0.M40.2
 License: GPL
 Group: Graphics
 URL: http://symmetrica.net/cuneiform-linux/yagf-ru.html
@@ -9,7 +9,7 @@ URL: http://symmetrica.net/cuneiform-linux/yagf-ru.html
 Source: http://symmetrica.net/cuneiform-linux/yagf-%{version}-Source.tar.gz
 
 BuildRequires: gcc-c++ libqt4-devel
-BuildRequires: cmake libaspell-devel
+BuildRequires: cmake2.6 libaspell-devel
 Requires: cuneiform libaspell
 
 Packager: Andrey Cherepanov <cas@altlinux.org>
@@ -50,6 +50,9 @@ make install DESTDIR=%buildroot
 %_datadir/applications/YAGF.desktop
 
 %changelog
+* Wed Dec 09 2009 Andrey Cherepanov <cas@altlinux.org> 0.8.1-alt0.M40.2
+- fix cmake dependence
+
 * Wed Dec 09 2009 Andrey Cherepanov <cas@altlinux.org> 0.8.1-alt0.M40.1
 - port to 4.0 branch 
 

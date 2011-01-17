@@ -1,6 +1,6 @@
 /*
     YAGF - cuneiform OCR graphical front-end 
-    Copyright (C) 2009 Andrei Borovsky <anb@symmetrica.net>
+    Copyright (C) 2009-2010 Andrei Borovsky <anb@symmetrica.net>
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -33,6 +33,8 @@ class QByteArray;
 class QFile;
 class SpellChecker;
 class QCursor;
+class QGraphicsInput;
+class QMenu;
 
 class MainForm : public QMainWindow, public Ui::MainWindow
 {
@@ -40,7 +42,11 @@ class MainForm : public QMainWindow, public Ui::MainWindow
 public:
 	MainForm(QWidget *parent = 0);
 private slots:
-	void loadImage();
+        //void on_actionRecognize_activated();
+        void on_actionRecognize_block_activated();
+        void on_ActionDeleteBlock_activated();
+        void on_ActionClearAllBlocks_activated();
+ void loadImage();
 	void rotateCWButtonClicked();
 	void rotateCCWButtonClicked();
 	void rotate180ButtonClicked();
@@ -61,6 +67,8 @@ private slots:
         void textChanged();
         void enlargeFont();
         void decreaseFont();
+        void alignButtonClicked();
+        void unalignButtonClicked();
 protected:
         bool eventFilter(QObject *object, QEvent *event);
 private:
@@ -76,12 +84,14 @@ private:
 	void loadNext(int number);
         void saveHtml(QFile * file);
         void delTmpDir();
+        void recognizeInternal(const QPixmap &pix);
 	bool imageLoaded;
         bool hasCopy;
 	QComboBox * selectLangsBox;
 	QComboBox * selectFormatBox;
         QCheckBox * spellCheckBox;
-	QPixmap * pixmap;
+//	QPixmap * pixmap;
+        QGraphicsInput * graphicsInput;
 	double scaleFactor;
 	bool singleColumn;
 	QString language;
@@ -101,6 +111,7 @@ private:
         SpellChecker * spellChecker;
         int rotation;
         QToolBar * m_toolBar;
+        QMenu * m_menu;
 //	QLabel * displayLabel;
 private slots:
         void readyRead();
@@ -108,4 +119,5 @@ private slots:
         void setResizingCusor();
         void setUnresizingCusor();
         void fileSelected(const QString &path);
+        void rightMouseClicked(int x, int y, bool inTheBlock);
 };

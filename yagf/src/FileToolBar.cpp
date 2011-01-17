@@ -1,6 +1,6 @@
 /*
     YAGF - cuneiform OCR graphical front-end
-    Copyright (C) 2009 Andrei Borovsky <anb@symmetrica.net>
+    Copyright (C) 2009-2010 Andrei Borovsky <anb@symmetrica.net>
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -27,7 +27,11 @@
 #include <QDir>
 #include <QFile>
 #include <QMessageBox>
+#include <QMatrix>
+#include <QMultiMap>
+#include <QRect>
 #include "utils.h"
+
 
 FileToolBar::FileToolBar(QWidget * parent):QToolBar(trUtf8("Loaded Images"), parent)
 {
@@ -36,6 +40,8 @@ FileToolBar::FileToolBar(QWidget * parent):QToolBar(trUtf8("Loaded Images"), par
     this->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
     filesMap = new StringMap();
     rotMap = new IntMap();
+    scaleMap = new FloatMap();
+    blocksMap = new BlocksMap();
     saveButton = NULL;
     clearButton = NULL;
     removeButton = NULL;
@@ -85,12 +91,23 @@ void FileToolBar::saveAll()
 {
     QFileDialog fd(this, trUtf8("Select a directory"), QDir::home().path());
     fd.setFileMode(QFileDialog::DirectoryOnly);
+    int rot = 0;
+    QPixmap pm;
     if (fd.exec()) {
         QFile file;
         QMapIterator<QString, QString> i(*filesMap);
         while (i.hasNext()) {
              i.next();
              file.setFileName(i.value());
+             rot = getRotation(i.value());
+             if (rot) {
+                pm.load(i.value());
+                if (!pm.isNull()) {
+                    QMatrix matrix;
+                    matrix.rotate(rot);
+                    pm = pm.transformed(matrix, Qt::SmoothTransformation);
+                }
+             }
              QString newName = fd.selectedFiles().at(0) + '/' + extractFileName(i.value());
              if (file.exists(newName)) {
                     QPixmap icon;
@@ -104,7 +121,10 @@ void FileToolBar::saveAll()
                     else
                         file.remove(newName);
              }
-             file.copy(newName);
+             if (rot && (!pm.isNull()))
+                 pm.save(newName);
+             else
+                file.copy(newName);
          }
 
     }
@@ -119,6 +139,8 @@ void FileToolBar::clearAll()
     buttonsAdded = false;
     filesMap->clear();
     rotMap->clear();
+    scaleMap->clear();
+    blocksMap->clear();
 }
 
 QStringList FileToolBar::getFileNames()
@@ -141,6 +163,8 @@ void FileToolBar::remove()
             this->removeAction(actions().at(i));
             filesMap->remove(currentImage);
             rotMap->remove(currentImage);
+            blocksMap->remove(currentImage);
+            scaleMap->remove(currentImage);
             currentImage = "";
             if (filesMap->count() > 0) {
                 currentImage = filesMap->keys().at(0);
@@ -155,7 +179,15 @@ void FileToolBar::setRotation(int r)
 {
     if (currentImage != "") {
         rotMap->remove(currentImage);
-        rotMap->insert(currentImage, r);
+        rotMap->insert(currentImage, r % 360);
+    }
+}
+
+void FileToolBar::setScale(float s)
+{
+    if (currentImage != "") {
+        scaleMap->remove(currentImage);
+        scaleMap->insert(currentImage, s);
     }
 }
 
@@ -166,10 +198,44 @@ int FileToolBar::getRotation()
     return rotMap->value(currentImage);
 }
 
+float FileToolBar::getScale()
+{
+    if (currentImage == "")
+        return 0;
+    return scaleMap->value(currentImage, float(0));
+}
+
 int FileToolBar::getRotation(const QString &name)
 {
     if (name == "")
         return 0;
     QString internal = filesMap->keys(name).first();
     return rotMap->value(internal);
+}
+
+bool FileToolBar::fileLoaded(const QString &name)
+{
+    return filesMap->values().contains(name);
+}
+
+void FileToolBar::select(const QString &name)
+{
+    currentImage = filesMap->keys(name).first();
+}
+
+void FileToolBar::addBlock(const QRect &rect)
+{
+    if (currentImage == "")
+        return;
+    blocksMap->insert(currentImage, rect);
+}
+
+RectList FileToolBar::getBlocks()
+{
+    return blocksMap->values(currentImage);
+}
+
+void FileToolBar::clearBlocks()
+{
+    blocksMap->remove(currentImage);
 }

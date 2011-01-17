@@ -6,15 +6,18 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
-    <height>600</height>
+    <width>1920</width>
+    <height>1138</height>
    </rect>
+  </property>
+  <property name="contextMenuPolicy">
+   <enum>Qt::CustomContextMenu</enum>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
   <property name="windowIcon">
-   <iconset>
+   <iconset resource="yagf.qrc">
     <normaloff>:/yagf.png</normaloff>:/yagf.png</iconset>
   </property>
   <property name="locale">
@@ -86,7 +89,7 @@
                <string>...</string>
               </property>
               <property name="icon">
-               <iconset>
+               <iconset resource="yagf.qrc">
                 <normaloff>:/images/select.png</normaloff>:/images/select.png</iconset>
               </property>
               <property name="iconSize">
@@ -121,7 +124,7 @@
                <string>...</string>
               </property>
               <property name="icon">
-               <iconset>
+               <iconset resource="yagf.qrc">
                 <normaloff>:/images/larger.png</normaloff>:/images/larger.png</iconset>
               </property>
               <property name="iconSize">
@@ -150,7 +153,7 @@
                <string>...</string>
               </property>
               <property name="icon">
-               <iconset>
+               <iconset resource="yagf.qrc">
                 <normaloff>:/images/smaller.png</normaloff>:/images/smaller.png</iconset>
               </property>
               <property name="iconSize">
@@ -179,7 +182,7 @@
                <string>...</string>
               </property>
               <property name="icon">
-               <iconset>
+               <iconset resource="yagf.qrc">
                 <normaloff>:/images/rccw.png</normaloff>:/images/rccw.png</iconset>
               </property>
               <property name="iconSize">
@@ -208,7 +211,7 @@
                <string>...</string>
               </property>
               <property name="icon">
-               <iconset>
+               <iconset resource="yagf.qrc">
                 <normaloff>:/images/revert.png</normaloff>:/images/revert.png</iconset>
               </property>
               <property name="iconSize">
@@ -237,7 +240,7 @@
                <string>Rotate 90 CW</string>
               </property>
               <property name="icon">
-               <iconset>
+               <iconset resource="yagf.qrc">
                 <normaloff>:/images/rcw.png</normaloff>:/images/rcw.png</iconset>
               </property>
               <property name="iconSize">
@@ -266,7 +269,7 @@
                <string>...</string>
               </property>
               <property name="icon">
-               <iconset>
+               <iconset resource="yagf.qrc">
                 <normaloff>:/images/singlecolumn.png</normaloff>:/images/singlecolumn.png</iconset>
               </property>
               <property name="iconSize">
@@ -279,26 +282,109 @@
                <bool>true</bool>
               </property>
              </widget>
+             <widget class="QToolButton" name="alignButton">
+              <property name="geometry">
+               <rect>
+                <x>290</x>
+                <y>0</y>
+                <width>31</width>
+                <height>31</height>
+               </rect>
+              </property>
+              <property name="toolTip">
+               <string>Correct page skew</string>
+              </property>
+              <property name="locale">
+               <locale language="English" country="UnitedStates"/>
+              </property>
+              <property name="text">
+               <string>...</string>
+              </property>
+              <property name="icon">
+               <iconset resource="yagf.qrc">
+                <normaloff>:/images/singlecolumn.png</normaloff>:/images/singlecolumn.png</iconset>
+              </property>
+              <property name="iconSize">
+               <size>
+                <width>20</width>
+                <height>20</height>
+               </size>
+              </property>
+              <property name="checkable">
+               <bool>false</bool>
+              </property>
+             </widget>
+             <widget class="QToolButton" name="unalignButton">
+              <property name="geometry">
+               <rect>
+                <x>320</x>
+                <y>0</y>
+                <width>31</width>
+                <height>31</height>
+               </rect>
+              </property>
+              <property name="toolTip">
+               <string>Undo correct page skew</string>
+              </property>
+              <property name="locale">
+               <locale language="English" country="UnitedStates"/>
+              </property>
+              <property name="text">
+               <string>...</string>
+              </property>
+              <property name="icon">
+               <iconset resource="yagf.qrc">
+                <normaloff>:/images/singlecolumn.png</normaloff>:/images/singlecolumn.png</iconset>
+              </property>
+              <property name="iconSize">
+               <size>
+                <width>20</width>
+                <height>20</height>
+               </size>
+              </property>
+              <property name="checkable">
+               <bool>false</bool>
+              </property>
+             </widget>
+             <widget class="QToolButton" name="clearBlocksButton">
+              <property name="geometry">
+               <rect>
+                <x>250</x>
+                <y>0</y>
+                <width>31</width>
+                <height>31</height>
+               </rect>
+              </property>
+              <property name="toolTip">
+               <string>Correct page skew</string>
+              </property>
+              <property name="locale">
+               <locale language="English" country="UnitedStates"/>
+              </property>
+              <property name="text">
+               <string>...</string>
+              </property>
+              <property name="icon">
+               <iconset resource="yagf.qrc">
+                <normaloff>:/images/singlecolumn.png</normaloff>:/images/singlecolumn.png</iconset>
+              </property>
+              <property name="iconSize">
+               <size>
+                <width>20</width>
+                <height>20</height>
+               </size>
+              </property>
+              <property name="checkable">
+               <bool>false</bool>
+              </property>
+             </widget>
             </widget>
            </item>
            <item>
-            <widget class="QScrollArea" name="scrollArea">
-             <property name="widgetResizable">
-              <bool>true</bool>
+            <widget class="QGraphicsView" name="graphicsView">
+             <property name="contextMenuPolicy">
+              <enum>Qt::NoContextMenu</enum>
              </property>
-             <property name="alignment">
-              <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
-             </property>
-             <widget class="QWidget" name="scrollAreaWidgetContents">
-              <property name="geometry">
-               <rect>
-                <x>0</x>
-                <y>0</y>
-                <width>145</width>
-                <height>486</height>
-               </rect>
-              </property>
-             </widget>
             </widget>
            </item>
           </layout>
@@ -322,8 +408,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>800</width>
-     <height>27</height>
+     <width>1920</width>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -393,8 +479,8 @@
   </widget>
   <action name="actionScan">
    <property name="icon">
-    <iconset>
-     <normaloff>:/images/scanner.png</normaloff>:/images/scanner.png</iconset>
+    <iconset resource="yagf.qrc">
+     <normaloff>:/images/scanner_s2.png</normaloff>:/images/scanner_s2.png</iconset>
    </property>
    <property name="text">
     <string>S&amp;can...</string>
@@ -408,7 +494,7 @@
   </action>
   <action name="action_Save">
    <property name="icon">
-    <iconset>
+    <iconset resource="yagf.qrc">
      <normaloff>:/images/document_save_as.png</normaloff>:/images/document_save_as.png</iconset>
    </property>
    <property name="text">
@@ -420,7 +506,7 @@
   </action>
   <action name="actionOpen">
    <property name="icon">
-    <iconset>
+    <iconset resource="yagf.qrc">
      <normaloff>:/images/document_open.png</normaloff>:/images/document_open.png</iconset>
    </property>
    <property name="text">
@@ -435,7 +521,7 @@
   </action>
   <action name="actionRecognize">
    <property name="icon">
-    <iconset>
+    <iconset resource="yagf.qrc">
      <normaloff>:/images/filefind.png</normaloff>:/images/filefind.png</iconset>
    </property>
    <property name="text">
@@ -463,7 +549,7 @@
   </action>
   <action name="actionPreviousPage">
    <property name="icon">
-    <iconset>
+    <iconset resource="yagf.qrc">
      <normaloff>:/images/back.png</normaloff>:/images/back.png</iconset>
    </property>
    <property name="text">
@@ -475,7 +561,7 @@
   </action>
   <action name="actionNextPage">
    <property name="icon">
-    <iconset>
+    <iconset resource="yagf.qrc">
      <normaloff>:/images/forward.png</normaloff>:/images/forward.png</iconset>
    </property>
    <property name="text">
@@ -502,7 +588,7 @@
   </action>
   <action name="actionCopyToClipboard">
    <property name="icon">
-    <iconset>
+    <iconset resource="yagf.qrc">
      <normaloff>:/images/editcopy.png</normaloff>:/images/editcopy.png</iconset>
    </property>
    <property name="text">
@@ -514,7 +600,7 @@
   </action>
   <action name="actionRecognize_All_Pages">
    <property name="icon">
-    <iconset>
+    <iconset resource="yagf.qrc">
      <normaloff>:/batch.png</normaloff>:/batch.png</iconset>
    </property>
    <property name="text">
@@ -527,7 +613,53 @@
     <string>Ctrl+A</string>
    </property>
   </action>
+  <action name="ActionClearAllBlocks">
+   <property name="icon">
+    <iconset resource="yagf.qrc">
+     <normaloff>:/images/trashcan1s.png</normaloff>:/images/trashcan1s.png</iconset>
+   </property>
+   <property name="text">
+    <string>Clear all blocks</string>
+   </property>
+   <property name="toolTip">
+    <string>Clear all blocks</string>
+   </property>
+  </action>
+  <action name="ActionDeleteBlock">
+   <property name="icon">
+    <iconset resource="yagf.qrc">
+     <normaloff>:/images/trashcan2-s.png</normaloff>:/images/trashcan2-s.png</iconset>
+   </property>
+   <property name="text">
+    <string>Delete the current block</string>
+   </property>
+   <property name="toolTip">
+    <string>Delete the current block</string>
+   </property>
+  </action>
+  <action name="actionRecognize_block">
+   <property name="icon">
+    <iconset resource="yagf.qrc">
+     <normaloff>:/images/recblocks.png</normaloff>:/images/recblocks.png</iconset>
+   </property>
+   <property name="text">
+    <string>Recognize block</string>
+   </property>
+   <property name="toolTip">
+    <string>Recognize this block</string>
+   </property>
+  </action>
+  <action name="actionClear_numbers">
+   <property name="text">
+    <string>Clear numbers</string>
+   </property>
+   <property name="toolTip">
+    <string>Crear block numbering</string>
+   </property>
+  </action>
  </widget>
- <resources/>
+ <resources>
+  <include location="yagf.qrc"/>
+ </resources>
  <connections/>
 </ui>

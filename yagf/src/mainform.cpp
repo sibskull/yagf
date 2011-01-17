@@ -1,6 +1,6 @@
 /*
     YAGF - cuneiform OCR graphical front-end 
-    Copyright (C) 2009 Andrei Borovsky <anb@symmetrica.net>
+    Copyright (C) 2009-2010 Andrei Borovsky <anb@symmetrica.net>
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -34,6 +34,7 @@
 #include <QFile>
 #include <QByteArray>
 #include <QRect>
+#include <QRectF>
 #include <QStatusBar>
 #include <QMessageBox>
 #include <QProgressDialog>
@@ -43,7 +44,7 @@
 #include <QRegExp>
 #include <QClipboard>
 #include "mainform.h"
-#include "QSelectionLabel.h"
+#include "qgraphicsinput.h"
 #include "utils.h"
 #include "FileChannel.h"
 #include "spellchecker.h"
@@ -55,12 +56,19 @@
 #include <QKeyEvent>
 #include <QFont>
 #include "FileToolBar.h"
+#include "BlockAnalysis.h"
 
-const QString version = "0.8.1";
+const QString version = "0.8.3";
 
 MainForm::MainForm(QWidget *parent):QMainWindow(parent)
 {
-	setupUi(this);
+        setupUi(this);
+
+        ///!!!!!
+        alignButton->hide();
+        unalignButton->hide();
+
+
 	setWindowTitle("YAGF");
 	selectLangsBox = new QComboBox();
 	QLabel * label = new QLabel();
@@ -78,11 +86,8 @@ MainForm::MainForm(QWidget *parent):QMainWindow(parent)
 	toolBar->addWidget(label1);
 	toolBar->addWidget(selectFormatBox);
         toolBar->addWidget(spellCheckBox);
-	pixmap = new QPixmap();
-	QSelectionLabel * displayLabel = new QSelectionLabel();
-	scrollArea->setWidget(displayLabel);
-	scrollArea->ensureVisible(0, 0);
-
+//	pixmap = new QPixmap();
+        graphicsInput = new QGraphicsInput(QRectF(0,0,2000, 2000), graphicsView) ;
 	statusBar()->show();
 	imageLoaded = false;
 	lastDir = QDir::homePath();
@@ -92,6 +97,7 @@ MainForm::MainForm(QWidget *parent):QMainWindow(parent)
         hasCopy = false;
         scaleFactor = 1;
         rotation = 0;
+        m_menu = new QMenu(graphicsView);
 
         connect(actionOpen, SIGNAL(triggered()), this, SLOT(loadImage()));
 	connect(actionQuit, SIGNAL(triggered()), this, SLOT(close()));
@@ -112,8 +118,9 @@ MainForm::MainForm(QWidget *parent):QMainWindow(parent)
 	connect(selectLangsBox, SIGNAL(currentIndexChanged(int)), this, SLOT(newLanguageSelected(int)));
         connect(textEdit, SIGNAL(copyAvailable (bool)), this, SLOT(copyAvailable (bool)));
         connect(textEdit, SIGNAL(textChanged()), this, SLOT(textChanged()));
-        connect (displayLabel, SIGNAL(selectionResized()), this, SLOT(setResizingCusor()));
-        connect (displayLabel, SIGNAL(selectionUnresized()), this, SLOT(setUnresizingCusor()));
+        connect(graphicsInput, SIGNAL(rightMouseClicked(int, int, bool)), this, SLOT(rightMouseClicked(int, int, bool)));
+        //connect (graphicsView, SIGNAL(selectionResized()), this, SLOT(setResizingCusor()));
+        //connect (displayLabel, SIGNAL(selectionUnresized()), this, SLOT(setUnresizingCusor()));
         QAction * action;
         action = new QAction(trUtf8("Undo\tCtrl+Z"), this);
         action->setShortcut(QKeySequence("Ctrl+Z"));
@@ -124,6 +131,7 @@ MainForm::MainForm(QWidget *parent):QMainWindow(parent)
         connect(action, SIGNAL(triggered()), textEdit, SLOT(redo()));
         textEdit->addAction(action);
         action = new QAction("separator", this);
+        action->setText("");
         action->setSeparator(true);
         textEdit->addAction(action);
         action = new QAction(trUtf8("Select All\tCtrl+A"), this);
@@ -143,6 +151,7 @@ MainForm::MainForm(QWidget *parent):QMainWindow(parent)
         connect(action, SIGNAL(triggered()), textEdit, SLOT(paste()));
         textEdit->addAction(action);
         action = new QAction("separator", this);
+        action->setText("");
         action->setSeparator(true);
         textEdit->addAction(action);
         action = new QAction(trUtf8("Larger Font\tCtrl++"), this);
@@ -167,11 +176,12 @@ MainForm::MainForm(QWidget *parent):QMainWindow(parent)
 
         connect(textEdit->document(), SIGNAL(cursorPositionChanged ( const QTextCursor &)), this, SLOT(updateSP()));
 
-        displayLabel->installEventFilter(this);
+        //displayLabel->installEventFilter(this);
         textEdit->installEventFilter(this);
         QPixmap l_cursor;
         l_cursor.load(":/resize.png");
         resizeCursor = new QCursor(l_cursor);
+        graphicsInput->setMagnifierCursor(resizeCursor);
         l_cursor.load(":/resize_block.png");
         resizeBlockCursor = new QCursor(l_cursor);
         textEdit->setContextMenuPolicy(Qt::ActionsContextMenu);
@@ -181,6 +191,16 @@ MainForm::MainForm(QWidget *parent):QMainWindow(parent)
         connect(m_toolBar, SIGNAL(fileSelected(const QString &)), this, SLOT(fileSelected(const QString &)));
 
         connect(actionRecognize_All_Pages, SIGNAL(triggered()), this, SLOT(recognizeAll()));
+
+        QPixmap pm;
+        pm.load(":/align.png");
+        alignButton->setIcon(pm);
+        connect(alignButton, SIGNAL(clicked()), this, SLOT(alignButtonClicked()));
+        pm.load(":/undo.png");
+        unalignButton->setIcon(pm);
+        connect(unalignButton, SIGNAL(clicked()), this, SLOT(unalignButtonClicked()));
+
+        clearBlocksButton->setDefaultAction(ActionClearAllBlocks);
  }
 
 void MainForm::loadImage()
@@ -228,15 +248,17 @@ void MainForm::rotateImage(int deg)
 {
         rotation %=360;
         if (imageLoaded) {
-                QMatrix matrix;
-                matrix.rotate(deg);
-		((QSelectionLabel*)(scrollArea->widget()))->resetSelection(true);
-		QPixmap pix = ((QLabel*)(scrollArea->widget()))->pixmap()->transformed(matrix);
+                //QMatrix matrix;
+                //matrix.rotate(deg);
+                graphicsInput->clearBlocks();
+                graphicsInput->rotateImage(deg,  graphicsView->width()/2, graphicsView->height()/2);
+                //((QSelectionLabel*)(scrollArea->widget()))->resetSelection(true);
+                //QPixmap pix = ((QLabel*)(scrollArea->widget()))->pixmap()->transformed(matrix);
 		//pix.transformed(matrix);
-		((QLabel*)(scrollArea->widget()))->setPixmap(pix);
-		pix = pixmap->transformed(matrix);
-		delete pixmap;
-		pixmap = new QPixmap(pix);
+                //((QLabel*)(scrollArea->widget()))->setPixmap(pix);
+                //pix = pixmap->transformed(matrix, Qt::SmoothTransformation);
+                //delete pixmap;
+                //pixmap = new QPixmap(pix);
                 rotation += deg;
                 ((FileToolBar *) m_toolBar)->setRotation(rotation);
 	}
@@ -258,6 +280,9 @@ void MainForm::rotate180ButtonClicked()
 
 void MainForm::enlargeButtonClicked()
 {
+       if (graphicsInput->getRealScale() < 1)
+           graphicsInput->setViewScale(2, 0);
+       return;
         if (scaleFactor < 0.25 )
             scaleImage(0.25/scaleFactor);
         else
@@ -278,9 +303,10 @@ void MainForm::enlargeButtonClicked()
 
 void MainForm::decreaseButtonClicked() 
 {
-        if (scaleFactor > 1 )
+        //if (scaleFactor > 1 )
             scaleImage(0.5);
-        else
+          return;
+        //else
         if (scaleFactor > 0.75 )
             scaleImage(0.75/scaleFactor);
         else
@@ -300,14 +326,10 @@ void MainForm::scaleImage(double sf)
 {
 	if (!imageLoaded)
 		return;
-	if ((scaleFactor < 0.2) && (sf < 1))
-		return;
-	if ((scaleFactor > 4) && (sf > 1))
-		return;
-	scaleFactor *= sf;
-	QPixmap pix = pixmap->scaled(QSize(pixmap->width()*scaleFactor, pixmap->height()*scaleFactor));
-	((QLabel*)(scrollArea->widget()))->setPixmap(pix);
-        ((QSelectionLabel*)(scrollArea->widget()))->resetSelection();
+        graphicsInput->setViewScale(sf, 0);
+//	QPixmap pix = pixmap->scaled(QSize(pixmap->width()*scaleFactor, pixmap->height()*scaleFactor));
+//	((QLabel*)(scrollArea->widget()))->setPixmap(pix);
+//        ((QSelectionLabel*)(scrollArea->widget()))->resetSelection();
 }
 
 void MainForm::initSettings()
@@ -441,23 +463,33 @@ void MainForm::scanImage()
 
 void MainForm::loadFile(const QString &fn)
 {
-	imageLoaded = pixmap->load(fn);
-	fileName = fn;
-	setWindowTitle("YAGF - " + extractFileName(fileName));
-	QSelectionLabel * displayLabel = (QSelectionLabel *) scrollArea->widget();
-	displayLabel->setPixmap(QPixmap());
-	displayLabel->setSelectionMode(false);
+        if (((FileToolBar *) m_toolBar)->fileLoaded(fn)) {
+                ((FileToolBar *) m_toolBar)->select(fn);
+                rotation = ((FileToolBar *) m_toolBar)->getRotation();
+                scaleFactor = ((FileToolBar *) m_toolBar)->getScale();
+            }
+        QPixmap pixmap;
+        if (imageLoaded = pixmap.load(fn)) {
+            fileName = fn;
+            setWindowTitle("YAGF - " + extractFileName(fileName));
+            graphicsInput->loadImage(pixmap);
+            //scaleFactor = 1.1;
+            QTransform tr;
+            tr.reset();
+            graphicsView->setTransform(tr);
+            graphicsInput->setViewScale(1.0/scaleFactor, 0);
+        }
 	if (imageLoaded) {
-                ((FileToolBar *) m_toolBar)->addFile(*pixmap, fn);
-                displayLabel->setPixmap(*pixmap);
-		displayLabel->setSelectionMode(true);
-		displayLabel->resetSelection();
+                ((FileToolBar *) m_toolBar)->addFile(pixmap, fn);
+                //displayLabel->setPixmap(*pixmap);
+                //displayLabel->setSelectionMode(true);
+                //displayLabel->resetSelection();
                 if (scaleFactor == 1) {
-                    scaleFactor = 1;
-                    if (pixmap->width() > 4000)
+                    //scaleFactor = 1;
+                    if (pixmap.width() > 4000)
                             scaleImage(0.25);
                     else
-                    if (pixmap->width() > 2000)
+                    if (pixmap.width() > 2000)
                             scaleImage(0.5);
                 } else {
                     double tmp = scaleFactor;
@@ -468,7 +500,9 @@ void MainForm::loadFile(const QString &fn)
                 rotation = 0;
                 rotateImage(deg);
                 ((FileToolBar *) m_toolBar)->setRotation(rotation);
-                displayLabel->setFocus();
+                graphicsInput->setFocus();
+                rotation = (rotation + 45)/90;
+                rotation *=90;
 	}
 }
 
@@ -511,68 +545,80 @@ void MainForm::loadPreviousPage()
 	loadNext(-1);
 }
 
+// TODO: think on blocks/page recognition
+
+void MainForm::recognizeInternal(const QPixmap &pix)
+{
+    const QString inputFile = "input.bmp";
+    const QString outputFile = "output.txt";
+    outputFormat = selectFormatBox->itemData(selectFormatBox->currentIndex()).toString();
+    QPixmapCache::clear();
+    pix.save(workingDir + inputFile, "BMP");
+    QProcess proc;
+    proc.setWorkingDirectory(workingDir);
+    QStringList sl;
+    sl.append("-l");
+    sl.append(language);
+    sl.append("-f");
+    if (outputFormat == "text")
+      sl.append("text");
+    else
+    sl.append("html");
+    if (singleColumn)
+            sl.append("-c1");
+    sl.append("-o");
+    sl.append(workingDir + outputFile);
+    sl.append(workingDir + inputFile);
+    proc.start("cuneiform", sl);
+    proc.waitForFinished(-1);
+    if (proc.exitCode()) {
+            QByteArray stdout = proc.readAllStandardOutput();
+            QByteArray stderr = proc.readAllStandardError();
+            QString output = QString(stdout) + QString(stderr);
+            QMessageBox::critical(this, trUtf8("Starting cuneiform failed"), trUtf8("The system said: ") + (output != "" ? output : trUtf8("program not found")));
+            return;
+    }
+    QFile textFile(workingDir + outputFile);
+    textFile.open(QIODevice::ReadOnly);
+    QByteArray text = textFile.readAll();
+    textFile.close();
+    QString textData;
+    QTextCodec *codec = QTextCodec::codecForName("UTF-8");
+    textData = codec->toUnicode(text); //QString::fromUtf8(text.data());
+    if (outputFormat == "text")
+            textData.prepend("<meta content=\"text/html; charset=utf-8\" http-equiv=\"content-type\" />");
+    textData.replace("<img src=output_files", "");
+    textData.replace(".bmp\">", "\"--");
+    textData.replace(".bmp>", "");
+//       textData.replace("-</p><p>", "");
+//        textData.replace("-<br>", "");
+    textEdit->append(textData);
+    textSaved = FALSE;
+    if (spellCheckBox->isChecked()) {
+        spellChecker->setLanguage(language);
+        spellChecker->spellCheck();
+    }
+
+}
+
 void MainForm::recognize()
 {
-        const QString inputFile = "input.bmp";
-	const QString outputFile = "output.txt";
-        outputFormat = selectFormatBox->itemData(selectFormatBox->currentIndex()).toString();
-	if (!imageLoaded) {
-		QMessageBox::critical(this, trUtf8("Error"), trUtf8("No image loaded"));
-		return;
-	}
-	if (!findProgram("cuneiform")) {
-		QMessageBox::warning(this, trUtf8("Warning"), trUtf8("cuneiform not found"));
-		return;
-	}
-	QRect rect = ((QSelectionLabel *) scrollArea->widget())->getSelectedRect();
-	QPixmap pix = pixmap->copy(rect.x()/scaleFactor, rect.y()/scaleFactor, rect.width()/scaleFactor, rect.height()/scaleFactor);
-	QPixmapCache::clear();
-	pix.save(workingDir + inputFile, "BMP");
-	QProcess proc;
-	proc.setWorkingDirectory(workingDir);
-	QStringList sl;	
-	sl.append("-l");
-	sl.append(language);
-        sl.append("-f");
-        if (outputFormat == "text")
-          sl.append("text");
-        else
-        sl.append("html");
-	if (singleColumn)
-		sl.append("-c1");
-        sl.append("-o");
-        sl.append(workingDir + outputFile);
-	sl.append(workingDir + inputFile);
-	proc.start("cuneiform", sl);
-	proc.waitForFinished(-1);
-	if (proc.exitCode()) {
-		QByteArray stdout = proc.readAllStandardOutput();
-		QByteArray stderr = proc.readAllStandardError();
-		QString output = QString(stdout) + QString(stderr);
-		QMessageBox::critical(this, trUtf8("Starting cuneiform failed"), trUtf8("The system said: ") + (output != "" ? output : trUtf8("program not found")));
-		return;
-	}
-	QFile textFile(workingDir + outputFile);
-	textFile.open(QIODevice::ReadOnly);
-	QByteArray text = textFile.readAll();
-        textFile.close();
-        QString textData;
-        QTextCodec *codec = QTextCodec::codecForName("UTF-8");
-        textData = codec->toUnicode(text); //QString::fromUtf8(text.data());
-        if (outputFormat == "text")
-                textData.prepend("<meta content=\"text/html; charset=utf-8\" http-equiv=\"content-type\" />");
-        textData.replace("<img src=output_files", "");
-        textData.replace(".bmp\">", "\"--");
-        textData.replace(".bmp>", "");
- //       textData.replace("-</p><p>", "");
-//        textData.replace("-<br>", "");
-        textEdit->append(textData);
-        textSaved = FALSE;
-        if (spellCheckBox->isChecked()) {
-            spellChecker->setLanguage(language);
-            spellChecker->spellCheck();
-        }
-	//QImage img = pix.toImage();
+    QFile::remove(workingDir + "input*.bmp");
+    if (!imageLoaded) {
+            QMessageBox::critical(this, trUtf8("Error"), trUtf8("No image loaded"));
+            return;
+    }
+    if (!findProgram("cuneiform")) {
+            QMessageBox::warning(this, trUtf8("Warning"), trUtf8("cuneiform not found"));
+            return;
+    }
+    if (graphicsInput->blocksCount() > 0) {
+        for (int i = graphicsInput->blocksCount(); i >= 0; i--)
+            if (!graphicsInput->getBlockByIndex(i).isNull())
+                recognizeInternal(graphicsInput->getBlockByIndex(i));
+    } else {
+        recognizeInternal(graphicsInput->getImage());
+    }
 }
 
 void MainForm::saveText()
@@ -609,7 +655,7 @@ void MainForm::showAboutDlg()
 {
 	QPixmap icon;
 	icon.load(":/yagf.png");
-        QMessageBox aboutBox(QMessageBox::NoIcon, trUtf8("About YAGF"), trUtf8("<p align=\"center\"><b>YAGF - Yet Another Graphical Front-end for cuneiform</b></p> <p align=\"center\">Version %1</p> This is a free software. Visit <a href=\"http://symmetrica.net/cuneiform-linux/yagf-en.html\">http://symmetrica.net/cuneiform-linux/yagf-en.html</a> for more details.").arg(version), QMessageBox::Ok);
+        QMessageBox aboutBox(QMessageBox::NoIcon, trUtf8("About YAGF"), trUtf8("<p align=\"center\"><b>YAGF - Yet Another Graphical Front-end for cuneiform</b></p><p align=\"center\">Version %1</p> <p align=\"center\">Ⓒ 2009-2010 Andrei Borovsky</p> This is a free software distributed under GPL v3. Visit <a href=\"http://symmetrica.net/cuneiform-linux/yagf-en.html\">http://symmetrica.net/cuneiform-linux/yagf-en.html</a> for more details.").arg(version), QMessageBox::Ok);
 	aboutBox.setIconPixmap(icon);
         QList<QLabel *> labels = aboutBox.findChildren<QLabel*>();
         for (int i = 0; i < labels.count(); i++) {
@@ -716,7 +762,7 @@ void MainForm::updateSP()
 
 bool MainForm::eventFilter(QObject *object, QEvent *event)
 {
-    if (object ==  scrollArea->widget()) {
+    /*if (object ==  scrollArea->widget()) {
         if (event->type() == QEvent::KeyPress) {
             QKeyEvent * e = (QKeyEvent *) event;
             if (e->modifiers() & Qt::ControlModifier) {
@@ -748,7 +794,7 @@ bool MainForm::eventFilter(QObject *object, QEvent *event)
                 return true;
             }
         }
-    } else
+    } else */
     if (object == textEdit) {
         if (event->type() == QEvent::KeyPress) {
             QKeyEvent * e = (QKeyEvent *) event;
@@ -799,17 +845,16 @@ void MainForm::decreaseFont()
 
 void MainForm::setResizingCusor()
 {
-        scrollArea->widget()->setCursor(*resizeBlockCursor);
+        //scrollArea->widget()->setCursor(*resizeBlockCursor);
 }
 
 void MainForm::setUnresizingCusor()
 {
-    scrollArea->widget()->setCursor(QCursor(Qt::ArrowCursor));
+    //scrollArea->widget()->setCursor(QCursor(Qt::ArrowCursor));
 }
 
 void MainForm::fileSelected(const QString &path)
 {
-    rotation = ((FileToolBar *) m_toolBar)->getRotation();
     loadFile(path);
 }
 
@@ -834,3 +879,67 @@ void MainForm::recognizeAll()
             }
     }
 }
+
+void MainForm::alignButtonClicked()
+{
+    /*if (((QSelectionLabel *) scrollArea->widget())->pixmap()->isNull())
+        return;
+    QRect rect = ((QSelectionLabel *) scrollArea->widget())->getSelectedRect();
+    QPixmap pix = pixmap->copy(rect.x()/scaleFactor, rect.y()/scaleFactor, rect.width()/scaleFactor, rect.height()/scaleFactor);
+    QPixmapCache::clear();
+    BlockAnalysis * blockAnalysis = new BlockAnalysis(&pix);
+    int rot = blockAnalysis->getSkew();
+    int tmpr = rotation;
+    if (rot) {
+        rotateImage(rot);
+        scaleImage(1.01);
+    }
+    rotation = tmpr;
+    delete blockAnalysis;*/
+}
+
+void MainForm::unalignButtonClicked()
+{
+    /*if (((QSelectionLabel *) scrollArea->widget())->pixmap()->isNull())
+        return;
+    int rot = ((FileToolBar *) m_toolBar)->getRotation();
+    int rrot = ((rot + 45)/90);
+    rrot *=90;
+    rotateImage(rrot - rot);
+    rotation = rrot;*/
+}
+
+void MainForm::on_ActionClearAllBlocks_activated()
+{
+    graphicsInput->clearBlocks();
+}
+
+void MainForm::rightMouseClicked(int x, int y, bool inTheBlock)
+{
+    m_menu->clear();
+    m_menu->addAction(ActionClearAllBlocks);
+    if (inTheBlock) {
+        m_menu->addAction(ActionDeleteBlock);
+        m_menu->addAction(actionRecognize_block);
+    }
+    QPoint p = graphicsView->mapToGlobal(QPoint(x,y));
+    m_menu->move(p);
+    m_menu->show();
+}
+
+void MainForm::on_ActionDeleteBlock_activated()
+{
+    graphicsInput->deleteCurrentBlock();
+}
+
+void MainForm::on_actionRecognize_block_activated()
+{
+    if (graphicsInput->getCurrentBlock().isNull())
+        return;
+    recognizeInternal(graphicsInput->getCurrentBlock());
+}
+
+/*void MainForm::on_actionRecognize_activated()
+{
+
+}*/

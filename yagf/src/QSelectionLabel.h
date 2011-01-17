@@ -20,10 +20,13 @@
 #define _QSELECTIONLABEL_H_
 
 #include <QLabel>
+#include <QList>
+#include <QRect>
 
 class QRect;
 class QMouseEvent;
 class QPixmap;
+
 
 class QSelectionLabel : public QLabel
 {

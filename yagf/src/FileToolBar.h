@@ -1,6 +1,6 @@
 /*
     YAGF - cuneiform OCR graphical front-end
-    Copyright (C) 2009 Andrei Borovsky <anb@symmetrica.net>
+    Copyright (C) 2009-2010 Andrei Borovsky <anb@symmetrica.net>
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -27,9 +27,15 @@
 
 typedef QMap<QString, QString> StringMap;
 typedef QMap<QString, int> IntMap;
+typedef QMap<QString, float> FloatMap;
 
 class QPixmap;
 class QPushButton;
+class QRect;
+
+typedef QList<QRect> RectList;
+typedef class QMultiMap<QString, QRect> BlocksMap;
+
 
 class FileToolBar : public QToolBar
 {
@@ -39,14 +45,23 @@ public:
     void addFile(const QPixmap & pixmap, const QString & name);
     QStringList getFileNames();
     void setRotation(int r);
+    void setScale(float s);
+    float getScale();
     int getRotation();
+    void addBlock(const QRect &rect);
+    RectList getBlocks();
+    void clearBlocks();
     int getRotation(const QString &name);
+    bool fileLoaded(const QString &name);
+    void select(const QString &name);
 signals:
     void fileSelected(const QString & name);
 private:
     bool buttonsAdded;
     StringMap * filesMap;
     IntMap * rotMap;
+    FloatMap * scaleMap;
+    BlocksMap * blocksMap;
     QPushButton * saveButton;
     QPushButton * clearButton;
     QPushButton * removeButton;

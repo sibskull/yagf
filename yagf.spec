@@ -1,6 +1,6 @@
 Summary: Yet Another Graphic Front-end for Cuneiform
 Name: yagf
-Version: 0.8.1
+Version: 0.8.3
 Release: alt1
 License: GPL
 Group: Graphics
@@ -50,9 +50,12 @@ make install DESTDIR=%buildroot
 %_datadir/applications/YAGF.desktop
 
 %changelog
+* Mon Jan 17 2011 Andrey Cherepanov <cas@altlinux.org> 0.8.3-alt1
+- Version 0.8.3
+
 * Tue Aug 18 2009 Andrey Cherepanov <cas@altlinux.org> 0.8.1-alt1
-- Version 0.8.1 
+- Version 0.8.1
 
 * Mon Jul 06 2009 Andrey Cherepanov <cas@altlinux.org> 0.5.0-alt1
-- First version for Sisyphus 
- 
+- First version for Sisyphus
+

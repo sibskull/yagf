@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="ru">
+<TS version="2.0" language="pl">
 <context>
     <name>FileToolBar</name>
     <message>
         <location filename="FileToolBar.cpp" line="41"/>
         <source>Loaded Images</source>
-        <translation type="unfinished"></translation>
+        <translation>Załadowane pliki graficzne</translation>
     </message>
     <message>
         <location filename="FileToolBar.cpp" line="55"/>
@@ -16,7 +16,7 @@
     <message>
         <location filename="FileToolBar.cpp" line="81"/>
         <source>Clear</source>
-        <translation type="unfinished"></translation>
+        <translation>Oczyść</translation>
     </message>
     <message>
         <location filename="FileToolBar.cpp" line="83"/>
@@ -26,16 +26,11 @@
     <message>
         <location filename="FileToolBar.cpp" line="86"/>
         <source>Save...</source>
-        <translation type="unfinished"></translation>
+        <translation>Zapisz...</translation>
     </message>
     <message>
         <location filename="FileToolBar.cpp" line="88"/>
         <source>Save all the files</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="FileToolBar.cpp" line="91"/>
-        <source>Remove</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -46,12 +41,17 @@
     <message>
         <location filename="FileToolBar.cpp" line="120"/>
         <source>Select a directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Wybierz katalog</translation>
     </message>
     <message>
         <location filename="FileToolBar.cpp" line="143"/>
         <source>File %1 already exists. Do you want to replace it?</source>
-        <translation type="unfinished"></translation>
+        <translation>Plik %1 już istnieje. Nadpisać?</translation>
+    </message>
+    <message>
+        <location filename="FileToolBar.cpp" line="91"/>
+        <source>Remove</source>
+        <translation>Usuń</translation>
     </message>
 </context>
 <context>
@@ -59,190 +59,32 @@
     <message>
         <location filename="mainform.cpp" line="76"/>
         <source>Recognition language</source>
-        <translation>Atpažinimo kalba</translation>
+        <translation>Język rozpoznawania</translation>
     </message>
     <message>
         <location filename="mainform.cpp" line="79"/>
         <source>Output format</source>
-        <translation>Išvesties formatas</translation>
+        <translation>Format wyjścia</translation>
     </message>
     <message>
         <location filename="mainform.cpp" line="228"/>
         <source>Open Image</source>
-        <translation>Atverti failą</translation>
+        <translation>Otwórz plik graficzny</translation>
     </message>
     <message>
         <location filename="mainform.cpp" line="228"/>
         <source>Image Files (*.png *.jpg *.jpeg *.bmp *.tiff *.tif *.gif *.pnm *.pgm *.pbm *.ppm)</source>
-        <translation>Grafiniai failai  (*.png *.jpg *.jpeg *.bmp *.tiff *.tif *.gif *.pnm *.pgm *.pbm *.ppm)</translation>
+        <translation>Pliki graficzne  (*.png *.jpg *.jpeg *.bmp *.tiff *.tif *.gif *.pnm *.pgm *.pbm *.ppm)</translation>
     </message>
     <message>
         <location filename="mainform.cpp" line="254"/>
         <source>There is an unsaved text in the editor window. Do you want to save it?</source>
-        <translation>Rengyklės lange yra neišsaugotas tekstas. Išsaugoti?</translation>
+        <translation>W oknie edytora jest niezapisany tekst. Zapisać?</translation>
     </message>
     <message>
         <location filename="mainform.cpp" line="385"/>
         <source>Russian</source>
-        <translation>Rusų</translation>
-    </message>
-    <message>
-        <location filename="mainform.cpp" line="392"/>
-        <source>English</source>
-        <translation>Anglų</translation>
-    </message>
-    <message>
-        <location filename="mainform.cpp" line="394"/>
-        <source>French</source>
-        <translation>Prancūzų</translation>
-    </message>
-    <message>
-        <location filename="mainform.cpp" line="395"/>
-        <source>German</source>
-        <translation>Vokiečių</translation>
-    </message>
-    <message>
-        <location filename="mainform.cpp" line="386"/>
-        <source>Russian-English</source>
-        <translation>Rusų-anglų</translation>
-    </message>
-    <message>
-        <location filename="mainform.cpp" line="408"/>
-        <source>Russian-French</source>
-        <translation>Rusų-prancūzų</translation>
-    </message>
-    <message>
-        <location filename="mainform.cpp" line="409"/>
-        <source>Russian-German</source>
-        <translation>Rusų-vokiečių</translation>
-    </message>
-    <message>
-        <location filename="mainform.cpp" line="410"/>
-        <source>Russian-Spanish</source>
-        <translation>Rusų-ispanų</translation>
-    </message>
-    <message>
-        <location filename="mainform.cpp" line="426"/>
-        <location filename="mainform.cpp" line="622"/>
-        <source>Warning</source>
-        <translation>Perspėjimas</translation>
-    </message>
-    <message>
-        <location filename="mainform.cpp" line="426"/>
-        <source>xsane not found</source>
-        <translation>nepavyko rasti „xsane“ programos</translation>
-    </message>
-    <message>
-        <location filename="mainform.cpp" line="444"/>
-        <location filename="mainform.cpp" line="618"/>
-        <location filename="mainform.cpp" line="998"/>
-        <source>Error</source>
-        <translation>Klaida</translation>
-    </message>
-    <message>
-        <location filename="mainform.cpp" line="444"/>
-        <source>libxspreload.so not found</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="mainform.cpp" line="618"/>
-        <source>No image loaded</source>
-        <translation>Grafinio failo įkelti nepavyko</translation>
-    </message>
-    <message>
-        <location filename="mainform.cpp" line="588"/>
-        <source>Starting cuneiform failed</source>
-        <translation>Nepavyko paleisti „Cuneiform“ programos</translation>
-    </message>
-    <message>
-        <location filename="mainform.cpp" line="588"/>
-        <source>The system said: </source>
-        <translation>Sistemos atsakymas:</translation>
-    </message>
-    <message>
-        <location filename="mainform.cpp" line="588"/>
-        <source>program not found</source>
-        <translation>programos rasti nepavyko</translation>
-    </message>
-    <message>
-        <location filename="mainform.cpp" line="639"/>
-        <source>Text Files (*.txt)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="mainform.cpp" line="641"/>
-        <source>HTML Files (*.html)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="mainform.cpp" line="643"/>
-        <source>Save Text</source>
-        <translation>Įrašyti tekstą</translation>
-    </message>
-    <message>
-        <location filename="mainform.cpp" line="668"/>
-        <source>About YAGF</source>
-        <translation>Apie YAGF</translation>
-    </message>
-    <message>
-        <location filename="mainform.cpp" line="622"/>
-        <source>cuneiform not found</source>
-        <translation>Nepavyko rasti programos „Cuneiform“</translation>
-    </message>
-    <message utf8="true">
-        <location filename="mainform.cpp" line="668"/>
-        <source>&lt;p align=&quot;center&quot;&gt;&lt;b&gt;YAGF - Yet Another Graphical Front-end for cuneiform&lt;/b&gt;&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;Version %1&lt;/p&gt; &lt;p align=&quot;center&quot;&gt;Ⓒ 2009-2011 Andrei Borovsky&lt;/p&gt; This is a free software distributed under GPL v3. Visit &lt;a href=&quot;http://symmetrica.net/cuneiform-linux/yagf-en.html&quot;&gt;http://symmetrica.net/cuneiform-linux/yagf-en.html&lt;/a&gt; for more details.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="mainform.cpp" line="681"/>
-        <source>http://symmetrica.net/cuneiform-linux/yagf-en.html</source>
-        <translation>http://symmetrica.net/cuneiform-linux/yagf-en.html</translation>
-    </message>
-    <message>
-        <location filename="mainform.cpp" line="126"/>
-        <source>Undo	Ctrl+Z</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="mainform.cpp" line="130"/>
-        <source>Redo	Ctrl+Shift+Z</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="mainform.cpp" line="138"/>
-        <source>Select All	Ctrl+A</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="mainform.cpp" line="142"/>
-        <source>Cut	Ctrl+X</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="mainform.cpp" line="146"/>
-        <source>Copy	Ctrl+C</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="mainform.cpp" line="150"/>
-        <source>Paste	Ctrl+V</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="mainform.cpp" line="158"/>
-        <source>Larger Font	Ctrl++</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="mainform.cpp" line="161"/>
-        <source>Smaller Font	Ctrl+-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="mainform.cpp" line="387"/>
-        <source>Bulgarian</source>
-        <translation type="unfinished"></translation>
+        <translation>Rosyjski</translation>
     </message>
     <message>
         <location filename="mainform.cpp" line="388"/>
@@ -250,70 +92,173 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="mainform.cpp" line="392"/>
+        <source>English</source>
+        <translation>Angielski</translation>
+    </message>
+    <message>
+        <location filename="mainform.cpp" line="394"/>
+        <source>French</source>
+        <translation>Francuski</translation>
+    </message>
+    <message>
+        <location filename="mainform.cpp" line="395"/>
+        <source>German</source>
+        <translation>Niemiecki</translation>
+    </message>
+    <message>
+        <location filename="mainform.cpp" line="386"/>
+        <source>Russian-English</source>
+        <translation>Rosyjski-Angielski</translation>
+    </message>
+    <message>
+        <location filename="mainform.cpp" line="408"/>
+        <source>Russian-French</source>
+        <translation>Rosyjski-Francuski</translation>
+    </message>
+    <message>
+        <location filename="mainform.cpp" line="409"/>
+        <source>Russian-German</source>
+        <translation>Rosyjski-Niemiecki</translation>
+    </message>
+    <message>
+        <location filename="mainform.cpp" line="410"/>
+        <source>Russian-Spanish</source>
+        <translation>Rosyjski-Hiszpański</translation>
+    </message>
+    <message>
+        <location filename="mainform.cpp" line="426"/>
+        <location filename="mainform.cpp" line="622"/>
+        <source>Warning</source>
+        <translation>Ostrzeżenie</translation>
+    </message>
+    <message>
+        <location filename="mainform.cpp" line="426"/>
+        <source>xsane not found</source>
+        <translation>nie znaleziono xsane</translation>
+    </message>
+    <message>
+        <location filename="mainform.cpp" line="444"/>
+        <location filename="mainform.cpp" line="618"/>
+        <location filename="mainform.cpp" line="998"/>
+        <source>Error</source>
+        <translation>Błąd</translation>
+    </message>
+    <message>
+        <location filename="mainform.cpp" line="618"/>
+        <source>No image loaded</source>
+        <translation>Brak załadowanego obrazka</translation>
+    </message>
+    <message>
+        <location filename="mainform.cpp" line="588"/>
+        <source>Starting cuneiform failed</source>
+        <translation>Nie udało się uruchomić cuneiform</translation>
+    </message>
+    <message>
+        <location filename="mainform.cpp" line="588"/>
+        <source>The system said: </source>
+        <translation>Odpowiedź systemu:</translation>
+    </message>
+    <message>
+        <location filename="mainform.cpp" line="588"/>
+        <source>program not found</source>
+        <translation>nie znaleziono programu</translation>
+    </message>
+    <message>
+        <location filename="mainform.cpp" line="643"/>
+        <source>Save Text</source>
+        <translation>Zapisz tekst</translation>
+    </message>
+    <message>
+        <location filename="mainform.cpp" line="668"/>
+        <source>About YAGF</source>
+        <translation>О programie</translation>
+    </message>
+    <message>
+        <location filename="mainform.cpp" line="622"/>
+        <source>cuneiform not found</source>
+        <translation>Program cuneiform nie odnaleziony</translation>
+    </message>
+    <message utf8="true">
+        <location filename="mainform.cpp" line="668"/>
+        <source>&lt;p align=&quot;center&quot;&gt;&lt;b&gt;YAGF - Yet Another Graphical Front-end for cuneiform&lt;/b&gt;&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;Version %1&lt;/p&gt; &lt;p align=&quot;center&quot;&gt;Ⓒ 2009-2011 Andrei Borovsky&lt;/p&gt; This is a free software distributed under GPL v3. Visit &lt;a href=&quot;http://symmetrica.net/cuneiform-linux/yagf-en.html&quot;&gt;http://symmetrica.net/cuneiform-linux/yagf-en.html&lt;/a&gt; for more details.</source>
+        <translation type="unfinished">&lt;p align=&quot;center&quot;&gt;&lt;b&gt;YAGF - Yet Another Graphical Front-end for cuneiform&lt;/b&gt;&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;Wersja %1&lt;/p&gt; &lt;p align=&quot;center&quot;&gt;Ⓒ 2009-2010 Andriej Borowski&lt;/p&gt; YAGF - wolne oprogramowanie, rozprowadzane na licencji GPL v3. Odwiedź stronę &lt;a href=&quot;http://symmetrica.net/cuneiform-linux/yagf-pl.html&quot;&gt;http://symmetrica.net/cuneiform-linux/yagf-pl.html&lt;/a&gt; aby dowiedzieć się więcej. {1&lt;?} {2009-2011 ?} {3.?}</translation>
+    </message>
+    <message>
+        <location filename="mainform.cpp" line="681"/>
+        <source>http://symmetrica.net/cuneiform-linux/yagf-en.html</source>
+        <translation>http://symmetrica.net/cuneiform-linux/yagf-pl.html</translation>
+    </message>
+    <message>
         <location filename="mainform.cpp" line="389"/>
         <source>Czech</source>
-        <translation>Čekų</translation>
+        <translation>Czeski</translation>
+    </message>
+    <message>
+        <location filename="mainform.cpp" line="387"/>
+        <source>Bulgarian</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="mainform.cpp" line="390"/>
         <source>Danish</source>
-        <translation>Danų</translation>
+        <translation>Duński</translation>
     </message>
     <message>
         <location filename="mainform.cpp" line="391"/>
         <source>Dutch</source>
-        <translation>Olandų</translation>
+        <translation>Holenderski</translation>
     </message>
     <message>
         <location filename="mainform.cpp" line="393"/>
         <source>Estonian</source>
-        <translation>Estų</translation>
+        <translation>Estoński</translation>
     </message>
     <message>
         <location filename="mainform.cpp" line="396"/>
         <source>Hungarian</source>
-        <translation>Vengrų</translation>
+        <translation>Węgierski</translation>
     </message>
     <message>
         <location filename="mainform.cpp" line="397"/>
         <source>Italian</source>
-        <translation>Italų</translation>
+        <translation>Włoski</translation>
     </message>
     <message>
         <location filename="mainform.cpp" line="398"/>
         <source>Latvian</source>
-        <translation>Latvių</translation>
+        <translation>Łotewski</translation>
     </message>
     <message>
         <location filename="mainform.cpp" line="399"/>
         <source>Lithuanian</source>
-        <translation>Lietuvių</translation>
+        <translation>Litewski</translation>
     </message>
     <message>
         <location filename="mainform.cpp" line="400"/>
         <source>Polish</source>
-        <translation>Lenkų</translation>
+        <translation>Polski</translation>
     </message>
     <message>
         <location filename="mainform.cpp" line="401"/>
         <source>Portuguese</source>
         <oldsource>Portugueze</oldsource>
-        <translation type="unfinished">Portugalų</translation>
+        <translation type="unfinished">Portugalski</translation>
     </message>
     <message>
         <location filename="mainform.cpp" line="402"/>
         <source>Roman</source>
-        <translation>Rumunų</translation>
+        <translation>Rumuński</translation>
     </message>
     <message>
         <location filename="mainform.cpp" line="403"/>
         <source>Spanish</source>
-        <translation>Ispanų</translation>
+        <translation>Hiszpański</translation>
     </message>
     <message>
         <location filename="mainform.cpp" line="404"/>
         <source>Swedish</source>
-        <translation>Švedų</translation>
+        <translation>Szwedzki</translation>
     </message>
     <message>
         <location filename="mainform.cpp" line="405"/>
@@ -328,22 +273,77 @@
     <message>
         <location filename="mainform.cpp" line="407"/>
         <source>Ukrainian</source>
-        <translation>Ukrainiečių</translation>
+        <translation>Ukraiński</translation>
     </message>
     <message>
-        <location filename="mainform.cpp" line="875"/>
-        <source>Recognizing pages...</source>
-        <translation type="unfinished"></translation>
+        <location filename="mainform.cpp" line="444"/>
+        <source>libxspreload.so not found</source>
+        <translation>Nie odnaleziono biblioteki libxspreload.so</translation>
     </message>
     <message>
-        <location filename="mainform.cpp" line="875"/>
-        <source>Abort</source>
-        <translation type="unfinished"></translation>
+        <location filename="mainform.cpp" line="639"/>
+        <source>Text Files (*.txt)</source>
+        <translation>Pliki tekstowe (*.txt)</translation>
+    </message>
+    <message>
+        <location filename="mainform.cpp" line="641"/>
+        <source>HTML Files (*.html)</source>
+        <translation>Pliki HTML (*.html)</translation>
     </message>
     <message>
         <location filename="mainform.cpp" line="983"/>
         <source>Save Image</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="mainform.cpp" line="126"/>
+        <source>Undo	Ctrl+Z</source>
+        <translation>Cofnij	Ctrl+Z</translation>
+    </message>
+    <message>
+        <location filename="mainform.cpp" line="130"/>
+        <source>Redo	Ctrl+Shift+Z</source>
+        <translation>Powtórz	Ctrl+Shift+Z</translation>
+    </message>
+    <message>
+        <location filename="mainform.cpp" line="138"/>
+        <source>Select All	Ctrl+A</source>
+        <translation>Zaznacz wszystko	Ctrl+A</translation>
+    </message>
+    <message>
+        <location filename="mainform.cpp" line="142"/>
+        <source>Cut	Ctrl+X</source>
+        <translation>Wytnij	Ctrl+X</translation>
+    </message>
+    <message>
+        <location filename="mainform.cpp" line="158"/>
+        <source>Larger Font	Ctrl++</source>
+        <translation>Zwiększ czcionkę	Ctrl++</translation>
+    </message>
+    <message>
+        <location filename="mainform.cpp" line="161"/>
+        <source>Smaller Font	Ctrl+-</source>
+        <translation>Zmniejsz czcionkę	Ctrl+-</translation>
+    </message>
+    <message>
+        <location filename="mainform.cpp" line="146"/>
+        <source>Copy	Ctrl+C</source>
+        <translation>Kopiuj	Ctrl+C</translation>
+    </message>
+    <message>
+        <location filename="mainform.cpp" line="150"/>
+        <source>Paste	Ctrl+V</source>
+        <translation>Wklej	Ctrl+V</translation>
+    </message>
+    <message>
+        <location filename="mainform.cpp" line="875"/>
+        <source>Recognizing pages...</source>
+        <translation>Rozpoznaję strony...</translation>
+    </message>
+    <message>
+        <location filename="mainform.cpp" line="875"/>
+        <source>Abort</source>
+        <translation>Przerwij</translation>
     </message>
 </context>
 <context>
@@ -351,115 +351,100 @@
     <message>
         <location filename="mainform.ui" line="489"/>
         <source>S&amp;can...</source>
-        <translation>S&amp;kenuoti...</translation>
+        <translation>S&amp;kanuj...</translation>
     </message>
     <message>
         <location filename="mainform.ui" line="492"/>
         <source>Scanning images using XSane...</source>
-        <translation>Puslapis skenuojamas naudojant „XSane“...</translation>
+        <translation>Skanuję strony używając XSane...</translation>
     </message>
     <message>
         <location filename="mainform.ui" line="504"/>
         <source>&amp;Save text...</source>
-        <translation>&amp;Įrašyti tekstą</translation>
+        <translation>&amp;Zapisz tekst...</translation>
     </message>
     <message>
         <location filename="mainform.ui" line="516"/>
         <source>&amp;Open Image...</source>
-        <translation>&amp;Atverti grafinį failą...</translation>
+        <translation>&amp;Otwórz plik graficzny...</translation>
     </message>
     <message>
         <location filename="mainform.ui" line="519"/>
         <source>Open Image</source>
-        <translation>Atverti grafinį failą</translation>
+        <translation>Otwórz plik graficzny</translation>
     </message>
     <message>
         <location filename="mainform.ui" line="531"/>
         <source>&amp;Recognize</source>
-        <translation>&amp;Atpažinti tesktą</translation>
+        <translation>&amp;Распознать</translation>
     </message>
     <message>
         <location filename="mainform.ui" line="534"/>
         <source>Recognizing text...</source>
-        <translation>Atpažįstamas tekstas...</translation>
+        <translation>Rozpoznaj tekst...</translation>
     </message>
     <message>
         <location filename="mainform.ui" line="542"/>
         <source>Choose &amp;Language</source>
-        <translation>&amp;Parinkti kalbą</translation>
+        <translation>&amp;Wybierz język</translation>
     </message>
     <message>
         <location filename="mainform.ui" line="547"/>
         <source>Quit</source>
-        <translation>Išeiti</translation>
+        <translation>Zakończ</translation>
     </message>
     <message>
         <location filename="mainform.ui" line="559"/>
         <source>Previous page</source>
-        <translation>Ankstesnis puslapis</translation>
+        <translation>Poprzednia strona</translation>
     </message>
     <message>
         <location filename="mainform.ui" line="562"/>
         <source>Move to previous image</source>
-        <translation>Eiti prie ankstesnio puslapio</translation>
+        <translation>Przejdź do poprzedniej grafiki</translation>
     </message>
     <message>
         <location filename="mainform.ui" line="571"/>
         <source>Next page</source>
-        <translation>Kitas puslapis</translation>
+        <translation>Następna strona</translation>
     </message>
     <message>
         <location filename="mainform.ui" line="574"/>
         <source>Move to next image</source>
-        <translation>Eiti prie tolimesnio puslapio</translation>
+        <translation>Przejdź do następnej grafiki</translation>
     </message>
     <message>
         <location filename="mainform.ui" line="579"/>
         <location filename="mainform.ui" line="589"/>
         <source>Online Help</source>
-        <translation>Pagalba internete</translation>
+        <translation>Pomoc online</translation>
     </message>
     <message>
         <location filename="mainform.ui" line="584"/>
         <source>About...</source>
-        <translation>Apie programą...</translation>
-    </message>
-    <message>
-        <location filename="mainform.ui" line="610"/>
-        <source>Recognize &amp;All Pages</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="mainform.ui" line="613"/>
-        <source>Recognize All Pages</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="mainform.ui" line="616"/>
-        <source>Ctrl+A</source>
-        <translation type="unfinished"></translation>
+        <translation>O programie...</translation>
     </message>
     <message>
         <location filename="mainform.ui" line="625"/>
         <location filename="mainform.ui" line="628"/>
         <source>Clear all blocks</source>
-        <translation type="unfinished"></translation>
+        <translation>Oczyść wszystkie bloki</translation>
     </message>
     <message>
         <location filename="mainform.ui" line="637"/>
         <location filename="mainform.ui" line="640"/>
         <source>Delete the current block</source>
-        <translation type="unfinished"></translation>
+        <translation>Usuń bieżący blok</translation>
     </message>
     <message>
         <location filename="mainform.ui" line="649"/>
         <source>Recognize block</source>
-        <translation type="unfinished"></translation>
+        <translation>Rozpoznaj blok</translation>
     </message>
     <message>
         <location filename="mainform.ui" line="652"/>
         <source>Recognize this block</source>
-        <translation type="unfinished"></translation>
+        <translation>Rozpoznaj ten blok</translation>
     </message>
     <message>
         <location filename="mainform.ui" line="657"/>
@@ -474,7 +459,7 @@
     <message>
         <location filename="mainform.ui" line="672"/>
         <source>Check spelling</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Sprawdzanie pisowni</translation>
     </message>
     <message>
         <location filename="mainform.ui" line="681"/>
@@ -499,7 +484,7 @@
     <message>
         <location filename="mainform.ui" line="83"/>
         <source>Select block</source>
-        <translation>Pažymėti sritį</translation>
+        <translation>Wybierz blok</translation>
     </message>
     <message>
         <location filename="mainform.ui" line="89"/>
@@ -517,33 +502,33 @@
     <message>
         <location filename="mainform.ui" line="118"/>
         <source>Larger view</source>
-        <translation>Padidinti</translation>
+        <translation>Powiększ widok</translation>
     </message>
     <message>
         <location filename="mainform.ui" line="147"/>
         <source>Smaller view</source>
-        <translation>Sumažinti</translation>
+        <translation>Zmniejsz widok</translation>
     </message>
     <message>
         <location filename="mainform.ui" line="176"/>
         <source>Rotate 90 CCW</source>
-        <translation>Pasukti 90 laipsnių prieš laikr. rodyklę</translation>
+        <translation>Obróć o 90 stopni w lewo</translation>
     </message>
     <message>
         <location filename="mainform.ui" line="205"/>
         <source>Rotate 180</source>
-        <translation>Pasukti 180 laipsnių</translation>
+        <translation>Obróć o 180 stopni</translation>
     </message>
     <message>
         <location filename="mainform.ui" line="234"/>
         <location filename="mainform.ui" line="240"/>
         <source>Rotate 90 CW</source>
-        <translation>Pasukti 90 laipsnių pagal laikr. rodyklę</translation>
+        <translation>Obróć o 90 stopni w lewo</translation>
     </message>
     <message>
         <location filename="mainform.ui" line="263"/>
         <source>Read as a single column</source>
-        <translation>Atpažinti kaip vieną stulpelį</translation>
+        <translation>Odczytaj jako jedną kolumnę</translation>
     </message>
     <message>
         <location filename="mainform.ui" line="295"/>
@@ -559,22 +544,22 @@
     <message>
         <location filename="mainform.ui" line="417"/>
         <source>&amp;File</source>
-        <translation>&amp;Failas</translation>
+        <translation>&amp;Plik</translation>
     </message>
     <message>
         <location filename="mainform.ui" line="431"/>
         <source>&amp;Help</source>
-        <translation>&amp;Pagalba</translation>
+        <translation>&amp;Pomoc</translation>
     </message>
     <message>
         <location filename="mainform.ui" line="598"/>
         <source>Copy To Clipboard</source>
-        <translation>Kopijuoti į atmintinę</translation>
+        <translation>Kopiuj do schowka</translation>
     </message>
     <message>
         <location filename="mainform.ui" line="601"/>
         <source>Copy recognized text to clipboard</source>
-        <translation>Kopijuoti tekstą į atmintinę</translation>
+        <translation>Skopiuj rozpoznany tekst do schowka</translation>
     </message>
     <message>
         <location filename="mainform.ui" line="17"/>
@@ -611,13 +596,28 @@
         <source>Ctrl+Q</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <location filename="mainform.ui" line="610"/>
+        <source>Recognize &amp;All Pages</source>
+        <translation>Rozpoznaj &amp;wszystkie strony </translation>
+    </message>
+    <message>
+        <location filename="mainform.ui" line="613"/>
+        <source>Recognize All Pages</source>
+        <translation>Rozpoznaj wszystkie strony</translation>
+    </message>
+    <message>
+        <location filename="mainform.ui" line="616"/>
+        <source>Ctrl+A</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QObject</name>
     <message>
         <location filename="spellchecker.cpp" line="119"/>
         <source>Required spelling dictionary is not found. Spell-checking is disabled.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nie odnaleziono wymaganego słownika ort. Sprawdzanie pisowni nieaktywne.</translation>
     </message>
     <message>
         <location filename="mainform.cpp" line="976"/>

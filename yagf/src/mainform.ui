@@ -409,7 +409,7 @@
      <x>0</x>
      <y>0</y>
      <width>1920</width>
-     <height>22</height>
+     <height>23</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -421,6 +421,8 @@
     <addaction name="actionRecognize"/>
     <addaction name="actionRecognize_All_Pages"/>
     <addaction name="action_Save"/>
+    <addaction name="separator"/>
+    <addaction name="actionSave_current_image"/>
     <addaction name="separator"/>
     <addaction name="actionQuit"/>
    </widget>
@@ -475,12 +477,13 @@
    <addaction name="separator"/>
    <addaction name="action_Save"/>
    <addaction name="actionCopyToClipboard"/>
+   <addaction name="actionCheck_spelling"/>
    <addaction name="separator"/>
   </widget>
   <action name="actionScan">
    <property name="icon">
     <iconset resource="yagf.qrc">
-     <normaloff>:/images/scanner_s2.png</normaloff>:/images/scanner_s2.png</iconset>
+     <normaloff>:/images/scanner48.png</normaloff>:/images/scanner48.png</iconset>
    </property>
    <property name="text">
     <string>S&amp;can...</string>
@@ -655,6 +658,42 @@
    </property>
    <property name="toolTip">
     <string>Crear block numbering</string>
+   </property>
+  </action>
+  <action name="actionCheck_spelling">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="yagf.qrc">
+     <normaloff>:/images/check_spelling.png</normaloff>:/images/check_spelling.png</iconset>
+   </property>
+   <property name="text">
+    <string>Check spelling</string>
+   </property>
+  </action>
+  <action name="actionSave_current_image">
+   <property name="icon">
+    <iconset resource="yagf.qrc">
+     <normaloff>:/images/savpicas.png</normaloff>:/images/savpicas.png</iconset>
+   </property>
+   <property name="text">
+    <string>Save current image...</string>
+   </property>
+   <property name="toolTip">
+    <string>Save currently opened image in its real size</string>
+   </property>
+  </action>
+  <action name="actionSave_block">
+   <property name="icon">
+    <iconset resource="yagf.qrc">
+     <normaloff>:/images/saveblock.png</normaloff>:/images/saveblock.png</iconset>
+   </property>
+   <property name="text">
+    <string>Save block</string>
+   </property>
+   <property name="toolTip">
+    <string>Save the current block to the image file</string>
    </property>
   </action>
  </widget>

@@ -47,6 +47,10 @@ signals:
     void windowShown();
 private slots:
     //void on_actionRecognize_activated();
+    void on_actionSelect_HTML_format_activated();
+    void on_actionDeskew_activated();
+    void on_alignButton_clicked();
+    void on_actionCheck_spelling_activated();
     void on_actionSave_block_activated();
     void on_actionSave_current_image_activated();
     void on_actionCheck_spelling_triggered();
@@ -74,12 +78,12 @@ private slots:
     void textChanged();
     void enlargeFont();
     void decreaseFont();
-    void alignButtonClicked();
     void unalignButtonClicked();
 protected:
     bool eventFilter(QObject *object, QEvent *event);
 private:
     virtual void closeEvent(QCloseEvent *event);
+    void AnalizePage();
     void rotateImage(int deg);
     void scaleImage(double sf);
     void initSettings();
@@ -97,9 +101,6 @@ private:
     bool imageLoaded;
     bool hasCopy;
     QComboBox *selectLangsBox;
-    QComboBox *selectFormatBox;
-    //QCheckBox * spellCheckBox;
-//  QPixmap * pixmap;
     QGraphicsInput *graphicsInput;
     double scaleFactor;
     bool singleColumn;
@@ -131,4 +132,5 @@ private slots:
     void fileSelected(const QString &path);
     void rightMouseClicked(int x, int y, bool inTheBlock);
     void onShowWindow();
+    QString selectDefaultLanguageName();
 };

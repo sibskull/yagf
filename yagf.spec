@@ -1,6 +1,6 @@
 Name: yagf
 Version: 0.8.6
-Release: alt2
+Release: alt3
 
 Summary: Yet Another Graphic Front-end for Cuneiform
 License: GPL
@@ -10,9 +10,11 @@ URL: http://symmetrica.net/cuneiform-linux/yagf-ru.html
 Source: http://symmetrica.net/cuneiform-linux/yagf-%{version}-Source.tar.gz
 Source1: YAGF.desktop
 
+Patch1: %name-show-absent-aspell-dictionary.patch
+
 BuildRequires: gcc-c++ libqt4-devel
 BuildRequires: cmake libaspell-devel
-Requires: cuneiform libaspell
+Requires: cuneiform libaspell aspell-en
 
 Packager: Andrey Cherepanov <cas@altlinux.org>
 
@@ -33,6 +35,7 @@ Authors:
 
 %prep
 %setup -q
+%patch1 -p2
 cp -f %SOURCE1 .
 subst "s,/usr/local,%buildroot/usr/,g" ./CMakeLists.txt
 
@@ -53,6 +56,10 @@ make install DESTDIR=%buildroot
 %_datadir/applications/YAGF.desktop
 
 %changelog
+* Sun Aug 14 2011 Andrey Cherepanov <cas@altlinux.org> 0.8.6-alt3
+- Show absent Aspell dictionary in dialog
+- Install English dictionary as required second dictionary (closes: #25881)
+
 * Tue May 31 2011 Andrey Cherepanov <cas@altlinux.org> 0.8.6-alt2
 - Localize for XFCE menu
 

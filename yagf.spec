@@ -1,6 +1,6 @@
 Name: yagf
 Version: 0.8.6
-Release: alt3
+Release: alt2.M50P.1
 
 Summary: Yet Another Graphic Front-end for Cuneiform
 License: GPL
@@ -56,6 +56,9 @@ make install DESTDIR=%buildroot
 %_datadir/applications/YAGF.desktop
 
 %changelog
+* Sun Aug 14 2011 Andrey Cherepanov <cas@altlinux.org> 0.8.6-alt2.M50P.1
+- Backport to p5 branch (new version)
+
 * Sun Aug 14 2011 Andrey Cherepanov <cas@altlinux.org> 0.8.6-alt3
 - Show absent Aspell dictionary in dialog
 - Install English dictionary as required second dictionary (closes: #25881)

@@ -44,8 +44,10 @@ SpellChecker::SpellChecker(QTextEdit *textEdit): m_textEdit(textEdit)
     m_map->insert("cze", "cs");
     m_map->insert("dan", "da");
     m_map->insert("dut", "nl");
+    m_map->insert("ell", "el");
     m_map->insert("eng", "en");
     m_map->insert("est", "et");
+    m_map->insert("fin", "fi");
     m_map->insert("fra", "fr");
     m_map->insert("ger", "de");
     m_map->insert("hrv", "hr");
@@ -53,13 +55,16 @@ SpellChecker::SpellChecker(QTextEdit *textEdit): m_textEdit(textEdit)
     m_map->insert("ita", "it");
     m_map->insert("lav", "lv");
     m_map->insert("lit", "lt");
+    m_map->insert("nor", "no");
     m_map->insert("pol", "pl");
     m_map->insert("por", "pt_PT");
     m_map->insert("rum", "ro");
     m_map->insert("slo", "sl");
+    m_map->insert("slk", "sk");
     m_map->insert("spa", "es");
     m_map->insert("srp", "sr");
     m_map->insert("swe", "sv");
+    m_map->insert("tur", "tr");
     m_map->insert("ukr", "uk");
     spell_checker1 = 0;
     spell_checker2 = 0;
@@ -116,6 +121,7 @@ void SpellChecker::setLanguage(const QString &lang)
 
     delete_aspell_speller(spell_checker1);
     delete_aspell_speller(spell_checker2);
+	bad_language.clear();
 
     m_lang2 = "en";
     m_lang1 = m_map->value(lang, QString("en"));
@@ -143,6 +149,13 @@ void SpellChecker::setLanguage(const QString &lang)
         spell_checker2 = to_aspell_speller(possible_err);
     else
         delete_aspell_can_have_error(possible_err);
+
+	// Check absent dictionary
+	if (spell_checker1 == 0)
+		bad_language = m_lang1;
+	if (spell_checker2 == 0)
+		bad_language = m_lang2;
+
 }
 
 bool SpellChecker::spellCheck()
@@ -150,7 +163,7 @@ bool SpellChecker::spellCheck()
     if ((spell_checker1 == 0) || (spell_checker2 == 0)) {
         QPixmap icon;
         icon.load(":/warning.png");
-        QMessageBox messageBox(QMessageBox::NoIcon, "YAGF", QObject::trUtf8("Required spelling dictionary is not found. Spell-checking is disabled.\n Try to install an appropriate aspell dictionary."),
+		QMessageBox messageBox(QMessageBox::NoIcon, "YAGF", QObject::trUtf8("Required spelling dictionary (%1) is not found.\nSpell-checking is disabled.\nTry to install an appropriate aspell dictionary.").arg(bad_language),
                                QMessageBox::Ok, 0);
         messageBox.setIconPixmap(icon);
         messageBox.exec();

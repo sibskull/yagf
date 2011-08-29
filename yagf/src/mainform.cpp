@@ -17,6 +17,7 @@
 
 */
 
+#include "mainform.h"
 #include <QComboBox>
 #include <QLabel>
 #include <QPixmap>
@@ -44,7 +45,8 @@
 #include <QRegExp>
 #include <QClipboard>
 #include <QTransform>
-#include "mainform.h"
+#include <QProcessEnvironment>
+#include <QMap>
 #include "qgraphicsinput.h"
 #include "utils.h"
 #include "FileChannel.h"
@@ -60,16 +62,23 @@
 #include "FileToolBar.h"
 #include "BlockAnalysis.h"
 #include "SkewAnalysis.h"
+#include "popplerdialog.h"
+#include "pdfextractor.h"
+#include "pdf2ppt.h"
+#include "ghostscr.h"
+#include "configdialog.h"
 
-const QString version = "0.8.6";
+const QString version = "0.8.7";
+const QString outputBase = "output";
+const QString outputExt = ".txt";
 
 MainForm::MainForm(QWidget *parent): QMainWindow(parent)
 {
     setupUi(this);
 
     ///!!!!!
-    alignButton->hide();
-    unalignButton->hide();
+    //alignButton->hide();
+    //unalignButton->hide();
 
 
     setWindowTitle("YAGF");
@@ -93,6 +102,16 @@ MainForm::MainForm(QWidget *parent): QMainWindow(parent)
     //toolBar->addWidget(spellCheckBox);
 //  pixmap = new QPixmap();
     graphicsInput = new QGraphicsInput(QRectF(0, 0, 2000, 2000), graphicsView) ;
+    graphicsInput->addToolBarAction(actionHideShowTolbar);
+    graphicsInput->addToolBarAction(this->actionTBLV);
+    graphicsInput->addToolBarAction(this->actionSmaller_view);
+    graphicsInput->addToolBarSeparator();
+    graphicsInput->addToolBarAction(actionRotate_90_CCW);
+    graphicsInput->addToolBarAction(actionRotate_180);
+    graphicsInput->addToolBarAction(actionRotate_90_CW);
+    graphicsInput->addToolBarSeparator();
+    graphicsInput->addToolBarAction(ActionClearAllBlocks);
+
     statusBar()->show();
     imageLoaded = false;
     lastDir = QDir::homePath();
@@ -115,12 +134,12 @@ MainForm::MainForm(QWidget *parent): QMainWindow(parent)
     connect(actionAbout, SIGNAL(triggered()), this, SLOT(showAboutDlg()));
     connect(actionOnlineHelp, SIGNAL(triggered()), this, SLOT(showHelp()));
     connect(actionCopyToClipboard, SIGNAL(triggered()), this, SLOT(copyClipboard()));
-    connect(rotateCWButton, SIGNAL(clicked()), this, SLOT(rotateCWButtonClicked()));
-    connect(rotateCCWButton, SIGNAL(clicked()), this, SLOT(rotateCCWButtonClicked()));
-    connect(rotate180Button, SIGNAL(clicked()), this, SLOT(rotate180ButtonClicked()));
-    connect(enlargeButton, SIGNAL(clicked()), this, SLOT(enlargeButtonClicked()));
-    connect(decreaseButton, SIGNAL(clicked()), this, SLOT(decreaseButtonClicked()));
-    connect(singleColumnButton, SIGNAL(clicked()), this, SLOT(singleColumnButtonClicked()));
+    //connect(rotateCWButton, SIGNAL(clicked()), this, SLOT(rotateCWButtonClicked()));
+    //connect(rotateCCWButton, SIGNAL(clicked()), this, SLOT(rotateCCWButtonClicked()));
+    //connect(rotate180Button, SIGNAL(clicked()), this, SLOT(rotate180ButtonClicked()));
+    //connect(enlargeButton, SIGNAL(clicked()), this, SLOT(enlargeButtonClicked()));
+    //connect(decreaseButton, SIGNAL(clicked()), this, SLOT(decreaseButtonClicked()));
+    //connect(singleColumnButton, SIGNAL(clicked()), this, SLOT(singleColumnButtonClicked()));
     connect(textEdit, SIGNAL(copyAvailable(bool)), this, SLOT(copyAvailable(bool)));
     connect(textEdit, SIGNAL(textChanged()), this, SLOT(textChanged()));
     connect(graphicsInput, SIGNAL(rightMouseClicked(int, int, bool)), this, SLOT(rightMouseClicked(int, int, bool)));
@@ -165,6 +184,7 @@ MainForm::MainForm(QWidget *parent): QMainWindow(parent)
     textEdit->addAction(action);
 
 
+    tesMap = new TesMap();
     fillLanguagesBox();
     initSettings();
     delTmpFiles();
@@ -197,14 +217,37 @@ MainForm::MainForm(QWidget *parent): QMainWindow(parent)
 
     QPixmap pm;
     pm.load(":/align.png");
-    alignButton->setIcon(pm);
+    //alignButton->setIcon(pm);
     pm.load(":/undo.png");
-    unalignButton->setIcon(pm);
-    connect(unalignButton, SIGNAL(clicked()), this, SLOT(unalignButtonClicked()));
+    //unalignButton->setIcon(pm);
+    //connect(unalignButton, SIGNAL(clicked()), this, SLOT(unalignButtonClicked()));
 
-    clearBlocksButton->setDefaultAction(ActionClearAllBlocks);
+    //clearBlocksButton->setDefaultAction(ActionClearAllBlocks);
     loadFromCommandLine();
     emit windowShown();
+
+    pdfx = NULL;
+    if (findProgram("pdftoppm")) {
+        pdfx = new PDF2PPT();
+    } else
+    if (findProgram("gs")) {
+         pdfx = new GhostScr();
+    }
+
+    if (pdfx) {
+        connect(pdfx, SIGNAL(addPage(QString)), this, SLOT(addPDFPage(QString)), Qt::QueuedConnection);
+        connect (pdfx, SIGNAL(finished()), this, SLOT(finishedPDF()));
+    }
+
+    pdfPD.setWindowTitle("YAGF");
+    pdfPD.setLabelText(trUtf8("Importing pages from the PDF document..."));
+    pdfPD.setCancelButtonText(trUtf8("Cancel"));
+    pdfPD.setMinimum(-1);
+    pdfPD.setMaximum(-1);
+    pdfPD.setWindowIcon(QIcon(":/yagf.png"));
+    if (pdfx)
+        connect(&pdfPD, SIGNAL(canceled()), pdfx, SLOT(cancel()));
+
 }
 
 void MainForm::onShowWindow()
@@ -231,6 +274,100 @@ void MainForm::loadFromCommandLine()
     }
 }
 
+void MainForm::findTessDataPath()
+{
+    QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
+    if (env.contains("TESSDATA_PREFIX")) {
+        tessdataPath = env.value("TESSDATA_PREFIX");
+        return;
+    }
+    QDir dir;
+    dir.setPath("/usr/share/tessdata");
+    if (dir.exists()) {
+        tessdataPath = "/usr/share/";
+        return;
+    }
+    dir.setPath("/usr/local/share/tessdata");
+    if (dir.exists()) {
+        tessdataPath = "/usr/local/share/";
+        return;
+    }
+    dir.setPath("/usr/local/share/tesseract-ocr/tessdata");
+    if (dir.exists()) {
+        tessdataPath = "/usr/local/share/tesseract-ocr/";
+        return;
+    }
+    dir.setPath("/usr/share/tesseract-ocr/tessdata");
+    if (dir.exists()) {
+        tessdataPath = "/usr/share/tesseract-ocr/";
+        return;
+    }
+    tessdataPath.clear();
+    return;
+}
+
+void MainForm::showConfigDlg()
+{
+    ConfigDialog dialog(this);
+    if (selectedEngine == UseCuneiform)
+        dialog.setSelectedEngine(0);
+    else
+        dialog.setSelectedEngine(1);
+    dialog.setTessDataPath(tessdataPath);
+    if (dialog.exec()) {
+        selectedEngine = dialog.selectedEngine() == 0 ? UseCuneiform : UseTesseract;
+        tessdataPath = dialog.tessdataPath();
+    }
+}
+
+void MainForm::importPDF()
+{
+    if (!pdfx) {
+        QMessageBox::critical(this, trUtf8("No PDF converte installed"), trUtf8("No compatible PDF converter software could be found. Please install either the pdftoppm utility or the GhostScript package (from this the gs command will be required)."));
+        return;
+    }
+    PopplerDialog dialog(this);
+    if (dialog.exec()) {
+        pdfx->setSourcePDF(dialog.getPDFFile());
+        if (pdfx->getSourcePDF().isEmpty()) {
+            QMessageBox::information(this, trUtf8("Error"), trUtf8("PDF file name may not be empty"));
+            return;
+        }
+        pdfx->setStartPage(dialog.getStartPage());
+        pdfx->setStopPage(dialog.getStopPage());
+        bool doit = true;
+        QString outputDir;
+        while (doit) {
+            outputDir = QFileDialog::getExistingDirectory(this, trUtf8("Select an existing directory for output or create some new one")); //, QString(""), QString(), (QString*) NULL, QFileDialog::ShowDirsOnly);
+            if (outputDir.isEmpty())
+                return;
+            QDir dir(outputDir);
+            if (dir.count() > 2)
+                QMessageBox::warning(this, trUtf8("Selecting Directory"), trUtf8("The selected directory is not empty"));
+            else doit = false;
+        }
+        pdfx->setOutputDir(outputDir);
+        QApplication::processEvents();
+        pdfPD.setWindowFlags(Qt::Dialog|Qt::WindowStaysOnTopHint);
+        pdfPD.show();
+        pdfPD.setMinimum(0);
+        pdfPD.setMaximum(100);
+        QApplication::processEvents();
+        pdfx->exec();
+    }
+}
+
+void MainForm::addPDFPage(QString pageName)
+{
+   ((FileToolBar *) m_toolBar)->addFile(pageName);
+    pdfPD.setValue(pdfPD.value()+1);
+}
+
+void MainForm::finishedPDF()
+{
+    pdfPD.hide();
+}
+
 void MainForm::loadImage()
 {
     QFileDialog dialog(this,
@@ -254,7 +391,7 @@ void MainForm::loadImage()
 
 void MainForm::singleColumnButtonClicked()
 {
-    singleColumn = singleColumnButton->isChecked();
+    //singleColumn = singleColumnButton->isChecked();
 }
 
 void MainForm::closeEvent(QCloseEvent *event)
@@ -371,7 +508,7 @@ void MainForm::readSettings()
     if (settings->value("mainwindow/fullScreen").toBool())
         showFullScreen();
     singleColumn = settings->value("ocr/singleColumn", bool(false)).toBool();
-    singleColumnButton->setChecked(singleColumn);
+    //singleColumnButton->setChecked(singleColumn);
     lastDir = settings->value("mainwindow/lastDir").toString();
     lastOutputDir = settings->value("mainwindow/lastOutputDir", lastOutputDir).toString();
     language = settings->value("ocr/language",  selectDefaultLanguageName()).toString();
@@ -384,6 +521,20 @@ void MainForm::readSettings()
     QFont f(textEdit->font());
     f.setPointSize(settings->value("mainWindow/fontSize", int(12)).toInt(&ok));
     textEdit->setFont(f);
+    QString defEngine;
+    if (findProgram("tesseract")&&(!findProgram("cuneiform")))
+        defEngine = "tesseract";
+    else
+        defEngine = "cuneiform";
+    QString engine = settings->value("ocr/engine", QVariant(defEngine)).toString();
+    if (engine == "cuneiform")
+        selectedEngine = UseCuneiform;
+    else
+        selectedEngine = UseTesseract;
+    findTessDataPath();
+    tessdataPath = settings->value("ocr/tessData", QVariant(tessdataPath)).toString();
+    if (tessdataPath.isEmpty())
+        findTessDataPath();
 }
 
 void MainForm::writeSettings()
@@ -398,6 +549,9 @@ void MainForm::writeSettings()
     settings->setValue("ocr/language", language);
     settings->setValue("ocr/singleColumn", singleColumn);
     settings->setValue("ocr/outputFormat", outputFormat);
+    QString engine = selectedEngine == UseCuneiform ? QString("cuneiform") : QString("tessseract");
+    settings->setValue("ocr/engine", engine);
+    settings->setValue("ocr/tessData", tessdataPath);
     settings->sync();
 }
 
@@ -413,12 +567,15 @@ void MainForm::fillLanguagesBox()
     selectLangsBox->addItem(trUtf8("Dutch"), QVariant("dut"));
     selectLangsBox->addItem(trUtf8("English"), QVariant("eng"));
     selectLangsBox->addItem(trUtf8("Estonian"), QVariant("est"));
+    selectLangsBox->addItem(trUtf8("Finnish (tesseract only)"), QVariant("fin"));
     selectLangsBox->addItem(trUtf8("French"), QVariant("fra"));
     selectLangsBox->addItem(trUtf8("German"), QVariant("ger"));
+    selectLangsBox->addItem(trUtf8("Greek (tesseract only)"), QVariant("ell"));
     selectLangsBox->addItem(trUtf8("Hungarian"), QVariant("hun"));
     selectLangsBox->addItem(trUtf8("Italian"), QVariant("ita"));
     selectLangsBox->addItem(trUtf8("Latvian"), QVariant("lav"));
     selectLangsBox->addItem(trUtf8("Lithuanian"), QVariant("lit"));
+    selectLangsBox->addItem(trUtf8("Norwegian (tesseract only)"), QVariant("nor"));
     selectLangsBox->addItem(trUtf8("Polish"), QVariant("pol"));
     selectLangsBox->addItem(trUtf8("Portuguese"), QVariant("por"));
     selectLangsBox->addItem(trUtf8("Romanian"), QVariant("rum"));
@@ -426,12 +583,40 @@ void MainForm::fillLanguagesBox()
     selectLangsBox->addItem(trUtf8("Swedish"), QVariant("swe"));
     selectLangsBox->addItem(trUtf8("Serbian"), QVariant("srp"));
     selectLangsBox->addItem(trUtf8("Slovenian"), QVariant("slo"));
+    selectLangsBox->addItem(trUtf8("Slovakian (tesseract only)"), QVariant("slk"));
+    selectLangsBox->addItem(trUtf8("Turkish (tesseract only)"), QVariant("tur"));
     selectLangsBox->addItem(trUtf8("Ukrainian"), QVariant("ukr"));
     selectLangsBox->addItem(trUtf8("Russian-French"), QVariant("rus_fra"));
     selectLangsBox->addItem(trUtf8("Russian-German"), QVariant("rus_ger"));
     selectLangsBox->addItem(trUtf8("Russian-Spanish"), QVariant("rus_spa"));
     //selectFormatBox->addItem("TEXT", QVariant("text"));
     //selectFormatBox->addItem("HTML", QVariant("html"));
+
+    tesMap->insert("rus", "rus");
+    tesMap->insert("eng", "eng");
+    tesMap->insert("ger", "deu");
+    tesMap->insert("fra", "fra");
+    tesMap->insert("swe", "swe");
+    tesMap->insert("slo", "slv");
+    tesMap->insert("spa", "spa");
+    tesMap->insert("por", "por");
+    tesMap->insert("pol", "pol");
+    tesMap->insert("ukr", "ukr");
+    tesMap->insert("bul", "bul");
+    tesMap->insert("lav", "lav");
+    tesMap->insert("lit", "lit");
+    tesMap->insert("ita", "ita");
+    tesMap->insert("hun", "hun");
+    tesMap->insert("rum", "ron");
+    tesMap->insert("dan", "dan");
+    tesMap->insert("srp", "srp");
+    tesMap->insert("dut", "nld");
+    tesMap->insert("cze", "ces");
+    tesMap->insert("fin", "fin");
+    tesMap->insert("nor", "nor");
+    tesMap->insert("tur", "tur");
+    tesMap->insert("ell", "ell");
+    tesMap->insert("slk", "slk");
 }
 
 QString MainForm::selectDefaultLanguageName()
@@ -661,13 +846,32 @@ void MainForm::loadPreviousPage()
 
 // TODO: think on blocks/page recognition
 
-void MainForm::recognizeInternal(const QPixmap &pix)
+bool MainForm::useTesseract(const QString &inputFile)
 {
-    const QString inputFile = "input.bmp";
-    const QString outputFile = "output.txt";
-    //outputFormat = selectFormatBox->itemData(selectFormatBox->currentIndex()).toString();
-    QPixmapCache::clear();
-    pix.save(workingDir + inputFile, "BMP");
+    QProcess proc;
+    proc.setWorkingDirectory(workingDir);
+    QStringList sl;
+    sl.append(inputFile);
+    sl.append(outputBase);
+    sl.append("-l");
+    sl.append(tesMap->value(language));
+    QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
+    env.insert("TESSDATA_PREFIX", tessdataPath);
+    proc.setProcessEnvironment(env);
+    proc.start("tesseract", sl);
+    proc.waitForFinished(-1);
+    if (proc.exitCode()) {
+        QByteArray stdout = proc.readAllStandardOutput();
+        QByteArray stderr = proc.readAllStandardError();
+        QString output = QString(stdout) + QString(stderr);
+        QMessageBox::critical(this, trUtf8("Starting tesseract failed"), trUtf8("The system said: ") + (output != "" ? output : trUtf8("program not found")));
+        return false;
+    }
+    return true;
+}
+
+bool MainForm::useCuneiform(const QString &inputFile, const QString &outputFile)
+{
     QProcess proc;
     proc.setWorkingDirectory(workingDir);
     QStringList sl;
@@ -690,7 +894,25 @@ void MainForm::recognizeInternal(const QPixmap &pix)
         QByteArray stderr = proc.readAllStandardError();
         QString output = QString(stdout) + QString(stderr);
         QMessageBox::critical(this, trUtf8("Starting cuneiform failed"), trUtf8("The system said: ") + (output != "" ? output : trUtf8("program not found")));
-        return;
+        return false;
+    }
+    return true;
+}
+
+void MainForm::recognizeInternal(const QPixmap &pix)
+{
+    const QString inputFile = "input.bmp";
+    const QString outputFile = "output.txt";
+    //outputFormat = selectFormatBox->itemData(selectFormatBox->currentIndex()).toString();
+    QPixmapCache::clear();
+    pix.save(workingDir + inputFile, "BMP");
+    if (selectedEngine == UseCuneiform) {
+        if (!useCuneiform(inputFile, outputFile))
+            return;
+    }
+    if (selectedEngine == UseTesseract) {
+        if (!useTesseract(inputFile))
+           return;
     }
     QFile textFile(workingDir + outputFile);
     textFile.open(QIODevice::ReadOnly);
@@ -723,10 +945,28 @@ void MainForm::recognize()
         QMessageBox::critical(this, trUtf8("Error"), trUtf8("No image loaded"));
         return;
     }
-    if (!findProgram("cuneiform")) {
-        QMessageBox::warning(this, trUtf8("Warning"), trUtf8("cuneiform not found"));
-        return;
-    }
+    if (selectedEngine == UseCuneiform) {
+        if (!findProgram("cuneiform")) {
+            if (findProgram("tesseract")) {
+                QMessageBox::warning(this, trUtf8("Warning"), trUtf8("cuneiform not found, switching to tesseract"));
+                selectedEngine = UseTesseract;
+            } else {
+                QMessageBox::warning(this, trUtf8("Warning"), trUtf8("No recognition engine found.\nPlease install either cuneiform or tesseract"));
+                return;
+            }
+        }
+     }
+    if (selectedEngine == UseTesseract) {
+        if (!findProgram("tesseract")) {
+            if (findProgram("cuneiform")) {
+                QMessageBox::warning(this, trUtf8("Warning"), trUtf8("tesseract not found, switching to cuneiform"));
+                selectedEngine = UseCuneiform;
+            } else {
+                QMessageBox::warning(this, trUtf8("Warning"), trUtf8("No recognition engine found.\nPlease install either cuneiform or tesseract"));
+                return;
+            }
+        }
+     }
     if (graphicsInput->blocksCount() > 0) {
         for (int i = graphicsInput->blocksCount(); i >= 0; i--)
             if (!graphicsInput->getBlockByIndex(i).isNull())
@@ -773,7 +1013,7 @@ void MainForm::showAboutDlg()
 {
     QPixmap icon;
     icon.load(":/yagf.png");
-    QMessageBox aboutBox(QMessageBox::NoIcon, trUtf8("About YAGF"), trUtf8("<p align=\"center\"><b>YAGF - Yet Another Graphical Front-end for cuneiform</b></p><p align=\"center\">Version %1</p> <p align=\"center\">Ⓒ 2009-2011 Andrei Borovsky</p> This is a free software distributed under GPL v3. Visit <a href=\"http://symmetrica.net/cuneiform-linux/yagf-en.html\">http://symmetrica.net/cuneiform-linux/yagf-en.html</a> for more details.").arg(version), QMessageBox::Ok);
+    QMessageBox aboutBox(QMessageBox::NoIcon, trUtf8("About YAGF"), trUtf8("<p align=\"center\"><b>YAGF - Yet Another Graphical Front-end for cuneiform and tesseract OCR engines</b></p><p align=\"center\">Version %1</p> <p align=\"center\">Ⓒ 2009-2011 Andrei Borovsky</p> This is a free software distributed under GPL v3. Visit <a href=\"http://symmetrica.net/cuneiform-linux/yagf-en.html\">http://symmetrica.net/cuneiform-linux/yagf-en.html</a> for more details.").arg(version), QMessageBox::Ok);
     aboutBox.setIconPixmap(icon);
     QList<QLabel *> labels = aboutBox.findChildren<QLabel *>();
     for (int i = 0; i < labels.count(); i++) {
@@ -1012,6 +1252,11 @@ void MainForm::unalignButtonClicked()
     rotation = rrot;*/
 }
 
+void MainForm::hideToolBar()
+{
+    graphicsInput->setToolBarVisible();
+}
+
 void MainForm::on_ActionClearAllBlocks_activated()
 {
     graphicsInput->clearBlocks();
@@ -1100,6 +1345,8 @@ MainForm::~MainForm()
     delete settings;
     delete graphicsInput;
     delete ba;
+    delete pdfx;
+    delete tesMap;
 }
 
 void MainForm::on_actionSave_block_activated()
@@ -1117,10 +1364,10 @@ void MainForm::on_actionCheck_spelling_activated()
         spellChecker->unSpellCheck();
 }
 
-void MainForm::on_alignButton_clicked()
+/*void MainForm::on_alignButton_clicked()
 {
     this->AnalizePage();
-}
+}*/
 
 void MainForm::AnalizePage()
 {

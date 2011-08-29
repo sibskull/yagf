@@ -14,34 +14,34 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
 */
 
-#ifndef SKEWANALYSIS_H
-#define SKEWANALYSIS_H
+#ifndef QXTGRAPHICSPROXYWIDGET_H
+#define QXTGRAPHICSPROXYWIDGET_H
 
-#include "ycommon.h"
+#include <QGraphicsProxyWidget>
 
+class QXtGraphicsView;
 
-class QPixmap;
-
-class SkewAnalysis
+class QXtGraphicsProxyWidget : public QGraphicsProxyWidget
 {
+    Q_OBJECT
 public:
-    SkewAnalysis(QPointList *pointList, int width, int height);
-    ~SkewAnalysis();
-    signed int getSkew();
-    double getPhi();
-    QPixmap drawTriangle(QPixmap &pm);
+
+    QXtGraphicsProxyWidget(QGraphicsItem * parent = 0, Qt::WindowFlags wFlags = 0);
+    void setView(QXtGraphicsView * view);
+
+public slots:
+
+    void viewScrolled();
+
+protected:
+
+    QVariant itemChange(GraphicsItemChange change, const QVariant & value);
+
 private:
-    //int bin[360][2000];
-    double getRightPhi();
-    double getLeftPhi();
-    QPointList *pointList;
-    int m_height;
-    int m_width;
-    double phi;
-    QPoint * p1;
-    QPoint * p2;
+    QXtGraphicsView * mview;
 };
-#endif
+
+
+#endif // QXTGRAPHICSPROXYWIDGET_H

@@ -1,6 +1,6 @@
 /*
     YAGF - cuneiform OCR graphical front-end
-    Copyright (C) 2009-2010 Andrei Borovsky <anb@symmetrica.net>
+    Copyright (C) 2009-2011 Andrei Borovsky <anb@symmetrica.net>
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -17,11 +17,16 @@
 */
 
 #include "qgraphicsinput.h"
+#include "qxtgraphicsview.h"
+#include "qxtgraphicsproxywidget.h"
 #include <QPixmap>
 #include <QGraphicsPixmapItem>
 #include <QMessageBox>
 #include <QGraphicsSceneMouseEvent>
 #include <QKeyEvent>
+#include <QToolBar>
+#include <QLayout>
+
 
 QGraphicsInput::QGraphicsInput(const QRectF &sceneRect, QGraphicsView *view) :
     QGraphicsScene(sceneRect)
@@ -38,11 +43,35 @@ QGraphicsInput::QGraphicsInput(const QRectF &sceneRect, QGraphicsView *view) :
     buttonPressed = Qt::NoButton;
     near_res = 0;
     magnifierCursor = new QCursor(Qt::SizeAllCursor);
-}
+    toolbar = 0;
+ }
 
 QGraphicsInput::~QGraphicsInput()
 {
     delete magnifierCursor;
+}
+
+void QGraphicsInput::addToolBar()
+{
+    toolbar = new QToolBar();
+    toolbar->setMouseTracking(false);
+    toolbar->setMovable(false);
+    toolbar->setWindowOpacity(0.75);
+    //toolbar->setCursor();
+    actionList.at(0)->setText(QString::fromUtf8(">>"));
+    setToolBarVisible();
+    QXtGraphicsProxyWidget * pw = new QXtGraphicsProxyWidget();
+    pw->setWidget(toolbar);
+
+    pw->setZValue(100);
+    this->addItem(pw);
+    pw->setView((QXtGraphicsView *) views().at(0));
+    //toolbar->setParent(0);
+    toolbar->show();
+    foreach (QAction * action, actionList) {
+        toolbar->addAction(action);
+    }
+    ((QXtGraphicsView *) views().at(0))->sendScrollSignal();
 }
 
 bool QGraphicsInput::loadImage(const QPixmap &image, bool clearBlocks)
@@ -51,7 +80,7 @@ bool QGraphicsInput::loadImage(const QPixmap &image, bool clearBlocks)
         real_rotate = 0;
         real_scale = 1;
         this->clear();
-        this->items().clear();
+        items().clear();
         m_LastSelected = 0;
         m_CurrentBlockRect = 0;
     }
@@ -74,6 +103,8 @@ bool QGraphicsInput::loadImage(const QPixmap &image, bool clearBlocks)
     m_image->setAcceptedMouseButtons(Qt::LeftButton | Qt::RightButton | Qt::MidButton);
     m_image->setAcceptHoverEvents(true);
     m_image->setData(1, "image");
+    //this->setSceneRect(0,0,2000,2000);
+    addToolBar();
     if (m_view) {
         m_view->centerOn(0, 0);
         m_view->show();
@@ -93,9 +124,11 @@ void QGraphicsInput::setView(QGraphicsView *view)
 
 void QGraphicsInput::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
+    QGraphicsScene::mousePressEvent(event);
     // QMessageBox::critical(0, "MOUS111", "MOUSE");
     if (!hasImage)
         return;
+
     if (event->buttons() == Qt::LeftButton) {
         buttonPressed = Qt::LeftButton;
         if (selecting == NoSelect) {
@@ -130,6 +163,7 @@ void QGraphicsInput::deleteBlockRect(QGraphicsRectItem *item)
 
 void QGraphicsInput::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {
+    QGraphicsScene::mouseReleaseEvent(mouseEvent);
     if (buttonPressed == Qt::LeftButton) {
         if (selecting == Selecting) {
             selecting = NoSelect;
@@ -191,6 +225,7 @@ bool QGraphicsInput::addBlock(const QRectF &rect, bool removeObstacles)
 
 void QGraphicsInput::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {
+    QGraphicsScene::mouseMoveEvent(mouseEvent);
     if (selecting == StartSelect) {
         selecting = Selecting;
         m_CurrentBlockRect = newBlock(blockRect);
@@ -201,19 +236,19 @@ void QGraphicsInput::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
             near_res = nearActiveBorder(mouseEvent->scenePos().x(), mouseEvent->scenePos().y());
             switch (near_res) {
                 case 0:
-                    m_view->setCursor(Qt::ArrowCursor);
+                    m_view->viewport()->setCursor(Qt::ArrowCursor);
                     break;
                 case 1:
-                    m_view->setCursor(Qt::SplitHCursor);
+                    m_view->viewport()->setCursor(Qt::SplitHCursor);
                     break;
                 case 2:
-                    m_view->setCursor(Qt::SplitVCursor);
+                    m_view->viewport()->setCursor(Qt::SplitVCursor);
                     break;
                 case 3:
-                    m_view->setCursor(Qt::SplitHCursor);
+                    m_view->viewport()->setCursor(Qt::SplitHCursor);
                     break;
                 case 4:
-                    m_view->setCursor(Qt::SplitVCursor);
+                    m_view->viewport()->setCursor(Qt::SplitVCursor);
                     break;
                 default:
                     break;
@@ -268,6 +303,11 @@ void QGraphicsInput::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
         blockRect = newRect;
         return;
     }
+    if (!toolbar.isNull()) {
+       // if (mouseEvent->pos().y() < toolbar->height())
+       //     toolbar->setFocus();
+    }
+
 }
 
 void QGraphicsInput::leftMouseRelease(qreal x, qreal y)
@@ -559,6 +599,37 @@ void QGraphicsInput::setMagnifierCursor(QCursor *cursor)
     magnifierCursor = new QCursor(cursor->pixmap());
 }
 
+void QGraphicsInput::addToolBarAction(QAction *action)
+{
+    actionList.append(action);
+}
+
+void QGraphicsInput::addToolBarSeparator()
+{
+    QAction * action = new QAction(" | ", 0);
+    action->setEnabled(false);
+    actionList.append(action);
+}
+
+void QGraphicsInput::setToolBarVisible()
+{
+    if (toolbar.isNull())
+        return;
+    if (actionList.at(0)->text() == QString::fromUtf8("<<")) {
+        for (int i = 1; i < actionList.count(); i++)
+            actionList.at(i)->setVisible(false);
+            toolbar->setMaximumWidth(32);
+            toolbar->setMinimumWidth(32);
+            actionList.at(0)->setText(QString::fromUtf8(">>"));
+    } else {
+        for (int i = 1; i < actionList.count(); i++)
+            actionList.at(i)->setVisible(true);
+            toolbar->setMaximumWidth(290);
+            toolbar->setMinimumWidth(290);
+            actionList.at(0)->setText(QString::fromUtf8("<<"));
+    }
+}
+
 void QGraphicsInput::undo()
 {
     if (hasImage)
@@ -577,7 +648,7 @@ void QGraphicsInput::wheelEvent(QGraphicsSceneWheelEvent *wheelEvent)
             coeff = 0.5;
         this->setViewScale(coeff, 0);
         wheelEvent->accept();
-        m_view->setCursor(*magnifierCursor);
+        m_view->viewport()->setCursor(*magnifierCursor);
     } else
         QGraphicsScene::wheelEvent(wheelEvent);
 }
@@ -585,7 +656,7 @@ void QGraphicsInput::wheelEvent(QGraphicsSceneWheelEvent *wheelEvent)
 void QGraphicsInput::keyReleaseEvent(QKeyEvent *keyEvent)
 {
     if (keyEvent->key() == Qt::Key_Control)
-        m_view->setCursor(Qt::ArrowCursor);
+        m_view->viewport()->setCursor(Qt::ArrowCursor);
     if (keyEvent->modifiers() & Qt::ControlModifier) {
         if ((keyEvent->key() == Qt::Key_Plus) || (keyEvent->key() == Qt::Key_Equal)) {
             this->setViewScale(2, 0);
@@ -619,6 +690,9 @@ bool QGraphicsInput::loadNewImage(const QPixmap &image)
 
 void QGraphicsInput::keyPressEvent(QKeyEvent *keyEvent)
 {
-    if (keyEvent->key() == Qt::Key_Control)
-        m_view->setCursor(*magnifierCursor);
+    if (keyEvent->key() == Qt::Key_Control) {
+        m_view->viewport()->setCursor(*magnifierCursor);
+        //QApplication::
+    }
+
 }

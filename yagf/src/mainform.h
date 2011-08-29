@@ -20,6 +20,9 @@
 #include <QMainWindow>
 #include <QString>
 #include "ui_mainform.h"
+#include <QProgressDialog>
+#include <QMap>
+//#include "ui_popplerdialog.h"
 
 class QComboBox;
 class QCheckBox;
@@ -35,7 +38,14 @@ class SpellChecker;
 class QCursor;
 class QGraphicsInput;
 class QMenu;
+class PDFExtractor;
 
+typedef QMap<QString, QString> TesMap;
+
+enum SelectedEngine {
+    UseCuneiform,
+    UseTesseract
+};
 
 class MainForm : public QMainWindow, public Ui::MainWindow
 {
@@ -49,7 +59,7 @@ private slots:
     //void on_actionRecognize_activated();
     void on_actionSelect_HTML_format_activated();
     void on_actionDeskew_activated();
-    void on_alignButton_clicked();
+    //void on_alignButton_clicked();
     void on_actionCheck_spelling_activated();
     void on_actionSave_block_activated();
     void on_actionSave_current_image_activated();
@@ -79,6 +89,11 @@ private slots:
     void enlargeFont();
     void decreaseFont();
     void unalignButtonClicked();
+    void hideToolBar();
+    void importPDF();
+    void showConfigDlg();
+    void addPDFPage(QString pageName);
+    void finishedPDF();
 protected:
     bool eventFilter(QObject *object, QEvent *event);
 private:
@@ -96,8 +111,11 @@ private:
     void saveHtml(QFile *file);
     void delTmpDir();
     void recognizeInternal(const QPixmap &pix);
+    bool useCuneiform(const QString &inputFile, const QString &outputFile);
+    bool useTesseract(const QString &inputFile);
     void saveImageInternal(const QPixmap &pix);
     void loadFromCommandLine();
+    void findTessDataPath();
     bool imageLoaded;
     bool hasCopy;
     QComboBox *selectLangsBox;
@@ -123,6 +141,11 @@ private:
 //        int rotation;
     QToolBar *m_toolBar;
     QMenu *m_menu;
+    PDFExtractor * pdfx;
+    QProgressDialog pdfPD;
+    QString tessdataPath;
+    TesMap * tesMap;
+    SelectedEngine selectedEngine;
 //  QLabel * displayLabel;
 private slots:
     void readyRead();
@@ -133,4 +156,4 @@ private slots:
     void rightMouseClicked(int x, int y, bool inTheBlock);
     void onShowWindow();
     QString selectDefaultLanguageName();
-};
+ };

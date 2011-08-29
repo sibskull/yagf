@@ -14,34 +14,37 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
 */
 
-#ifndef SKEWANALYSIS_H
-#define SKEWANALYSIS_H
+#ifndef QXTGRAPHICSVIEW_H
+#define QXTGRAPHICSVIEW_H
 
-#include "ycommon.h"
+#include <QGraphicsView>
+#include <QApplication>
 
 
-class QPixmap;
-
-class SkewAnalysis
+class QXtGraphicsView : public QGraphicsView
 {
+    Q_OBJECT
 public:
-    SkewAnalysis(QPointList *pointList, int width, int height);
-    ~SkewAnalysis();
-    signed int getSkew();
-    double getPhi();
-    QPixmap drawTriangle(QPixmap &pm);
-private:
-    //int bin[360][2000];
-    double getRightPhi();
-    double getLeftPhi();
-    QPointList *pointList;
-    int m_height;
-    int m_width;
-    double phi;
-    QPoint * p1;
-    QPoint * p2;
+    QXtGraphicsView(QWidget * parent = 0):QGraphicsView(parent)
+    {
+        connect(this, SIGNAL(scrolledDeferred()), this, SIGNAL(scrolled()), Qt::QueuedConnection);
+    }
+    void sendScrollSignal()
+    {
+        emit scrolledDeferred();
+    }
+
+signals:
+    void scrolled();
+    void scrolledDeferred();
+protected:
+    void scrollContentsBy (int dx, int dy)
+    {
+        QGraphicsView::scrollContentsBy(dx, dy);
+        emit scrolled();
+    }
 };
-#endif
+
+#endif // QXTGRAPHICSVIEW_H

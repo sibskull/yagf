@@ -57,7 +57,7 @@ SkewAnalysis::SkewAnalysis(QPointList *pointList, int width, int height)
             tmpsum =0;
         }
     }
-  /*  FILE * f = fopen("/home/andrei/hough.txt", "w");
+    FILE * f = fopen("/home/andrei/hough.txt", "w");
     for (int i = 0; i < 360; i++) {
         for (int j = 0; j < 1000; j++)
         fprintf(f, "%i:, %i, ", i, bin[i][j]);
@@ -103,7 +103,7 @@ signed int SkewAnalysis::getSkew()
     res = (phi/(2*M_PI))*360+1;
     if (res > 45) return 90 - res;
     if (res < 45) return -(90 + res);
-    //return -res;
+    return -res;
 }
 
 double SkewAnalysis::getPhi()

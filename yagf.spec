@@ -1,8 +1,9 @@
 Name: yagf
-Version: 0.8.6
-Release: alt3
+Version: 0.8.7
+Release: alt1
 
-Summary: Yet Another Graphic Front-end for Cuneiform
+Summary: YAGF is a graphical front-end for cuneiform and tesseract OCR tools
+Summary(ru_RU.UTF-8): Оболочка YAGF предоставляет графический интерфейс для консольных программ распознавания тектов cuneiform и tesseract
 License: GPL
 Group: Graphics
 URL: http://symmetrica.net/cuneiform-linux/yagf-ru.html
@@ -19,23 +20,27 @@ Requires: cuneiform libaspell aspell-en
 Packager: Andrey Cherepanov <cas@altlinux.org>
 
 %description
-YAGF is a graphical front-end for cuneiform OCR tool.
+YAGF is a graphical front-end for cuneiform and tesseract OCR tools.
 With YAGF you can open already scanned image files or obtain new images
 via XSane (scanning results are automatically passed to YAGF).
-Once you have a scanned image you can prepare it for recognition,
-select particular image areas for recognition,
-set the recognition language and so no.
-Recognized text is displayed in a editor window where it can be corrected,
-saved to disk or copied to clipboard.
-YAGF also provides some facilities for a multi-page recognition
-(see the online help for more details).
-Authors:
---------
-    Andrei Borovsky <anb@symmetrica.net>
+Once you have a scanned image you can prepare it for recognition, select
+particular image areas for recognition, set the recognition language and
+so no. Recognized text is displayed in a editor window where it can be
+corrected, saved to disk or copied to clipboard.
+YAGF also provides some facilities for a multi-page recognition (see
+the online help for more details).
+
+%description -l ru_RU.UTF-8
+Оболочка YAGF предоставляет графический интерфейс для консольных
+программ распознавания тектов cuneiform и tesseract на платформе Linux.
+Кроме того, YAGF позволяет управлять сканированием изображений, импортом
+страниц из документов PDF, их предварительной обработкой и собственно
+распознаванием из единого центра. Программа YAGF также упрощает
+последовательное распознавание большого числа отсканированных страниц.
 
 %prep
 %setup -q
-%patch1 -p2
+#%%patch1 -p2
 cp -f %SOURCE1 .
 subst "s,/usr/local,%buildroot/usr/,g" ./CMakeLists.txt
 
@@ -56,6 +61,9 @@ make install DESTDIR=%buildroot
 %_datadir/applications/YAGF.desktop
 
 %changelog
+* Mon Aug 29 2011 Andrey Cherepanov <cas@altlinux.org> 0.8.7-alt1
+- Version 0.8.7
+
 * Sun Aug 14 2011 Andrey Cherepanov <cas@altlinux.org> 0.8.6-alt3
 - Show absent Aspell dictionary in dialog
 - Install English dictionary as required second dictionary (closes: #25881)

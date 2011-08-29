@@ -1,6 +1,6 @@
 Name: yagf
 Version: 0.8.7
-Release: alt2
+Release: alt3
 
 Summary: YAGF is a graphical front-end for cuneiform and tesseract OCR tools
 Summary(ru_RU.UTF-8): Оболочка YAGF предоставляет графический интерфейс для консольных программ распознавания тектов cuneiform и tesseract
@@ -56,13 +56,17 @@ make install DESTDIR=%buildroot
 %files 
 %doc README COPYING DESCRIPTION AUTHORS ChangeLog
 %_bindir/%name
-%_libdir/%name/libxspreload.so
-%_datadir/%name/translations/*.qm
+%dir %_libdir/%name
+%_libdir/%name/*.so*
+%_datadir/%name
 %_datadir/pixmaps/yagf.png
-%_datadir/icons/hicolor/96x96/apps/yagf.png
+%_datadir/icons/hicolor/96x96/apps/%name.png
 %_datadir/applications/YAGF.desktop
 
 %changelog
+* Mon Aug 29 2011 Andrey Cherepanov <cas@altlinux.org> 0.8.7-alt3
+- Add unowned pathes
+
 * Mon Aug 29 2011 Andrey Cherepanov <cas@altlinux.org> 0.8.7-alt2
 - Clarify license number
 - Set Cuneiform as default engine

@@ -1,10 +1,10 @@
 Name: yagf
 Version: 0.8.7
-Release: alt1
+Release: alt2
 
 Summary: YAGF is a graphical front-end for cuneiform and tesseract OCR tools
 Summary(ru_RU.UTF-8): Оболочка YAGF предоставляет графический интерфейс для консольных программ распознавания тектов cuneiform и tesseract
-License: GPL
+License: GPLv3+
 Group: Graphics
 URL: http://symmetrica.net/cuneiform-linux/yagf-ru.html
 
@@ -12,6 +12,7 @@ Source: http://symmetrica.net/cuneiform-linux/yagf-%{version}-Source.tar.gz
 Source1: YAGF.desktop
 
 Patch1: %name-show-absent-aspell-dictionary.patch
+Patch2: %name-fix-default-configuration.patch
 
 BuildRequires: gcc-c++ libqt4-devel
 BuildRequires: cmake libaspell-devel
@@ -41,6 +42,7 @@ the online help for more details).
 %prep
 %setup -q
 #%%patch1 -p2
+%patch2 -p2
 cp -f %SOURCE1 .
 subst "s,/usr/local,%buildroot/usr/,g" ./CMakeLists.txt
 
@@ -61,6 +63,11 @@ make install DESTDIR=%buildroot
 %_datadir/applications/YAGF.desktop
 
 %changelog
+* Mon Aug 29 2011 Andrey Cherepanov <cas@altlinux.org> 0.8.7-alt2
+- Clarify license number
+- Set Cuneiform as default engine
+- Set Russian-English for Russian as default
+
 * Mon Aug 29 2011 Andrey Cherepanov <cas@altlinux.org> 0.8.7-alt1
 - Version 0.8.7
 

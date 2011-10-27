@@ -1,6 +1,6 @@
 Name: yagf
 Version: 0.8.7
-Release: alt3
+Release: alt4
 
 Summary: YAGF is a graphical front-end for cuneiform and tesseract OCR tools
 Summary(ru_RU.UTF-8): Оболочка YAGF предоставляет графический интерфейс для консольных программ распознавания тектов cuneiform и tesseract
@@ -15,7 +15,7 @@ Patch1: %name-show-absent-aspell-dictionary.patch
 Patch2: %name-fix-default-configuration.patch
 
 BuildRequires: gcc-c++ libqt4-devel
-BuildRequires: cmake libaspell-devel
+BuildRequires: cmake libaspell-devel aspell
 Requires: cuneiform libaspell aspell-en
 
 Packager: Andrey Cherepanov <cas@altlinux.org>
@@ -64,6 +64,9 @@ make install DESTDIR=%buildroot
 %_datadir/applications/YAGF.desktop
 
 %changelog
+* Thu Oct 27 2011 Andrey Cherepanov <cas@altlinux.org> 0.8.7-alt4
+- Install aspell for build with cmake
+
 * Mon Aug 29 2011 Andrey Cherepanov <cas@altlinux.org> 0.8.7-alt3
 - Add unowned pathes
 

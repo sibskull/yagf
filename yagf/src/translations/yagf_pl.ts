@@ -26,49 +26,6 @@
         <translation type="unfinished"></translation>
     </message>
 </context>
-<context>
-    <name>FileToolBar</name>
-    <message>
-        <source>Loaded Images</source>
-        <translation>Załadowane pliki graficzne</translation>
-    </message>
-    <message>
-        <source>Drop graphic files here</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Clear</source>
-        <translation>Oczyść</translation>
-    </message>
-    <message>
-        <source>Clear the panel</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Save...</source>
-        <translation>Zapisz...</translation>
-    </message>
-    <message>
-        <source>Save all the files</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Remove the current file</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Select a directory</source>
-        <translation>Wybierz katalog</translation>
-    </message>
-    <message>
-        <source>File %1 already exists. Do you want to replace it?</source>
-        <translation>Plik %1 już istnieje. Nadpisać?</translation>
-    </message>
-    <message>
-        <source>Remove</source>
-        <translation>Usuń</translation>
-    </message>
-</context>
 <context encoding="UTF-8">
     <name>MainForm</name>
     <message>
@@ -476,14 +433,6 @@ Please install either cuneiform or tesseract</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Remove page skew</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Tries to correct the page skew (this is an experimental feature)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Select HTML format</source>
         <translation type="unfinished"></translation>
     </message>
@@ -572,10 +521,6 @@ Please install either cuneiform or tesseract</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>toolBar_2</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>&lt;&lt;</source>
         <translation type="unfinished"></translation>
     </message>
@@ -597,6 +542,34 @@ Please install either cuneiform or tesseract</source>
     </message>
     <message>
         <source>Set up the OCR parameters</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Paste Image</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Paste image from clipboard</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select Text Area</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Deskew  Block</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Deskew the current block</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Deskew</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Correct the page skew </source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -649,6 +622,13 @@ Please install either cuneiform or tesseract</source>
         <source>Required spelling dictionary (%1) is not found.
 Spell-checking is disabled.
 Try to install an appropriate aspell dictionary.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>SideBar</name>
+    <message>
+        <source>Drop files here</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

@@ -39,6 +39,7 @@ class QCursor;
 class QGraphicsInput;
 class QMenu;
 class PDFExtractor;
+class ccbuilder;
 
 typedef QMap<QString, QString> TesMap;
 
@@ -94,10 +95,14 @@ private slots:
     void showConfigDlg();
     void addPDFPage(QString pageName);
     void finishedPDF();
+    void pasteimage();
+    void blockAllText();
+    void deskewByBlock();
 protected:
     bool eventFilter(QObject *object, QEvent *event);
 private:
     virtual void closeEvent(QCloseEvent *event);
+    void deskew(QPixmap * pm);
     void AnalizePage();
     void rotateImage(int deg);
     void scaleImage(double sf);
@@ -106,6 +111,7 @@ private:
     void writeSettings();
     void fillLanguagesBox();
     void loadFile(const QString &fn, bool loadIntoView = true);
+    void loadFile(const QString &fn, const QPixmap &pixmap);
     void delTmpFiles();
     void loadNext(int number);
     void saveHtml(QFile *file);
@@ -139,7 +145,6 @@ private:
     QByteArray *ba;
     SpellChecker *spellChecker;
 //        int rotation;
-    QToolBar *m_toolBar;
     QMenu *m_menu;
     PDFExtractor * pdfx;
     QProgressDialog pdfPD;

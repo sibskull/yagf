@@ -17,7 +17,18 @@
 
 */
 
+#include "sidebar.h"
+#include "droplabel.h"
+#include "BlockAnalysis.h"
+#include "SkewAnalysis.h"
+#include "popplerdialog.h"
+#include "pdfextractor.h"
+#include "pdf2ppt.h"
+#include "ghostscr.h"
+#include "configdialog.h"
 #include "mainform.h"
+#include "ccbuilder.h"
+#include "analysis.h"
 #include <QComboBox>
 #include <QLabel>
 #include <QPixmap>
@@ -59,16 +70,9 @@
 #include <QWheelEvent>
 #include <QKeyEvent>
 #include <QFont>
-#include "FileToolBar.h"
-#include "BlockAnalysis.h"
-#include "SkewAnalysis.h"
-#include "popplerdialog.h"
-#include "pdfextractor.h"
-#include "pdf2ppt.h"
-#include "ghostscr.h"
-#include "configdialog.h"
+#include <QImageReader>
 
-const QString version = "0.8.7";
+const QString version = "0.8.9";
 const QString outputBase = "output";
 const QString outputExt = ".txt";
 
@@ -109,7 +113,9 @@ MainForm::MainForm(QWidget *parent): QMainWindow(parent)
     graphicsInput->addToolBarAction(actionRotate_90_CCW);
     graphicsInput->addToolBarAction(actionRotate_180);
     graphicsInput->addToolBarAction(actionRotate_90_CW);
+    graphicsInput->addToolBarAction(actionDeskew);
     graphicsInput->addToolBarSeparator();
+   graphicsInput->addToolBarAction(actionSelect_Text_Area);
     graphicsInput->addToolBarAction(ActionClearAllBlocks);
 
     statusBar()->show();
@@ -208,10 +214,12 @@ MainForm::MainForm(QWidget *parent): QMainWindow(parent)
     l_cursor.load(":/resize_block.png");
     resizeBlockCursor = new QCursor(l_cursor);
     textEdit->setContextMenuPolicy(Qt::ActionsContextMenu);
-    m_toolBar = new FileToolBar(this);
-    addToolBar(Qt::LeftToolBarArea, m_toolBar);
-    m_toolBar->show();
-    connect(m_toolBar, SIGNAL(fileSelected(const QString &)), this, SLOT(fileSelected(const QString &)));
+
+    //m_toolBar = new SideBar(this);
+    //addToolBar(Qt::LeftToolBarArea, m_toolBar);
+    this->
+    sideBar->show();
+    connect(sideBar, SIGNAL(fileSelected(const QString &)), this, SLOT(fileSelected(const QString &)));
 
     connect(actionRecognize_All_Pages, SIGNAL(triggered()), this, SLOT(recognizeAll()));
 
@@ -269,7 +277,7 @@ void MainForm::loadFromCommandLine()
             if (QFile::exists(sl.at(i)))
                 loadFile(sl.at(i), false);
         if (QFile::exists(sl.at(1)))
-            ((FileToolBar *) m_toolBar)->select(sl.at(1));
+            sideBar->select(sl.at(1));
 
     }
 }
@@ -359,7 +367,7 @@ void MainForm::importPDF()
 
 void MainForm::addPDFPage(QString pageName)
 {
-   ((FileToolBar *) m_toolBar)->addFile(pageName);
+    sideBar->addFile(pageName);
     pdfPD.setValue(pdfPD.value()+1);
 }
 
@@ -385,7 +393,7 @@ void MainForm::loadImage()
             loadFile(fileNames.at(i), false);
         }
         if (fileNames.count() > 0)
-            ((FileToolBar *) m_toolBar)->select(fileNames.at(0));
+            sideBar->select(fileNames.at(0));
     }
 }
 
@@ -426,7 +434,7 @@ void MainForm::rotateImage(int deg)
     if (imageLoaded) {
         graphicsInput->clearBlocks();
         graphicsInput->setViewScale(1, deg); //rotateImage(deg,  graphicsView->width()/2, graphicsView->height()/2);
-        ((FileToolBar *) m_toolBar)->setRotation(graphicsInput->getRealAngle());
+        sideBar->setRotation(graphicsInput->getRealAngle());
     }
 }
 
@@ -471,7 +479,7 @@ void MainForm::scaleImage(double sf)
         return;
     graphicsInput->setViewScale(sf, 0);
     scaleFactor = graphicsInput->getRealScale();
-    ((FileToolBar *) m_toolBar)->setScale(scaleFactor);
+    sideBar->setScale(scaleFactor);
 }
 
 void MainForm::initSettings()
@@ -489,7 +497,10 @@ void MainForm::initSettings()
     if (iniFileInfo.exists())
         readSettings();
     else {
+        selectedEngine = UseCuneiform; // Default OCR engine
         language = selectDefaultLanguageName();
+        if ( language == "rus" )
+             language.append("eng"); // Set Russian-English for Russian as default
         writeSettings();
     }
     QList<int> li;
@@ -549,7 +560,7 @@ void MainForm::writeSettings()
     settings->setValue("ocr/language", language);
     settings->setValue("ocr/singleColumn", singleColumn);
     settings->setValue("ocr/outputFormat", outputFormat);
-    QString engine = selectedEngine == UseCuneiform ? QString("cuneiform") : QString("tessseract");
+    QString engine = selectedEngine == UseCuneiform ? QString("cuneiform") : QString("tesseract");
     settings->setValue("ocr/engine", engine);
     settings->setValue("ocr/tessData", tessdataPath);
     settings->sync();
@@ -733,29 +744,45 @@ void MainForm::scanImage()
     }
 }
 
+void MainForm::loadFile(const QString &fn, const QPixmap &pixmap)
+{
+    sideBar->addFile(fn , &pixmap);
+    fileName = fn;
+    setWindowTitle("YAGF - " + extractFileName(fileName));
+    graphicsInput->loadImage(pixmap);
+    graphicsInput->setViewScale(1, 0);
+    scaleFactor = 1;
+    if (pixmap.width() > 4000)
+            scaleImage(0.25);
+     else if (pixmap.width() > 2000)
+          scaleImage(0.5);
+    graphicsInput->setFocus();
+}
+
 void MainForm::loadFile(const QString &fn, bool loadIntoView)
 {
     QCursor oldCursor = cursor();
     setCursor(Qt::WaitCursor);
-    if ((fileName != "") && ((FileToolBar *) m_toolBar)->getFileNames().contains(fileName)) {
-        ((FileToolBar *) m_toolBar)->select(fileName);
-        ((FileToolBar *) m_toolBar)->clearBlocks();
+    if ((fileName != "") && (sideBar->getFileNames().contains(fileName))) {
+        sideBar->select(fileName);
+        sideBar->clearBlocks();
         for (int i = 0; i < graphicsInput->blocksCount(); i++)
-            ((FileToolBar *) m_toolBar)->setBlock(graphicsInput->getBlockRectByIndex(i));
+            sideBar->addBlock(graphicsInput->getBlockRectByIndex(i).toRect());
     }
     qreal xrotation = 0;
-    if (((FileToolBar *) m_toolBar)->fileLoaded(fn)) {
-        ((FileToolBar *) m_toolBar)->select(fn);
-        xrotation = ((FileToolBar *) m_toolBar)->getRotation(fn);
-        scaleFactor = ((FileToolBar *) m_toolBar)->getScale(fn);
+    if (sideBar->fileLoaded(fn)) {
+        sideBar->select(fn);
+        xrotation = sideBar->getRotation(fn);
+        scaleFactor = sideBar->getScale(fn);
     } else {
-        xrotation = ((FileToolBar *) m_toolBar)->getRotation();
-        scaleFactor = ((FileToolBar *) m_toolBar)->getScale();
+        //xrotation = sideBar->getRotation();
+        scaleFactor = sideBar->getScale();
     }
 
     QPixmap pixmap;
     if ((imageLoaded = pixmap.load(fn))) {
-        ((FileToolBar *) m_toolBar)->addFile(pixmap, fn);
+        //pixmap.detach();
+        sideBar->addFile(fn , &pixmap);
     } else {
         setCursor(oldCursor);
         QMessageBox::critical(this, trUtf8("Image loading error"), trUtf8("Image %1 could not be loaded").arg(fn));
@@ -773,8 +800,8 @@ void MainForm::loadFile(const QString &fn, bool loadIntoView)
         if (scaleFactor == 0)
             scaleFactor = 1;
         graphicsInput->setViewScale(1, xrotation);
-        for (int i = 0; i < ((FileToolBar *) m_toolBar)->getBlocksCount(); i++)
-            graphicsInput->addBlock(((FileToolBar *) m_toolBar)->getBlock(i));
+        for (int i = 0; i < sideBar->getBlocksCount(); i++)
+            graphicsInput->addBlock(sideBar->getBlock(i));
         graphicsInput->setViewScale(scaleFactor, 0);
         // ((FileToolBar *) m_toolBar)->setRotation(xrotation);
         //  ((FileToolBar *) m_toolBar)->setScale(graphicsInput->getRealScale());
@@ -805,7 +832,7 @@ void MainForm::delTmpFiles()
 void MainForm::loadNext(int number)
 {
 
-    QStringList files = ((FileToolBar *)m_toolBar)->getFileNames();
+    QStringList files = sideBar->getFileNames();
     if (files.count() == 0)
         return;
     QString name = fileName;
@@ -817,7 +844,7 @@ void MainForm::loadNext(int number)
             if (files.indexOf(name) > 0)
                 name = files.at(files.indexOf(name) - 1);
         }
-        ((FileToolBar *)m_toolBar)->select(name);
+        sideBar->select(name);
         //QString path = extractFilePath(name);
         /*QString path = extractFilePath(fileName);
             QString digits = extractDigits(name);
@@ -903,6 +930,12 @@ void MainForm::recognizeInternal(const QPixmap &pix)
 {
     const QString inputFile = "input.bmp";
     const QString outputFile = "output.txt";
+
+    QFile f(workingDir+inputFile);
+    f.remove();
+    f.setFileName(workingDir+outputFile);
+    f.remove();
+
     //outputFormat = selectFormatBox->itemData(selectFormatBox->currentIndex()).toString();
     QPixmapCache::clear();
     pix.save(workingDir + inputFile, "BMP");
@@ -1221,7 +1254,7 @@ void MainForm::fileSelected(const QString &path)
 
 void MainForm::recognizeAll()
 {
-    QStringList files = ((FileToolBar *)m_toolBar)->getFileNames();
+    QStringList files = sideBar->getFileNames();
     if (files.empty())
         recognize();
     else {
@@ -1270,6 +1303,7 @@ void MainForm::rightMouseClicked(int x, int y, bool inTheBlock)
         m_menu->addAction(ActionDeleteBlock);
         m_menu->addAction(actionRecognize_block);
         m_menu->addAction(actionSave_block);
+        m_menu->addAction(actionDeskew_by_Block);
     }
     QPoint p = graphicsView->mapToGlobal(QPoint(x, y));
     m_menu->move(p);
@@ -1436,7 +1470,14 @@ void MainForm::AnalizePage()
 
 void MainForm::on_actionDeskew_activated()
 {
-    AnalizePage();
+   // AnalizePage();
+    {
+        QCursor oldCursor = cursor();
+        setCursor(Qt::WaitCursor);
+        QPixmap * pm = graphicsInput->getSmallImage();
+        deskew(pm);
+        setCursor(oldCursor);
+    }
 }
 
 void MainForm::on_actionSelect_HTML_format_activated()
@@ -1445,4 +1486,122 @@ void MainForm::on_actionSelect_HTML_format_activated()
             outputFormat = "html";
         else
             outputFormat = "text";
+}
+
+void MainForm::pasteimage()
+{
+    QClipboard *clipboard = QApplication::clipboard();
+    QPixmap pm = clipboard->pixmap();
+    if (pm.isNull()) return;
+    QCursor oldCursor = cursor();
+    setCursor(Qt::WaitCursor);
+    QString tmpFile = "input-01.jpg";
+    QFileInfo fi(workingDir + tmpFile);
+    while (fi.exists()) {
+        QString digits = extractDigits(tmpFile);
+        bool result;
+        int d = digits.toInt(&result);
+        if (!result) return;
+        d++;
+        if (d < 0) d = 0;
+        QString newDigits = QString::number(d);
+        while (newDigits.size() < digits.size())
+            newDigits = '0' + newDigits;
+        tmpFile = tmpFile.replace(digits, newDigits);
+        fi.setFile(workingDir, tmpFile);
+    }
+    pm.save(fi.absoluteFilePath(), "JPEG");
+    loadFile(fi.absoluteFilePath());
+    setCursor(oldCursor);
+}
+
+void MainForm::blockAllText()
+{
+    //this->enlargeButtonClicked();
+    QPixmap pm = graphicsInput->getCurrentImage();
+    if (!pm.isNull()) {
+        CCBuilder * cb = new CCBuilder(&pm);
+        cb->setGeneralBrightness(360);
+        cb->setMaximumColorComponent(100);
+        cb->labelCCs();
+        CCAnalysis * an = new CCAnalysis(cb);
+        an->analize();
+ //       an->rotateLines(-atan(an->getK()));
+        Lines lines = an->getLines();
+        foreach(TextLine l, lines)
+            if (l.count() < 3)
+                lines.removeOne(l);
+        QPoint orig;
+        graphicsInput->imageOrigin(orig);
+        int minX = 100000;
+        int minY = 100000;
+        int maxX = 0;
+        int maxY = 0;
+        for (int i =0; i < lines.count(); i++) {
+            int x1 = lines.at(i).at(0).x();
+            int y1 = lines.at(i).at(0).y();
+            int x2 = lines.at(i).at(lines.at(i).count()-1).x();
+            int y2 = lines.at(i).at(lines.at(i).count()-1).y();
+            //graphicsInput->drawLine(x1,y1,x2,y2);
+            if (x1 > x2) {
+                x2 = x1 + x2;
+                x1 = x2 - x1;
+                x2 = x2 - x1;
+            }
+            minX = minX < x1 ? minX : x1;
+            maxX = maxX > x2 ? maxX : x2;
+            if (y1 > y2) {
+                y2 = y1 + y2;
+                y1 = y2 - y1;
+                y2 = y2 - y1;
+            }
+            minY = minY < y1 ? minY : y1;
+            maxY = maxY > y2 ? maxY : y2;
+        }
+        minX = minX  - 2*an->getMediumGlyphWidth();
+        maxX =maxX + 2*an->getMediumGlyphWidth();
+        minY = minY - 2*an->getMediumGlyphHeight();
+        maxY = maxY + 2*an->getMediumGlyphHeight();
+        graphicsInput->clearBlocks();
+        graphicsInput->addBlock(QRectF(minX, minY, maxX-minX, maxY-minY));
+        //this->decreaseButtonClicked();
+        delete an;
+        delete cb;
+    }
+}
+
+void MainForm::deskew(QPixmap *pm)
+{
+    if (pm) {
+        QTransform tr;
+        tr.rotate(graphicsInput->getRealAngle());
+        QPixmap pm1 = pm->transformed(tr);
+        CCBuilder * cb = new CCBuilder(&pm1);
+        cb->setGeneralBrightness(360);
+        cb->setMaximumColorComponent(100);
+        cb->labelCCs();
+        CCAnalysis * an = new CCAnalysis(cb);
+        an->analize();
+    //for (int j = 0; j < an->getGlyphBoxCount(); j++) {
+     //   Rect r = an->getGlyphBox(j);
+       // graphicsInput->newBlock(QRect(2*r.x1, 2*r.y1, 2*r.x2-2*r.x1, 2*r.y2-2*r.y1));
+        //this->graphicsInput->addBlock(QRect(2*r.x1, 2*r.y1, 2*r.x2-2*r.x1, 2*r.y2-2*r.y1), false);
+    //}
+        rotateImage(-atan(an->getK())*360/6.283);
+        delete an;
+        delete cb;
+    }
+}
+
+void MainForm::deskewByBlock()
+{
+    QCursor oldCursor = cursor();
+    setCursor(Qt::WaitCursor);
+    graphicsInput->update();
+    QApplication::processEvents();
+    if (!graphicsInput->getCurrentBlock().isNull()) {
+        QPixmap pm = graphicsInput->getCurrentBlock();
+        deskew(&pm);
+    }
+    setCursor(oldCursor);
 }

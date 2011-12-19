@@ -26,49 +26,6 @@
         <translation type="unfinished"></translation>
     </message>
 </context>
-<context>
-    <name>FileToolBar</name>
-    <message>
-        <source>Loaded Images</source>
-        <translation>Geöffnete Bilder</translation>
-    </message>
-    <message>
-        <source>Drop graphic files here</source>
-        <translation>Bilddateien hier ablegen</translation>
-    </message>
-    <message>
-        <source>Clear</source>
-        <translation>Schließen</translation>
-    </message>
-    <message>
-        <source>Clear the panel</source>
-        <translation>Seitenleiste minimieren</translation>
-    </message>
-    <message>
-        <source>Save...</source>
-        <translation>Speichern...</translation>
-    </message>
-    <message>
-        <source>Save all the files</source>
-        <translation>Alle geöffneten Bilder speichern</translation>
-    </message>
-    <message>
-        <source>Remove</source>
-        <translation>Entfernen</translation>
-    </message>
-    <message>
-        <source>Remove the current file</source>
-        <translation>Aktuelles Bild aus Seitenleiste entfernen</translation>
-    </message>
-    <message>
-        <source>Select a directory</source>
-        <translation>Wählen Sie ein Verzeichnis</translation>
-    </message>
-    <message>
-        <source>File %1 already exists. Do you want to replace it?</source>
-        <translation>Datei %1 existiert bereits. Wollen Sie die Datei ersetzen?</translation>
-    </message>
-</context>
 <context encoding="UTF-8">
     <name>MainForm</name>
     <message>
@@ -552,14 +509,6 @@ Please install either cuneiform or tesseract</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Remove page skew</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Tries to correct the page skew (this is an experimental feature)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Select HTML format</source>
         <translation type="unfinished"></translation>
     </message>
@@ -569,10 +518,6 @@ Please install either cuneiform or tesseract</source>
     </message>
     <message>
         <source>&amp;Settings</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>toolBar_2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -597,6 +542,34 @@ Please install either cuneiform or tesseract</source>
     </message>
     <message>
         <source>Set up the OCR parameters</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Paste Image</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Paste image from clipboard</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select Text Area</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Deskew  Block</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Deskew the current block</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Deskew</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Correct the page skew </source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -649,6 +622,13 @@ Please install either cuneiform or tesseract</source>
         <source>Required spelling dictionary (%1) is not found.
 Spell-checking is disabled.
 Try to install an appropriate aspell dictionary.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>SideBar</name>
+    <message>
+        <source>Drop files here</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

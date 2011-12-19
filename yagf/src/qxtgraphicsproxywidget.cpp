@@ -32,6 +32,7 @@ void QXtGraphicsProxyWidget::setView(QXtGraphicsView * view)
     mview = view;
     QPointF p = mview->mapToScene(0,0);
     setPos(p.x(), p.y());
+    //setPos(0,0);
     connect(mview, SIGNAL(scrolled()), this, SLOT(viewScrolled()));
 }
 
@@ -44,17 +45,10 @@ void QXtGraphicsProxyWidget::viewScrolled()
 QVariant QXtGraphicsProxyWidget::itemChange(GraphicsItemChange change, const QVariant & value)
 {
     QVariant v;
-    switch (change) {
-    case QGraphicsItem::ItemScaleChange:
-        v = QVariant(1.0);
-        return v;
-    case QGraphicsItem::ItemRotationChange:
-        v = QVariant(0.0);
-        return v;
-    case QGraphicsItem::ItemTransformChange:
+    matrix().reset();
+    if (change == QGraphicsItem::ItemTransformChange) {
             v = QVariant(matrix());
             return v;
-    default:
-            return value;
     }
+            return value;
 }

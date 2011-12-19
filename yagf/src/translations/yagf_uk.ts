@@ -26,49 +26,6 @@
         <translation type="unfinished"></translation>
     </message>
 </context>
-<context>
-    <name>FileToolBar</name>
-    <message>
-        <source>Loaded Images</source>
-        <translation>Завантажені зображення</translation>
-    </message>
-    <message>
-        <source>Drop graphic files here</source>
-        <translation>Переносьте графічні файли сюди</translation>
-    </message>
-    <message>
-        <source>Clear</source>
-        <translation>Очистити</translation>
-    </message>
-    <message>
-        <source>Clear the panel</source>
-        <translation>Очистити панель</translation>
-    </message>
-    <message>
-        <source>Save...</source>
-        <translation>Зберегти…</translation>
-    </message>
-    <message>
-        <source>Save all the files</source>
-        <translation>Зберегти всі файли</translation>
-    </message>
-    <message>
-        <source>Remove the current file</source>
-        <translation>Вилучити теперішній файл</translation>
-    </message>
-    <message>
-        <source>Select a directory</source>
-        <translation>Вибрати теку</translation>
-    </message>
-    <message>
-        <source>File %1 already exists. Do you want to replace it?</source>
-        <translation>Файл %1 уже існує. Замінити?</translation>
-    </message>
-    <message>
-        <source>Remove</source>
-        <translation>Вилучити</translation>
-    </message>
-</context>
 <context encoding="UTF-8">
     <name>MainForm</name>
     <message>
@@ -477,14 +434,6 @@ Please install either cuneiform or tesseract</source>
         <translation>Зберегти цей блок як зображення</translation>
     </message>
     <message>
-        <source>Remove page skew</source>
-        <translation>Вилучити перекошення сторінки</translation>
-    </message>
-    <message>
-        <source>Tries to correct the page skew (this is an experimental feature)</source>
-        <translation>Спроба виправти нахил сторінки (це експерементальна можливість)</translation>
-    </message>
-    <message>
         <source>Select HTML format</source>
         <translation>Виділити формат HTML</translation>
     </message>
@@ -573,10 +522,6 @@ Please install either cuneiform or tesseract</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>toolBar_2</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>&lt;&lt;</source>
         <translation type="unfinished"></translation>
     </message>
@@ -598,6 +543,34 @@ Please install either cuneiform or tesseract</source>
     </message>
     <message>
         <source>Set up the OCR parameters</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Paste Image</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Paste image from clipboard</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select Text Area</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Deskew  Block</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Deskew the current block</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Deskew</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Correct the page skew </source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -653,6 +626,13 @@ Try to install an appropriate aspell dictionary.</source>
         <translation>Потрібні словники орфографії (%1) не знайдено.
 Перевірку орфографії вимкнено.
 Спробуйте встановити відповідний словник aspell.</translation>
+    </message>
+</context>
+<context>
+    <name>SideBar</name>
+    <message>
+        <source>Drop files here</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 </TS>

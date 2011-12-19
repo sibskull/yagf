@@ -53,19 +53,21 @@ QGraphicsInput::~QGraphicsInput()
 
 void QGraphicsInput::addToolBar()
 {
-    toolbar = new QToolBar();
+    toolbar = new QToolBar(m_view);
     toolbar->setMouseTracking(false);
     toolbar->setMovable(false);
     toolbar->setWindowOpacity(0.75);
+    toolbar->move(0,0);
+    toolbar->setMinimumHeight(32);
     //toolbar->setCursor();
     actionList.at(0)->setText(QString::fromUtf8(">>"));
     setToolBarVisible();
-    QXtGraphicsProxyWidget * pw = new QXtGraphicsProxyWidget();
-    pw->setWidget(toolbar);
+    //QXtGraphicsProxyWidget * pw = new QXtGraphicsProxyWidget();
+    //pw->setWidget(toolbar);
 
-    pw->setZValue(100);
-    this->addItem(pw);
-    pw->setView((QXtGraphicsView *) views().at(0));
+    //pw->setZValue(100);
+    //this->addItem(pw);
+    //pw->setView((QXtGraphicsView *) views().at(0));
     //toolbar->setParent(0);
     toolbar->show();
     foreach (QAction * action, actionList) {
@@ -88,13 +90,15 @@ bool QGraphicsInput::loadImage(const QPixmap &image, bool clearBlocks)
         this->removeItem(m_image);
         real_scale = 1;
     }
+    m_image = this->addPixmap(image);
+    QApplication::processEvents();
     old_pixmap = image;
     pm2 = image.scaledToWidth(image.width() / 2);
     pm4 = pm2.scaledToWidth(pm2.width() / 2);
     pm8 = pm4.scaledToWidth(pm4.width() / 2);
     pm16 = pm8.scaledToWidth(pm8.width() / 2);
     this->setSceneRect(image.rect());
-    m_image = this->addPixmap(image);
+
     m_realImage = this->addPixmap(image);
     m_realImage->setData(1, "image");
     m_realImage->hide();
@@ -103,11 +107,12 @@ bool QGraphicsInput::loadImage(const QPixmap &image, bool clearBlocks)
     m_image->setAcceptedMouseButtons(Qt::LeftButton | Qt::RightButton | Qt::MidButton);
     m_image->setAcceptHoverEvents(true);
     m_image->setData(1, "image");
-    //this->setSceneRect(0,0,2000,2000);
+    this->setSceneRect(0,0,m_realImage->pixmap().width(),m_realImage->pixmap().height());
     addToolBar();
     if (m_view) {
         m_view->centerOn(0, 0);
         m_view->show();
+        update();
         hasImage = true;
         return true;
     } else
@@ -447,8 +452,8 @@ void QGraphicsInput::setViewScale(qreal scale, qreal angle)
     qreal x = width() / 2;
     qreal y = height() / 2;
     real_rotate += angle;
-    m_image->setPixmap(m_image->pixmap().transformed(QTransform().translate(-x, -y).rotate(real_rotate).translate(x, y)));
-    m_realImage->setPixmap(m_realImage->pixmap().transformed(QTransform().translate(-x, -y).rotate(angle).translate(x, y)));
+    m_image->setPixmap(m_image->pixmap().transformed(QTransform().translate(-x, -y).rotate(real_rotate).translate(x, y), Qt::SmoothTransformation));
+    m_realImage->setPixmap(m_realImage->pixmap().transformed(QTransform().translate(-x, -y).rotate(angle).translate(x, y), Qt::SmoothTransformation));
     m_rotate = angle;
     m_image->show();
     m_view->centerOn(0, 0);
@@ -576,6 +581,12 @@ QPixmap QGraphicsInput::getAdaptedImage()
     return m_realImage->pixmap();
 }
 
+QPixmap * QGraphicsInput::getSmallImage()
+{
+    if (pm2.isNull())
+        return NULL;
+    return &pm2;
+}
 
 void QGraphicsInput::cropImage()
 {
@@ -624,8 +635,8 @@ void QGraphicsInput::setToolBarVisible()
     } else {
         for (int i = 1; i < actionList.count(); i++)
             actionList.at(i)->setVisible(true);
-            toolbar->setMaximumWidth(290);
-            toolbar->setMinimumWidth(290);
+            toolbar->setMaximumWidth(380);
+            toolbar->setMinimumWidth(380);
             actionList.at(0)->setText(QString::fromUtf8("<<"));
     }
 }
@@ -695,4 +706,23 @@ void QGraphicsInput::keyPressEvent(QKeyEvent *keyEvent)
         //QApplication::
     }
 
+}
+
+void QGraphicsInput::drawLine(int x1, int y1, int x2, int y2)
+{
+
+    QPen pen(QColor("red"));
+    pen.setWidth(2);
+    this->addLine(x1, y1, x2, y2, pen);
+}
+
+void QGraphicsInput::imageOrigin(QPoint &p)
+{
+    p.setX(m_image->mapToScene(0,0).x());
+    p.setY(m_image->mapToScene(0,0).y());
+}
+
+QPixmap QGraphicsInput::getCurrentImage()
+{
+    return (m_image->pixmap());
 }

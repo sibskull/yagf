@@ -29,49 +29,6 @@
     </message>
 </context>
 <context>
-    <name>FileToolBar</name>
-    <message>
-        <source>Loaded Images</source>
-        <translation>Загруженные изображения</translation>
-    </message>
-    <message>
-        <source>Drop graphic files here</source>
-        <translation>Вы можете перетащить графические файлы сюда</translation>
-    </message>
-    <message>
-        <source>Clear</source>
-        <translation>Очистить</translation>
-    </message>
-    <message>
-        <source>Clear the panel</source>
-        <translation>Очистить панель</translation>
-    </message>
-    <message>
-        <source>Save...</source>
-        <translation>Сохранить...</translation>
-    </message>
-    <message>
-        <source>Save all the files</source>
-        <translation>Сохранить все файлы</translation>
-    </message>
-    <message>
-        <source>Remove the current file</source>
-        <translation>Удалить выбранный файл</translation>
-    </message>
-    <message>
-        <source>Select a directory</source>
-        <translation>Выберите директорию</translation>
-    </message>
-    <message>
-        <source>File %1 already exists. Do you want to replace it?</source>
-        <translation>Файл %1 уже существует. Заменить?</translation>
-    </message>
-    <message>
-        <source>Remove</source>
-        <translation>Убрать</translation>
-    </message>
-</context>
-<context>
     <name>MainForm</name>
     <message>
         <source>Recognition language</source>
@@ -479,14 +436,6 @@ Please install either cuneiform or tesseract</source>
         <translation>Сохранить этот блок в графическом файле</translation>
     </message>
     <message>
-        <source>Remove page skew</source>
-        <translation>Исправить наклон страницы</translation>
-    </message>
-    <message>
-        <source>Tries to correct the page skew (this is an experimental feature)</source>
-        <translation>Пытается исправить наклон страницы (эта опция находится на стадии тестирования)</translation>
-    </message>
-    <message>
         <source>Select HTML format</source>
         <translation>Выбрать формат HTML</translation>
     </message>
@@ -575,10 +524,6 @@ Please install either cuneiform or tesseract</source>
         <translation>&amp;Настройки</translation>
     </message>
     <message>
-        <source>toolBar_2</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>&lt;&lt;</source>
         <translation type="unfinished"></translation>
     </message>
@@ -601,6 +546,34 @@ Please install either cuneiform or tesseract</source>
     <message>
         <source>Set up the OCR parameters</source>
         <translation>Установить параметры программ распознавания</translation>
+    </message>
+    <message>
+        <source>Paste Image</source>
+        <translation>Вставить изображение</translation>
+    </message>
+    <message>
+        <source>Paste image from clipboard</source>
+        <translation>Вставить страницу из буфера обмена</translation>
+    </message>
+    <message>
+        <source>Select Text Area</source>
+        <translation>Автоматически выделить текстовую область</translation>
+    </message>
+    <message>
+        <source>Deskew  Block</source>
+        <translation>Выровнять блок</translation>
+    </message>
+    <message>
+        <source>Deskew the current block</source>
+        <translation>Выровнять выделенный блок</translation>
+    </message>
+    <message>
+        <source>Deskew</source>
+        <translation>Выровнять</translation>
+    </message>
+    <message>
+        <source>Correct the page skew </source>
+        <translation>Исправить наклон страницы</translation>
     </message>
 </context>
 <context>
@@ -655,6 +628,13 @@ Try to install an appropriate aspell dictionary.</source>
         <translation>Требуемый орфографический словарь (%1) не найден.
 Проверка орфографии будет отключена.
 Попробуйте установить соответствующий словарь aspell.</translation>
+    </message>
+</context>
+<context>
+    <name>SideBar</name>
+    <message>
+        <source>Drop files here</source>
+        <translation>Перетащите файлы сюда</translation>
     </message>
 </context>
 </TS>

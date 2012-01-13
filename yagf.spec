@@ -1,22 +1,19 @@
-Name: yagf
-Version: 0.8.7
-Release: alt4
+Name:    yagf
+Version: 0.8.9
+Release: alt1
 
 Summary: YAGF is a graphical front-end for cuneiform and tesseract OCR tools
 Summary(ru_RU.UTF-8): Оболочка YAGF предоставляет графический интерфейс для консольных программ распознавания тектов cuneiform и tesseract
 License: GPLv3+
-Group: Graphics
-URL: http://symmetrica.net/cuneiform-linux/yagf-ru.html
+Group:   Office
+URL:     http://symmetrica.net/cuneiform-linux/yagf-ru.html
 
-Source: http://symmetrica.net/cuneiform-linux/yagf-%{version}-Source.tar.gz
+Source:  http://symmetrica.net/cuneiform-linux/yagf-%{version}-Source.tar.gz
 Source1: YAGF.desktop
-
-Patch1: %name-show-absent-aspell-dictionary.patch
-Patch2: %name-fix-default-configuration.patch
 
 BuildRequires: gcc-c++ libqt4-devel
 BuildRequires: cmake libaspell-devel aspell
-Requires: cuneiform libaspell aspell-en
+Requires:      cuneiform libaspell aspell-en
 
 Packager: Andrey Cherepanov <cas@altlinux.org>
 
@@ -41,8 +38,6 @@ the online help for more details).
 
 %prep
 %setup -q
-#%%patch1 -p2
-%patch2 -p2
 cp -f %SOURCE1 .
 subst "s,/usr/local,%buildroot/usr/,g" ./CMakeLists.txt
 
@@ -64,6 +59,10 @@ make install DESTDIR=%buildroot
 %_datadir/applications/YAGF.desktop
 
 %changelog
+* Fri Jan 13 2012 Andrey Cherepanov <cas@altlinux.org> 0.8.9-alt1
+- Version 0.8.9
+- Change group to Office
+
 * Thu Oct 27 2011 Andrey Cherepanov <cas@altlinux.org> 0.8.7-alt4
 - Install aspell for build with cmake
 

@@ -1,6 +1,6 @@
 /*
-    YAGF - cuneiform and tesseract OCR graphical front-ends
-    Copyright (C) 2009-2011 Andrei Borovsky <anb@symmetrica.net>
+    YAGF - cuneiform OCR graphical front-end
+    Copyright (C) 2009-2012 Andrei Borovsky <anb@symmetrica.net>
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -14,35 +14,29 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
 */
 
-#ifndef POPPLERDIALOG_H
-#define POPPLERDIALOG_H
+#include "advancedconfigdialog.h"
+#include "ui_advancedconfigdialog.h"
 
-#include <QDialog>
-
-namespace Ui {
-    class PopplerDialog;
+AdvancedConfigDialog::AdvancedConfigDialog(QWidget *parent) :
+    QDialog(parent),
+    ui(new Ui::AdvancedConfigDialog)
+{
+    ui->setupUi(this);
 }
 
-class PopplerDialog : public QDialog
+AdvancedConfigDialog::~AdvancedConfigDialog()
 {
-    Q_OBJECT
+    delete ui;
+}
 
-public:
-    explicit PopplerDialog(QWidget *parent = 0);
-    ~PopplerDialog();
-    QString getPDFFile();
-    QString getStartPage();
-    QString getStopPage();
-private slots:
-    void on_checkBox_toggled(bool checked);
+bool AdvancedConfigDialog::doCrop1()
+{
+    return ui->checkBox->checkState() == Qt::Checked;
+}
 
-    void on_pushButton_clicked();
-
-private:
-    Ui::PopplerDialog *ui;
-};
-
-#endif // POPPLERDIALOG_H
+void AdvancedConfigDialog::setCrop1(const bool value)
+{
+    ui->checkBox->setCheckState((value == true ? Qt::Checked : Qt::Unchecked)) ;
+}

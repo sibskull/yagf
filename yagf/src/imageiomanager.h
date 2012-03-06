@@ -1,6 +1,6 @@
 /*
-    YAGF - cuneiform and tesseract OCR graphical front-ends
-    Copyright (C) 2009-2011 Andrei Borovsky <anb@symmetrica.net>
+    YAGF - cuneiform OCR graphical front-end
+    Copyright (C) 2009-2012 Andrei Borovsky <anb@symmetrica.net>
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -14,35 +14,39 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
 */
 
-#ifndef POPPLERDIALOG_H
-#define POPPLERDIALOG_H
+#ifndef IMAGEIOMANAGER_H
+#define IMAGEIOMANAGER_H
 
-#include <QDialog>
+#include <QObject>
+#include <QImageReader>
+#include <QPixmap>
 
-namespace Ui {
-    class PopplerDialog;
-}
-
-class PopplerDialog : public QDialog
+class ImageIOManager : public QObject
 {
     Q_OBJECT
-
 public:
-    explicit PopplerDialog(QWidget *parent = 0);
-    ~PopplerDialog();
-    QString getPDFFile();
-    QString getStartPage();
-    QString getStopPage();
-private slots:
-    void on_checkBox_toggled(bool checked);
+    explicit ImageIOManager(QObject *parent = 0);
+    ~ImageIOManager();
+    bool open(const QString &fileName);
+    QPixmap & pixmap(int sf = 2);
+    void clearFragment();
+signals:
 
-    void on_pushButton_clicked();
+public slots:
 
 private:
-    Ui::PopplerDialog *ui;
+    void makeSmall();
+    QString file;
+    QImageReader ir;
+    QImage *imgb2;
+    QImage *imgb4;
+    QImage *imgb8;
+    QPixmap pmb2;
+    QPixmap pmb4;
+    QPixmap pmb8;
+    QPixmap * fragment;
 };
 
-#endif // POPPLERDIALOG_H
+#endif // IMAGEIOMANAGER_H

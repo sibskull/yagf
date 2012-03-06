@@ -1,6 +1,6 @@
 /*
-    YAGF - cuneiform and tesseract OCR graphical front-ends
-    Copyright (C) 2009-2011 Andrei Borovsky <anb@symmetrica.net>
+    YAGF - cuneiform OCR graphical front-end
+    Copyright (C) 2009-2012 Andrei Borovsky <anb@symmetrica.net>
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -14,35 +14,29 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
 */
 
-#ifndef POPPLERDIALOG_H
-#define POPPLERDIALOG_H
+
+#ifndef ADVANCEDCONFIGDIALOG_H
+#define ADVANCEDCONFIGDIALOG_H
 
 #include <QDialog>
 
 namespace Ui {
-    class PopplerDialog;
+    class AdvancedConfigDialog;
 }
 
-class PopplerDialog : public QDialog
+class AdvancedConfigDialog : public QDialog
 {
     Q_OBJECT
 
 public:
-    explicit PopplerDialog(QWidget *parent = 0);
-    ~PopplerDialog();
-    QString getPDFFile();
-    QString getStartPage();
-    QString getStopPage();
-private slots:
-    void on_checkBox_toggled(bool checked);
-
-    void on_pushButton_clicked();
-
+    explicit AdvancedConfigDialog(QWidget *parent = 0);
+    ~AdvancedConfigDialog();
+    bool doCrop1();
+    void setCrop1(const bool value);
 private:
-    Ui::PopplerDialog *ui;
+    Ui::AdvancedConfigDialog *ui;
 };
 
-#endif // POPPLERDIALOG_H
+#endif // ADVANCEDCONFIGDIALOG_H

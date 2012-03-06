@@ -1,2 +1,3 @@
 tar.gz: yagf name=yagf-@version@-Source base=yagf-@version@
 copy: *.desktop
+copy: *.watch

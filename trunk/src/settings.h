@@ -27,8 +27,7 @@ enum SelectedEngine {
 class Settings
 {
 public:
-  Settings();
-  ~Settings();
+  static Settings * instance();
   void readSettings(const QString &path);
   void writeSettings();
   QString getLanguage();
@@ -60,6 +59,9 @@ public:
 private:
   void findTessDataPath();
   QString selectDefaultLanguageName();
+  Settings();
+  Settings(const Settings &);
+  ~Settings();
 private:
   QString language;
   QString outputFormat;
@@ -77,6 +79,7 @@ private:
 
   QString mPath;
   QSettings * settings;
+  static Settings * m_instance;
 };
 
 #endif

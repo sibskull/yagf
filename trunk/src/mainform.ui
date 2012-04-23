@@ -447,7 +447,7 @@
              <enum>Qt::NoContextMenu</enum>
             </property>
            </widget>
-           <widget class="QTextEdit" name="textEdit">
+           <widget class="TextEditor" name="textEdit">
             <property name="font">
              <font>
               <family>Times New Roman</family>
@@ -469,7 +469,7 @@
      <x>0</x>
      <y>0</y>
      <width>1920</width>
-     <height>25</height>
+     <height>20</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -959,6 +959,11 @@
    <class>DropLabel</class>
    <extends>QLabel</extends>
    <header>src/droplabel.h</header>
+  </customwidget>
+  <customwidget>
+   <class>TextEditor</class>
+   <extends>QTextEdit</extends>
+   <header>texteditor.h</header>
   </customwidget>
  </customwidgets>
  <resources>

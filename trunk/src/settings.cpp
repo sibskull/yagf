@@ -17,14 +17,25 @@
 #include <QLocale>
 #include <QVariant>
 
+Settings * Settings::m_instance = NULL;
+
 Settings::Settings()
 {
-    settings = NULL;
+}
+
+Settings::Settings(const Settings &)
+{
 }
 
 Settings::~Settings()
 {
-    delete settings;
+}
+
+Settings *Settings::instance()
+{
+    if (!m_instance)
+        m_instance = new Settings();
+    return m_instance;
 }
 
 void Settings::readSettings(const QString &path)

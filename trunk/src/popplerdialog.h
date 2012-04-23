@@ -1,5 +1,5 @@
 /*
-    YAGF - cuneiform and tesseract OCR graphical front-ends
+    YAGF - cuneiform and tesseract OCR graphical front-end
     Copyright (C) 2009-2011 Andrei Borovsky <anb@symmetrica.net>
 
     This program is free software: you can redistribute it and/or modify

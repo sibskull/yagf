@@ -1,6 +1,6 @@
 /*
-    YAGF - cuneiform OCR graphical front-end
-    Copyright (C) 2009-2010 Andrei Borovsky <anb@symmetrica.net>
+    YAGF - cuneiform and tesseract OCR graphical front-end
+    Copyright (C) 2009-2012 Andrei Borovsky <anb@symmetrica.net>
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -77,14 +77,8 @@ private slots:
     void loadPreviousPage();
     void recognize();
     void recognizeAll();
-    void saveText();
     void showAboutDlg();
     void showHelp();
-    void copyClipboard();
-    void copyAvailable(bool yes);
-    void textChanged();
-    void enlargeFont();
-    void decreaseFont();
     void unalignButtonClicked();
     void hideToolBar();
     void importPDF();
@@ -96,8 +90,7 @@ private slots:
     void selectTextArea();
     void selectBlocks();
     void setSmallIcons();
-protected:
-    bool eventFilter(QObject *object, QEvent *event);
+    void selectHTMLformat();
 private:
     virtual void closeEvent(QCloseEvent *event);
     void scaleImage(double sf);
@@ -107,7 +100,6 @@ private:
     //void loadFileWithPixmap(const QString &fn, const QPixmap &pixmap);
     void delTmpFiles();
     void loadNext(int number);
-    void saveHtml(QFile *file);
     void delTmpDir();
     void recognizeInternal(const QImage &img);
     bool useCuneiform(const QString &inputFile, const QString &outputFile);
@@ -115,7 +107,6 @@ private:
     void saveImageInternal(const QPixmap &pix);
     void loadFromCommandLine();
     bool imageLoaded;
-    bool hasCopy;
     QComboBox *selectLangsBox;
     QGraphicsInput *graphicsInput;
     QString workingDir;
@@ -123,27 +114,22 @@ private:
     QCursor *resizeCursor;
     QCursor *resizeBlockCursor;
     bool useXSane;
-    bool textSaved;
     QProcess *scanProcess;
     QByteArray *ba;
-    SpellChecker *spellChecker;
-//        int rotation;
+    //SpellChecker *spellChecker;
     QMenu *m_menu;
     PDFExtractor * pdfx;
     QProgressDialog pdfPD;
     TesMap * tesMap;
     int ifCounter;
-    Settings settings;
+    Settings * settings;
 //  QLabel * displayLabel;
 private slots:
     void readyRead(int sig);
-    void updateSP();
     void setResizingCusor();
     void setUnresizingCusor();
     void fileSelected(const QString &path);
     void rightMouseClicked(int x, int y, bool inTheBlock);
     void onShowWindow();
     void showAdvancedSettings();
-    void contextMenuRequested(const QPoint& point);
-    void replaceWord();
  };

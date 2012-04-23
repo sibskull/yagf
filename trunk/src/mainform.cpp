@@ -1,5 +1,5 @@
 /*
-    YAGF - cuneiform and tesseract OCR graphical front-ends
+    YAGF - cuneiform and tesseract OCR graphical front-end
     Copyright (C) 2009-2012 Andrei Borovsky <anb@symmetrica.net>
 
     This program is free software: you can redistribute it and/or modify
@@ -57,7 +57,6 @@
 #include "qgraphicsinput.h"
 #include "utils.h"
 #include "qxtunixsignalcatcher.h"
-#include "spellchecker.h"
 #include "PageAnalysis.h"
 #include <QTextCodec>
 #include <QCheckBox>
@@ -81,8 +80,8 @@ MainForm::MainForm(QWidget *parent): QMainWindow(parent)
 
 
     setWindowTitle("YAGF");
-    spellChecker = new SpellChecker(textEdit);
-    spellChecker->enumerateDicts();
+    //spellChecker = new SpellChecker(textEdit);
+    textEdit->enumerateDicts();
     selectLangsBox = new QComboBox();
     QLabel *label = new QLabel();
     label->setMargin(4);
@@ -108,8 +107,6 @@ MainForm::MainForm(QWidget *parent): QMainWindow(parent)
     statusBar()->show();
     imageLoaded = false;
     useXSane = TRUE;
-    textSaved = TRUE;
-    hasCopy = false;
     //rotation = 0;
     m_menu = new QMenu(graphicsView);
     ifCounter = 0;
@@ -121,16 +118,12 @@ MainForm::MainForm(QWidget *parent): QMainWindow(parent)
     connect(actionPreviousPage, SIGNAL(triggered()), this, SLOT(loadPreviousPage()));
     connect(actionNextPage, SIGNAL(triggered()), this, SLOT(loadNextPage()));
     connect(actionRecognize, SIGNAL(triggered()), this, SLOT(recognize()));
-    connect(action_Save, SIGNAL(triggered()), this, SLOT(saveText()));
+    connect(action_Save, SIGNAL(triggered()), textEdit, SLOT(saveText()));
     connect(actionAbout, SIGNAL(triggered()), this, SLOT(showAboutDlg()));
     connect(actionOnlineHelp, SIGNAL(triggered()), this, SLOT(showHelp()));
-    connect(actionCopyToClipboard, SIGNAL(triggered()), this, SLOT(copyClipboard()));
-    textEdit->setContextMenuPolicy(Qt::CustomContextMenu);
-    connect(textEdit, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(contextMenuRequested(QPoint)));
-    connect(textEdit, SIGNAL(copyAvailable(bool)), this, SLOT(copyAvailable(bool)));
-    connect(textEdit, SIGNAL(textChanged()), this, SLOT(textChanged()));
+    connect(actionCopyToClipboard, SIGNAL(triggered()),textEdit, SLOT(copyClipboard()));
     connect(graphicsInput, SIGNAL(rightMouseClicked(int, int, bool)), this, SLOT(rightMouseClicked(int, int, bool)));
-
+    connect(actionSelect_HTML_format, SIGNAL(triggered()), this, SLOT(selectHTMLformat()));
 
     tesMap = new TesMap();
     fillLanguagesBox();
@@ -141,10 +134,7 @@ MainForm::MainForm(QWidget *parent): QMainWindow(parent)
     ba = new QByteArray();
     connect(QXtUnixSignalCatcher::catcher(), SIGNAL(unixSignal(int)), this, SLOT(readyRead(int)));
 
-    connect(textEdit->document(), SIGNAL(cursorPositionChanged(const QTextCursor &)), this, SLOT(updateSP()));
-
-    //displayLabel->installEventFilter(this);
-    textEdit->installEventFilter(this);
+    //textEdit->installEventFilter(this);
     QPixmap l_cursor;
     l_cursor.load(":/resize.png");
     resizeCursor = new QCursor(l_cursor);
@@ -199,7 +189,7 @@ void MainForm::onShowWindow()
 {
     // actionCheck_spelling->setCheckable(true);
     connect(selectLangsBox, SIGNAL(currentIndexChanged(int)), this, SLOT(newLanguageSelected(int)));
-    selectLangsBox->setCurrentIndex(selectLangsBox->findData(QVariant(settings.getLanguage())));
+    selectLangsBox->setCurrentIndex(selectLangsBox->findData(QVariant(settings->getLanguage())));
     //spellChecker->setLanguage(language);
     //actionCheck_spelling->setEnabled(spellChecker->spellCheck());
 }
@@ -222,14 +212,14 @@ void MainForm::loadFromCommandLine()
 void MainForm::showConfigDlg()
 {
     ConfigDialog dialog(this);
-    if (settings.getSelectedEngine() == UseCuneiform)
+    if (settings->getSelectedEngine() == UseCuneiform)
         dialog.setSelectedEngine(0);
     else
         dialog.setSelectedEngine(1);
-    dialog.setTessDataPath(settings.getTessdataPath());
+    dialog.setTessDataPath(settings->getTessdataPath());
     if (dialog.exec()) {
-        settings.setSelectedEngine(dialog.selectedEngine() == 0 ? UseCuneiform : UseTesseract);
-        settings.setTessdataPath(dialog.tessdataPath());
+        settings->setSelectedEngine(dialog.selectedEngine() == 0 ? UseCuneiform : UseTesseract);
+        settings->setTessdataPath(dialog.tessdataPath());
     }
 }
 
@@ -284,12 +274,12 @@ void MainForm::finishedPDF()
 void MainForm::loadImage()
 {
     QFileDialog dialog(this,
-                       trUtf8("Open Image"), settings.getLastDir(), trUtf8("Image Files (*.png *.jpg *.jpeg *.bmp *.tiff *.tif *.gif *.pnm *.pgm *.pbm *.ppm)"));
+                       trUtf8("Open Image"), settings->getLastDir(), trUtf8("Image Files (*.png *.jpg *.jpeg *.bmp *.tiff *.tif *.gif *.pnm *.pgm *.pbm *.ppm)"));
     dialog.setFileMode(QFileDialog::ExistingFiles);
     if (dialog.exec()) {
         QStringList fileNames;
         fileNames = dialog.selectedFiles();
-        settings.setLastDir(dialog.directory().path());
+        settings->setLastDir(dialog.directory().path());
         if (fileNames.count() > 0)
          loadFile(fileNames.at(0));
         if (!imageLoaded)
@@ -309,7 +299,7 @@ void MainForm::singleColumnButtonClicked()
 
 void MainForm::closeEvent(QCloseEvent *event)
 {
-    if (!textSaved) {
+    if (!textEdit->textSaved()) {
         QPixmap icon;
         icon.load(":/info.png");
 
@@ -318,7 +308,7 @@ void MainForm::closeEvent(QCloseEvent *event)
         messageBox.setIconPixmap(icon);
         int result = messageBox.exec();
         if (result == QMessageBox::Save)
-            saveText();
+            textEdit->saveText();
         else if (result == QMessageBox::Cancel) {
             event->ignore();
             return;
@@ -326,11 +316,10 @@ void MainForm::closeEvent(QCloseEvent *event)
 
     }
     scanProcess->terminate();
-    settings.setFontSize(textEdit->font().pointSize());
-    settings.setSize(size());
-    settings.setPosition(pos());
-    settings.setFullScreen(isFullScreen());
-    settings.writeSettings();
+    settings->setSize(size());
+    settings->setPosition(pos());
+    settings->setFullScreen(isFullScreen());
+    settings->writeSettings();
     delTmpFiles();
     event->accept();
     QXtUnixSignalCatcher::catcher()->disconnectUnixSugnals();
@@ -381,6 +370,7 @@ void MainForm::scaleImage(double sf)
 
 void MainForm::initSettings()
 {
+    settings = Settings::instance();
     workingDir = QDir::homePath();
     if (!workingDir.endsWith("/"))
         workingDir += '/';
@@ -394,25 +384,22 @@ void MainForm::initSettings()
     QDir dir(workingDir);
     if (!dir.exists())
         dir.mkdir(workingDir);
-    settings.readSettings(workingDir);
-    settings.writeSettings();
-    if (settings.getFullScreen())
+    settings->readSettings(workingDir);
+    settings->writeSettings();
+    if (settings->getFullScreen())
         showFullScreen();
     else {
-        move(settings.getPosition());
-        resize(settings.getSize());
+        move(settings->getPosition());
+        resize(settings->getSize());
     }
-    QFont f(textEdit->font());
-    f.setPointSize(settings.getFontSize());
-    textEdit->setFont(f);
-    actionCheck_spelling->setChecked(settings.getCheckSpelling());
-    actionSelect_HTML_format->setChecked(settings.getOutputFormat() != "text");
+    actionCheck_spelling->setChecked(settings->getCheckSpelling());
+    actionSelect_HTML_format->setChecked(settings->getOutputFormat() != "text");
 
     QList<int> li;
     li.append(1);
     li.append(1);
     splitter->setSizes(li);
-    toolBar->setIconSize(settings.getIconSize());
+    toolBar->setIconSize(settings->getIconSize());
 }
 
 void MainForm::fillLanguagesBox()
@@ -486,13 +473,13 @@ void MainForm::fillLanguagesBox()
 
 void MainForm::newLanguageSelected(int index)
 {
-    settings.setLanguage(selectLangsBox->itemData(index).toString());
-    actionCheck_spelling->setEnabled(spellChecker->hasDict(settings.getLanguage()));
-    if (settings.getCheckSpelling()) {
-        spellChecker->setLanguage(settings.getLanguage());
-        settings.setCheckSpelling(spellChecker->spellCheck());
+    settings->setLanguage(selectLangsBox->itemData(index).toString());
+    actionCheck_spelling->setEnabled(textEdit->hasDict(settings->getLanguage()));
+    if (settings->getCheckSpelling()) {
+        textEdit->setLanguage(settings->getLanguage());
+        settings->setCheckSpelling(textEdit->spellCheck());
         //actionCheck_spelling->setEnabled(checkSpelling);
-        actionCheck_spelling->setChecked(settings.getCheckSpelling());
+        actionCheck_spelling->setChecked(settings->getCheckSpelling());
     }
 
 }
@@ -558,7 +545,7 @@ void MainForm::loadFile(const QString &fn, bool loadIntoView)
     if ((imageLoaded = image.load(fn))) {
         //pixmap.detach();
         //sideBar->addFile(fn , &image);
-        if (settings.getCropLoaded()) {
+        if (settings->getCropLoaded()) {
             if (crop1.height() == 0) {
                 CCBuilder * cb = new CCBuilder(image);
                 cb->setGeneralBrightness(360);
@@ -638,18 +625,6 @@ void MainForm::loadNext(int number)
                 name = files.at(files.indexOf(name) - 1);
         }
         sideBar->select(name);
-        //QString path = extractFilePath(name);
-        /*QString path = extractFilePath(fileName);
-            QString digits = extractDigits(name);
-            bool result;
-            int d = digits.toInt(&result);
-            if (!result) return;
-            d +=number;
-            if (d < 0) d = 0;
-            QString newDigits = QString::number(d);
-            while (newDigits.size() < digits.size())
-                newDigits = '0' + newDigits;
-                name = name.replace(digits, newDigits);*/
         loadFile(name);
     }
 }
@@ -674,9 +649,9 @@ bool MainForm::useTesseract(const QString &inputFile)
     sl.append(inputFile);
     sl.append(outputBase);
     sl.append("-l");
-    sl.append(tesMap->value(settings.getLanguage()));
+    sl.append(tesMap->value(settings->getLanguage()));
     QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
-    env.insert("TESSDATA_PREFIX", settings.getTessdataPath());
+    env.insert("TESSDATA_PREFIX", settings->getTessdataPath());
     proc.setProcessEnvironment(env);
     proc.start("tesseract", sl);
     proc.waitForFinished(-1);
@@ -696,9 +671,9 @@ bool MainForm::useCuneiform(const QString &inputFile, const QString &outputFile)
     proc.setWorkingDirectory(workingDir);
     QStringList sl;
     sl.append("-l");
-    sl.append(settings.getLanguage());
+    sl.append(settings->getLanguage());
     sl.append("-f");
-    if (settings.getOutputFormat() == "text")
+    if (settings->getOutputFormat() == "text")
         sl.append("text");
     else
         sl.append("html");
@@ -729,11 +704,11 @@ void MainForm::recognizeInternal(const QImage &img)
 
     QPixmapCache::clear();
     img.save(workingDir + inputFile, "BMP");
-    if (settings.getSelectedEngine() == UseCuneiform) {
+    if (settings->getSelectedEngine() == UseCuneiform) {
         if (!useCuneiform(inputFile, outputFile))
             return;
     }
-    if (settings.getSelectedEngine() == UseTesseract) {
+    if (settings->getSelectedEngine() == UseTesseract) {
         if (!useTesseract(inputFile))
            return;
     }
@@ -744,7 +719,7 @@ void MainForm::recognizeInternal(const QImage &img)
     QString textData;
     QTextCodec *codec = QTextCodec::codecForName("UTF-8");
     textData = codec->toUnicode(text); //QString::fromUtf8(text.data());
-    if (settings.getOutputFormat() == "text")
+    if (settings->getOutputFormat() == "text")
         textData.prepend("<meta content=\"text/html; charset=utf-8\" http-equiv=\"content-type\" />");
     textData.replace("<img src=output_files", "");
     textData.replace(".bmp\">", "\"--");
@@ -753,10 +728,9 @@ void MainForm::recognizeInternal(const QImage &img)
 //        textData.replace("-<br>", "");
     textEdit->append(textData);
     textEdit->append(QString(" "));
-    textSaved = FALSE;
-    if (settings.getCheckSpelling()) {
-        spellChecker->setLanguage(settings.getLanguage());
-        actionCheck_spelling->setChecked(spellChecker->spellCheck());
+    if (settings->getCheckSpelling()) {
+        textEdit->setLanguage(settings->getLanguage());
+        actionCheck_spelling->setChecked(textEdit->spellCheck());
     }
 
 }
@@ -768,22 +742,22 @@ void MainForm::recognize()
         QMessageBox::critical(this, trUtf8("Error"), trUtf8("No image loaded"));
         return;
     }
-    if (settings.getSelectedEngine() == UseCuneiform) {
+    if (settings->getSelectedEngine() == UseCuneiform) {
         if (!findProgram("cuneiform")) {
             if (findProgram("tesseract")) {
                 QMessageBox::warning(this, trUtf8("Warning"), trUtf8("cuneiform not found, switching to tesseract"));
-                settings.setSelectedEngine(UseTesseract);
+                settings->setSelectedEngine(UseTesseract);
             } else {
                 QMessageBox::warning(this, trUtf8("Warning"), trUtf8("No recognition engine found.\nPlease install either cuneiform or tesseract"));
                 return;
             }
         }
      }
-    if (settings.getSelectedEngine() == UseTesseract) {
+    if (settings->getSelectedEngine() == UseTesseract) {
         if (!findProgram("tesseract")) {
             if (findProgram("cuneiform")) {
                 QMessageBox::warning(this, trUtf8("Warning"), trUtf8("tesseract not found, switching to cuneiform"));
-                settings.setSelectedEngine(UseCuneiform);
+                settings->setSelectedEngine(UseCuneiform);
             } else {
                 QMessageBox::warning(this, trUtf8("Warning"), trUtf8("No recognition engine found.\nPlease install either cuneiform or tesseract"));
                 return;
@@ -796,39 +770,6 @@ void MainForm::recognize()
                 recognizeInternal(graphicsInput->getBlockByIndex(i));
     } else {
         recognizeInternal(graphicsInput->getAdaptedImage());
-    }
-}
-
-void MainForm::saveText()
-{
-    if (actionSelect_HTML_format->isChecked())
-    settings.setOutputFormat("html");
-    else
-    settings.setOutputFormat("text");
-    QString filter;
-    if (settings.getOutputFormat() == "text")
-        filter = trUtf8("Text Files (*.txt)");
-    else
-        filter = trUtf8("HTML Files (*.html)");
-    QFileDialog dialog(this,
-                       trUtf8("Save Text"), settings.getLastOutputDir(), filter);
-    if (settings.getOutputFormat() == "text")
-        dialog.setDefaultSuffix("txt");
-    else
-        dialog.setDefaultSuffix("html");
-    dialog.setAcceptMode(QFileDialog::AcceptSave);
-    if (dialog.exec()) {
-        QStringList fileNames;
-        fileNames = dialog.selectedFiles();
-        settings.setLastOutputDir(dialog.directory().path());
-        QFile textFile(fileNames.at(0));
-        textFile.open(QIODevice::ReadWrite | QIODevice::Truncate);
-        if (settings.getOutputFormat() == "text")
-            textFile.write(textEdit->toPlainText().toUtf8());
-        else
-            saveHtml(&textFile);
-        textFile.close();
-        textSaved = TRUE;
     }
 }
 
@@ -852,25 +793,6 @@ void MainForm::showHelp()
     QDesktopServices::openUrl(QUrl(trUtf8("http://symmetrica.net/cuneiform-linux/yagf-en.html")));
 }
 
-void MainForm::copyClipboard()
-{
-    if (!hasCopy) {
-        QClipboard *clipboard = QApplication::clipboard();
-        clipboard->setText(textEdit->toPlainText(), QClipboard::Clipboard);
-    } else
-        textEdit->copy();
-}
-
-void MainForm::copyAvailable(bool yes)
-{
-    hasCopy = yes;
-}
-
-void MainForm::textChanged()
-{
-    textSaved = !(textEdit->toPlainText().count());
-}
-
 void MainForm::readyRead(int sig)
 {
     QFile f(workingDir + "/input.jpg");
@@ -885,19 +807,6 @@ void MainForm::readyRead(int sig)
     loadFile(newName);
 }
 
-void MainForm::saveHtml(QFile *file)
-{
-    QString text = textEdit->document()->toHtml().toUtf8();
-    QString newDir = extractFilePath(file->fileName()) + extractFileName(file->fileName()) + ".files";
-    text.replace("<meta name=\"qrichtext\" content=\"1\" />", "<meta content=\"text/html; charset=utf-8\" http-equiv=\"content-type\" />");
-    /*text.replace(workingDir + "output_files",  newDir);
-    text.replace("[img src=", "<img src=");
-    text.replace(".bmp\"]", ".bmp\">");
-    text.replace(".bmp]", ".bmp>");
-    QDir dir(workingDir+"output_files");
-    dir.rename(workingDir+"output_files", newDir);*/
-    file->write(text.toAscii());
-}
 
 void MainForm::delTmpDir()
 {
@@ -910,92 +819,6 @@ void MainForm::delTmpDir()
     }
     dir.rmdir(workingDir + "output_files");
 
-}
-
-void MainForm::updateSP()
-{
-    if (settings.getCheckSpelling())
-        spellChecker->checkWord();
-}
-
-bool MainForm::eventFilter(QObject *object, QEvent *event)
-{
-    /*if (object ==  scrollArea->widget()) {
-        if (event->type() == QEvent::KeyPress) {
-            QKeyEvent * e = (QKeyEvent *) event;
-            if (e->modifiers() & Qt::ControlModifier) {
-                scrollArea->widget()->setCursor(*resizeCursor);
-                if ((e->key() == Qt::Key_Plus)||(e->key() == Qt::Key_Equal))
-                    scaleImage(1.05);
-                else
-                if (e->key() == Qt::Key_Minus)
-                    scaleImage(0.95);
-
-            } else {
-                scrollArea->widget()->setCursor(QCursor(Qt::ArrowCursor));
-            }
-        }
-        else
-        if (event->type() == QEvent::KeyRelease) {
-                scrollArea->widget()->setCursor(QCursor(Qt::ArrowCursor));
-        }
-        else
-        if (event->type() == QEvent::Wheel) {
-            QWheelEvent * e = (QWheelEvent *) event;
-            if (e->modifiers() & Qt::ControlModifier) {
-                scrollArea->widget()->setFocus();
-                scrollArea->widget()->setCursor(*resizeCursor);
-                if (e->delta() > 0)
-                    scaleImage(1.05);
-                else
-                    scaleImage(0.95);
-                return true;
-            }
-        }
-    } else */
-    if (object == textEdit) {
-        if (event->type() == QEvent::KeyPress) {
-            QKeyEvent *e = (QKeyEvent *) event;
-            if (e->modifiers() & Qt::ControlModifier) {
-                if ((e->key() == Qt::Key_Plus) || (e->key() == Qt::Key_Equal)) {
-                    enlargeFont();
-                    return true;
-                } else if (e->key() == Qt::Key_Minus) {
-                    decreaseFont();
-                    return true;
-                }
-            }
-        } else if (event->type() == QEvent::Wheel) {
-            QWheelEvent *e = (QWheelEvent *) event;
-            if (e->modifiers() & Qt::ControlModifier) {
-                if (e->delta() > 0)
-                    enlargeFont();
-                else
-                    decreaseFont();
-                return true;
-            }
-        }
-
-    }
-    return QMainWindow::eventFilter(object, event);
-}
-
-void MainForm::enlargeFont()
-{
-    int fontSize = textEdit->font().pointSize();
-    fontSize++;
-    QFont f(textEdit->font());
-    f.setPointSize(fontSize);
-    textEdit->setFont(f);
-}
-
-void MainForm::decreaseFont()
-{
-    int fontSize = textEdit->font().pointSize();
-    if (fontSize > 1) fontSize--;
-    QFont f(textEdit->font());
-    f.setPointSize(fontSize);
-    textEdit->setFont(f);
 }
 
 void MainForm::setResizingCusor()
@@ -1099,7 +922,7 @@ void MainForm::on_actionRecognize_block_activated()
 
 void MainForm::on_actionCheck_spelling_triggered()
 {
-
+    settings->setCheckSpelling(actionCheck_spelling->isChecked());
 }
 
 void MainForm::on_actionSave_current_image_activated()
@@ -1116,7 +939,7 @@ void MainForm::saveImageInternal(const QPixmap &pix)
     QString format = "JPEG";
     filters << jpegFilter << pngFilter;
     QFileDialog dialog(this,
-                       trUtf8("Save Image"), settings.getLastOutputDir());
+                       trUtf8("Save Image"), settings->getLastOutputDir());
     dialog.setFilters(filters);
     dialog.setAcceptMode(QFileDialog::AcceptSave);
     dialog.setDefaultSuffix("jpg");
@@ -1132,7 +955,7 @@ void MainForm::saveImageInternal(const QPixmap &pix)
         }
         QStringList fileNames;
         fileNames = dialog.selectedFiles();
-        settings.setLastOutputDir(dialog.directory().path());
+        settings->setLastOutputDir(dialog.directory().path());
         if (!pix.save(fileNames.at(0), format.toAscii().data(), 100))
             QMessageBox::critical(this, trUtf8("Error"), imageSaveFailed);
     }
@@ -1143,7 +966,6 @@ MainForm::~MainForm()
 {
     delete resizeBlockCursor;
     delete resizeCursor;
-    delete spellChecker;
     //delete fileChannel;
     delete graphicsInput;
     delete ba;
@@ -1158,12 +980,12 @@ void MainForm::on_actionSave_block_activated()
 
 void MainForm::on_actionCheck_spelling_activated()
 {
-    settings.setCheckSpelling(actionCheck_spelling->isChecked());
-    if (settings.getCheckSpelling()) {
-        spellChecker->setLanguage(settings.getLanguage());
-        actionCheck_spelling->setChecked(spellChecker->spellCheck());
+    settings->setCheckSpelling(actionCheck_spelling->isChecked());
+    if (settings->getCheckSpelling()) {
+        textEdit->setLanguage(settings->getLanguage());
+        actionCheck_spelling->setChecked(textEdit->spellCheck());
     } else
-        spellChecker->unSpellCheck();
+        textEdit->unSpellCheck();
 }
 
 /*void MainForm::on_alignButton_clicked()
@@ -1185,9 +1007,9 @@ void MainForm::on_actionDeskew_activated()
 void MainForm::on_actionSelect_HTML_format_activated()
 {
         if (actionSelect_HTML_format->isChecked())
-            settings.setOutputFormat("html");
+            settings->setOutputFormat("html");
         else
-            settings.setOutputFormat("text");
+            settings->setOutputFormat("text");
 }
 
 void MainForm::pasteimage()
@@ -1233,82 +1055,15 @@ void MainForm::deskewByBlock()
 void MainForm::selectTextArea()
 {
     graphicsInput->blockAllText();
-    //graphicsInput->splitPage();
 }
 
 void MainForm::showAdvancedSettings()
 {
     AdvancedConfigDialog dlg;
-    dlg.setCrop1(settings.getCropLoaded());
+    dlg.setCrop1(settings->getCropLoaded());
     if (dlg.exec()) {
-        settings.setCropLoaded(dlg.doCrop1());
+        settings->setCropLoaded(dlg.doCrop1());
     }
-}
-
-void MainForm::contextMenuRequested(const QPoint &point)
-{
-    QAction *action;
-    QMenu * menu = new QMenu(textEdit);
-    QStringList sl = spellChecker->suggestions();
-    //if (sl.count() == 0) {
-
-    action = new QAction(trUtf8("Undo\tCtrl+Z"), this);
-    action->setShortcut(QKeySequence("Ctrl+Z"));
-    connect(action, SIGNAL(triggered()), textEdit, SLOT(undo()));
-    menu->addAction(action);
-    action = new QAction(trUtf8("Redo\tCtrl+Shift+Z"), this);
-    action->setShortcut(QKeySequence("Ctrl+Shift+Z"));
-    connect(action, SIGNAL(triggered()), textEdit, SLOT(redo()));
-    menu->addAction(action);
-    action = new QAction("separator", this);
-    action->setText("");
-    action->setSeparator(true);
-    menu->addAction(action);
-    action = new QAction(trUtf8("Select All\tCtrl+A"), this);
-    action->setShortcut(QKeySequence("Ctrl+A"));
-    connect(action, SIGNAL(triggered()), textEdit, SLOT(selectAll()));
-    menu->addAction(action);
-    action = new QAction(trUtf8("Cut\tCtrl+X"), this);
-    action->setShortcut(QKeySequence("Ctrl+X"));
-    connect(action, SIGNAL(triggered()), textEdit, SLOT(cut()));
-    menu->addAction(action);
-    action = new QAction(trUtf8("Copy\tCtrl+C"), this);
-    action->setShortcut(QKeySequence("Ctrl+C"));
-    connect(action, SIGNAL(triggered()), textEdit, SLOT(copy()));
-    menu->addAction(action);
-    action = new QAction(trUtf8("Paste\tCtrl+V"), this);
-    action->setShortcut(QKeySequence("Ctrl+V"));
-    connect(action, SIGNAL(triggered()), textEdit, SLOT(paste()));
-    menu->addAction(action);
-    action = new QAction("separator", this);
-    action->setText("");
-    action->setSeparator(true);
-    menu->addAction(action);
-    action = new QAction(trUtf8("Larger Font\tCtrl++"), this);
-    connect(action, SIGNAL(triggered()), this, SLOT(enlargeFont()));
-    menu->addAction(action);
-    action = new QAction(trUtf8("Smaller Font\tCtrl+-"), this);
-    connect(action, SIGNAL(triggered()), this, SLOT(decreaseFont()));
-    menu->addAction(action);
-
-    //}
-    if (sl.count() > 0)
-        menu->addSeparator();
-    foreach(QString str, sl) {
-        QAction * action = menu->addAction(str);
-        connect(action, SIGNAL(triggered()), this, SLOT(replaceWord()));
-    }
-    menu->exec(textEdit->mapToGlobal(point));
-    delete menu;
-}
-
-void MainForm::replaceWord()
-{
-    QAction * action =  (QAction *) sender();
-    QTextCursor cursor = textEdit->textCursor();
-    cursor.select(QTextCursor::WordUnderCursor);
-    cursor.removeSelectedText();
-    cursor.insertText(action->text());
 }
 
 void MainForm::selectBlocks()
@@ -1328,5 +1083,14 @@ void MainForm::setSmallIcons()
         s.setWidth(48);
     }
     toolBar->setIconSize(s);
-    settings.setIconSize(s);
+    settings->setIconSize(s);
+}
+
+void MainForm::selectHTMLformat()
+{
+    if (actionSelect_HTML_format->isChecked())
+    settings->setOutputFormat("html");
+    else
+    settings->setOutputFormat("text");
+
 }

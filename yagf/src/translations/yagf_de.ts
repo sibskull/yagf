@@ -1,20 +1,22 @@
-<!DOCTYPE TS><TS>
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE TS>
+<TS version="2.0" language="de_DE">
 <context>
     <name>AdvancedConfigDialog</name>
     <message>
         <source>Advanced Settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Erweiterte Einstellungen</translation>
     </message>
     <message>
         <source>Crop Image When Loaded</source>
-        <translation type="unfinished"></translation>
+        <translation>Bild nach dem Laden beschneiden</translation>
     </message>
 </context>
 <context>
     <name>ConfigDialog</name>
     <message>
         <source>OCR Settings</source>
-        <translation type="unfinished"></translation>
+        <translation>OCR Einstellungen</translation>
     </message>
     <message>
         <source>OCR Engine</source>
@@ -22,58 +24,58 @@
     </message>
     <message>
         <source>cuneiform</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>tesseract</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Tesseract Setup</source>
-        <translation type="unfinished"></translation>
+        <translation>Tesseract Einstellungen</translation>
     </message>
     <message>
         <source>Location of the  tessdata directory:</source>
-        <translation type="unfinished"></translation>
+        <translation>Ort des tessdata Verzeichnisses:</translation>
     </message>
 </context>
-<context encoding="UTF-8">
+<context>
     <name>MainForm</name>
     <message>
         <source>Recognition language</source>
         <translation>Erkennungs-Sprache</translation>
     </message>
     <message>
-        <source>Undo<byte value="x9"/>Ctrl+Z</source>
-        <translation>Rückgängig<byte value="x9"/>Ctrl+Z</translation>
+        <source>Undo	Ctrl+Z</source>
+        <translation>Rückgängig	Ctrl+Z</translation>
     </message>
     <message>
-        <source>Redo<byte value="x9"/>Ctrl+Shift+Z</source>
-        <translation>Wiederherstellen<byte value="x9"/>Ctrl+Shift+Z</translation>
+        <source>Redo	Ctrl+Shift+Z</source>
+        <translation>Wiederherstellen	Ctrl+Shift+Z</translation>
     </message>
     <message>
-        <source>Select All<byte value="x9"/>Ctrl+A</source>
-        <translation>Alles markieren<byte value="x9"/>Ctrl+A</translation>
+        <source>Select All	Ctrl+A</source>
+        <translation>Alles markieren	Ctrl+A</translation>
     </message>
     <message>
-        <source>Cut<byte value="x9"/>Ctrl+X</source>
-        <translation>Ausschneiden<byte value="x9"/>Ctrl+X</translation>
+        <source>Cut	Ctrl+X</source>
+        <translation>Ausschneiden	Ctrl+X</translation>
     </message>
     <message>
-        <source>Copy<byte value="x9"/>Ctrl+C</source>
-        <translation>Kopieren<byte value="x9"/>Ctrl+C</translation>
+        <source>Copy	Ctrl+C</source>
+        <translation>Kopieren	Ctrl+C</translation>
     </message>
     <message>
-        <source>Paste<byte value="x9"/>Ctrl+V</source>
-        <translation>Einfügen<byte value="x9"/>Ctrl+V</translation>
+        <source>Paste	Ctrl+V</source>
+        <translation>Einfügen	Ctrl+V</translation>
     </message>
     <message>
-        <source>Larger Font<byte value="x9"/>Ctrl++</source>
-        <translation>Schrift vergrößern<byte value="x9"/>Ctrl++</translation>
+        <source>Larger Font	Ctrl++</source>
+        <translation>Schrift vergrößern	Ctrl++</translation>
     </message>
     <message>
-        <source>Smaller Font<byte value="x9"/>Ctrl+-</source>
-        <translation>Schrift verkleinern<byte value="x9"/>Ctrl+-</translation>
+        <source>Smaller Font	Ctrl+-</source>
+        <translation>Schrift verkleinern	Ctrl+-</translation>
     </message>
     <message>
         <source>Open Image</source>
@@ -97,7 +99,7 @@
     </message>
     <message>
         <source>Bulgarian</source>
-        <translation type="unfinished"></translation>
+        <translation>Bulgarisch</translation>
     </message>
     <message>
         <source>Croatian</source>
@@ -153,11 +155,11 @@
     </message>
     <message>
         <source>Portuguese</source>
-        <translation type="unfinished">Portugiesisch</translation>
+        <translation>Portugiesisch</translation>
     </message>
     <message>
         <source>Romanian</source>
-        <translation type="unfinished">Rumänisch</translation>
+        <translation>Rumänisch</translation>
     </message>
     <message>
         <source>Spanish</source>
@@ -197,11 +199,11 @@
     </message>
     <message>
         <source>Image loading error</source>
-        <translation type="unfinished"></translation>
+        <translation>Fehler beim Laden des Bildes</translation>
     </message>
     <message>
         <source>Image %1 could not be loaded</source>
-        <translation type="unfinished"></translation>
+        <translation>Bild %1 konnte nicht geladen werden</translation>
     </message>
     <message>
         <source>Starting cuneiform failed</source>
@@ -249,92 +251,93 @@
     </message>
     <message>
         <source>Save Image</source>
-        <translation type="unfinished"></translation>
+        <translation>Bild speichern</translation>
     </message>
     <message>
         <source>Importing pages from the PDF document...</source>
-        <translation type="unfinished"></translation>
+        <translation>Seiten aus dem PDF Dokument importieren...</translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation type="unfinished"></translation>
+        <translation>Abbrechen</translation>
     </message>
     <message>
         <source>No compatible PDF converter software could be found. Please install either the pdftoppm utility or the GhostScript package (from this the gs command will be required).</source>
-        <translation type="unfinished"></translation>
+        <translation>Es konnte keine kompatible PDF Konvertierungssoftware gefunden werden. Bitte installieren Sie entweder pdftoppm aus dem Paket poppler oder das GhostScript Paket (aus diese wird der &quot;gs&quot; Befehl gebraucht).</translation>
     </message>
     <message>
         <source>PDF file name may not be empty</source>
-        <translation type="unfinished"></translation>
+        <translation>PDF Dateiname darf nicht leer sein</translation>
     </message>
     <message>
         <source>Select an existing directory for output or create some new one</source>
-        <translation type="unfinished"></translation>
+        <translation>Wählen Sie ein bestehendes Verzeichnis für die Ausgabe oder erstellen sie ein neues</translation>
     </message>
     <message>
         <source>Selecting Directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Verzeichnis auswählen</translation>
     </message>
     <message>
         <source>The selected directory is not empty</source>
-        <translation type="unfinished"></translation>
+        <translation>Das ausgewählte Verzeichnis ist nicht leer</translation>
     </message>
     <message>
         <source>Finnish (tesseract only)</source>
-        <translation type="unfinished"></translation>
+        <translation>Finnisch (nur tesseract)</translation>
     </message>
     <message>
         <source>Greek (tesseract only)</source>
-        <translation type="unfinished"></translation>
+        <translation>Griechisch (nur tesseract)</translation>
     </message>
     <message>
         <source>Norwegian (tesseract only)</source>
-        <translation type="unfinished"></translation>
+        <translation>Norwegisch (nur tesseract)</translation>
     </message>
     <message>
         <source>Slovakian (tesseract only)</source>
-        <translation type="unfinished"></translation>
+        <translation>Slowakisch (nur tesseract)</translation>
     </message>
     <message>
         <source>Turkish (tesseract only)</source>
-        <translation type="unfinished"></translation>
+        <translation>Türkisch (nur tesseract)</translation>
     </message>
     <message>
         <source>Starting tesseract failed</source>
-        <translation type="unfinished"></translation>
+        <translation>tesseract startete nicht</translation>
     </message>
     <message>
         <source>cuneiform not found, switching to tesseract</source>
-        <translation type="unfinished"></translation>
+        <translation>cuneiform nicht gefunden, wechsle zu tesseract</translation>
     </message>
     <message>
         <source>No recognition engine found.
 Please install either cuneiform or tesseract</source>
-        <translation type="unfinished"></translation>
+        <translation>Keine Erkennungs Engine gefunden.
+Bitte cuneiform und/oder tesseract installieren</translation>
     </message>
     <message>
         <source>tesseract not found, switching to cuneiform</source>
-        <translation type="unfinished"></translation>
+        <translation>tesseract nicht gefunden, wechsel zu cuneiform</translation>
     </message>
     <message>
         <source>No PDF converter installed</source>
-        <translation type="unfinished"></translation>
+        <translation>Kein PDF Konvertierer installiert</translation>
     </message>
     <message>
         <source>German Gothic (tesseract 3+)</source>
-        <translation type="unfinished"></translation>
+        <translation>Deutsche Fraktur (tesseract 3+)</translation>
     </message>
     <message>
         <source>Hebrew (tesseract 3.0.1+)</source>
-        <translation type="unfinished"></translation>
+        <translation>Hebräisch (tesseract 3.0.1+)</translation>
     </message>
     <message>
         <source>Swedish Gothic (tesseract 3+)</source>
-        <translation type="unfinished"></translation>
+        <translation>Schwedische Fraktur (tesseract 3+)</translation>
     </message>
-    <message encoding="UTF-8">
+    <message utf8="true">
         <source>&lt;p align=&quot;center&quot;&gt;&lt;b&gt;YAGF - Yet Another Graphical Front-end for cuneiform and tesseract OCR engines&lt;/b&gt;&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;Version %1&lt;/p&gt; &lt;p align=&quot;center&quot;&gt;Ⓒ 2009-2012 Andrei Borovsky&lt;/p&gt; This is a free software distributed under GPL v3. Visit &lt;a href=&quot;http://symmetrica.net/cuneiform-linux/yagf-en.html&quot;&gt;http://symmetrica.net/cuneiform-linux/yagf-en.html&lt;/a&gt; for more details.</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p align=&quot;center&quot;&gt;&lt;b&gt;YAGF - Yet Another Graphical Front-end (Noch ein weiteres grafisches Frontend) fürr cuneiform und tesseract OCR (Optical Character Recognition = Optische Zeichen Erkennung) engines&lt;/b&gt;&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;Version %1&lt;/p&gt; &lt;p align=&quot;center&quot;&gt;Ⓒ 2009-2012 Andrei Borovsky&lt;/p&gt; Dies ist freie Softwater die unter der GPL v3 verbreitet wird. Besuchen Sie &lt;a href=&quot;http://symmetrica.net/cuneiform-linux/yagf-en.html&quot;&gt;http://symmetrica.net/cuneiform-linux/yagf-en.html&lt;/a&gt; für weitere Informationen. {2009-2012?}</translation>
     </message>
 </context>
 <context>
@@ -501,154 +504,168 @@ Please install either cuneiform or tesseract</source>
     </message>
     <message>
         <source>Check spelling</source>
-        <translation type="unfinished">Rechtschreibprüfung</translation>
+        <translation>Rechtschreibprüfung</translation>
     </message>
     <message>
         <source>Save current image...</source>
-        <translation type="unfinished"></translation>
+        <translation>Aktuelles Bild speichern...</translation>
     </message>
     <message>
         <source>Save currently opened image in its real size</source>
-        <translation type="unfinished"></translation>
+        <translation>Aktuelles Bild mit wirklicher Auflösung speichern</translation>
     </message>
     <message>
         <source>Save block</source>
-        <translation type="unfinished"></translation>
+        <translation>Block speichern</translation>
     </message>
     <message>
         <source>Save the current block to the image file</source>
-        <translation type="unfinished"></translation>
+        <translation>Aktuellen Block in die Bilddatei speichern</translation>
     </message>
     <message>
         <source>Select HTML format</source>
-        <translation type="unfinished"></translation>
+        <translation>HTML Format auswählen</translation>
     </message>
     <message>
         <source>Select HTML format as recognition output</source>
-        <translation type="unfinished"></translation>
+        <translation>HTML Format als Ausgabe der Erkennung wählen</translation>
     </message>
     <message>
         <source>&amp;Settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Ein&amp;stellungen</translation>
     </message>
     <message>
         <source>&lt;&lt;</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Hide/Show Toolbar</source>
-        <translation type="unfinished"></translation>
+        <translation>Werkzeugleiste anzeigen/verbergen</translation>
     </message>
     <message>
         <source>Import from PDF...</source>
-        <translation type="unfinished"></translation>
+        <translation>Aus PDF importieren ...</translation>
     </message>
     <message>
         <source>Import pages from PDF documents</source>
-        <translation type="unfinished"></translation>
+        <translation>Seiten aus PDF Dokumenten importieren</translation>
     </message>
     <message>
         <source>OCR Settings</source>
-        <translation type="unfinished"></translation>
+        <translation>OCR Einstellungen</translation>
     </message>
     <message>
         <source>Set up the OCR parameters</source>
-        <translation type="unfinished"></translation>
+        <translation>OCR Parameter einstellen</translation>
     </message>
     <message>
         <source>Paste Image</source>
-        <translation type="unfinished"></translation>
+        <translation>Bild einfügen</translation>
     </message>
     <message>
         <source>Paste image from clipboard</source>
-        <translation type="unfinished"></translation>
+        <translation>Bild der Zwischenablage einfügen</translation>
     </message>
     <message>
         <source>Select Text Area</source>
-        <translation type="unfinished"></translation>
+        <translation>Textbereich auwählen</translation>
     </message>
     <message>
         <source>Deskew  Block</source>
-        <translation type="unfinished"></translation>
+        <translation>Block entzerren</translation>
     </message>
     <message>
         <source>Deskew the current block</source>
-        <translation type="unfinished"></translation>
+        <translation>Aktuellen Block entzerren</translation>
     </message>
     <message>
         <source>Deskew</source>
-        <translation type="unfinished"></translation>
+        <translation>Entzerren</translation>
     </message>
     <message>
         <source>Correct the page skew </source>
-        <translation type="unfinished"></translation>
+        <translation>Seitenverzerrung korrigieren</translation>
     </message>
     <message>
         <source>Advanced Settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Erweiterte Einstellungen</translation>
     </message>
     <message>
         <source>The settings you should probably never change</source>
-        <translation type="unfinished"></translation>
+        <translation>Einstellungen die sie wahrscheinlich nie ändern sollten</translation>
+    </message>
+    <message>
+        <source>select multiple blocks</source>
+        <translation>Mehrere Blöcke auswählen</translation>
+    </message>
+    <message>
+        <source>Splits text into several blocks</source>
+        <translation>Teilt Text in mehrere Blöcke</translation>
+    </message>
+    <message>
+        <source>Toggle Large/Small Icons</source>
+        <translation>Große/kleine Icons</translation>
     </message>
 </context>
 <context>
     <name>PopplerDialog</name>
     <message>
         <source>Import from PDF</source>
-        <translation type="unfinished"></translation>
+        <translation>Aus PDF importieren</translation>
     </message>
     <message>
         <source>File Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Dateiname</translation>
     </message>
     <message>
         <source>Select...</source>
-        <translation type="unfinished"></translation>
+        <translation>Auswählen...</translation>
     </message>
     <message>
         <source>Pages</source>
-        <translation type="unfinished"></translation>
+        <translation>Seiten</translation>
     </message>
     <message>
         <source>From</source>
-        <translation type="unfinished"></translation>
+        <translation>Von</translation>
     </message>
     <message>
         <source>To</source>
-        <translation type="unfinished"></translation>
+        <translation>bis</translation>
     </message>
     <message>
         <source>Entire Document</source>
-        <translation type="unfinished"></translation>
+        <translation>Ganzes Dokument</translation>
     </message>
 </context>
 <context>
     <name>QObject</name>
     <message>
         <source>JPEG Files (*.jpg)</source>
-        <translation type="unfinished"></translation>
+        <translation>JPEG Dateien (*.jpg)</translation>
     </message>
     <message>
         <source>PNG Files (*.png)</source>
-        <translation type="unfinished"></translation>
+        <translation>PNG Dateien (*.png)</translation>
     </message>
     <message>
         <source>Failed to save the image</source>
-        <translation type="unfinished"></translation>
+        <translation>Speichern des Bilds schlug fehl</translation>
     </message>
     <message>
         <source>Required spelling dictionary (%1) is not found.
 Spell-checking is disabled.
 Try to install an appropriate aspell dictionary.</source>
-        <translation type="unfinished"></translation>
+        <translation>Erforderliches (%1) Wörterbuch nicht gefunden.
+Rechtschreibprüfung ist deaktiviert.
+Bitte entsprechendes aspell Wörterbuch installieren.</translation>
     </message>
 </context>
 <context>
     <name>SideBar</name>
     <message>
         <source>Drop files here</source>
-        <translation type="unfinished"></translation>
+        <translation>Dateien hier ablegen</translation>
     </message>
 </context>
 </TS>

@@ -17,6 +17,7 @@
 
 */
 
+#include "settings.h"
 #include <QMainWindow>
 #include <QString>
 #include "ui_mainform.h"
@@ -29,7 +30,6 @@ class QCheckBox;
 class QLabel;
 class QCloseEvent;
 class QPixmap;
-class QSettings;
 class QProcess;
 class QByteArray;
 class QFile;
@@ -42,12 +42,7 @@ class ccbuilder;
 
 typedef QMap<QString, QString> TesMap;
 
-const QString version = "0.9";
-
-enum SelectedEngine {
-    UseCuneiform,
-    UseTesseract
-};
+const QString version = "0.9.1";
 
 class MainForm : public QMainWindow, public Ui::MainWindow
 {
@@ -97,19 +92,16 @@ private slots:
     void addPDFPage(QString pageName);
     void finishedPDF();
     void pasteimage();
-    void blockAllText();
     void deskewByBlock();
+    void selectTextArea();
+    void selectBlocks();
+    void setSmallIcons();
 protected:
     bool eventFilter(QObject *object, QEvent *event);
 private:
     virtual void closeEvent(QCloseEvent *event);
-    void deskew(QImage * img);
-    void AnalizePage();
-    void rotateImage(int deg);
     void scaleImage(double sf);
     void initSettings();
-    void readSettings();
-    void writeSettings();
     void fillLanguagesBox();
     void loadFile(const QString &fn, bool loadIntoView = true);
     //void loadFileWithPixmap(const QString &fn, const QPixmap &pixmap);
@@ -122,26 +114,16 @@ private:
     bool useTesseract(const QString &inputFile);
     void saveImageInternal(const QPixmap &pix);
     void loadFromCommandLine();
-    void findTessDataPath();
-    QImage tryRotate(QImage image, qreal angle);
     bool imageLoaded;
     bool hasCopy;
-    bool cropLoaded;
     QComboBox *selectLangsBox;
     QGraphicsInput *graphicsInput;
-    bool singleColumn;
-    QString language;
-    QString outputFormat;
-    QString lastDir;
-    QString lastOutputDir;
     QString workingDir;
     QString fileName;
-    QSettings *settings;
     QCursor *resizeCursor;
     QCursor *resizeBlockCursor;
     bool useXSane;
     bool textSaved;
-    bool checkSpelling;
     QProcess *scanProcess;
     QByteArray *ba;
     SpellChecker *spellChecker;
@@ -149,10 +131,9 @@ private:
     QMenu *m_menu;
     PDFExtractor * pdfx;
     QProgressDialog pdfPD;
-    QString tessdataPath;
     TesMap * tesMap;
-    SelectedEngine selectedEngine;
     int ifCounter;
+    Settings settings;
 //  QLabel * displayLabel;
 private slots:
     void readyRead(int sig);
@@ -163,7 +144,6 @@ private slots:
     void rightMouseClicked(int x, int y, bool inTheBlock);
     void onShowWindow();
     void showAdvancedSettings();
-    QString selectDefaultLanguageName();
     void contextMenuRequested(const QPoint& point);
     void replaceWord();
  };

@@ -42,12 +42,12 @@ bool QSnippet::addFile(const QString &name, const QImage * image)
     return true;
 }
 
-void QSnippet::setRotation(int rot)
+void QSnippet::setRotation(qreal rot)
 {
     rotation = rot;
 }
 
-int QSnippet::getRotation()
+qreal QSnippet::getRotation()
 {
     return rotation;
 }

@@ -19,8 +19,6 @@
 
 #include "sidebar.h"
 #include "droplabel.h"
-#include "BlockAnalysis.h"
-#include "SkewAnalysis.h"
 #include "popplerdialog.h"
 #include "pdfextractor.h"
 #include "pdf2ppt.h"
@@ -28,9 +26,6 @@
 #include "configdialog.h"
 #include "advancedconfigdialog.h"
 #include "mainform.h"
-#include "ccbuilder.h"
-#include "analysis.h"
-#include "CCAnalysis.h"
 #include <signal.h>
 #include <QComboBox>
 #include <QLabel>
@@ -41,7 +36,6 @@
 #include <QPainter>
 #include <QSize>
 #include <QStringList>
-#include <QSettings>
 #include <QDir>
 #include <QFileInfo>
 #include <QList>
@@ -59,7 +53,6 @@
 #include <QRegExp>
 #include <QClipboard>
 #include <QTransform>
-#include <QProcessEnvironment>
 #include <QMap>
 #include "qgraphicsinput.h"
 #include "utils.h"
@@ -94,19 +87,10 @@ MainForm::MainForm(QWidget *parent): QMainWindow(parent)
     QLabel *label = new QLabel();
     label->setMargin(4);
     label->setText(trUtf8("Recognition language"));
-    //QLabel *label1 = new QLabel();
-    //label1->setMargin(4);
-    //label1->setText(trUtf8("Output format"));
-    //spellCheckBox = new QCheckBox(trUtf8("Check spelling"), 0);
     frame->show();
-    //selectFormatBox = new QComboBox();
     toolBar->addWidget(label);
     selectLangsBox->setFrame(true);
     toolBar->addWidget(selectLangsBox);
-    //toolBar->addWidget(label1);
-    //toolBar->addWidget(selectFormatBox);
-    //toolBar->addWidget(spellCheckBox);
-//  pixmap = new QPixmap();
     graphicsInput = new QGraphicsInput(QRectF(0, 0, 2000, 2000), graphicsView) ;
     graphicsInput->addToolBarAction(actionHideShowTolbar);
     graphicsInput->addToolBarAction(this->actionTBLV);
@@ -117,13 +101,12 @@ MainForm::MainForm(QWidget *parent): QMainWindow(parent)
     graphicsInput->addToolBarAction(actionRotate_90_CW);
     graphicsInput->addToolBarAction(actionDeskew);
     graphicsInput->addToolBarSeparator();
-   //graphicsInput->addToolBarAction(actionSelect_Text_Area);
+    graphicsInput->addToolBarAction(actionSelect_Text_Area);
+    graphicsInput->addToolBarAction(actionSelect_multiple_blocks);
     graphicsInput->addToolBarAction(ActionClearAllBlocks);
 
     statusBar()->show();
     imageLoaded = false;
-    lastDir = QDir::homePath();
-    lastOutputDir = QDir::homePath();
     useXSane = TRUE;
     textSaved = TRUE;
     hasCopy = false;
@@ -142,12 +125,6 @@ MainForm::MainForm(QWidget *parent): QMainWindow(parent)
     connect(actionAbout, SIGNAL(triggered()), this, SLOT(showAboutDlg()));
     connect(actionOnlineHelp, SIGNAL(triggered()), this, SLOT(showHelp()));
     connect(actionCopyToClipboard, SIGNAL(triggered()), this, SLOT(copyClipboard()));
-    //connect(rotateCWButton, SIGNAL(clicked()), this, SLOT(rotateCWButtonClicked()));
-    //connect(rotateCCWButton, SIGNAL(clicked()), this, SLOT(rotateCCWButtonClicked()));
-    //connect(rotate180Button, SIGNAL(clicked()), this, SLOT(rotate180ButtonClicked()));
-    //connect(enlargeButton, SIGNAL(clicked()), this, SLOT(enlargeButtonClicked()));
-    //connect(decreaseButton, SIGNAL(clicked()), this, SLOT(decreaseButtonClicked()));
-    //connect(singleColumnButton, SIGNAL(clicked()), this, SLOT(singleColumnButtonClicked()));
     textEdit->setContextMenuPolicy(Qt::CustomContextMenu);
     connect(textEdit, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(contextMenuRequested(QPoint)));
     connect(textEdit, SIGNAL(copyAvailable(bool)), this, SLOT(copyAvailable(bool)));
@@ -159,9 +136,6 @@ MainForm::MainForm(QWidget *parent): QMainWindow(parent)
     fillLanguagesBox();
     initSettings();
     delTmpFiles();
-
-    actionCheck_spelling->setChecked(checkSpelling);
-
     scanProcess = new QProcess(this);
     QXtUnixSignalCatcher::connectUnixSignal(SIGUSR2);
     ba = new QByteArray();
@@ -179,13 +153,12 @@ MainForm::MainForm(QWidget *parent): QMainWindow(parent)
     resizeBlockCursor = new QCursor(l_cursor);
    // textEdit->setContextMenuPolicy(Qt::ActionsContextMenu);
 
-    //m_toolBar = new SideBar(this);
-    //addToolBar(Qt::LeftToolBarArea, m_toolBar);
-    this->
-    sideBar->show();
+    this->sideBar->show();
     connect(sideBar, SIGNAL(fileSelected(const QString &)), this, SLOT(fileSelected(const QString &)));
 
     connect(actionRecognize_All_Pages, SIGNAL(triggered()), this, SLOT(recognizeAll()));
+
+    graphicsInput->setSideBar(sideBar);
 
     QPixmap pm;
     pm.load(":/align.png");
@@ -226,7 +199,7 @@ void MainForm::onShowWindow()
 {
     // actionCheck_spelling->setCheckable(true);
     connect(selectLangsBox, SIGNAL(currentIndexChanged(int)), this, SLOT(newLanguageSelected(int)));
-    selectLangsBox->setCurrentIndex(selectLangsBox->findData(QVariant(language)));
+    selectLangsBox->setCurrentIndex(selectLangsBox->findData(QVariant(settings.getLanguage())));
     //spellChecker->setLanguage(language);
     //actionCheck_spelling->setEnabled(spellChecker->spellCheck());
 }
@@ -246,49 +219,17 @@ void MainForm::loadFromCommandLine()
     }
 }
 
-void MainForm::findTessDataPath()
-{
-    QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
-    if (env.contains("TESSDATA_PREFIX")) {
-        tessdataPath = env.value("TESSDATA_PREFIX");
-        return;
-    }
-    QDir dir;
-    dir.setPath("/usr/share/tessdata");
-    if (dir.exists()) {
-        tessdataPath = "/usr/share/";
-        return;
-    }
-    dir.setPath("/usr/local/share/tessdata");
-    if (dir.exists()) {
-        tessdataPath = "/usr/local/share/";
-        return;
-    }
-    dir.setPath("/usr/local/share/tesseract-ocr/tessdata");
-    if (dir.exists()) {
-        tessdataPath = "/usr/local/share/tesseract-ocr/";
-        return;
-    }
-    dir.setPath("/usr/share/tesseract-ocr/tessdata");
-    if (dir.exists()) {
-        tessdataPath = "/usr/share/tesseract-ocr/";
-        return;
-    }
-    tessdataPath.clear();
-    return;
-}
-
 void MainForm::showConfigDlg()
 {
     ConfigDialog dialog(this);
-    if (selectedEngine == UseCuneiform)
+    if (settings.getSelectedEngine() == UseCuneiform)
         dialog.setSelectedEngine(0);
     else
         dialog.setSelectedEngine(1);
-    dialog.setTessDataPath(tessdataPath);
+    dialog.setTessDataPath(settings.getTessdataPath());
     if (dialog.exec()) {
-        selectedEngine = dialog.selectedEngine() == 0 ? UseCuneiform : UseTesseract;
-        tessdataPath = dialog.tessdataPath();
+        settings.setSelectedEngine(dialog.selectedEngine() == 0 ? UseCuneiform : UseTesseract);
+        settings.setTessdataPath(dialog.tessdataPath());
     }
 }
 
@@ -343,12 +284,12 @@ void MainForm::finishedPDF()
 void MainForm::loadImage()
 {
     QFileDialog dialog(this,
-                       trUtf8("Open Image"), lastDir, trUtf8("Image Files (*.png *.jpg *.jpeg *.bmp *.tiff *.tif *.gif *.pnm *.pgm *.pbm *.ppm)"));
+                       trUtf8("Open Image"), settings.getLastDir(), trUtf8("Image Files (*.png *.jpg *.jpeg *.bmp *.tiff *.tif *.gif *.pnm *.pgm *.pbm *.ppm)"));
     dialog.setFileMode(QFileDialog::ExistingFiles);
     if (dialog.exec()) {
         QStringList fileNames;
         fileNames = dialog.selectedFiles();
-        lastDir = dialog.directory().path();
+        settings.setLastDir(dialog.directory().path());
         if (fileNames.count() > 0)
          loadFile(fileNames.at(0));
         if (!imageLoaded)
@@ -385,27 +326,21 @@ void MainForm::closeEvent(QCloseEvent *event)
 
     }
     scanProcess->terminate();
-    writeSettings();
-    QByteArray ba;
+    settings.setFontSize(textEdit->font().pointSize());
+    settings.setSize(size());
+    settings.setPosition(pos());
+    settings.setFullScreen(isFullScreen());
+    settings.writeSettings();
     delTmpFiles();
     event->accept();
     QXtUnixSignalCatcher::catcher()->disconnectUnixSugnals();
-}
-
-void MainForm::rotateImage(int deg)
-{
-    if (imageLoaded) {
-        graphicsInput->clearBlocks();
-        graphicsInput->setViewScale(sideBar->getScale(), deg); //rotateImage(deg,  graphicsView->width()/2, graphicsView->height()/2);
-        sideBar->setRotation(graphicsInput->getAngle());
-    }
 }
 
 void MainForm::rotateCWButtonClicked()
 {
     QCursor oldCursor = cursor();
     setCursor(Qt::WaitCursor);
-    rotateImage(90);
+    graphicsInput->rotateImage(90);
     setCursor(oldCursor);
 }
 
@@ -413,14 +348,14 @@ void MainForm::rotateCCWButtonClicked()
 {
     QCursor oldCursor = cursor();
     setCursor(Qt::WaitCursor);
-    rotateImage(-90);
+    graphicsInput->rotateImage(-90);
     setCursor(oldCursor);
 }
 void MainForm::rotate180ButtonClicked()
 {
     QCursor oldCursor = cursor();
     setCursor(Qt::WaitCursor);
-    rotateImage(180);
+    graphicsInput->rotateImage(180);
     setCursor(oldCursor);
 }
 
@@ -449,87 +384,36 @@ void MainForm::initSettings()
     workingDir = QDir::homePath();
     if (!workingDir.endsWith("/"))
         workingDir += '/';
-    workingDir += ".yagf/";
+    QDir d(workingDir + ".config");
+    if (d.exists()) workingDir += ".config/";
+    QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
+    workingDir = env.value("XDG_CONFIG_HOME", workingDir);
+    if (!workingDir.endsWith("/"))
+        workingDir += '/';
+    workingDir += "yagf/";
     QDir dir(workingDir);
     if (!dir.exists())
         dir.mkdir(workingDir);
-    QString iniFile = workingDir + "yagf.ini";
-    settings = new QSettings(iniFile, QSettings::IniFormat);
-    QFileInfo iniFileInfo(iniFile);
-    if (iniFileInfo.exists())
-        readSettings();
+    settings.readSettings(workingDir);
+    settings.writeSettings();
+    if (settings.getFullScreen())
+        showFullScreen();
     else {
-        selectedEngine = UseCuneiform; // Default OCR engine
-        language = selectDefaultLanguageName();
-        if ( language == "rus" )
-             language.append("eng"); // Set Russian-English for Russian as default
-        writeSettings();
+        move(settings.getPosition());
+        resize(settings.getSize());
     }
+    QFont f(textEdit->font());
+    f.setPointSize(settings.getFontSize());
+    textEdit->setFont(f);
+    actionCheck_spelling->setChecked(settings.getCheckSpelling());
+    actionSelect_HTML_format->setChecked(settings.getOutputFormat() != "text");
+
     QList<int> li;
     li.append(1);
     li.append(1);
     splitter->setSizes(li);
-
-    // QFile::remove(workingDir + "input.bmp");
-    // QFile::remove(workingDir + "output.txt");
+    toolBar->setIconSize(settings.getIconSize());
 }
-
-void MainForm::readSettings()
-{
-    resize(settings->value("mainwindow/size", QSize(400, 400)).toSize());
-    move(settings->value("mainwindow/pos", QPoint(200, 200)).toPoint());
-    if (settings->value("mainwindow/fullScreen").toBool())
-        showFullScreen();
-    singleColumn = settings->value("ocr/singleColumn", bool(false)).toBool();
-    //singleColumnButton->setChecked(singleColumn);
-    lastDir = settings->value("mainwindow/lastDir").toString();
-    lastOutputDir = settings->value("mainwindow/lastOutputDir", lastOutputDir).toString();
-    language = settings->value("ocr/language",  selectDefaultLanguageName()).toString();
-    //selectLangsBox->setCurrentIndex(selectLangsBox->findData(QVariant(language)));
-    outputFormat = settings->value("ocr/outputFormat", QString("text")).toString();
-    if (outputFormat == "") outputFormat = "text";
-    actionSelect_HTML_format->setChecked(outputFormat != "text"); // =  selectFormatBox->setCurrentIndex(selectFormatBox->findData(QVariant(outputFormat)));
-    checkSpelling = settings->value("mainWindow/checkSpelling", bool(true)).toBool();
-    bool ok;
-    QFont f(textEdit->font());
-    f.setPointSize(settings->value("mainWindow/fontSize", int(12)).toInt(&ok));
-    textEdit->setFont(f);
-    QString defEngine;
-    if (findProgram("tesseract")&&(!findProgram("cuneiform")))
-        defEngine = "tesseract";
-    else
-        defEngine = "cuneiform";
-    QString engine = settings->value("ocr/engine", QVariant(defEngine)).toString();
-    if (engine == "cuneiform")
-        selectedEngine = UseCuneiform;
-    else
-        selectedEngine = UseTesseract;
-    findTessDataPath();
-    tessdataPath = settings->value("ocr/tessData", QVariant(tessdataPath)).toString();
-    if (tessdataPath.isEmpty())
-        findTessDataPath();
-    cropLoaded =  settings->value("processing/crop1", QVariant(true)).toBool();
-}
-
-void MainForm::writeSettings()
-{
-    settings->setValue("mainwindow/size", size());
-    settings->setValue("mainwindow/pos", pos());
-    settings->setValue("mainwindow/fullScreen", isFullScreen());
-    settings->setValue("mainwindow/lastDir", lastDir);
-    settings->setValue("mainWindow/checkSpelling", checkSpelling);
-    settings->setValue("mainwindow/lastOutputDir", lastOutputDir);
-    settings->setValue("mainWindow/fontSize", textEdit->font().pointSize());
-    settings->setValue("ocr/language", language);
-    settings->setValue("ocr/singleColumn", singleColumn);
-    settings->setValue("ocr/outputFormat", outputFormat);
-    QString engine = selectedEngine == UseCuneiform ? QString("cuneiform") : QString("tesseract");
-    settings->setValue("ocr/engine", engine);
-    settings->setValue("ocr/tessData", tessdataPath);
-    settings->setValue("processing/crop1", cropLoaded);
-    settings->sync();
-}
-
 
 void MainForm::fillLanguagesBox()
 {
@@ -600,82 +484,15 @@ void MainForm::fillLanguagesBox()
     tesMap->insert("slk", "slk");
 }
 
-QString MainForm::selectDefaultLanguageName()
-{
-    QLocale loc = QLocale::system();
-    QString name = "rus";
-    switch (loc.language()) {
-        case QLocale::Bulgarian:
-            name = "bul";
-            break;
-        case QLocale::Czech:
-            name = "cze";
-            break;
-        case QLocale::Danish:
-            name = "dan";
-            break;
-        case QLocale::German:
-            name = "ger";
-            break;
-        case QLocale::Dutch:
-            name = "dut";
-            break;
-        case QLocale::English:
-            name = "eng";
-            break;
-        case QLocale::Spanish:
-            name = "spa";
-            break;
-        case QLocale::French:
-            name = "fra";
-            break;
-        case QLocale::Hungarian:
-            name = "hun";
-            break;
-        case QLocale::Italian:
-            name = "ita";
-            break;
-        case QLocale::Latvian:
-            name = "lav";
-            break;
-        case QLocale::Lithuanian:
-            name = "lit";
-            break;
-        case QLocale::Polish:
-            name = "pol";
-            break;
-        case QLocale::Portuguese:
-            name = "por";
-            break;
-        case QLocale::Romanian:
-            name = "rum";
-            break;
-        case QLocale::Swedish:
-            name = "swe";
-            break;
-        case QLocale::Serbian:
-            name = "srp";
-            break;
-        case QLocale::Slovenian:
-            name = "slo";
-            break;
-        case QLocale::Ukrainian:
-            name = "ukr";
-        default:
-            name = "rus";
-    }
-    return name;
-}
-
 void MainForm::newLanguageSelected(int index)
 {
-    language = selectLangsBox->itemData(index).toString();
-    actionCheck_spelling->setEnabled(spellChecker->hasDict(language));
-    if (checkSpelling) {
-        spellChecker->setLanguage(language);
-        checkSpelling = spellChecker->spellCheck();
+    settings.setLanguage(selectLangsBox->itemData(index).toString());
+    actionCheck_spelling->setEnabled(spellChecker->hasDict(settings.getLanguage()));
+    if (settings.getCheckSpelling()) {
+        spellChecker->setLanguage(settings.getLanguage());
+        settings.setCheckSpelling(spellChecker->spellCheck());
         //actionCheck_spelling->setEnabled(checkSpelling);
-        actionCheck_spelling->setChecked(checkSpelling);
+        actionCheck_spelling->setChecked(settings.getCheckSpelling());
     }
 
 }
@@ -741,7 +558,7 @@ void MainForm::loadFile(const QString &fn, bool loadIntoView)
     if ((imageLoaded = image.load(fn))) {
         //pixmap.detach();
         //sideBar->addFile(fn , &image);
-        if (cropLoaded) {
+        if (settings.getCropLoaded()) {
             if (crop1.height() == 0) {
                 CCBuilder * cb = new CCBuilder(image);
                 cb->setGeneralBrightness(360);
@@ -857,11 +674,9 @@ bool MainForm::useTesseract(const QString &inputFile)
     sl.append(inputFile);
     sl.append(outputBase);
     sl.append("-l");
-    sl.append(tesMap->value(language));
+    sl.append(tesMap->value(settings.getLanguage()));
     QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
-    if (!tessdataPath.endsWith("/"))
-        tessdataPath = tessdataPath.append("/");
-    env.insert("TESSDATA_PREFIX", tessdataPath);
+    env.insert("TESSDATA_PREFIX", settings.getTessdataPath());
     proc.setProcessEnvironment(env);
     proc.start("tesseract", sl);
     proc.waitForFinished(-1);
@@ -881,14 +696,12 @@ bool MainForm::useCuneiform(const QString &inputFile, const QString &outputFile)
     proc.setWorkingDirectory(workingDir);
     QStringList sl;
     sl.append("-l");
-    sl.append(language);
+    sl.append(settings.getLanguage());
     sl.append("-f");
-    if (outputFormat == "text")
+    if (settings.getOutputFormat() == "text")
         sl.append("text");
     else
         sl.append("html");
-    if (singleColumn)
-        sl.append("-c1");
     sl.append("-o");
     sl.append(workingDir + outputFile);
     sl.append(workingDir + inputFile);
@@ -914,14 +727,13 @@ void MainForm::recognizeInternal(const QImage &img)
     f.setFileName(workingDir+outputFile);
     f.remove();
 
-    //outputFormat = selectFormatBox->itemData(selectFormatBox->currentIndex()).toString();
     QPixmapCache::clear();
     img.save(workingDir + inputFile, "BMP");
-    if (selectedEngine == UseCuneiform) {
+    if (settings.getSelectedEngine() == UseCuneiform) {
         if (!useCuneiform(inputFile, outputFile))
             return;
     }
-    if (selectedEngine == UseTesseract) {
+    if (settings.getSelectedEngine() == UseTesseract) {
         if (!useTesseract(inputFile))
            return;
     }
@@ -932,7 +744,7 @@ void MainForm::recognizeInternal(const QImage &img)
     QString textData;
     QTextCodec *codec = QTextCodec::codecForName("UTF-8");
     textData = codec->toUnicode(text); //QString::fromUtf8(text.data());
-    if (outputFormat == "text")
+    if (settings.getOutputFormat() == "text")
         textData.prepend("<meta content=\"text/html; charset=utf-8\" http-equiv=\"content-type\" />");
     textData.replace("<img src=output_files", "");
     textData.replace(".bmp\">", "\"--");
@@ -940,10 +752,10 @@ void MainForm::recognizeInternal(const QImage &img)
 //       textData.replace("-</p><p>", "");
 //        textData.replace("-<br>", "");
     textEdit->append(textData);
+    textEdit->append(QString(" "));
     textSaved = FALSE;
-    if (checkSpelling) {
-        spellChecker->setLanguage(language);
-        //actionCheck_spelling->setEnabled(spellChecker->spellCheck());
+    if (settings.getCheckSpelling()) {
+        spellChecker->setLanguage(settings.getLanguage());
         actionCheck_spelling->setChecked(spellChecker->spellCheck());
     }
 
@@ -956,22 +768,22 @@ void MainForm::recognize()
         QMessageBox::critical(this, trUtf8("Error"), trUtf8("No image loaded"));
         return;
     }
-    if (selectedEngine == UseCuneiform) {
+    if (settings.getSelectedEngine() == UseCuneiform) {
         if (!findProgram("cuneiform")) {
             if (findProgram("tesseract")) {
                 QMessageBox::warning(this, trUtf8("Warning"), trUtf8("cuneiform not found, switching to tesseract"));
-                selectedEngine = UseTesseract;
+                settings.setSelectedEngine(UseTesseract);
             } else {
                 QMessageBox::warning(this, trUtf8("Warning"), trUtf8("No recognition engine found.\nPlease install either cuneiform or tesseract"));
                 return;
             }
         }
      }
-    if (selectedEngine == UseTesseract) {
+    if (settings.getSelectedEngine() == UseTesseract) {
         if (!findProgram("tesseract")) {
             if (findProgram("cuneiform")) {
                 QMessageBox::warning(this, trUtf8("Warning"), trUtf8("tesseract not found, switching to cuneiform"));
-                selectedEngine = UseCuneiform;
+                settings.setSelectedEngine(UseCuneiform);
             } else {
                 QMessageBox::warning(this, trUtf8("Warning"), trUtf8("No recognition engine found.\nPlease install either cuneiform or tesseract"));
                 return;
@@ -990,17 +802,17 @@ void MainForm::recognize()
 void MainForm::saveText()
 {
     if (actionSelect_HTML_format->isChecked())
-    outputFormat = "html";
+    settings.setOutputFormat("html");
     else
-    outputFormat = "text";
+    settings.setOutputFormat("text");
     QString filter;
-    if (outputFormat == "text")
+    if (settings.getOutputFormat() == "text")
         filter = trUtf8("Text Files (*.txt)");
     else
         filter = trUtf8("HTML Files (*.html)");
     QFileDialog dialog(this,
-                       trUtf8("Save Text"), lastOutputDir, filter);
-    if (outputFormat == "text")
+                       trUtf8("Save Text"), settings.getLastOutputDir(), filter);
+    if (settings.getOutputFormat() == "text")
         dialog.setDefaultSuffix("txt");
     else
         dialog.setDefaultSuffix("html");
@@ -1008,10 +820,10 @@ void MainForm::saveText()
     if (dialog.exec()) {
         QStringList fileNames;
         fileNames = dialog.selectedFiles();
-        lastOutputDir = dialog.directory().path();
+        settings.setLastOutputDir(dialog.directory().path());
         QFile textFile(fileNames.at(0));
         textFile.open(QIODevice::ReadWrite | QIODevice::Truncate);
-        if (outputFormat == "text")
+        if (settings.getOutputFormat() == "text")
             textFile.write(textEdit->toPlainText().toUtf8());
         else
             saveHtml(&textFile);
@@ -1102,7 +914,7 @@ void MainForm::delTmpDir()
 
 void MainForm::updateSP()
 {
-    if (checkSpelling)
+    if (settings.getCheckSpelling())
         spellChecker->checkWord();
 }
 
@@ -1258,6 +1070,9 @@ void MainForm::rightMouseClicked(int x, int y, bool inTheBlock)
         m_menu->addAction(actionRecognize_block);
         m_menu->addAction(actionSave_block);
         m_menu->addAction(actionDeskew_by_Block);
+    } else {
+        m_menu->addAction(actionSelect_Text_Area);
+        m_menu->addAction(actionSelect_multiple_blocks);
     }
     QPoint p = graphicsView->mapToGlobal(QPoint(x, y));
     m_menu->move(p);
@@ -1301,7 +1116,7 @@ void MainForm::saveImageInternal(const QPixmap &pix)
     QString format = "JPEG";
     filters << jpegFilter << pngFilter;
     QFileDialog dialog(this,
-                       trUtf8("Save Image"), lastOutputDir);
+                       trUtf8("Save Image"), settings.getLastOutputDir());
     dialog.setFilters(filters);
     dialog.setAcceptMode(QFileDialog::AcceptSave);
     dialog.setDefaultSuffix("jpg");
@@ -1317,7 +1132,7 @@ void MainForm::saveImageInternal(const QPixmap &pix)
         }
         QStringList fileNames;
         fileNames = dialog.selectedFiles();
-        lastOutputDir = dialog.directory().path();
+        settings.setLastOutputDir(dialog.directory().path());
         if (!pix.save(fileNames.at(0), format.toAscii().data(), 100))
             QMessageBox::critical(this, trUtf8("Error"), imageSaveFailed);
     }
@@ -1330,7 +1145,6 @@ MainForm::~MainForm()
     delete resizeCursor;
     delete spellChecker;
     //delete fileChannel;
-    delete settings;
     delete graphicsInput;
     delete ba;
     delete pdfx;
@@ -1344,9 +1158,9 @@ void MainForm::on_actionSave_block_activated()
 
 void MainForm::on_actionCheck_spelling_activated()
 {
-    checkSpelling = actionCheck_spelling->isChecked();
-    if (checkSpelling) {
-        spellChecker->setLanguage(language);
+    settings.setCheckSpelling(actionCheck_spelling->isChecked());
+    if (settings.getCheckSpelling()) {
+        spellChecker->setLanguage(settings.getLanguage());
         actionCheck_spelling->setChecked(spellChecker->spellCheck());
     } else
         spellChecker->unSpellCheck();
@@ -1357,78 +1171,13 @@ void MainForm::on_actionCheck_spelling_activated()
     this->AnalizePage();
 }*/
 
-void MainForm::AnalizePage()
-{
-
-    QImage img = graphicsInput->getAdaptedImage();
-    PageAnalysis * pa = new PageAnalysis(img);
-    pa->setWhiteDeviance(200);
-    pa->setBlackDeviance(150);
-    pa->setBlack(qRgb(0, 0, 0));
-    if (!pa->Process()) {
-          delete pa;
-          return;
-    }
-
-    SkewAnalysis * sa = new SkewAnalysis(pa->getPoints(), img.width(), img.height());
-    //pm =pa->getPixmap();
-    //pm.
-    graphicsInput->loadImage(pa->getImage());
-    QRect rec = pa->getCoords();
-    int r = sa->getSkew();
-    long signed int tan2 = graphicsInput->getImage().width()*tan(sa->getPhi())/2;
-
-    if (abs(tan2) > 800) {
-        tan2 = 1;
-        r = 0;
-    }
-
-    if (abs(r) > 45)
-        r = 0;
-
-    //QTransform tm = QTransform().translate(-rec.width()/2, -rec.height()/2).rotate(r).translate(rec.width()/2, rec.height()/2); //, rec.width(), rec.height());
-    //QPoint newPoint = tm.map(QPoint(rec.left(), rec.top()));
-
-
-    //DEBUG!!!
-    // pm = sa->drawTriangle(pm);
-    // graphicsInput->loadImage(pm);
-    //return;
-
-    graphicsInput->setViewScale(1, r);
-    //int dy = 0;
-    //    dy = abs(tan2) + pa->getCoords().top()/3;
-    graphicsInput->cropImage(QRect(rec.x(), rec.y(), img.width(), img.height() + rec.y()));
-
-    /*if (sa->getSkew() < 0)
-        graphicsInput->cropImage(QRect(pa->getCoords().left(), pa->getCoords().top(), pm.width()-pa->getCoords().left(), pm.height() - pa->getCoords().top()));
-    if (sa->getSkew() > 0) {
-        int dy = pm.width()*tan(sa->getPhi())/2 + pa->getCoords().top();
-        graphicsInput->cropImage(QRect(pa->getCoords().left(), dy, pm.width()-pa->getCoords().left(), pm.height() + dy));
-    }*/
-
-    QString fn;
-    if (fileName != "") {
-        fn = fileName.replace(".", "-c.");
-    } else {
-        fn = "corrected.png";
-    }
-    QFileInfo fi(fn);
-    fn = fn.replace("."+fi.completeSuffix(), ".png");
-    fn = workingDir + fi.fileName();
-    graphicsInput->getImage().save(fn, "PNG");
-    loadFile(fn);
-    delete pa;
-    delete sa;
-}
-
 void MainForm::on_actionDeskew_activated()
 {
    // AnalizePage();
     {
         QCursor oldCursor = cursor();
         setCursor(Qt::WaitCursor);
-        deskew(graphicsInput->getSmallImage());
+        graphicsInput->deskew(graphicsInput->getSmallImage());
         setCursor(oldCursor);
     }
 }
@@ -1436,9 +1185,9 @@ void MainForm::on_actionDeskew_activated()
 void MainForm::on_actionSelect_HTML_format_activated()
 {
         if (actionSelect_HTML_format->isChecked())
-            outputFormat = "html";
+            settings.setOutputFormat("html");
         else
-            outputFormat = "text";
+            settings.setOutputFormat("text");
 }
 
 void MainForm::pasteimage()
@@ -1468,110 +1217,6 @@ void MainForm::pasteimage()
     setCursor(oldCursor);
 }
 
-void MainForm::blockAllText()
-{
-    //this->enlargeButtonClicked();
-    QImage img = graphicsInput->getCurrentImage().toImage();
-    if (!img.isNull()) {
-        CCBuilder * cb = new CCBuilder(img);
-        cb->setGeneralBrightness(360);
-        cb->setMaximumColorComponent(100);
-        cb->labelCCs();
-        CCAnalysis * an = new CCAnalysis(cb);
-        an->analize();
- //       an->rotateLines(-atan(an->getK()));
-        Lines lines = an->getLines();
-        foreach(TextLine l, lines)
-            if (l.count() < 3)
-                lines.removeOne(l);
-        QPoint orig;
-        graphicsInput->imageOrigin(orig);
-        int minX = 100000;
-        int minY = 100000;
-        int maxX = 0;
-        int maxY = 0;
-        for (int i =0; i < lines.count(); i++) {
-            int x1 = lines.at(i).at(0).x();
-            int y1 = lines.at(i).at(0).y();
-            int x2 = lines.at(i).at(lines.at(i).count()-1).x();
-            int y2 = lines.at(i).at(lines.at(i).count()-1).y();
-            //graphicsInput->drawLine(x1,y1,x2,y2);
-            if (x1 > x2) {
-                x2 = x1 + x2;
-                x1 = x2 - x1;
-                x2 = x2 - x1;
-            }
-            minX = minX < x1 ? minX : x1;
-            maxX = maxX > x2 ? maxX : x2;
-            if (y1 > y2) {
-                y2 = y1 + y2;
-                y1 = y2 - y1;
-                y2 = y2 - y1;
-            }
-            minY = minY < y1 ? minY : y1;
-            maxY = maxY > y2 ? maxY : y2;
-        }
-        minX = minX  - 2*an->getMediumGlyphWidth();
-        maxX =maxX + 2*an->getMediumGlyphWidth();
-        minY = minY - 2*an->getMediumGlyphHeight();
-        maxY = maxY + 2*an->getMediumGlyphHeight();
-        graphicsInput->clearBlocks();
-        graphicsInput->addBlock(QRectF(minX, minY, maxX-minX, maxY-minY));
-        //this->decreaseButtonClicked();
-        delete an;
-        delete cb;
-    }
-}
-
-void MainForm::deskew(QImage *img)
-{
-    if (img) {
-        QTransform tr;
-        tr.rotate(graphicsInput->getAngle());
-        QImage img1 = img->transformed(tr);
-        CCBuilder * cb = new CCBuilder(img1);
-        cb->setGeneralBrightness(360);
-        cb->setMaximumColorComponent(100);
-        cb->labelCCs();
-        CCAnalysis * an = new CCAnalysis(cb);
-        an->analize();
-    /*for (int j = 0; j < an->getGlyphBoxCount(); j++) {
-        Rect r = an->getGlyphBox(j);
-        graphicsInput->newBlock(QRect(2*r.x1, 2*r.y1, 2*r.x2-2*r.x1, 2*r.y2-2*r.y1));
-        this->graphicsInput->addBlock(QRect(2*r.x1, 2*r.y1, 2*r.x2-2*r.x1, 2*r.y2-2*r.y1), false);
-    }*/
-        //QRect r = cb->crop();
-        //graphicsInput->newBlock(QRect(2*r.x(), 2*r.y(), 2*(r.width()), 2*(r.height())));
-        //this->graphicsInput->addBlock(QRect(2*r.x(), 2*r.y(), 2*(r.width()), 2*(r.height())), false);
-        QImage img2 = tryRotate(img1, -atan(an->getK())*360/6.283);
-
-        CCBuilder * cb2 = new CCBuilder(img2);
-        cb2->setGeneralBrightness(360);
-        cb2->setMaximumColorComponent(100);
-        cb2->labelCCs();
-        CCAnalysis * an2 = new CCAnalysis(cb2);
-        an2->analize();
-        qreal angle = -atan(an2->getK())*360/6.283;
-        delete an2;
-        delete cb2;
-        if (abs(angle) >= abs(1))
-            angle += (-atan(an->getK())*360/6.283);
-        else
-            angle = -atan(an->getK())*360/6.283;
-
-        rotateImage(angle);
-
-        QImage  img = graphicsInput->getImage().toImage();
-        RotationCropper rc(&img, QColor("white").rgb(), cb->getGB());
-        QRect r = rc.crop();
-       // graphicsInput->newBlock(QRect(r.x(), r.y(), (r.width()), (r.height())));
-        //this->graphicsInput->addBlock(QRect(r.x(), r.y(), (r.width()), (r.height())), false);
-
-        delete an;
-        delete cb;
-    }
-}
-
 void MainForm::deskewByBlock()
 {
     QCursor oldCursor = cursor();
@@ -1580,25 +1225,23 @@ void MainForm::deskewByBlock()
     QApplication::processEvents();
     if (!graphicsInput->getCurrentBlock().isNull()) {
         QImage img = graphicsInput->getCurrentBlock();
-        deskew(&img);
+        graphicsInput->deskew(&img);
     }
     setCursor(oldCursor);
 }
 
-QImage MainForm::tryRotate(QImage image, qreal angle)
+void MainForm::selectTextArea()
 {
-    qreal x = image.width() / 2;
-    qreal y = image.height() / 2;
-    return image.transformed(QTransform().translate(-x, -y).rotate(angle).translate(x, y), Qt::SmoothTransformation);
-
+    graphicsInput->blockAllText();
+    //graphicsInput->splitPage();
 }
 
 void MainForm::showAdvancedSettings()
 {
     AdvancedConfigDialog dlg;
-    dlg.setCrop1(cropLoaded);
+    dlg.setCrop1(settings.getCropLoaded());
     if (dlg.exec()) {
-        cropLoaded = dlg.doCrop1();
+        settings.setCropLoaded(dlg.doCrop1());
     }
 }
 
@@ -1666,4 +1309,24 @@ void MainForm::replaceWord()
     cursor.select(QTextCursor::WordUnderCursor);
     cursor.removeSelectedText();
     cursor.insertText(action->text());
+}
+
+void MainForm::selectBlocks()
+{
+    graphicsInput->splitPage();
+}
+
+void MainForm::setSmallIcons()
+{
+    QSize s = toolBar->iconSize();
+    if (s.height() > 32) {
+         s.setHeight(32);
+         s.setWidth(32);
+    }
+    else {
+        s.setHeight(48);
+        s.setWidth(48);
+    }
+    toolBar->setIconSize(s);
+    settings.setIconSize(s);
 }

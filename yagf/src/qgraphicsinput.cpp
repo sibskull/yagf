@@ -19,6 +19,10 @@
 #include "qgraphicsinput.h"
 #include "qxtgraphicsview.h"
 #include "qxtgraphicsproxywidget.h"
+#include "ccbuilder.h"
+#include "analysis.h"
+#include "PageAnalysis.h"
+#include "math.h"
 #include <QPixmap>
 #include <QGraphicsPixmapItem>
 #include <QMessageBox>
@@ -56,6 +60,7 @@ void QGraphicsInput::addToolBar()
     toolbar->setMovable(false);
     toolbar->setWindowOpacity(0.75);
     toolbar->move(0,0);
+    toolbar->setIconSize(QSize(24,24));
     toolbar->setMinimumHeight(32);
     //toolbar->setCursor();
     actionList.at(0)->setText(QString::fromUtf8(">>"));
@@ -427,7 +432,6 @@ QImage QGraphicsInput::extractImage(QGraphicsRectItem *item)
 void QGraphicsInput::setViewScale(qreal scale, qreal angle)
 {
     if (!hasImage) return;
-    //if (scale != m_scale)  {
         if ((scale == 0) || (scale < 0.0625) || (scale > 0.5))
             return;
     //    m_view->scale(scale,  scale);
@@ -438,39 +442,30 @@ void QGraphicsInput::setViewScale(qreal scale, qreal angle)
                 items().at(i)->scale(sf, sf); // Silly as this line seems it is the only way to scale rectangles correctly.
             }
         m_scale = scale;
-
+        QImage imgr;
             //if (real_scale == 1)
             //  m_image = this->addPixmap(QPixmap::fromImage(old_pixmap));
             //else
             if (m_scale == 0.5) {
-                m_image = this->addPixmap(QPixmap::fromImage(pm2));
                 //real_scale = 0.5;
+                imgr = pm2;
             }
             else if (m_scale == 0.25)
-                m_image = this->addPixmap(QPixmap::fromImage(pm4));
+                imgr = pm4;
             else if (m_scale == 0.125)
-                m_image = this->addPixmap(QPixmap::fromImage(pm8));
+                imgr = pm8;
             else if (m_scale == 0.0625)
-                m_image = this->addPixmap(QPixmap::fromImage(pm16));
-    //}
+                imgr = pm16;
+    qreal x = imgr.width() / 2;
+    qreal y = imgr.height() / 2;
+    m_rotate += angle;
+    imgr = imgr.transformed(QTransform().translate(-x, -y).rotate(m_rotate).translate(x, y), Qt::SmoothTransformation);
+    m_image = addPixmap(QPixmap::fromImage(imgr));
+    m_realImage = m_realImage.transformed(QTransform().translate(-x, -y).rotate(angle).translate(x, y), Qt::SmoothTransformation);
     m_image->setFocus();
     m_image->setAcceptedMouseButtons(Qt::LeftButton | Qt::RightButton | Qt::MidButton);
     m_image->setAcceptHoverEvents(true);
     m_image->setData(1, "image");
-    qreal x = width() / 2;
-    qreal y = height() / 2;
-    //real_rotate += angle;
-    //QImage img = m_image->pixmap().toImage();
-    //QPainter painter;
-    //painter.begin(&img);
-    //QPixmap pm;
-    //painter.setBrush(QBrush(Qt::red));
-    //pm = QPixmap::fromImage(img.transformed(QTransform().translate(-x, -y).rotate(real_rotate).translate(x, y), Qt::SmoothTransformation));
-    //painter.end();
-    //m_image->setPixmap(pm);
-    m_rotate += angle;
-    m_image->setPixmap(m_image->pixmap().transformed(QTransform().translate(-x, -y).rotate(m_rotate).translate(x, y), Qt::SmoothTransformation));
-    m_realImage = m_realImage.transformed(QTransform().translate(-x, -y).rotate(angle).translate(x, y), Qt::SmoothTransformation);
     m_image->show();
     m_view->centerOn(0, 0);
 }
@@ -642,8 +637,8 @@ void QGraphicsInput::setToolBarVisible()
     } else {
         for (int i = 1; i < actionList.count(); i++)
             actionList.at(i)->setVisible(true);
-            toolbar->setMaximumWidth(380);
-            toolbar->setMinimumWidth(380);
+            toolbar->setMaximumWidth(400);
+            toolbar->setMinimumWidth(400);
             actionList.at(0)->setText(QString::fromUtf8("<<"));
     }
 }
@@ -737,4 +732,126 @@ QPixmap QGraphicsInput::getCurrentImage()
 QImage * QGraphicsInput::getImageBy16()
 {
     return &pm16;
+}
+
+void QGraphicsInput::rotateImage(qreal deg)
+{
+    if (hasImage) {
+        clearBlocks();
+        setViewScale(sideBar->getScale(), deg); //rotateImage(deg,  graphicsView->width()/2, graphicsView->height()/2);
+        sideBar->setRotation(getAngle());
+    }
+}
+
+void QGraphicsInput::setSideBar(SideBar *value)
+{
+    sideBar = value;
+}
+
+void QGraphicsInput::deskew(QImage *img)
+{
+    if (img) {
+        QTransform tr;
+        tr.rotate(getAngle());
+        QImage img1 = img->transformed(tr);
+        CCBuilder * cb = new CCBuilder(img1);
+        cb->setGeneralBrightness(360);
+        cb->setMaximumColorComponent(100);
+        cb->labelCCs();
+        CCAnalysis * an = new CCAnalysis(cb);
+        an->analize();
+    /*for (int j = 0; j < an->getGlyphBoxCount(); j++) {
+        Rect r = an->getGlyphBox(j);
+        graphicsInput->newBlock(QRect(2*r.x1, 2*r.y1, 2*r.x2-2*r.x1, 2*r.y2-2*r.y1));
+        this->graphicsInput->addBlock(QRect(2*r.x1, 2*r.y1, 2*r.x2-2*r.x1, 2*r.y2-2*r.y1), false);
+    }*/
+        //QRect r = cb->crop();
+        //graphicsInput->newBlock(QRect(2*r.x(), 2*r.y(), 2*(r.width()), 2*(r.height())));
+        //this->graphicsInput->addBlock(QRect(2*r.x(), 2*r.y(), 2*(r.width()), 2*(r.height())), false);
+        QImage img2 = tryRotate(img1, -atan(an->getK())*360/6.283);
+
+        CCBuilder * cb2 = new CCBuilder(img2);
+        cb2->setGeneralBrightness(360);
+        cb2->setMaximumColorComponent(100);
+        cb2->labelCCs();
+        CCAnalysis * an2 = new CCAnalysis(cb2);
+        an2->analize();
+        qreal angle = -atan(an2->getK())*360/6.283;
+        delete an2;
+        delete cb2;
+        if (abs(angle*10) >= abs(5))
+            angle += (-atan(an->getK())*360/6.283);
+        else
+            angle = -atan(an->getK())*360/6.283;
+
+        rotateImage(angle);
+
+//        QImage  img = graphicsInput->getCurrentImage().toImage();
+        //graphicsInput->newBlock(QRect(r.x(), r.y(), (r.width()), (r.height())));
+        //this->graphicsInput->addBlock(QRect(r.x(), r.y(), (r.width()), (r.height())), false);
+
+        delete an;
+        delete cb;
+        //blockAllText(r.x(), r.y());
+    }
+
+}
+
+QImage QGraphicsInput::tryRotate(QImage image, qreal angle)
+{
+    qreal x = image.width() / 2;
+    qreal y = image.height() / 2;
+    return image.transformed(QTransform().translate(-x, -y).rotate(angle).translate(x, y), Qt::SmoothTransformation);
+}
+
+void QGraphicsInput::addBlockColliding(const QRectF &rect)
+{
+    QGraphicsRectItem *block = newBlock(rect);
+    m_CurrentBlockRect = block;
+}
+
+void QGraphicsInput::splitPage()
+{
+    clearBlocks();
+    BlockSplitter bs;
+    bs.setImage(*(getSmallImage()), sideBar->getRotation(), 0.5);// sideBar->getScale());
+    //QRect r = bs.getRootBlock(graphicsInput->getCurrentImage().toImage());
+    //Bars bars = bs.getBars();
+    //foreach (Rect rc, bars) {
+     //   graphicsInput->addLine(rc.x1, rc.y1, rc.x2, rc.y2);
+    //}
+    bs.getBars();
+    bs.splitBlocks();
+    QList<Rect> blocks = bs.getBlocks();
+    qreal sf = 2.0*sideBar->getScale();
+    QRect cr = bs.getRotationCropRect(getCurrentImage().toImage());
+    foreach (Rect block, blocks) {
+        QRect r;
+        block.x1 *=sf;
+        block.y1 *=sf;
+        block.x2 *= sf;
+        block.y2 *=sf;
+
+        block.x1 += cr.x();
+        block.y1 += cr.y();
+        block.x2 += cr.x();
+        block.y2 += cr.y();
+
+        r.setX(block.x1);
+        r.setY(block.y1);
+        r.setWidth(block.x2 - block.x1);
+        r.setHeight(block.y2 - block.y1);
+        sideBar->addBlock(r);
+        addBlockColliding(r);
+    }
+}
+
+void QGraphicsInput::blockAllText()
+{
+    clearBlocks();
+    BlockSplitter bs;
+    bs.setImage(*getSmallImage(), sideBar->getRotation(), sideBar->getScale());
+    QRect r = bs.getRootBlock(getCurrentImage().toImage());
+    sideBar->addBlock(r);
+    addBlock(r);
 }

@@ -24,44 +24,36 @@
 #include <QColor>
 #include <QList>
 #include <QPoint>
+#include <QImage>
 #include "ycommon.h"
+#include "analysis.h"
 
 class QPixmap;
 class QImage;
 class QRect;
 
-
-
-class PageAnalysis
+class BlockSplitter
 {
 public:
-    PageAnalysis(QImage &img);
-    ~PageAnalysis();
-    QImage getImage();
-    void setBlack(QRgb color);
-    void setBlackDeviance(int d);
-    void setWhiteDeviance(int d);
-    bool Process(); // if Process returns true, getCoords() probably returns right coords.
-    QRect getCoords();
-    QPointList * const getPoints();
+    void setImage(const QImage &image, qreal rotation, qreal scale);
+    QRect getRootBlock(const QImage &image);
+    Bars getBars(); // call after something calls blockAllText();
+    void splitBlocks();
+    QRect getRotationCropRect(const QImage &image);
+    QList<Rect> getBlocks();
 private:
-    QImage * m_image;
-    QRgb tBlack;
-    QRgb tWhite;
-    int blackDeviance;
-    int whiteDeviance;
-    void findTWhite();
-    bool isLineBlack(int index);
-    void removeBlackLines();
-    int findFirstNonBalckPixel(int index);
-    int findFirstNonBalckPixelBackwards(int index);
-    void removeBlackSideStripes();
-    int newTop;
-    int newBottom;
-    int newLeft;
-    int newRight;
-    QPointList * pointList;
+    QRect blockAllText();
+    void splitVertical();
+    void splitHorisontal();
+    bool isBlockRecogniseable(const Rect &block);
+private:
+    QImage img;
+    qreal m_rotate;
+    qreal m_scale;
+    int generalBr;
+    Bars bars;
+    Lines lines;
+    QList<Rect> blocks;
 };
-
 
 #endif

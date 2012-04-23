@@ -31,8 +31,8 @@ public:
     explicit SideBar(QWidget *parent = 0);
     void addFile(const QString &name, const QImage * image = 0, bool select = true);
     QStringList getFileNames();
-    void setRotation(int r, const QString &name = "");
-    int getRotation(const QString &name = "");
+    void setRotation(qreal r, const QString &name = "");
+    qreal getRotation(const QString &name = "");
     int getBlocksCount();
     void clearBlocks();
     void addBlock(const QRect &block, const QString &name = "");
@@ -66,6 +66,7 @@ protected:
 private:
     QSnippet * getItemByName(const QString &name);
     QSnippet * current;
+    bool lock;
 };
 
 #endif // SIDEBAR_H

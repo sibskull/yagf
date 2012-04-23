@@ -33,6 +33,18 @@ bool operator==(Rect r1, Rect r2)
     return true;
 }
 
+bool operator==(GlyphInfo g1, GlyphInfo g2)
+{
+    if (g1.x != g2.x)
+        return false;
+    if (g1.y != g2.y)
+        return false;
+    if (g1.h != g2.h)
+        return false;
+    return true;
+}
+
+
 CCAnalysis::CCAnalysis(CCBuilder * builder)
 {
 	this->builder = builder;
@@ -49,14 +61,22 @@ CCAnalysis::~CCAnalysis()
 	
 }
 
-void CCAnalysis::analize()
+void CCAnalysis::analize(bool extractBars)
 {
-    extractComponents();
+    extractComponents(extractBars);
     classifyGlyphs();
     normalizeLines();
 }
 
-void CCAnalysis::extractComponents()
+Bars CCAnalysis::addBars()
+{
+    extractComponents(true);
+    addBarsHorizontal();
+    addBarsVertical();
+    return bars;
+}
+
+void CCAnalysis::extractComponents(bool extractBars)
 {
     components.clear();
     for (int y = 0; y < builder->height(); y++) {
@@ -95,16 +115,45 @@ void CCAnalysis::extractComponents()
     }
     quint32 wmed = wacc/count;
     quint32 hmed = hacc/count;
-    //mediumGlyphWidth = wmed;
-    /*foreach(quint32 k, components.keys()) {
-        Rect r = components.value(k);
-        if ((r.x2 - r.x1) > wmed + wmed)
-            components.remove(k);
-        else {
-            if (((r.y2 - r.y1) < hmed) || ((r.y2 - r.y1) > hmed + hmed))
-                components.remove(k);
+
+    if (extractBars) {
+        foreach(quint32 k, components.keys()) {
+                Rect r = components.value(k);
+                int deltaX  = abs(r.x2 - r.x1); // TODO: remove abs() if not needed
+                int deltaY = abs(r.y2 - r.y1); // TODO: remove abs() if not needed
+                if ((deltaX > 10)&&(deltaY > 10)) continue;
+                if (deltaX != 0) {
+                    if (deltaY/deltaX >= BarRatio) {
+                        components.remove(k);
+                        bars.append(r);
+                        continue;
+                    }
+
+                } else {
+                    if (deltaY >= BarRatio) {
+                        components.remove(k);
+                        bars.append(r);
+                        continue;
+                    }
+                }
+                if (deltaY != 0) {
+                    if (deltaX/deltaY >= BarRatio) {
+                        components.remove(k);
+                        bars.append(r);
+                        continue;
+                    }
+
+                }  else {
+                    if (deltaX >= BarRatio) {
+                        components.remove(k);
+                        bars.append(r);
+                        continue;
+                    }
+                }
         }
-    }*/
+
+    }
+
     foreach(quint32 k, components.keys()) {
             Rect r = components.value(k);
             if ((r.x2 - r.x1) > 6*wmed)
@@ -113,7 +162,7 @@ void CCAnalysis::extractComponents()
                 if (((r.y2 - r.y1)*(r.x2 - r.x1) < 30) || ((r.y2 - r.y1) > 4*hmed))
                     components.remove(k);
             }
-        }
+    }
     wacc = 0;
     hacc= 0;
     count = 0;
@@ -127,6 +176,7 @@ void CCAnalysis::extractComponents()
     hmed = hacc/count;
     mediumGlyphWidth = wmed;
     mediumGlyphHeight = hmed;
+    glyphCount = count;
 }
 
 int CCAnalysis::getGlyphBoxCount()
@@ -155,14 +205,14 @@ TextLine CCAnalysis::extractLine()
         if (glyphField.values(x).count()) {
             first = glyphField.values(x).at(0);
             glyphField.remove(x, first);
-            line.append(QPoint((first.x1+first.x2)/2, (first.y1+first.y2)/2));
+            line.append(ginfo((first.x1+first.x2)/2, (first.y1+first.y2)/2, abs(first.y1-first.y2)));
             break;
         }
     }
     if (line.count()) {
         Rect temp = first;
         while (findAdjacent(temp) >= 0) {
-            line.append(QPoint((temp.x1+temp.x2)/2, (temp.y1+temp.y2)/2));
+            line.append(ginfo((temp.x1+temp.x2)/2, (temp.y1+temp.y2)/2, abs(temp.y1-temp.y2)));
         }
     }
     return line;
@@ -194,10 +244,26 @@ void CCAnalysis::normalizeLines()
     while (l.count()) {
         lines.append(l);
         if (l.count() > 4) {
-            qreal d = l.at(l.count()-1).x() - l.at(1).x();
-            if (d != 0) {
-                k = k + ((qreal)(l.at(l.count()-1).y() - l.at(1).y()))/d;
-                count++;
+            if (abs (l.last().h - l.first().h) < 3) {
+                qreal d = l.last().x - l.first().x;
+                if (d != 0) {
+                    k = k + ((qreal)(l.last().y - l.first().y))/d;
+                    count++;
+                }
+            } else {
+                int lastX = l.at(l.count()-1).x;
+                int lastY = l.at(l.count()-1).y;
+                int lastH = l.at(l.count()-1).h;
+                int firstX = l.at(1).x;
+                int firstY = l.at(1).y;
+                int firstH = l.at(1).h;
+                if (abs (lastH - firstH) < 3) {
+                    qreal d = lastX - firstX;
+                    if (d != 0) {
+                        k = k + ((qreal)(lastY - firstY))/d;
+                        count++;
+                    }
+                }
             }
         }
         //graphicsInput->drawLine(l.at(0).x()*2, l.at(0).y()*2, l.at(l.count()-1).x()*2,l.at(l.count()-1).y()*2);
@@ -227,14 +293,185 @@ void CCAnalysis::rotatePhi(qreal phi, const QPoint &c, QPoint &p)
     p.setY(y1+c.y());
 }
 
+void CCAnalysis::addBarsHorizontal()
+{
+    bool * li = new bool[builder->height()];
+    for (int i = 0; i < builder->height(); i++)
+        li[i] = false;
+    foreach (TextLine tl, lines) {
+        if (tl.count() == 1) continue;
+        foreach(GlyphInfo gi, tl)
+            for (int i = gi.y - gi.h/2;  i < gi.y + gi.h/2; i++)
+                li[i] = true;
+    }
+    int him = 0;
+    int hlm = 0;
+    int lcount = 0;
+    int icount = 0;
+    int chl = 0;
+    int chi = 0;
+    for (int i= 0; i < builder->height(); i++) {
+        if (!li[i]) { // empty space
+            if (chl > 0) {
+                hlm += chl;
+                lcount++;
+                chl = 0;
+            }
+            chi++;
+        } else {
+            if (chi > 0) {
+                if (icount > 0)
+                    him += chi;
+                icount++;
+                chi = 0;
+            }
+            chl++;
+        }
+    }
+    if ((icount < 3)||(lcount == 0)) {
+        delete[] li;
+        return;
+    }
+    him -= chi;
+    him = him/(icount-2);
+    hlm /= lcount;
+    int ilcount = 0;
+    int llcount = 0;
+    for (int i = 0; i < builder->height(); i++) {
+        if (!li[i]) {
+            /*if (llcount >= 1.5*hlm) {
+                Rect r;
+                r.x1 = 0;
+                r.x2 = builder->width()-1;
+                r.y1 = i - hlm/2;
+                r.y2 = r.y1;
+                bars.append(r);
+                llcount = 0;
+            }*/
+            ilcount++;
+        } else {
+            if (ilcount >= 4*him) {
+                Rect r;
+                r.x1 = 0;
+                r.x2 = builder->width()-1;
+                r.y1 = 0;
+                for (int j = i - 3*him; j < i; j++) {
+                    if ((!li[j-1]) && (!li[j]) && (!li[j+1])) {
+                        r.y1 = j;
+                        break;
+                    }
+                }
+                if (r.y1 > 0) {
+                    r.y2 = r.y1;
+                    bars.append(r);
+                }
+            }
+            ilcount = 0;
+            llcount++;
+        }
+    }
+    delete[] li;
+}
+
+/*void CCAnalysis::addBarsHorizontal()
+{
+    bool * li = new bool[builder->height()];
+    for (int i = 0; i < builder->height(); i++)
+        li[i] = false;
+    int hlm = 0;
+    foreach (TextLine tl, lines)
+        hlm += tl.first().h;
+    hlm /= lines.count();
+    foreach (TextLine tl, lines) {
+        if (tl.count() < 3)
+            if (tl.first().x > lines.first().first().x + 64)
+                continue;
+
+        for (int i = (tl.first().y - hlm < 0 ? 0 : tl.first().y - hlm); i < (tl.last().y + hlm > builder->height() ? builder->height() : tl.last().y + hlm); i++)
+            li[i] = true;
+        //for (int i = (tl.last().y - tl.last().h < 0 ? 0 : tl.last().y - tl.last().h); i < (tl.last().y + tl.last().h > builder->height() ? builder->height() : tl.last().y + tl.last().h); i++)
+          //  li[i] = true;
+    }
+    int fcount = 0;
+    for (int i = 0; i < builder->height(); i++) {
+        if (!li[i]) fcount++;
+        else {
+            if (fcount >= hlm*1.5) {
+                Rect r;
+                r.x1 = 0;
+                r.x2 = builder->width()-1;
+                r.y1 = i - hlm/2;
+                r.y2 = r.y1;
+                bars.append(r);
+                fcount = 0;
+            }
+        }
+    }
+    delete[] li;
+}*/
+
+void CCAnalysis::addBarsVertical()
+{
+    int * li = new int[builder->width()];
+    for (int i = 0; i < builder->width(); i++)
+        li[i] = 0;
+    foreach (TextLine tl, lines) {
+        if (tl.count() < 3) continue;
+        foreach (GlyphInfo gi, tl) {
+            for (int i = (gi.x - gi.h > 0 ? gi.x - gi.h : 0); (i < builder->width()) && (i < gi.x + gi.h); i++)
+                li[i]++;
+        }
+
+        /*for (int i = (tl.first().x - tl.first().h < 0 ? 0 : tl.first().x - tl.first().h); i < tl.last().x; i++) //(tl.last().x < builder->width() ? tl.last().x : builder->width()); i++)
+            li[i] = true;
+//        for (int i = (tl.last().x - tl.last().h < 0 ? 0 : tl.last().x - tl.last().h); i < (tl.last().x + tl.last().h > builder->width() ? builder->width() : tl.last().x + tl.last().h); i++)
+  //          li[i] = true;*/
+    }
+    int fcount = 0;
+    for (int i = 1; i < builder->width(); i++) {
+        if (li[i] < 2) fcount++;
+        else {
+            if (fcount >= mediumGlyphWidth ) { //mediumGlyphHeight) {
+                Rect r;
+                for (int j = i - (fcount + mediumGlyphWidth); j < i; j++) {
+                    if ((li[j-1] < 2)&&(li[j] < 2)&&(li[j+1] < 2)) {
+                        r.x1 = j;
+                        r.x2 = r.x1;
+                        r.y1 = 0;
+                        r.y2 = builder->height()-1;
+                        bars.append(r);
+                        break;
+                    }
+                }
+                fcount = 0;
+            }
+        }
+    }
+    for (int i = 1; i < builder->width(); i++) {
+        for (int j = bars.count()-1; j >= 0; j--) {
+            Rect r = bars.at(j);
+            if (abs(r.x2 - r.x1) > abs(r.y2 - r.y1))
+                continue;
+            if ((i >= r.x1)&&(i <= r.x2))
+                if (li[i] > 1)
+                    bars.removeOne(r);
+        }
+    }
+
+    delete[] li;
+}
+
 void CCAnalysis::rotateLines(qreal phi, const QPoint &c)
 {
     for (int i = 0; i < lines.count(); i++) {
         TextLine l = lines.at(i);
         for (int j =0; j < l.count(); j++) {
-            QPoint p = l.at(j);
+            QPoint p = QPoint(l.at(j).x, l.at(j).y);
             rotatePhi(phi, c, p);
-            l.replace(j, p);
+            ginfo g = l.at(j);
+            g.x = p.x();
+            g.y = p.y();
+            l.replace(j, g);
         }
         lines.replace(i, l);
     }
@@ -248,5 +485,17 @@ int CCAnalysis::getMediumGlyphWidth()
 int CCAnalysis::getMediumGlyphHeight()
 {
     return mediumGlyphHeight;
+}
+
+ginfo::ginfo(int a1, int a2, int a3)
+{
+    x = a1;
+    y = a2;
+    h = a3;
+}
+
+int CCAnalysis::getGlyphCount()
+{
+    return glyphCount;
 }
 

@@ -501,6 +501,7 @@
      <string>&amp;Settings</string>
     </property>
     <addaction name="actionOCR_Settings"/>
+    <addaction name="actionToggle_Large_Small_Icons"/>
     <addaction name="actionAdvanced_Settings"/>
    </widget>
    <addaction name="menuFile"/>
@@ -925,6 +926,23 @@
     <string>The settings you should probably never change</string>
    </property>
   </action>
+  <action name="actionSelect_multiple_blocks">
+   <property name="icon">
+    <iconset resource="yagf.qrc">
+     <normaloff>:/images/selectmulti.png</normaloff>:/images/selectmulti.png</iconset>
+   </property>
+   <property name="text">
+    <string>select multiple blocks</string>
+   </property>
+   <property name="toolTip">
+    <string>Splits text into several blocks</string>
+   </property>
+  </action>
+  <action name="actionToggle_Large_Small_Icons">
+   <property name="text">
+    <string>Toggle Large/Small Icons</string>
+   </property>
+  </action>
  </widget>
  <customwidgets>
   <customwidget>
@@ -1095,7 +1113,7 @@
    <sender>actionSelect_Text_Area</sender>
    <signal>triggered()</signal>
    <receiver>MainWindow</receiver>
-   <slot>blockAllText()</slot>
+   <slot>selectTextArea()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>-1</x>
@@ -1139,6 +1157,38 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>actionSelect_multiple_blocks</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>selectBlocks()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>959</x>
+     <y>568</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionToggle_Large_Small_Icons</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>setSmallIcons()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>959</x>
+     <y>568</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>rotateCWButtonClicked()</slot>
@@ -1153,5 +1203,8 @@
   <slot>blockAllText()</slot>
   <slot>deskewByBlock()</slot>
   <slot>showAdvancedSettings()</slot>
+  <slot>selectTextArea()</slot>
+  <slot>selectBlocks()</slot>
+  <slot>setSmallIcons()</slot>
  </slots>
 </ui>

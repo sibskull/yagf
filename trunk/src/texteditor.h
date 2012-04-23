@@ -33,8 +33,7 @@ public:
     explicit TextEditor(QWidget *parent = 0);
     ~TextEditor();
     bool textSaved();
-    void setLanguage(const QString &lang);
-    bool spellCheck();
+    bool spellCheck(const QString &lang);
     void unSpellCheck();
     void enumerateDicts();
     bool hasDict(const QString &shname);

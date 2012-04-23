@@ -51,13 +51,9 @@ bool TextEditor::textSaved()
     return mTextSaved;
 }
 
-void TextEditor::setLanguage(const QString &lang)
+bool TextEditor::spellCheck(const QString &lang)
 {
     spellChecker.setLanguage(lang);
-}
-
-bool TextEditor::spellCheck()
-{
     return spellChecker.spellCheck();
 }
 

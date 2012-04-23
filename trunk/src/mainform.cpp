@@ -472,8 +472,7 @@ void MainForm::newLanguageSelected(int index)
     settings->setLanguage(selectLangsBox->itemData(index).toString());
     actionCheck_spelling->setEnabled(textEdit->hasDict(settings->getLanguage()));
     if (settings->getCheckSpelling()) {
-        textEdit->setLanguage(settings->getLanguage());
-        settings->setCheckSpelling(textEdit->spellCheck());
+        settings->setCheckSpelling(textEdit->spellCheck(settings->getLanguage()));
         //actionCheck_spelling->setEnabled(checkSpelling);
         actionCheck_spelling->setChecked(settings->getCheckSpelling());
     }
@@ -725,8 +724,7 @@ void MainForm::recognizeInternal(const QImage &img)
     textEdit->append(textData);
     textEdit->append(QString(" "));
     if (settings->getCheckSpelling()) {
-        textEdit->setLanguage(settings->getLanguage());
-        actionCheck_spelling->setChecked(textEdit->spellCheck());
+        actionCheck_spelling->setChecked(textEdit->spellCheck(settings->getLanguage()));
     }
 
 }
@@ -978,8 +976,7 @@ void MainForm::on_actionCheck_spelling_activated()
 {
     settings->setCheckSpelling(actionCheck_spelling->isChecked());
     if (settings->getCheckSpelling()) {
-        textEdit->setLanguage(settings->getLanguage());
-        actionCheck_spelling->setChecked(textEdit->spellCheck());
+        actionCheck_spelling->setChecked(textEdit->spellCheck(settings->getLanguage()));
     } else
         textEdit->unSpellCheck();
 }

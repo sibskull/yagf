@@ -62,10 +62,6 @@
 #include <QCheckBox>
 #include <QEvent>
 #include <QCursor>
-#include <QWheelEvent>
-#include <QKeyEvent>
-#include <QFont>
-#include <QImageReader>
 
 const QString outputBase = "output";
 const QString outputExt = ".txt";

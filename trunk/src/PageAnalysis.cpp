@@ -150,14 +150,7 @@
      }
  }
 
- bool rectLessThan(const Rect &r1, const Rect &r2)
- {
-     if (r1.y1 < r2.y1)
-         return true;
-     if (r1.x1 < r2.x1)
-         return true;
-     return false;
- }
+
 
  void BlockSplitter::splitBlocks()
  {
@@ -171,7 +164,7 @@
      blocks.append(b);
      splitVertical();
      splitHorisontal();
-     qSort(blocks.begin(), blocks.end(), rectLessThan);
+//     qSort(blocks.begin(), blocks.end(), rectLessThan);
      for (int i = blocks.count() -1; i >=0; i--) {
          Rect r  = blocks.at(i);
          if (!isBlockRecogniseable(r))

@@ -67,8 +67,18 @@ QString QSnippet::getName()
     return name;
 }
 
+bool rectLessThan(const QRect &r1, const QRect &r2)
+{
+    if (r1.y() < r2.y())
+        return true;
+    if (r1.x() < r2.x())
+        return true;
+    return false;
+}
+
 BolockList * QSnippet::blocks()
 {
+    qSort(blockList.begin(), blockList.end(), rectLessThan);
     return &blockList;
 }
 

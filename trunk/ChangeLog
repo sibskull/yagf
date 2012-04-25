@@ -2,7 +2,7 @@
 - Some minor bug fixes and improvements
 * Sun Apr 15 2012 Andrei Borovsky <anb@symmetrica.net> - 0.9.1
 - Toolbar icons size togling options is added
-- YAGF now stores its private data in a FeeDesktop conformat way
+- YAGF now stores its private data in according with freedesktop.org standard for configuration files
 * Mon Apr 09 2012 Andrei Borovsky <anb@symmetrica.net> - 0.9.1
 - Text-splitting capability for splitting ext into blocks automatically is added 
 * Tue Feb 28 2012 Andrei Borovsky <anb@symmetrica.net> - 0.9

@@ -963,7 +963,7 @@
   <customwidget>
    <class>TextEditor</class>
    <extends>QTextEdit</extends>
-   <header>texteditor.h</header>
+   <header>src/texteditor.h</header>
   </customwidget>
  </customwidgets>
  <resources>

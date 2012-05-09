@@ -74,13 +74,10 @@ public:
     void drawLine(int x1, int y1, int x2, int y2);
     void imageOrigin(QPoint &p);
     QPixmap getCurrentImage();
-    void setSideBar(SideBar * value);
 
     void cropImage();
     void cropImage(const QRect &rect);
     void cropWhiteFrame();
-    void rotateImage(qreal deg);
-    void deskew(QImage *img);
     void splitPage();
     void blockAllText();
 
@@ -115,26 +112,17 @@ private:
     void deleteBlockRect(QGraphicsRectItem *item);
     QGraphicsView *m_view;
     QGraphicsPixmapItem *m_image;
-    QImage m_realImage;
-    //QImage old_pixmap;
-    QImage pm2;
-    QImage pm4;
-    QImage pm8;
-    QImage pm16;
     QGraphicsRectItem *m_CurrentBlockRect;
     QGraphicsRectItem *m_LastSelected;
     SelectStates selecting;
     QRectF blockRect;
     QRectF selBlockRect;
     bool hasImage;
-    qreal  m_scale;
-    qreal m_rotate;
     Qt::MouseButton buttonPressed;
     QCursor *magnifierCursor;
     int near_res;
     QPointer<QToolBar> toolbar;
     ActionList actionList;
-    SideBar * sideBar;
 };
 
 #endif // QGRAPHICSINPUT_H

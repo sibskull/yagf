@@ -42,25 +42,6 @@ SideBar::SideBar(QWidget *parent) :
     lock = false;
 }
 
-void SideBar::addFile(const QString &name, const QImage *image, bool select)
-{
-    if (getFileNames().contains(name))
-            return;
-    if (!image) {
-        QImage img;
-        if (img.load(name)) {
-            QSnippet * snippet = new QSnippet(this);
-            snippet->addFile(name, &img);
-            current = snippet;
-            current->setSelected(select);
-        }
-    } else {
-        QSnippet * snippet = new QSnippet(this);
-        snippet->addFile(name, image);
-        current = snippet;
-        current->setSelected(select);
-    }
-}
 
 QStringList SideBar::getFileNames()
 {
@@ -76,7 +57,7 @@ void SideBar::itemActive(QListWidgetItem *item)
     if (lock) return;
     lock = true;
     QString s = ((QSnippet *)item)->getName();
-    emit fileSelected(s);
+    emit pageSelected(s);
     current = ((QSnippet *)item);
     lock = false;
 }
@@ -137,12 +118,10 @@ void SideBar::startDrag(Qt::DropActions supportedActions)
         supportedActions |= Qt::MoveAction;
         QDrag * drag = new QDrag(this);
         QMimeData *mimeData = new QMimeData();
-        QList <QUrl> urlList;
-        QString s = "";
+        QStringList sl;
         foreach(QListWidgetItem * lwi, selectedItems()) {
-            QFileInfo fi(((QSnippet *)lwi)->getName());
-            urlList << fi.canonicalFilePath();
-            s = s + fi.canonicalFilePath() + ";";
+            QString s = QString::number(((QSnippet *)lwi)->pageID());
+            sl << s;
         }
         mimeData->setUrls(urlList);
         mimeData->setText(s);
@@ -152,10 +131,10 @@ void SideBar::startDrag(Qt::DropActions supportedActions)
                 model()->removeRow(row(lwi));
         }
         if (selectedItems().count()) {
-            emit fileSelected(((QSnippet *)selectedItems().at(0))->getName());
+            emit pageSelected(((QSnippet *)selectedItems().at(0))->pageID());
         } else {
             if (getFileNames().count())
-                emit fileSelected(getFileNames().at(0));
+                emit pageSelected(getFileNames().at(0));
         }
         //QListWidget::startDrag(supportedActions);
         //delete mimeData;
@@ -171,95 +150,6 @@ QSnippet * SideBar::getItemByName(const QString &name)
             return ((QSnippet *)item(i));
     }
     return NULL;
-}
-
-void SideBar::setRotation(qreal r, const QString &name)
-{
-    if (name == "") {
-        if (current) {
-            current->setRotation(r);
-        }
-    } else {
-        if (getItemByName(name))
-            getItemByName(name)->setRotation(r);
-    }
-}
-
-qreal SideBar::getRotation(const QString &name)
-{
-    if (name == "") {
-        if (current) {
-            return current->getRotation();
-        }
-    } else {
-        if (getItemByName(name))
-            return getItemByName(name)->getRotation();
-    }
-    return 0;
-}
-
-void SideBar::addBlock(const QRect &block, const QString &name)
-{
-    if (name == "") {
-        if (current) {
-            current->blocks()->append(block);
-        }
-    } else {
-        if (getItemByName(name))
-            getItemByName(name)->blocks()->append(block);
-    }
-}
-
-QRect SideBar::getBlock(int index)
-{
-    if (current) {
-        if (index < current->blocks()->count())
-            return current->blocks()->at(index);
-    }
-    return QRect();
-}
-
-int SideBar::getBlocksCount()
-{
-    if (current)
-        return current->blocks()->count();
-    return 0;
-}
-
-void SideBar::clearBlocks()
-{
-    if (current)
-        current->blocks()->clear();
-}
-
-void SideBar::removeBlock(const QRect &block)
-{
-    if (current)
-        current->blocks()->removeOne(block);
-}
-
-void SideBar::setScale(float s)
-{
-    if (current)
-        current->setScale(s);
-}
-
-float SideBar::getScale(const QString &name)
-{
-    if (name == "") {
-        if (current) {
-            return current->getScale();
-        }
-    } else {
-        if (getItemByName(name))
-            return getItemByName(name)->getScale();
-    }
-    return 1;
-}
-
-bool SideBar::fileLoaded(const QString &name)
-{
-    return getItemByName(name) != NULL;
 }
 
 void SideBar::select(const QString &name)

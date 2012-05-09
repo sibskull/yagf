@@ -17,17 +17,14 @@
 
 */
 
-#include "src/qsnippet.h"
+#include "qsnippet.h"
 
 QSnippet::QSnippet(QListWidget *parent) :
     QListWidgetItem(parent)
 {
-    rotation = 0;
-    scale = 1;
-
 }
 
-bool QSnippet::addFile(const QString &name, const QImage * image)
+bool QSnippet::setPage(int id, const QString &name, const QImage *image)
 {
     if (!image) {
         QImage img(name);
@@ -39,27 +36,8 @@ bool QSnippet::addFile(const QString &name, const QImage * image)
         setIcon(QPixmap::fromImage(*image));
     this->name = name;
     setToolTip(name);
+    pid = id;
     return true;
-}
-
-void QSnippet::setRotation(qreal rot)
-{
-    rotation = rot;
-}
-
-qreal QSnippet::getRotation()
-{
-    return rotation;
-}
-
-void QSnippet::setScale(double sc)
-{
-    scale = sc;
-}
-
-double QSnippet::getScale()
-{
-    return scale;
 }
 
 QString QSnippet::getName()
@@ -67,40 +45,8 @@ QString QSnippet::getName()
     return name;
 }
 
-bool rectLessThan(const QRect &r1, const QRect &r2)
+int QSnippet::pageID()
 {
-    if (r1.y() < r2.y())
-        return true;
-    if (r1.x() < r2.x())
-        return true;
-    return false;
+    return pid;
 }
 
-BolockList * QSnippet::blocks()
-{
-    qSort(blockList.begin(), blockList.end(), rectLessThan);
-    return &blockList;
-}
-
-void QSnippet::setCrop1(const QRect &rect)
-{
-    crop1.setX(rect.x());
-    crop1.setY(rect.y());
-    crop1.setWidth(rect.width());
-    crop1.setHeight(rect.height());
-}
-
-QRect QSnippet::getCrop1()
-{
-    return crop1;
-}
-
-void QSnippet::setCrop2(const QRect &rect)
-{
-    crop2 = rect;
-}
-
-QRect QSnippet::getCrop2()
-{
-    return crop2;
-}

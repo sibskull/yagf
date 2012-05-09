@@ -25,9 +25,12 @@ class QListWidget;
 
 class DropLabel : public QLabel
 {
+    Q_OBJECT
 public:
     DropLabel(QWidget * parent = 0, Qt::WindowFlags f = 0);
     void setListWidget(QListWidget * w);
+signals:
+    void pageRemoved(int id);
 protected:
     void dragEnterEvent(QDragEnterEvent *event);
     void dragLeaveEvent(QDragLeaveEvent *event);

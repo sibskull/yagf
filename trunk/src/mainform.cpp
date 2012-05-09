@@ -26,6 +26,7 @@
 #include "configdialog.h"
 #include "advancedconfigdialog.h"
 #include "mainform.h"
+#include "tpagecollection.h"
 #include <signal.h>
 #include <QComboBox>
 #include <QLabel>
@@ -70,20 +71,18 @@ MainForm::MainForm(QWidget *parent): QMainWindow(parent)
 {
     setupUi(this);
 
-    ///!!!!!
-    //alignButton->hide();
-    //unalignButton->hide();
 
+    pages = new TPageCollection();
 
     setWindowTitle("YAGF");
     //spellChecker = new SpellChecker(textEdit);
     textEdit->enumerateDicts();
     selectLangsBox = new QComboBox();
-    QLabel *label = new QLabel();
-    label->setMargin(4);
-    label->setText(trUtf8("Recognition language"));
+    QLabel *label1 = new QLabel();
+    label1->setMargin(4);
+    label1->setText(trUtf8("Recognition language"));
     frame->show();
-    toolBar->addWidget(label);
+    toolBar->addWidget(label1);
     selectLangsBox->setFrame(true);
     toolBar->addWidget(selectLangsBox);
     graphicsInput = new QGraphicsInput(QRectF(0, 0, 2000, 2000), graphicsView) ;
@@ -99,6 +98,11 @@ MainForm::MainForm(QWidget *parent): QMainWindow(parent)
     graphicsInput->addToolBarAction(actionSelect_Text_Area);
     graphicsInput->addToolBarAction(actionSelect_multiple_blocks);
     graphicsInput->addToolBarAction(ActionClearAllBlocks);
+
+    label->setListWidget(sideBar);
+
+    connect(sideBar, SIGNAL(pageSelected(int)), pages, SLOT(pageSelected(int)));
+    connect(label, SIGNAL(pageRemoved(int)), pages, SLOT(pageRemoved(int)));
 
     statusBar()->show();
     imageLoaded = false;
@@ -143,8 +147,6 @@ MainForm::MainForm(QWidget *parent): QMainWindow(parent)
     connect(sideBar, SIGNAL(fileSelected(const QString &)), this, SLOT(fileSelected(const QString &)));
 
     connect(actionRecognize_All_Pages, SIGNAL(triggered()), this, SLOT(recognizeAll()));
-
-    graphicsInput->setSideBar(sideBar);
 
     QPixmap pm;
     pm.load(":/align.png");
@@ -258,7 +260,7 @@ void MainForm::importPDF()
 
 void MainForm::addPDFPage(QString pageName)
 {
-    sideBar->addFile(pageName);
+    pages->appendPage(pageName);
     pdfPD.setValue(pdfPD.value()+1);
 }
 
@@ -284,7 +286,7 @@ void MainForm::loadImage()
             loadFile(fileNames.at(i), false);
         }
         if (fileNames.count() > 0)
-            sideBar->select(fileNames.at(0));
+            pages->makePageCurrent(0);
     }
 }
 
@@ -319,13 +321,14 @@ void MainForm::closeEvent(QCloseEvent *event)
     delTmpFiles();
     event->accept();
     QXtUnixSignalCatcher::catcher()->disconnectUnixSugnals();
+    delete pages;
 }
 
 void MainForm::rotateCWButtonClicked()
 {
     QCursor oldCursor = cursor();
     setCursor(Qt::WaitCursor);
-    graphicsInput->rotateImage(90);
+    pages->rotate90CW();
     setCursor(oldCursor);
 }
 
@@ -333,35 +336,25 @@ void MainForm::rotateCCWButtonClicked()
 {
     QCursor oldCursor = cursor();
     setCursor(Qt::WaitCursor);
-    graphicsInput->rotateImage(-90);
+    pages->rotate90CCW();
     setCursor(oldCursor);
 }
 void MainForm::rotate180ButtonClicked()
 {
     QCursor oldCursor = cursor();
     setCursor(Qt::WaitCursor);
-    graphicsInput->rotateImage(180);
+    pages->rotate180();
     setCursor(oldCursor);
 }
 
 void MainForm::enlargeButtonClicked()
 {
-    scaleImage(2.0);
+    pages->makeLarger();
 }
 
 void MainForm::decreaseButtonClicked()
 {
-    scaleImage(0.5);
-}
-
-void MainForm::scaleImage(double sf)
-{
-    if (!imageLoaded)
-        return;
-    if (sideBar->getScale()*sf > 0.5)
-        return;
-    graphicsInput->setViewScale(sideBar->getScale()*sf, 0);
-    sideBar->setScale(sideBar->getScale()*sf);
+    pages->makeSmaller();
 }
 
 void MainForm::initSettings()
@@ -517,78 +510,10 @@ void MainForm::loadFile(const QString &fn, bool loadIntoView)
 {
     QCursor oldCursor = cursor();
     setCursor(Qt::WaitCursor);
-    if ((fileName != "") && (sideBar->getFileNames().contains(fileName))) {
-        sideBar->select(fileName);
-        sideBar->clearBlocks();
-        for (int i = 0; i < graphicsInput->blocksCount(); i++)
-            sideBar->addBlock(graphicsInput->getBlockRectByIndex(i).toRect());
-    }
-    qreal xrotation = 0;
-    QRect crop1(0, 0, 0, 0);
-    double scaleFactor = 0.5;
-    if (sideBar->fileLoaded(fn)) {
-        sideBar->select(fn);
-        xrotation = sideBar->getRotation();
-        scaleFactor = sideBar->getScale();
-        crop1 = sideBar->getCrop1();
-    } else {
-        //xrotation = sideBar->getRotation();
-        //scaleFactor = sideBar->getScale();
-    }
 
-    QImage image;
-    if ((imageLoaded = image.load(fn))) {
-        //pixmap.detach();
-        //sideBar->addFile(fn , &image);
-        if (settings->getCropLoaded()) {
-            if (crop1.height() == 0) {
-                CCBuilder * cb = new CCBuilder(image);
-                cb->setGeneralBrightness(360);
-                cb->setMaximumColorComponent(100);
-                QRect r = cb->crop();
-                delete cb;
-                image = image.copy(r);
-                //sideBar->setCrop1(r);
-                crop1 = r;
-            } else {
-                image = image.copy(crop1);
-            }
-        }
+    pages->appendPage(fn);
+    sideBar->addItem((QListWidgetItem *) pages->snippet());
 
-    } else {
-        setCursor(oldCursor);
-        QMessageBox::critical(this, trUtf8("Image loading error"), trUtf8("Image %1 could not be loaded").arg(fn));
-        return;
-    }
-
-    if (!loadIntoView) {
-        setCursor(oldCursor);
-        return;
-    }
-    if (imageLoaded) {
-        fileName = fn;
-        setWindowTitle("YAGF - " + extractFileName(fileName));
-        graphicsInput->loadImage(image);
-        sideBar->addFile(fn , graphicsInput->getImageBy16());
-        sideBar->setCrop1(crop1);
-        sideBar->setScale(scaleFactor);
-        graphicsInput->setViewScale(0.5, xrotation);
-        for (int i = 0; i < sideBar->getBlocksCount(); i++)
-            graphicsInput->addBlock(sideBar->getBlockByHalf(i));
-        graphicsInput->setViewScale(scaleFactor, 0);
-        // ((FileToolBar *) m_toolBar)->setRotation(xrotation);
-        //  ((FileToolBar *) m_toolBar)->setScale(graphicsInput->getRealScale());
-        if (scaleFactor == 1) {
-            if (image.width() > 4000)
-                scaleImage(0.25);
-            else if (image.width() > 2000)
-                scaleImage(0.5);
-        }
-        graphicsInput->setFocus();
-    } else {
-       // sideBar->addFile(fn);
-    }
-    scaleFactor = 1;
     setCursor(oldCursor);
 }
 
@@ -988,13 +913,10 @@ void MainForm::on_actionCheck_spelling_activated()
 
 void MainForm::on_actionDeskew_activated()
 {
-   // AnalizePage();
-    {
-        QCursor oldCursor = cursor();
-        setCursor(Qt::WaitCursor);
-        graphicsInput->deskew(graphicsInput->getSmallImage());
-        setCursor(oldCursor);
-    }
+    QCursor oldCursor = cursor();
+    setCursor(Qt::WaitCursor);
+    pages->deskew();
+    setCursor(oldCursor);
 }
 
 void MainForm::on_actionSelect_HTML_format_activated()
@@ -1040,7 +962,7 @@ void MainForm::deskewByBlock()
     QApplication::processEvents();
     if (!graphicsInput->getCurrentBlock().isNull()) {
         QImage img = graphicsInput->getCurrentBlock();
-        graphicsInput->deskew(&img);
+        pages->deskew();
     }
     setCursor(oldCursor);
 }

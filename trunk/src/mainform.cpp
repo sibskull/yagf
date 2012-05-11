@@ -66,11 +66,13 @@
 
 const QString outputBase = "output";
 const QString outputExt = ".txt";
+const QString inputFile = "input.bmp";
+const QString outputFile = "output.txt";
+
 
 MainForm::MainForm(QWidget *parent): QMainWindow(parent)
 {
     setupUi(this);
-
 
     pages = new TPageCollection();
 
@@ -144,7 +146,7 @@ MainForm::MainForm(QWidget *parent): QMainWindow(parent)
    // textEdit->setContextMenuPolicy(Qt::ActionsContextMenu);
 
     this->sideBar->show();
-    connect(sideBar, SIGNAL(fileSelected(const QString &)), this, SLOT(fileSelected(const QString &)));
+    //connect(sideBar, SIGNAL(fileSelected(const QString &)), this, SLOT(fileSelected(const QString &)));
 
     connect(actionRecognize_All_Pages, SIGNAL(triggered()), this, SLOT(recognizeAll()));
 
@@ -612,18 +614,8 @@ bool MainForm::useCuneiform(const QString &inputFile, const QString &outputFile)
     return true;
 }
 
-void MainForm::recognizeInternal(const QImage &img)
+void MainForm::recognizeInternal()
 {
-    const QString inputFile = "input.bmp";
-    const QString outputFile = "output.txt";
-
-    QFile f(workingDir+inputFile);
-    f.remove();
-    f.setFileName(workingDir+outputFile);
-    f.remove();
-
-    QPixmapCache::clear();
-    img.save(workingDir + inputFile, "BMP");
     if (settings->getSelectedEngine() == UseCuneiform) {
         if (!useCuneiform(inputFile, outputFile))
             return;
@@ -683,12 +675,14 @@ void MainForm::recognize()
             }
         }
      }
-    if (graphicsInput->blocksCount() > 0) {
-        for (int i = graphicsInput->blocksCount(); i >= 0; i--)
-            if (!graphicsInput->getBlockByIndex(i).isNull())
-                recognizeInternal(graphicsInput->getBlockByIndex(i));
+    if (pages->count() > 0) {
+        for (int i = pages->blockCount() - 1; i >= 0; i--) {
+                prepareBlockForRecognition(i);
+                recognizeInternal();
+        }
     } else {
-        recognizeInternal(graphicsInput->getAdaptedImage());
+        preparePageForRecognition();
+        recognizeInternal();
     }
 }
 
@@ -740,6 +734,33 @@ void MainForm::delTmpDir()
 
 }
 
+
+void MainForm::clearTmpFiles()
+{
+    QFile f(workingDir+inputFile);
+    f.remove();
+    f.setFileName(workingDir+outputFile);
+    f.remove();
+}
+
+void MainForm::preparePageForRecognition()
+{
+    clearTmpFiles();
+    pages->savePageForRecognition(workingDir + inputFile);
+}
+
+void MainForm::prepareBlockForRecognition(const QRect &r)
+{
+    clearTmpFiles();
+    pages->saveBlockForRecognition(r, workingDir + inputFile);
+}
+
+void MainForm::prepareBlockForRecognition(int index)
+{
+    clearTmpFiles();
+    pages->saveBlockForRecognition(index, workingDir + inputFile);
+}
+
 void MainForm::setResizingCusor()
 {
     //scrollArea->widget()->setCursor(*resizeBlockCursor);
@@ -750,14 +771,11 @@ void MainForm::setUnresizingCusor()
     //scrollArea->widget()->setCursor(QCursor(Qt::ArrowCursor));
 }
 
-void MainForm::fileSelected(const QString &path)
+void MainForm::loadPage()
 {
-    if (path == "") {
-        graphicsInput->loadImage(QImage(0, 0));
-        this->setWindowTitle("YAGF");
-        return;
-    }
-    loadFile(path);
+    graphicsInput->addPixmap(pages->pixmap());
+    for (int i = 0; i < pages->blockCount(); i++)
+    graphicsInput->addBlockColliding(pages->getBlock(i));
 }
 
 void MainForm::recognizeAll()
@@ -830,7 +848,8 @@ void MainForm::on_actionRecognize_block_activated()
 {
     if (graphicsInput->getCurrentBlock().isNull())
         return;
-    recognizeInternal(graphicsInput->getCurrentBlock());
+    prepareBlockForRecognition(graphicsInput->getCurrentBlock());
+    recognizeInternal();
 }
 
 /*void MainForm::on_actionRecognize_activated()
@@ -846,14 +865,16 @@ void MainForm::on_actionCheck_spelling_triggered()
 
 void MainForm::on_actionSave_current_image_activated()
 {
-    this->saveImageInternal(graphicsInput->getImage());
+    QString fn = getFileNameToSaveImage();
+    if (!fn.isEmpty())
+        pages->savePageForRecognition(fn);
 }
 
-void MainForm::saveImageInternal(const QPixmap &pix)
+QString MainForm::getFileNameToSaveImage()
 {
     QString jpegFilter = QObject::trUtf8("JPEG Files (*.jpg)");
     QString pngFilter = QObject::trUtf8("PNG Files (*.png)");
-    QString imageSaveFailed = QObject::trUtf8("Failed to save the image");
+    //QString imageSaveFailed = QObject::trUtf8("Failed to save the image");
     QStringList filters;
     QString format = "JPEG";
     filters << jpegFilter << pngFilter;
@@ -862,7 +883,6 @@ void MainForm::saveImageInternal(const QPixmap &pix)
     dialog.setFilters(filters);
     dialog.setAcceptMode(QFileDialog::AcceptSave);
     dialog.setDefaultSuffix("jpg");
-    QCursor oldCursor = cursor();
     if (dialog.exec()) {
         setCursor(Qt::WaitCursor);
         if (dialog.selectedNameFilter() == jpegFilter) {
@@ -875,11 +895,11 @@ void MainForm::saveImageInternal(const QPixmap &pix)
         QStringList fileNames;
         fileNames = dialog.selectedFiles();
         settings->setLastOutputDir(dialog.directory().path());
-        if (!pix.save(fileNames.at(0), format.toAscii().data(), 100))
-            QMessageBox::critical(this, trUtf8("Error"), imageSaveFailed);
+        return fileNames.at(0);
     }
-    setCursor(oldCursor);
+    return "";
 }
+
 
 MainForm::~MainForm()
 {
@@ -894,7 +914,9 @@ MainForm::~MainForm()
 
 void MainForm::on_actionSave_block_activated()
 {
-    saveImageInternal(QPixmap::fromImage(graphicsInput->getCurrentBlock()));
+    QString fn = getFileNameToSaveImage();
+    if (!fn.isEmpty())
+        pages->saveBlockForRecognition(graphicsInput->getCurrentBlock(), fn);
 }
 
 void MainForm::on_actionCheck_spelling_activated()
@@ -956,15 +978,15 @@ void MainForm::pasteimage()
 
 void MainForm::deskewByBlock()
 {
-    QCursor oldCursor = cursor();
+    /*QCursor oldCursor = cursor();
     setCursor(Qt::WaitCursor);
     graphicsInput->update();
     QApplication::processEvents();
     if (!graphicsInput->getCurrentBlock().isNull()) {
-        QImage img = graphicsInput->getCurrentBlock();
+        QImage img = graphicsInput->getCurrentBlock();*/
         pages->deskew();
-    }
-    setCursor(oldCursor);
+    //}
+    ///setCursor(oldCursor);
 }
 
 void MainForm::selectTextArea()

@@ -102,11 +102,16 @@ private:
     void delTmpFiles();
     void loadNext(int number);
     void delTmpDir();
-    void recognizeInternal(const QImage &img);
+    void preparePageForRecognition();
+    void prepareBlockForRecognition(const QRect &r);
+    void prepareBlockForRecognition(int index);
+    void recognizeInternal();
     bool useCuneiform(const QString &inputFile, const QString &outputFile);
     bool useTesseract(const QString &inputFile);
-    void saveImageInternal(const QPixmap &pix);
+    QString getFileNameToSaveImage();
     void loadFromCommandLine();
+    void clearTmpFiles();
+private:
     bool imageLoaded;
     QComboBox *selectLangsBox;
     QGraphicsInput *graphicsInput;
@@ -130,7 +135,7 @@ private slots:
     void readyRead(int sig);
     void setResizingCusor();
     void setUnresizingCusor();
-    void fileSelected(const QString &path);
+    void loadPage();
     void rightMouseClicked(int x, int y, bool inTheBlock);
     void onShowWindow();
     void showAdvancedSettings();

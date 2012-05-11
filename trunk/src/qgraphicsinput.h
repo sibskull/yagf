@@ -51,23 +51,13 @@ class QGraphicsInput : public QGraphicsScene
 public:
     explicit QGraphicsInput(const QRectF &sceneRect, QGraphicsView *view = 0);
     ~QGraphicsInput();
-    bool loadImage(const QImage &image, bool clearBlocks = true);
     bool loadNewImage(const QPixmap &image);
     void setView(QGraphicsView *view);
-    QImage getActiveBlock();
-    QImage getCurrentBlock();
-    void setViewScale(qreal scale, qreal angle);
-    int blocksCount();
+    QRect getActiveBlock();
+    QRect getCurrentBlock();
     void deleteBlock(int index);
     void deleteCurrentBlock();
-    QImage getBlockByIndex(int index);
-    QRectF getBlockRectByIndex(int index);
     void clearBlocks();
-    qreal getScale();
-    qreal getAngle();
-    QPixmap getImage();
-    QImage getAdaptedImage();
-    QImage * getSmallImage();
     QImage * getImageBy16();
     bool addBlock(const QRectF &rect, bool removeObstacles = true);
     void addBlockColliding(const QRectF &rect);
@@ -75,18 +65,16 @@ public:
     void imageOrigin(QPoint &p);
     QPixmap getCurrentImage();
 
-    void cropImage();
-    void cropImage(const QRect &rect);
     void cropWhiteFrame();
     void splitPage();
     void blockAllText();
 
-    void undo();
     void setMagnifierCursor(QCursor *cursor);
     void addToolBarAction(QAction * action);
     void addToolBarSeparator();
     void setToolBarVisible();
     QGraphicsRectItem *newBlock(const QRectF &rect);
+    bool loadImage(const QPixmap &pixmap);
 
     //setMagnifierCursor(QCursor * cursor = );
 protected:
@@ -100,7 +88,7 @@ signals:
     void leftMouseClicked(int x, int y, bool blockSelected);
     void rightMouseClicked(int x, int y, bool inTheBlock);
     void keyPressed(int key);
-public slots:
+private slots:
 private:
     void leftMouseRelease(qreal x, qreal y);
     void rightMouseRelease(qreal x, qreal y);
@@ -108,7 +96,6 @@ private:
     void clearTransform();
     void addToolBar();
     QImage tryRotate(QImage image, qreal angle);
-    QImage extractImage(QGraphicsRectItem *item);
     void deleteBlockRect(QGraphicsRectItem *item);
     QGraphicsView *m_view;
     QGraphicsPixmapItem *m_image;

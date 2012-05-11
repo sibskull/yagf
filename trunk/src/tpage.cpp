@@ -218,7 +218,7 @@ void TPage::savePageForRecognition(const QString &fileName)
     QImageReader ir(mFileName);
     QImage image = ir.read();
     applyTransforms(image, 1);
-    image.save(fileName);
+    image.save(fileName, "BMP");
 }
 
 void TPage::saveBlockForRecognition(QRect r, const QString &fileName)

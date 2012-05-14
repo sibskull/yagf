@@ -6,6 +6,11 @@ TBlock::TBlock(int x, int y, int width, int height) :
     number = -1;
 }
 
+TBlock::TBlock(const QRect &r) : QRect(r.x(), r.y(), r.width(), r.height())
+{
+    number = -1;
+}
+
 int TBlock::blockNumber()
 {
     return number;

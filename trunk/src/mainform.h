@@ -93,6 +93,7 @@ private slots:
     void selectBlocks();
     void setSmallIcons();
     void selectHTMLformat();
+    void loadFiles(QStringList files);
 private:
     virtual void closeEvent(QCloseEvent *event);
     void initSettings();

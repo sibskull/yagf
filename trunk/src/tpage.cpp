@@ -1,13 +1,17 @@
 #include "tpage.h"
 #include "settings.h"
 #include "ccbuilder.h"
-#include "ccanalysys.h"
+#include "CCAnalysis.h"
+#include "PageAnalysis.h"
+#include "analysis.h"
 #include <QImageReader>
 #include <QImageWriter>
 #include <QSize>
+#include <QRect>
+#include <cmath>
 
 TPage::TPage(const int pid, QObject *parent) :
-    QObject(parent)
+    QObject(parent), selectedBlock(0,0,0,0)
 {
     imageLoaded = false;
     loadedBefore = false;
@@ -23,7 +27,7 @@ TPage::~TPage()
     delete ccbuilder;
 }
 
-bool TPage::loadFile(const QString fileName, bool loadIntoView)
+bool TPage::loadFile(QString fileName, bool loadIntoView)
 {
     // TODO: перенести в TPages.
     /*if ((fileName != "") && (sideBar->getFileNames().contains(fileName))) {
@@ -38,7 +42,10 @@ bool TPage::loadFile(const QString fileName, bool loadIntoView)
         fileName = mFileName;
     }
     rotation = 0;
-    crop1(0, 0, 0, 0);
+    crop1.setX(0);
+    crop1.setY(0);
+    crop1.setWidth(0);
+    crop1.setHeight(0);
     scale = 0.5;
     QImageReader ir(fileName);
     ir.setScaledSize(QSize(ir.size().width()/2, ir.size().height()/2));
@@ -146,20 +153,6 @@ void TPage::addBlock(const TBlock &block)
         }
     }
     if (add) blocks.append(block);
-    sortBlocks(blocks);
-}
-
-void TPage::deleteBlock(const QRect &r)
-{
-    QRect rn =r;
-    normalizeRect(rn);
-    foreach (TBlock b, blocks) {
-        QRect r1 = b;
-        if (rn == r1) {
-            blocks.removeOne(b);
-            break;
-        }
-    }
     sortBlocks(blocks);
 }
 
@@ -350,7 +343,11 @@ int TPage::pageID()
 void TPage::applyTransforms(QImage &image, qreal scale)
 {
     scale = scale*2;
-    QRect crop = crop1*scale;
+    QRect crop;
+    crop.setX(crop1.x()*scale);
+    crop.setY(crop1.y()*scale);
+    crop.setWidth(crop1.width()*scale);
+    crop.setHeight(crop1.height()*scale);
     image = image.copy(crop);
     rotateImageInternal(image, rotation);
 }

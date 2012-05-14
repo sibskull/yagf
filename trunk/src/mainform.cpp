@@ -127,6 +127,10 @@ MainForm::MainForm(QWidget *parent): QMainWindow(parent)
     connect(graphicsInput, SIGNAL(rightMouseClicked(int, int, bool)), this, SLOT(rightMouseClicked(int, int, bool)));
     connect(actionSelect_HTML_format, SIGNAL(triggered()), this, SLOT(selectHTMLformat()));
 
+    connect(graphicsInput, SIGNAL(increaseMe()), this, SLOT(enlargeButtonClicked()));
+    connect(graphicsInput, SIGNAL(decreaseMe()), this, SLOT(decreaseButtonClicked()));
+    connect(sideBar, SIGNAL(filesDropped(QStringList)), SLOT(loadFiles(QStringList)));
+
     tesMap = new TesMap();
     fillLanguagesBox();
     initSettings();
@@ -200,13 +204,20 @@ void MainForm::loadFromCommandLine()
     if (sl.count() > 1) {
         if (QFile::exists(sl.at(1)))
             loadFile(sl.at(1));
+        QStringList files;
         for (int i = 2; i < sl.count(); i++)
-            if (QFile::exists(sl.at(i)))
-                loadFile(sl.at(i));
-        if (QFile::exists(sl.at(1)))
-            sideBar->select(sl.at(1));
-
+            files.append(sl.at(i));
+        loadFiles(files);
     }
+}
+
+void MainForm::loadFiles(QStringList files)
+{
+    for (int i = 0; i < files.count(); i++)
+        if (QFile::exists(files.at(i)))
+            loadFile(files.at(i));
+    if (QFile::exists(files.at(0)))
+        sideBar->select(files.at(0));
 }
 
 void MainForm::showConfigDlg()
@@ -991,7 +1002,7 @@ void MainForm::deskewByBlock()
 
 void MainForm::selectTextArea()
 {
-    graphicsInput->blockAllText();
+    pages->blockAllText();
 }
 
 void MainForm::showAdvancedSettings()
@@ -1005,7 +1016,7 @@ void MainForm::showAdvancedSettings()
 
 void MainForm::selectBlocks()
 {
-    graphicsInput->splitPage();
+    pages->splitPage();
 }
 
 void MainForm::setSmallIcons()

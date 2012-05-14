@@ -8,6 +8,7 @@ class TBlock : public QRect
 {
 public:
     explicit TBlock( int x, int y, int width, int height );
+    TBlock(const QRect &r);
     int blockNumber();
     void setBlockNumber(const int value);
 private:

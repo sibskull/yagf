@@ -31,16 +31,11 @@ public:
     explicit SideBar(QWidget *parent = 0);
     QStringList getFileNames();
     void clearBlocks();
-    QRect getBlock(int index);
-    QRect getBlockByHalf(int index);
-    void setCrop1(const QRect &rect);
-    QRect getCrop1(const QString &name = "");
-    void setCrop2(const QRect &rect);
-    QRect getCrop2(const QString &name = "");
     void select(const QString &name);
     void selectFirstFile();
 signals:
     void pageSelected(int id);
+    void filesDropped(QStringList);
 private slots:
     void itemActive( QListWidgetItem * item );
 protected:

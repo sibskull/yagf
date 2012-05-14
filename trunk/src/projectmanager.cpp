@@ -32,7 +32,7 @@ ProjectManager::~ProjectManager()
 
 void ProjectManager::save(const QString &fileName)
 {
-    QFile file(fileName);
+    /*QFile file(fileName);
      if (file.open(QFile::WriteOnly | QFile::Truncate)) {
          QTextStream out(&file);
          out << "YAGF:1" << endl;
@@ -45,7 +45,7 @@ void ProjectManager::save(const QString &fileName)
                 out << b.x() << b.y() << b.width() << b.height() << endl;
             }
          }
-     }
+     }*/
 }
 
 void ProjectManager::load(const QString &fileName)

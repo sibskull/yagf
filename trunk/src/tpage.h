@@ -16,7 +16,7 @@ class TPage : public QObject
 public:
     explicit TPage(const int pid, QObject *parent = 0);
     ~TPage();
-    bool loadFile(const QString fileName, bool loadIntoView = true);
+    bool loadFile(QString fileName, bool loadIntoView = true);
     QPixmap displayPixmap();
     QImage thumbnail();
     bool makeLarger();

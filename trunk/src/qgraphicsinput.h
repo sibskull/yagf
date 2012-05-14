@@ -51,14 +51,12 @@ class QGraphicsInput : public QGraphicsScene
 public:
     explicit QGraphicsInput(const QRectF &sceneRect, QGraphicsView *view = 0);
     ~QGraphicsInput();
-    bool loadNewImage(const QPixmap &image);
     void setView(QGraphicsView *view);
     QRect getActiveBlock();
     QRect getCurrentBlock();
     void deleteBlock(int index);
     void deleteCurrentBlock();
     void clearBlocks();
-    QImage * getImageBy16();
     bool addBlock(const QRectF &rect, bool removeObstacles = true);
     void addBlockColliding(const QRectF &rect);
     void drawLine(int x1, int y1, int x2, int y2);
@@ -66,8 +64,6 @@ public:
     QPixmap getCurrentImage();
 
     void cropWhiteFrame();
-    void splitPage();
-    void blockAllText();
 
     void setMagnifierCursor(QCursor *cursor);
     void addToolBarAction(QAction * action);
@@ -88,6 +84,8 @@ signals:
     void leftMouseClicked(int x, int y, bool blockSelected);
     void rightMouseClicked(int x, int y, bool inTheBlock);
     void keyPressed(int key);
+    void increaseMe();
+    void decreaseMe();
 private slots:
 private:
     void leftMouseRelease(qreal x, qreal y);
@@ -95,7 +93,6 @@ private:
     int nearActiveBorder(qreal x, qreal y);
     void clearTransform();
     void addToolBar();
-    QImage tryRotate(QImage image, qreal angle);
     void deleteBlockRect(QGraphicsRectItem *item);
     QGraphicsView *m_view;
     QGraphicsPixmapItem *m_image;

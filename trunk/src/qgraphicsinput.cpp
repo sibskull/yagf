@@ -468,10 +468,9 @@ void QGraphicsInput::wheelEvent(QGraphicsSceneWheelEvent *wheelEvent)
         int delta = wheelEvent->delta();
         qreal coeff = delta < 0 ? 1 / (1 - delta / (360.)) : 1 + delta / (240.);
         if (coeff >= 1)
-            coeff = 2;
+            emit increaseMe();
         else
-            coeff = 0.5;
-        this->setViewScale(coeff, 0);
+            emit decreaseMe();
         wheelEvent->accept();
         m_view->viewport()->setCursor(*magnifierCursor);
     } else
@@ -484,11 +483,11 @@ void QGraphicsInput::keyReleaseEvent(QKeyEvent *keyEvent)
         m_view->viewport()->setCursor(Qt::ArrowCursor);
     if (keyEvent->modifiers() & Qt::ControlModifier) {
         if ((keyEvent->key() == Qt::Key_Plus) || (keyEvent->key() == Qt::Key_Equal)) {
-            this->setViewScale(2, 0);
+            emit increaseMe();
             return;
         }
         if ((keyEvent->key() == Qt::Key_Minus) || (keyEvent->key() == Qt::Key_Underscore)) {
-            this->setViewScale(0.5, 0);
+            emit decreaseMe();
             return;
         }
 
@@ -505,12 +504,6 @@ void QGraphicsInput::clearTransform()
         tr.reset();
         m_view->setTransform(tr);
     }
-}
-
-bool QGraphicsInput::loadNewImage(const QPixmap &image)
-{
-    clearTransform();
-    return loadImage(image.toImage());
 }
 
 void QGraphicsInput::keyPressEvent(QKeyEvent *keyEvent)
@@ -541,66 +534,10 @@ QPixmap QGraphicsInput::getCurrentImage()
     return (m_image->pixmap());
 }
 
-QImage * QGraphicsInput::getImageBy16()
-{
-    return &pm16;
-}
-
-QImage QGraphicsInput::tryRotate(QImage image, qreal angle)
-{
-    qreal x = image.width() / 2;
-    qreal y = image.height() / 2;
-    return image.transformed(QTransform().translate(-x, -y).rotate(angle).translate(x, y), Qt::SmoothTransformation);
-}
-
 void QGraphicsInput::addBlockColliding(const QRectF &rect)
 {
     QGraphicsRectItem *block = newBlock(rect);
     m_CurrentBlockRect = block;
 }
 
-void QGraphicsInput::splitPage()
-{
-    clearBlocks();
-    BlockSplitter bs;
-    bs.setImage(*(getSmallImage()), sideBar->getRotation(), 0.5);// sideBar->getScale());
-    //QRect r = bs.getRootBlock(graphicsInput->getCurrentImage().toImage());
-    //Bars bars = bs.getBars();
-    //foreach (Rect rc, bars) {
-     //   graphicsInput->addLine(rc.x1, rc.y1, rc.x2, rc.y2);
-    //}
-    bs.getBars();
-    bs.splitBlocks();
-    QList<Rect> blocks = bs.getBlocks();
-    qreal sf = 2.0*sideBar->getScale();
-    QRect cr = bs.getRotationCropRect(getCurrentImage().toImage());
-    foreach (Rect block, blocks) {
-        QRect r;
-        block.x1 *=sf;
-        block.y1 *=sf;
-        block.x2 *= sf;
-        block.y2 *=sf;
 
-        block.x1 += cr.x();
-        block.y1 += cr.y();
-        block.x2 += cr.x();
-        block.y2 += cr.y();
-
-        r.setX(block.x1);
-        r.setY(block.y1);
-        r.setWidth(block.x2 - block.x1);
-        r.setHeight(block.y2 - block.y1);
-        sideBar->addBlock(r);
-        addBlockColliding(r);
-    }
-}
-
-void QGraphicsInput::blockAllText()
-{
-    clearBlocks();
-    BlockSplitter bs;
-    bs.setImage(*getSmallImage(), sideBar->getRotation(), sideBar->getScale());
-    QRect r = bs.getRootBlock(getCurrentImage().toImage());
-    sideBar->addBlock(r);
-    addBlock(r);
-}

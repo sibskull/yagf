@@ -30,7 +30,7 @@ class QSnippet : public QListWidgetItem
 {
 public:
     explicit QSnippet(QListWidget *parent = 0);
-    bool setPage(int id, const QString &name, const QImage * image = NULL);
+    bool setPage(int id, const QString &name, const QImage &image = QImage());
     QString getName();
     int pageID();
 signals:

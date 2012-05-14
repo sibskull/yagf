@@ -24,16 +24,16 @@ QSnippet::QSnippet(QListWidget *parent) :
 {
 }
 
-bool QSnippet::setPage(int id, const QString &name, const QImage *image)
+bool QSnippet::setPage(int id, const QString &name, const QImage &image)
 {
-    if (!image) {
+    if (image.isNull()) {
         QImage img(name);
         if (img.isNull())
             return false;
         setIcon(QPixmap::fromImage(img));
     }
     else
-        setIcon(QPixmap::fromImage(*image));
+        setIcon(QPixmap::fromImage(image));
     this->name = name;
     setToolTip(name);
     pid = id;

@@ -46,6 +46,11 @@ QGraphicsInput::QGraphicsInput(const QRectF &sceneRect, QGraphicsView *view) :
     near_res = 0;
     magnifierCursor = new QCursor(Qt::SizeAllCursor);
     toolbar = 0;
+    redRect.setX(0);
+    redRect.setY(0);
+    redRect.setWidth(0);
+    redRect.setHeight(0);
+    red = false;
  }
 
 QGraphicsInput::~QGraphicsInput()
@@ -82,6 +87,8 @@ void QGraphicsInput::addToolBar()
 bool QGraphicsInput::loadImage(const QPixmap &pixmap)
 {
     clear();
+    m_LastSelected = 0;
+    m_CurrentBlockRect = 0;
 //    clearBlocks();
     m_image = addPixmap(pixmap);
     setSceneRect(pixmap.rect());
@@ -165,7 +172,10 @@ void QGraphicsInput::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
                 //clik!!!
                 leftMouseRelease(mouseEvent->scenePos().x(), mouseEvent->scenePos().y());
             }
-            emit blockCreated(QRectF2Rect(m_CurrentBlockRect->rect()));
+            else emit blockCreated(QRectF2Rect(m_CurrentBlockRect->rect()));
+            if (red)
+                emit deleteBlock(redRect);
+            red = false;
             m_CurrentBlockRect = 0;
         }
         if (selecting == StartSelect) {
@@ -249,6 +259,7 @@ void QGraphicsInput::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
         }
     QRectF newRect;
     if (near_res && (mouseEvent->buttons()&Qt::LeftButton)) {
+        red = true;
         QRectF newRect = m_LastSelected->mapRectToScene(m_LastSelected->rect());
         switch (near_res) {
             case 1:
@@ -325,6 +336,9 @@ void QGraphicsInput::leftMouseRelease(qreal x, qreal y)
                 r->setData(2, "yes");
                 m_LastSelected = r;
                 selBlockRect = m_LastSelected->rect();
+                redRect = QRectF2Rect(selBlockRect); // ATT
+
+//                emit addBlock(QRectF2Rect(selBlockRect));
             } else {
                 m_LastSelected = 0;
                 r->setData(2, "no");

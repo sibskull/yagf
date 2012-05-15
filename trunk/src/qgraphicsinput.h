@@ -87,6 +87,7 @@ signals:
     void increaseMe();
     void decreaseMe();
     void blockCreated(QRect rect);
+    void deleteBlock(QRect rect);
 private slots:
 private:
     void leftMouseRelease(qreal x, qreal y);
@@ -108,6 +109,8 @@ private:
     int near_res;
     QPointer<QToolBar> toolbar;
     ActionList actionList;
+    QRect redRect;
+    bool red;
 };
 
 #endif // QGRAPHICSINPUT_H

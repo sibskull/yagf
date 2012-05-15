@@ -23,7 +23,7 @@ public:
     bool makeSmaller();
     void rotate(qreal angle);
     void unload();
-    void addBlock(const TBlock &block);
+    void addBlock(TBlock block);
     void deleteBlock(const TBlock &b);
     void deleteBlock(const QRect &r);
     TBlock getBlock(const QRect &r);

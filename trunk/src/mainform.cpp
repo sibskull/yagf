@@ -132,6 +132,7 @@ MainForm::MainForm(QWidget *parent): QMainWindow(parent)
     connect(sideBar, SIGNAL(filesDropped(QStringList)), SLOT(loadFiles(QStringList)));
     connect(pages, SIGNAL(loadPage()), this, SLOT(loadPage()));
     connect(graphicsInput, SIGNAL(blockCreated(QRect)), pages, SLOT(addBlock(QRect)));
+    connect(graphicsInput, SIGNAL(deleteBlock(QRect)), pages, SLOT(deleteBlock(QRect)));
 
     tesMap = new TesMap();
     fillLanguagesBox();
@@ -836,7 +837,8 @@ void MainForm::hideToolBar()
 
 void MainForm::on_ActionClearAllBlocks_activated()
 {
-    graphicsInput->clearBlocks();
+    pages->clearBlocks();
+    loadPage();
 }
 
 void MainForm::rightMouseClicked(int x, int y, bool inTheBlock)
@@ -859,7 +861,9 @@ void MainForm::rightMouseClicked(int x, int y, bool inTheBlock)
 
 void MainForm::on_ActionDeleteBlock_activated()
 {
+    QRect r = graphicsInput->getCurrentBlock();
     graphicsInput->deleteCurrentBlock();
+    pages->deleteBlock(r);
 }
 
 void MainForm::on_actionRecognize_block_activated()

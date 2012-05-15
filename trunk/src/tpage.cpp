@@ -91,8 +91,8 @@ QImage TPage::thumbnail()
 bool TPage::makeLarger()
 {
     if (scale >= 0.5) return false;
-    if (scale < 0.16) {
-        scale = 0.16;
+    if (scale < 0.2) {
+        scale = 0.2;
         return true;
     }
     if (scale < 0.25) {
@@ -113,8 +113,8 @@ bool TPage::makeSmaller()
         scale = 0.25;
         return true;
     }
-    if (scale > 0.16) {
-        scale = 0.16;
+    if (scale > 0.2) {
+        scale = 0.2;
         return true;
     }
     if (scale > 0.125)
@@ -140,7 +140,20 @@ void TPage::unload()
     imageLoaded = false;
 }
 
-void TPage::addBlock(const TBlock &block)
+inline bool qrects_equal(QRect &r1, QRect &r2)
+{
+    if (abs(r1.x() - r2.x()) > 2)
+        return false;
+    if (abs(r1.y() - r2.y()) > 2)
+        return false;
+    if (abs(r1.width() - r2.width()) > 2)
+        return false;
+    if (abs(r1.height() - r2.height()) > 2)
+        return false;
+    return true;
+}
+
+void TPage::addBlock(TBlock block)
 {
     QRect r = block;
     normalizeRect(r);
@@ -152,7 +165,10 @@ void TPage::addBlock(const TBlock &block)
             break;
         }
     }
-    if (add) blocks.append(block);
+    if (add) {
+        block.setRect(r.x(), r.y(), r.width(), r.height());
+        blocks.append(block);
+    }
     sortBlocks(blocks);
 }
 
@@ -168,7 +184,7 @@ void TPage::deleteBlock(const QRect &r)
     normalizeRect(rx);
     foreach (TBlock b, blocks) {
         QRect r1 = b;
-        if (rx == r1) {
+        if (qrects_equal(rx, r1)) {
             blocks.removeAll(b);
             break;
         }
@@ -182,11 +198,12 @@ TBlock TPage::getBlock(const QRect &r)
     normalizeRect(rn);
     foreach (TBlock b, blocks) {
         QRect r1 = b;
-        if (rn == r1) {
+        if (qrects_equal(rn,r1)) {
             scaleRect(b);
             return b;
         }
     }
+    return TBlock(0,0,0,0);
 }
 
 TBlock TPage::getBlock(int index)
@@ -362,25 +379,29 @@ void TPage::rotateImageInternal(QImage &image, qreal angle)
 void TPage::scaleImages()
 {
     img4 = img2.scaledToWidth(img2.width() / 2);
-    img6 = img2.scaledToWidth(img2.width() / 3);
+    img6 = img2.scaledToWidth(img2.width() / 2.5);
     img8 = img4.scaledToWidth(img4.width() / 2);
     img16 = img8.scaledToWidth(img8.width() / 2);
 }
 
 void TPage::normalizeRect(QRect &rect)
 {
+    qreal oldw = rect.width();
+    qreal oldh = rect.height();
     rect.setX(rect.x()*0.5/scale);
     rect.setY(rect.y()*0.5/scale);
-    rect.setWidth(rect.width()*0.5/scale);
-    rect.setHeight(rect.height()*0.5/scale);
+    rect.setWidth(oldw*0.5/scale);
+    rect.setHeight(oldh*0.5/scale);
 }
 
 void TPage::scaleRect(QRect &rect)
 {
+    qreal oldw = rect.width();
+    qreal oldh = rect.height();
     rect.setX(rect.x()/0.5*scale);
     rect.setY(rect.y()/0.5*scale);
-    rect.setWidth(rect.width()/0.5*scale);
-    rect.setHeight(rect.height()/0.5*scale);
+    rect.setWidth(oldw/0.5*scale);
+    rect.setHeight(oldh/0.5*scale);
 }
 
 QImage TPage::tryRotate(QImage image, qreal angle)
@@ -394,7 +415,7 @@ QImage TPage::currentImage()
 {
     if (scale <= 0.125)
         return img8;
-    if (scale <= 0.16)
+    if (scale <= 0.2)
         return img6;
     if (scale <= 0.25)
         return img4;

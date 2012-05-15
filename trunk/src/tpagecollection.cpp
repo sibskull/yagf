@@ -159,18 +159,21 @@ void TPageCollection::deskew()
 {
     if (!cp()) return;
     cp()->deskew();
+    emit loadPage();
 }
 
 void TPageCollection::blockAllText()
 {
     if (!cp()) return;
     cp()->blockAllText();
+    emit loadPage();
 }
 
 void TPageCollection::splitPage()
 {
     if (!cp()) return;
     cp()->splitPage();
+    emit loadPage();
 }
 
 void TPageCollection::addBlock(const QRect &rect)

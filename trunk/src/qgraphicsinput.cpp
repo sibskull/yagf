@@ -81,10 +81,12 @@ void QGraphicsInput::addToolBar()
 
 bool QGraphicsInput::loadImage(const QPixmap &pixmap)
 {
-    QApplication::processEvents();
-    //old_pixmap = image;
+    clear();
+//    clearBlocks();
     m_image = addPixmap(pixmap);
     setSceneRect(pixmap.rect());
+    m_image->setZValue(-1);
+    QApplication::processEvents();
     //m_realImage->setData(1, "image");
     //m_realImage->hide();
     this->setFocus();
@@ -163,6 +165,7 @@ void QGraphicsInput::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
                 //clik!!!
                 leftMouseRelease(mouseEvent->scenePos().x(), mouseEvent->scenePos().y());
             }
+            emit blockCreated(QRectF2Rect(m_CurrentBlockRect->rect()));
             m_CurrentBlockRect = 0;
         }
         if (selecting == StartSelect) {

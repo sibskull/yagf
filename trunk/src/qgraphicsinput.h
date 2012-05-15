@@ -86,6 +86,7 @@ signals:
     void keyPressed(int key);
     void increaseMe();
     void decreaseMe();
+    void blockCreated(QRect rect);
 private slots:
 private:
     void leftMouseRelease(qreal x, qreal y);

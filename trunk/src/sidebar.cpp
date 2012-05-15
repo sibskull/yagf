@@ -135,6 +135,7 @@ QSnippet * SideBar::getItemByName(const QString &name)
 void SideBar::select(const QString &name)
 {
     current = getItemByName(name);
+    current->setSelected(true);
 }
 
 void SideBar::selectFirstFile()

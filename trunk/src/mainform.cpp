@@ -131,6 +131,7 @@ MainForm::MainForm(QWidget *parent): QMainWindow(parent)
     connect(graphicsInput, SIGNAL(decreaseMe()), this, SLOT(decreaseButtonClicked()));
     connect(sideBar, SIGNAL(filesDropped(QStringList)), SLOT(loadFiles(QStringList)));
     connect(pages, SIGNAL(loadPage()), this, SLOT(loadPage()));
+    connect(graphicsInput, SIGNAL(blockCreated(QRect)), pages, SLOT(addBlock(QRect)));
 
     tesMap = new TesMap();
     fillLanguagesBox();
@@ -527,8 +528,10 @@ void MainForm::loadFile(const QString &fn, bool loadIntoView)
 
     pages->appendPage(fn);
     sideBar->addItem((QListWidgetItem *) pages->snippet());
-    if (loadIntoView)
+    if (loadIntoView) {
         graphicsInput->loadImage(pages->pixmap());
+        sideBar->select(fn);
+    }
     setCursor(oldCursor);
 }
 
@@ -786,7 +789,9 @@ void MainForm::setUnresizingCusor()
 
 void MainForm::loadPage()
 {
-    graphicsInput->addPixmap(pages->pixmap());
+    //graphicsInput->clearBlocks();
+    graphicsInput->loadImage(pages->pixmap());
+    QApplication::processEvents();
     for (int i = 0; i < pages->blockCount(); i++)
     graphicsInput->addBlockColliding(pages->getBlock(i));
 }

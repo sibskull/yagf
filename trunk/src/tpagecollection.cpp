@@ -17,10 +17,11 @@ TPageCollection::~TPageCollection()
 void TPageCollection::appendPage(const QString &fileName)
 {
     //Settings * settings = Settings::instance();
-    TPage * p = new TPage(pid++);
+    TPage * p = new TPage(++pid);
     if (p->loadFile(fileName)) {
         pages.append(p);
         emit addSnippet();
+        index++;
     }
 }
 
@@ -32,6 +33,12 @@ int TPageCollection::count()
 bool TPageCollection::makePageCurrent(int index)
 {
     this->index = index;
+    return index < pages.count();
+}
+
+bool TPageCollection::makePageCurrentByID(int id)
+{
+    return makePageCurrent(id2Index(id)) >= 0;
 }
 
 void TPageCollection::setBeforeFirst()
@@ -192,6 +199,7 @@ void TPageCollection::clear()
     }
     pages.clear();
     emit cleared();
+    index = -1;
 }
 
 
@@ -202,27 +210,28 @@ TPage *TPageCollection::cp()
     return pages.at(index);
 }
 
-void TPageCollection::pageSelected(int id)
+int TPageCollection::id2Index(int id)
 {
     foreach (TPage *p, pages) {
-        if (p->pageID() == id) {
-            index = pages.indexOf(p);
-            emit loadPage();
-            break;
-        }
+        if (p->pageID() == id)
+            return pages.indexOf(p);
     }
+    return -1;
+}
+
+void TPageCollection::pageSelected(int id)
+{
+    makePageCurrent(id2Index(id));
+    emit loadPage();
 }
 
 void TPageCollection::pageRemoved(int id)
 {
-    foreach (TPage *p, pages) {
-        if (p->pageID() == id) {
-            index = pages.indexOf(p);
-            pages.remove(index);
-            delete p;
-            makePageCurrent(index);
-            emit loadPage();
-            break;
-        }
+    int index = id2Index(id);
+    if (index >= 0) {
+        delete pages.at(index);
+        pages.remove(index);
     }
+    makePageCurrent(index);
+    emit loadPage();
 }

@@ -17,6 +17,7 @@ public:
     void appendPage(const QString &fileName);
     int count();
     bool makePageCurrent(int index);
+    bool makePageCurrentByID(int id);
     void setBeforeFirst(); // the page pointer is set before the first page
     bool makeNextPageCurrent();
     QSnippet * snippet();
@@ -51,6 +52,7 @@ private slots:
     void pageRemoved(int id);
 private:
      TPage * cp();
+     int id2Index(int id);
 private:
     QVector<TPage *> pages;
     int index;

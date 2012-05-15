@@ -50,7 +50,7 @@ bool TPage::loadFile(QString fileName, bool loadIntoView)
     QImageReader ir(fileName);
     ir.setScaledSize(QSize(ir.size().width()/2, ir.size().height()/2));
     img2 = ir.read();
-    imageLoaded = img2.isNull();
+    imageLoaded = !img2.isNull();
     if (!imageLoaded)
         return false;
     if (!loadedBefore) {

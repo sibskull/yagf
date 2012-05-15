@@ -130,6 +130,7 @@ MainForm::MainForm(QWidget *parent): QMainWindow(parent)
     connect(graphicsInput, SIGNAL(increaseMe()), this, SLOT(enlargeButtonClicked()));
     connect(graphicsInput, SIGNAL(decreaseMe()), this, SLOT(decreaseButtonClicked()));
     connect(sideBar, SIGNAL(filesDropped(QStringList)), SLOT(loadFiles(QStringList)));
+    connect(pages, SIGNAL(loadPage()), this, SLOT(loadPage()));
 
     tesMap = new TesMap();
     fillLanguagesBox();
@@ -292,7 +293,7 @@ void MainForm::loadImage()
         fileNames = dialog.selectedFiles();
         settings->setLastDir(dialog.directory().path());
         if (fileNames.count() > 0)
-         loadFile(fileNames.at(0));
+         loadFile(fileNames.at(0), true);
         if (!imageLoaded)
             return;
         for (int i = 1; i < fileNames.count(); i++) {
@@ -526,7 +527,8 @@ void MainForm::loadFile(const QString &fn, bool loadIntoView)
 
     pages->appendPage(fn);
     sideBar->addItem((QListWidgetItem *) pages->snippet());
-
+    if (loadIntoView)
+        graphicsInput->loadImage(pages->pixmap());
     setCursor(oldCursor);
 }
 

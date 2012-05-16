@@ -110,7 +110,7 @@ private:
     QPointer<QToolBar> toolbar;
     ActionList actionList;
     QRect redRect;
-    bool red;
+    bool xred;
 };
 
 #endif // QGRAPHICSINPUT_H

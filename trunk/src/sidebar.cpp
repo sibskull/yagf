@@ -116,10 +116,12 @@ void SideBar::startDrag(Qt::DropActions supportedActions)
         }
         mimeData->setUrls(urlList);
         drag->setMimeData(mimeData);
-        //QListWidget::startDrag(supportedActions);
-        //delete mimeData;
-        //delete drag;
-       // this->sortItems();
+        if (drag->exec(supportedActions,Qt::CopyAction) == Qt::CopyAction) {
+            foreach(QListWidgetItem * lwi, selectedItems()) {
+                emit fileRemoved(((QSnippet *) lwi)->pageID());
+                model()->removeRow(row(lwi));
+            }
+        }
         current = 0;
 }
 
@@ -135,6 +137,7 @@ QSnippet * SideBar::getItemByName(const QString &name)
 void SideBar::select(const QString &name)
 {
     current = getItemByName(name);
+    if (current)
     current->setSelected(true);
 }
 

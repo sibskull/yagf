@@ -50,7 +50,7 @@ QGraphicsInput::QGraphicsInput(const QRectF &sceneRect, QGraphicsView *view) :
     redRect.setY(0);
     redRect.setWidth(0);
     redRect.setHeight(0);
-    red = false;
+    xred = false;
  }
 
 QGraphicsInput::~QGraphicsInput()
@@ -173,9 +173,9 @@ void QGraphicsInput::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
                 leftMouseRelease(mouseEvent->scenePos().x(), mouseEvent->scenePos().y());
             }
             else emit blockCreated(QRectF2Rect(m_CurrentBlockRect->rect()));
-            if (red)
+            if (xred)
                 emit deleteBlock(redRect);
-            red = false;
+            xred = false;
             m_CurrentBlockRect = 0;
         }
         if (selecting == StartSelect) {
@@ -259,7 +259,9 @@ void QGraphicsInput::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
         }
     QRectF newRect;
     if (near_res && (mouseEvent->buttons()&Qt::LeftButton)) {
-        red = true;
+        if (!xred)
+            redRect = QRectF2Rect(m_LastSelected->rect());
+        xred = true;
         QRectF newRect = m_LastSelected->mapRectToScene(m_LastSelected->rect());
         switch (near_res) {
             case 1:

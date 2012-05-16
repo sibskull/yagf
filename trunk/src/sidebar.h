@@ -36,6 +36,7 @@ public:
 signals:
     void pageSelected(int id);
     void filesDropped(QStringList);
+    void fileRemoved(int id);
 private slots:
     void itemActive( QListWidgetItem * item );
 protected:

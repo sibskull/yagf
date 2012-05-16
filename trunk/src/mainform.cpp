@@ -133,6 +133,7 @@ MainForm::MainForm(QWidget *parent): QMainWindow(parent)
     connect(pages, SIGNAL(loadPage()), this, SLOT(loadPage()));
     connect(graphicsInput, SIGNAL(blockCreated(QRect)), pages, SLOT(addBlock(QRect)));
     connect(graphicsInput, SIGNAL(deleteBlock(QRect)), pages, SLOT(deleteBlock(QRect)));
+    connect(sideBar, SIGNAL(fileRemoved(int)), pages, SLOT(pageRemoved(int)));
 
     tesMap = new TesMap();
     fillLanguagesBox();

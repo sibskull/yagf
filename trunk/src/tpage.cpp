@@ -325,7 +325,7 @@ void TPage::splitPage()
     bs.splitBlocks();
     QList<Rect> blocks = bs.getBlocks();
     qreal sf = 2.0*scale;
-    QRect cr = bs.getRotationCropRect(currentImage());
+    //QRect cr = bs.getRotationCropRect(currentImage());
     foreach (Rect block, blocks) {
         QRect r;
         block.x1 *=sf;
@@ -333,10 +333,10 @@ void TPage::splitPage()
         block.x2 *= sf;
         block.y2 *=sf;
 
-        block.x1 += cr.x();
+      /*  block.x1 += cr.x();
         block.y1 += cr.y();
         block.x2 += cr.x();
-        block.y2 += cr.y();
+        block.y2 += cr.y();*/
 
         r.setX(block.x1);
         r.setY(block.y1);

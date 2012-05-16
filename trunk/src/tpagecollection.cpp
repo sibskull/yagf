@@ -235,6 +235,8 @@ void TPageCollection::pageRemoved(int id)
         delete pages.at(index);
         pages.remove(index);
     }
+    if (index >= pages.count())
+        index = pages.count() - 1;
     makePageCurrent(index);
     emit loadPage();
 }

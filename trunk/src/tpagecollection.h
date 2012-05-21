@@ -30,6 +30,7 @@ public:
     TBlock getBlock(int index);
     void selectBlock(const QRect &r);
     TBlock getSelectedBlock();
+    bool pageValid();
 public slots:
     void makeLarger();
     void makeSmaller();

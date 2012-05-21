@@ -84,6 +84,8 @@ void TPageCollection::saveBlockForRecognition(QRect r, const QString &fileName)
 void TPageCollection::saveBlockForRecognition(int index, const QString &fileName)
 {
     if (!cp()) return;
+    if (index == 0)
+        cp()->sortBlocksInternal();
     cp()->saveBlockForRecognition(index, fileName);
 }
 
@@ -118,6 +120,11 @@ TBlock TPageCollection::getSelectedBlock()
     TBlock block(0,0,0,0);
     if (!cp()) return block;
     return cp()->getSelectedBlock();
+}
+
+bool TPageCollection::pageValid()
+{
+    return cp() != 0;
 }
 
 void TPageCollection::makeLarger()

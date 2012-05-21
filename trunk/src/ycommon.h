@@ -36,4 +36,7 @@ inline QRect QRectF2Rect(const QRectF &rf)
     return r;
 }
 
+
+
+
 #endif

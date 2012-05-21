@@ -113,7 +113,6 @@ private:
     void loadFromCommandLine();
     void clearTmpFiles();
 private:
-    bool imageLoaded;
     QComboBox *selectLangsBox;
     QGraphicsInput *graphicsInput;
     QString workingDir;

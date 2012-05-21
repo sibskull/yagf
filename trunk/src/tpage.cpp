@@ -1,3 +1,22 @@
+/*
+    YAGF - cuneiform and tesseract OCR graphical front-end
+    Copyright (C) 2009-2012 Andrei Borovsky <anb@symmetrica.net>
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+*/
+
 #include "tpage.h"
 #include "settings.h"
 #include "ccbuilder.h"
@@ -169,13 +188,13 @@ void TPage::addBlock(TBlock block)
         block.setRect(r.x(), r.y(), r.width(), r.height());
         blocks.append(block);
     }
-    sortBlocks(blocks);
+    sortBlocksInternal();
 }
 
 void TPage::deleteBlock(const TBlock &b)
 {
     blocks.removeOne(b);
-    sortBlocks(blocks);
+    sortBlocksInternal();
 }
 
 void TPage::deleteBlock(const QRect &r)
@@ -189,7 +208,7 @@ void TPage::deleteBlock(const QRect &r)
             break;
         }
     }
-    sortBlocks(blocks);
+    sortBlocksInternal();
 }
 
 TBlock TPage::getBlock(const QRect &r)
@@ -233,10 +252,12 @@ void TPage::savePageForRecognition(const QString &fileName)
 
 void TPage::saveBlockForRecognition(QRect r, const QString &fileName)
 {
+    int oldw = r.width();
+    int oldh = r.height();
     r.setX(r.x()*2);
     r.setY(r.y()*2);
-    r.setWidth(r.width()*2);
-    r.setHeight(r.height()*2);
+    r.setWidth(oldw*2);
+    r.setHeight(oldh*2);
     QImageReader ir(mFileName);
     QImage image = ir.read();
     applyTransforms(image, 1);
@@ -354,6 +375,11 @@ QString TPage::fileName()
 int TPage::pageID()
 {
     return pid;
+}
+
+void TPage::sortBlocksInternal()
+{
+    sortBlocks(blocks);
 }
 
 

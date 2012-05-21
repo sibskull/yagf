@@ -107,7 +107,6 @@ MainForm::MainForm(QWidget *parent): QMainWindow(parent)
     connect(label, SIGNAL(pageRemoved(int)), pages, SLOT(pageRemoved(int)));
 
     statusBar()->show();
-    imageLoaded = false;
     useXSane = TRUE;
     //rotation = 0;
     m_menu = new QMenu(graphicsView);
@@ -297,7 +296,7 @@ void MainForm::loadImage()
         settings->setLastDir(dialog.directory().path());
         if (fileNames.count() > 0)
          loadFile(fileNames.at(0), true);
-        if (!imageLoaded)
+        if (!pages->pageValid())
             return;
         for (int i = 1; i < fileNames.count(); i++) {
             loadFile(fileNames.at(i), false);
@@ -556,7 +555,7 @@ void MainForm::loadNext(int number)
     if (files.count() == 0)
         return;
     QString name = fileName;
-    if (imageLoaded) {
+    if (pages->pageValid()) {
         if (number > 0) {
             if (files.indexOf(name) < files.count() - 1)
                 name = files.at(files.indexOf(name) + 1);
@@ -667,7 +666,7 @@ void MainForm::recognizeInternal()
 void MainForm::recognize()
 {
     QFile::remove(workingDir + "input*.bmp");
-    if (!imageLoaded) {
+    if (!pages->pageValid()) {
         QMessageBox::critical(this, trUtf8("Error"), trUtf8("No image loaded"));
         return;
     }
@@ -693,8 +692,8 @@ void MainForm::recognize()
             }
         }
      }
-    if (pages->count() > 0) {
-        for (int i = pages->blockCount() - 1; i >= 0; i--) {
+    if (pages->blockCount() > 0) {
+        for (int i = 0; i < pages->blockCount(); i++) {
                 prepareBlockForRecognition(i);
                 recognizeInternal();
         }

@@ -38,7 +38,7 @@ signals:
     void filesDropped(QStringList);
     void fileRemoved(int id);
 private slots:
-    void itemActive( QListWidgetItem * item );
+    void itemActive( QListWidgetItem * item, QListWidgetItem *item2 );
 protected:
     QStringList mimeTypes () const;
     Qt::DropActions supportedDropActions () const;

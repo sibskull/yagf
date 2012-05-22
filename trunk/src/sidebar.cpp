@@ -35,7 +35,7 @@ SideBar::SideBar(QWidget *parent) :
     current = 0;
     setMaximumWidth(120);
     setMinimumWidth(120);
-    connect(this, SIGNAL(itemActivated(QListWidgetItem*)), this, SLOT(itemActive(QListWidgetItem*)));
+    connect(this, SIGNAL(currentItemChanged(QListWidgetItem*,QListWidgetItem*)), this, SLOT(itemActive(QListWidgetItem*,QListWidgetItem*)));
     setToolTip(trUtf8("Drop files here"));
     setAcceptDrops(true);
     setDropIndicatorShown(true);
@@ -52,7 +52,7 @@ QStringList SideBar::getFileNames()
     return sl;
 }
 
-void SideBar::itemActive(QListWidgetItem *item)
+void SideBar::itemActive(QListWidgetItem *item, QListWidgetItem *item2)
 {
     if (lock) return;
     lock = true;
@@ -89,8 +89,8 @@ Qt::DropActions SideBar::supportedDropActions() const
 
 bool SideBar::dropMimeData(int index, const QMimeData *data, Qt::DropAction action)
 {
-    if (action == Qt::MoveAction)
-        return false;
+ //   if (action == Qt::MoveAction)
+ //       return false;
     QList <QUrl> urlList;
     urlList = data->urls(); // retrieve list of urls
     QStringList files;

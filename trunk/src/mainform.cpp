@@ -219,8 +219,6 @@ void MainForm::loadFiles(QStringList files)
     for (int i = 0; i < files.count(); i++)
         if (QFile::exists(files.at(i)))
             loadFile(files.at(i));
-    if (QFile::exists(files.at(0)))
-        sideBar->select(files.at(0));
 }
 
 void MainForm::showConfigDlg()
@@ -301,8 +299,8 @@ void MainForm::loadImage()
         for (int i = 1; i < fileNames.count(); i++) {
             loadFile(fileNames.at(i), false);
         }
-        if (fileNames.count() > 0)
-            pages->makePageCurrent(0);
+//        if (fileNames.count() > 0)
+//            pages->makePageCurrent(0);
     }
 }
 
@@ -530,8 +528,8 @@ void MainForm::loadFile(const QString &fn, bool loadIntoView)
     pages->appendPage(fn);
     sideBar->addItem((QListWidgetItem *) pages->snippet());
     if (loadIntoView) {
-        graphicsInput->loadImage(pages->pixmap());
-        sideBar->select(fn);
+        loadPage();
+        sideBar->item(sideBar->count()-1)->setSelected(true);
     }
     setCursor(oldCursor);
 }
@@ -795,27 +793,25 @@ void MainForm::loadPage()
     QApplication::processEvents();
     for (int i = 0; i < pages->blockCount(); i++)
     graphicsInput->addBlockColliding(pages->getBlock(i));
+    QFileInfo fi(pages->fileName());
+    setWindowTitle(QString("YAGF - %1").arg(fi.fileName()) );
 }
 
 void MainForm::recognizeAll()
 {
-    QStringList files = sideBar->getFileNames();
-    if (files.empty())
+    if (pages->count() == 0)
+        return;
+    QProgressDialog progress(trUtf8("Recognizing pages..."), trUtf8("Abort"), 0, pages->count(), this);
+    progress.setWindowTitle("YAGF");
+    progress.show();
+    progress.setValue(0);
+    pages->makePageCurrent(-1);
+    for (int i = 0; i < pages->count(); i++) {
+        progress.setValue(i);
+        if (progress.wasCanceled())
+            break;
+        pages->makeNextPageCurrent();
         recognize();
-    else {
-        QProgressDialog progress(trUtf8("Recognizing pages..."), trUtf8("Abort"), 0, files.count(), this);
-        //progress.setWindowModality(Qt::WindowModal);
-        progress.setWindowTitle("YAGF");
-        progress.show();
-        progress.setValue(0);
-        for (int i = 0; i < files.count(); i++) {
-            progress.setValue(i);
-            if (progress.wasCanceled())
-                break;
-            //rotation = ((FileToolBar *) m_toolBar)->getRotation(files.at(i));
-            loadFile(files.at(i));
-            recognize();
-        }
     }
 }
 

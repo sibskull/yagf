@@ -43,15 +43,6 @@ SideBar::SideBar(QWidget *parent) :
 }
 
 
-QStringList SideBar::getFileNames()
-{
-    QStringList sl;
-    for (int i = 0; i < count(); i++) {
-        sl.append(((QSnippet *)item(i))->getName());
-    }
-    return sl;
-}
-
 void SideBar::itemActive(QListWidgetItem *item, QListWidgetItem *item2)
 {
     if (lock) return;

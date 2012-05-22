@@ -207,10 +207,12 @@ void MainForm::loadFromCommandLine()
     if (sl.count() > 1) {
         if (QFile::exists(sl.at(1)))
             loadFile(sl.at(1));
-        QStringList files;
-        for (int i = 2; i < sl.count(); i++)
-            files.append(sl.at(i));
-        loadFiles(files);
+        for (int i = 2; i < sl.count(); i++) {
+            QApplication::processEvents();
+            if (QFile::exists(sl.at(i)))
+                loadFile(sl.at(i));
+        }
+        sideBar->select(sl.at(1));
     }
 }
 
@@ -528,6 +530,7 @@ void MainForm::loadFile(const QString &fn, bool loadIntoView)
     pages->appendPage(fn);
     sideBar->addItem((QListWidgetItem *) pages->snippet());
     if (loadIntoView) {
+        pages->makePageCurrent(pages->count()-1);
         loadPage();
         sideBar->item(sideBar->count()-1)->setSelected(true);
     }
@@ -546,34 +549,12 @@ void MainForm::delTmpFiles()
     delTmpDir();
 }
 
-void MainForm::loadNext(int number)
-{
-
-    QStringList files = sideBar->getFileNames();
-    if (files.count() == 0)
-        return;
-    QString name = fileName;
-    if (pages->pageValid()) {
-        if (number > 0) {
-            if (files.indexOf(name) < files.count() - 1)
-                name = files.at(files.indexOf(name) + 1);
-        } else if (number < 0) {
-            if (files.indexOf(name) > 0)
-                name = files.at(files.indexOf(name) - 1);
-        }
-        sideBar->select(name);
-        loadFile(name);
-    }
-}
-
 void MainForm::loadNextPage()
 {
-    loadNext(1);
 }
 
 void MainForm::loadPreviousPage()
 {
-    loadNext(-1);
 }
 
 // TODO: think on blocks/page recognition

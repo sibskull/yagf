@@ -29,7 +29,6 @@ class SideBar : public QListWidget
     Q_OBJECT
 public:
     explicit SideBar(QWidget *parent = 0);
-    QStringList getFileNames();
     void clearBlocks();
     void select(const QString &name);
     void selectFirstFile();

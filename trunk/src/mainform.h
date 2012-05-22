@@ -101,7 +101,6 @@ private:
     void loadFile(const QString &fn, bool loadIntoView = true);
     //void loadFileWithPixmap(const QString &fn, const QPixmap &pixmap);
     void delTmpFiles();
-    void loadNext(int number);
     void delTmpDir();
     void preparePageForRecognition();
     void prepareBlockForRecognition(const QRect &r);

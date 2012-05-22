@@ -542,8 +542,6 @@
    <addaction name="actionOpen"/>
    <addaction name="actionScan"/>
    <addaction name="actionPaste_Image"/>
-   <addaction name="actionPreviousPage"/>
-   <addaction name="actionNextPage"/>
    <addaction name="separator"/>
    <addaction name="actionRecognize"/>
    <addaction name="actionRecognize_All_Pages"/>

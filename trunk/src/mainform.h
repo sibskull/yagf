@@ -40,7 +40,6 @@ class QMenu;
 class PDFExtractor;
 class ccbuilder;
 
-typedef QMap<QString, QString> TesMap;
 
 const QString version = "0.9.1";
 
@@ -97,7 +96,8 @@ private slots:
 private:
     virtual void closeEvent(QCloseEvent *event);
     void initSettings();
-    void fillLanguagesBox();
+    void fillLanguagesBoxCuneiform();
+    void fillLanguagesBoxTesseract();
     void loadFile(const QString &fn, bool loadIntoView = true);
     //void loadFileWithPixmap(const QString &fn, const QPixmap &pixmap);
     void delTmpFiles();
@@ -125,11 +125,9 @@ private:
     QMenu *m_menu;
     PDFExtractor * pdfx;
     QProgressDialog pdfPD;
-    TesMap * tesMap;
     int ifCounter;
     Settings * settings;
     TPageCollection * pages;
-//  QLabel * displayLabel;
 private slots:
     void readyRead(int sig);
     void setResizingCusor();

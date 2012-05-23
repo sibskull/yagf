@@ -134,9 +134,11 @@ MainForm::MainForm(QWidget *parent): QMainWindow(parent)
     connect(graphicsInput, SIGNAL(deleteBlock(QRect)), pages, SLOT(deleteBlock(QRect)));
     connect(sideBar, SIGNAL(fileRemoved(int)), pages, SLOT(pageRemoved(int)));
 
-    tesMap = new TesMap();
-    fillLanguagesBox();
     initSettings();
+    if (settings->getSelectedEngine() == UseCuneiform)
+        fillLanguagesBoxCuneiform();
+    if (settings->getSelectedEngine() == UseTesseract)
+        fillLanguagesBoxTesseract();
     delTmpFiles();
     scanProcess = new QProcess(this);
     QXtUnixSignalCatcher::connectUnixSignal(SIGUSR2);
@@ -226,6 +228,7 @@ void MainForm::loadFiles(QStringList files)
 void MainForm::showConfigDlg()
 {
     ConfigDialog dialog(this);
+    SelectedEngine ose = settings->getSelectedEngine();
     if (settings->getSelectedEngine() == UseCuneiform)
         dialog.setSelectedEngine(0);
     else
@@ -234,6 +237,27 @@ void MainForm::showConfigDlg()
     if (dialog.exec()) {
         settings->setSelectedEngine(dialog.selectedEngine() == 0 ? UseCuneiform : UseTesseract);
         settings->setTessdataPath(dialog.tessdataPath());
+        if (settings->getSelectedEngine() != ose) {
+            QString oldLang = selectLangsBox->currentText();
+            selectLangsBox->clear();
+            if (settings->getSelectedEngine() == UseCuneiform)
+                fillLanguagesBoxCuneiform();
+            if (settings->getSelectedEngine() == UseTesseract)
+                fillLanguagesBoxTesseract();
+            int newIndex = selectLangsBox->findText(oldLang);
+            if (newIndex >= 0) {
+                selectLangsBox->setCurrentIndex(newIndex);
+                settings->setLanguage(selectLangsBox->itemData(newIndex).toString());
+            } else {
+                settings->setLanguage("eng");
+                for (int i = 0; i < selectLangsBox->count(); i++)
+                    if (selectLangsBox->itemData(i).toString() == "eng") {
+                        newLanguageSelected(i);
+                        break;
+                    }
+            }
+
+        }
     }
 }
 
@@ -407,7 +431,7 @@ void MainForm::initSettings()
     toolBar->setIconSize(settings->getIconSize());
 }
 
-void MainForm::fillLanguagesBox()
+void MainForm::fillLanguagesBoxCuneiform()
 {
     selectLangsBox->addItem(trUtf8("Russian"), QVariant("rus"));
     selectLangsBox->addItem(trUtf8("Russian-English"), QVariant("ruseng"));
@@ -418,27 +442,52 @@ void MainForm::fillLanguagesBox()
     selectLangsBox->addItem(trUtf8("Dutch"), QVariant("dut"));
     selectLangsBox->addItem(trUtf8("English"), QVariant("eng"));
     selectLangsBox->addItem(trUtf8("Estonian"), QVariant("est"));
-    selectLangsBox->addItem(trUtf8("Finnish (tesseract only)"), QVariant("fin"));
     selectLangsBox->addItem(trUtf8("French"), QVariant("fra"));
     selectLangsBox->addItem(trUtf8("German"), QVariant("ger"));
-    selectLangsBox->addItem(trUtf8("German Gothic (tesseract 3+)"), QVariant("gerf"));
-    selectLangsBox->addItem(trUtf8("Greek (tesseract only)"), QVariant("ell"));
-    selectLangsBox->addItem(trUtf8("Hebrew (tesseract 3.0.1+)"), QVariant("heb"));
     selectLangsBox->addItem(trUtf8("Hungarian"), QVariant("hun"));
     selectLangsBox->addItem(trUtf8("Italian"), QVariant("ita"));
     selectLangsBox->addItem(trUtf8("Latvian"), QVariant("lav"));
     selectLangsBox->addItem(trUtf8("Lithuanian"), QVariant("lit"));
-    selectLangsBox->addItem(trUtf8("Norwegian (tesseract only)"), QVariant("nor"));
     selectLangsBox->addItem(trUtf8("Polish"), QVariant("pol"));
     selectLangsBox->addItem(trUtf8("Portuguese"), QVariant("por"));
     selectLangsBox->addItem(trUtf8("Romanian"), QVariant("rum"));
     selectLangsBox->addItem(trUtf8("Spanish"), QVariant("spa"));
     selectLangsBox->addItem(trUtf8("Swedish"), QVariant("swe"));
-    selectLangsBox->addItem(trUtf8("Swedish Gothic (tesseract 3+)"), QVariant("swef"));
     selectLangsBox->addItem(trUtf8("Serbian"), QVariant("srp"));
     selectLangsBox->addItem(trUtf8("Slovenian"), QVariant("slo"));
-    selectLangsBox->addItem(trUtf8("Slovakian (tesseract only)"), QVariant("slk"));
-    selectLangsBox->addItem(trUtf8("Turkish (tesseract only)"), QVariant("tur"));
+    selectLangsBox->addItem(trUtf8("Ukrainian"), QVariant("ukr"));
+
+}
+
+void MainForm::fillLanguagesBoxTesseract()
+{
+    selectLangsBox->addItem(trUtf8("Russian"), QVariant("rus"));
+    selectLangsBox->addItem(trUtf8("Bulgarian"), QVariant("bul"));
+    selectLangsBox->addItem(trUtf8("Czech"), QVariant("ces"));
+    selectLangsBox->addItem(trUtf8("Danish"), QVariant("dan"));
+    selectLangsBox->addItem(trUtf8("Dutch"), QVariant("nld"));
+    selectLangsBox->addItem(trUtf8("English"), QVariant("eng"));
+    selectLangsBox->addItem(trUtf8("Finnish"), QVariant("fin"));
+    selectLangsBox->addItem(trUtf8("French"), QVariant("fra"));
+    selectLangsBox->addItem(trUtf8("German"), QVariant("deu"));
+    selectLangsBox->addItem(trUtf8("German Gothic"), QVariant("gerf"));
+    selectLangsBox->addItem(trUtf8("Greek"), QVariant("ell"));
+    selectLangsBox->addItem(trUtf8("Hebrew"), QVariant("heb"));
+    selectLangsBox->addItem(trUtf8("Hungarian"), QVariant("hun"));
+    selectLangsBox->addItem(trUtf8("Italian"), QVariant("ita"));
+    selectLangsBox->addItem(trUtf8("Latvian"), QVariant("lav"));
+    selectLangsBox->addItem(trUtf8("Lithuanian"), QVariant("lit"));
+    selectLangsBox->addItem(trUtf8("Norwegian"), QVariant("nor"));
+    selectLangsBox->addItem(trUtf8("Polish"), QVariant("pol"));
+    selectLangsBox->addItem(trUtf8("Portuguese"), QVariant("por"));
+    selectLangsBox->addItem(trUtf8("Romanian"), QVariant("ron"));
+    selectLangsBox->addItem(trUtf8("Spanish"), QVariant("spa"));
+    selectLangsBox->addItem(trUtf8("Swedish"), QVariant("swe"));
+    selectLangsBox->addItem(trUtf8("Swedish Gothic"), QVariant("swef"));
+    selectLangsBox->addItem(trUtf8("Serbian"), QVariant("srp"));
+    selectLangsBox->addItem(trUtf8("Slovenian"), QVariant("slv"));
+    selectLangsBox->addItem(trUtf8("Slovakian"), QVariant("slk"));
+    selectLangsBox->addItem(trUtf8("Turkish"), QVariant("tur"));
     selectLangsBox->addItem(trUtf8("Ukrainian"), QVariant("ukr"));
     //selectLangsBox->addItem(trUtf8("Russian-French"), QVariant("rus_fra"));
     //selectLangsBox->addItem(trUtf8("Russian-German"), QVariant("rus_ger"));
@@ -446,34 +495,9 @@ void MainForm::fillLanguagesBox()
     //selectFormatBox->addItem("TEXT", QVariant("text"));
     //selectFormatBox->addItem("HTML", QVariant("html"));
 
-    tesMap->insert("rus", "rus");
-    tesMap->insert("eng", "eng");
-    tesMap->insert("ger", "deu");
-    tesMap->insert("gerf", "deu-frak");
-    tesMap->insert("fra", "fra");
-    tesMap->insert("heb", "heb");
-    tesMap->insert("swe", "swe");
-    tesMap->insert("swef", "swe-frak");
-    tesMap->insert("slo", "slv");
-    tesMap->insert("spa", "spa");
-    tesMap->insert("por", "por");
-    tesMap->insert("pol", "pol");
-    tesMap->insert("ukr", "ukr");
-    tesMap->insert("bul", "bul");
-    tesMap->insert("lav", "lav");
-    tesMap->insert("lit", "lit");
-    tesMap->insert("ita", "ita");
-    tesMap->insert("hun", "hun");
-    tesMap->insert("rum", "ron");
-    tesMap->insert("dan", "dan");
-    tesMap->insert("srp", "srp");
-    tesMap->insert("dut", "nld");
-    tesMap->insert("cze", "ces");
-    tesMap->insert("fin", "fin");
-    tesMap->insert("nor", "nor");
-    tesMap->insert("tur", "tur");
-    tesMap->insert("ell", "ell");
-    tesMap->insert("slk", "slk");
+//    tesMap->insert("gerf", "deu-frak");
+    //tesMap->insert("swef", "swe-frak");
+
 }
 
 void MainForm::newLanguageSelected(int index)
@@ -567,7 +591,7 @@ bool MainForm::useTesseract(const QString &inputFile)
     sl.append(inputFile);
     sl.append(outputBase);
     sl.append("-l");
-    sl.append(tesMap->value(settings->getLanguage()));
+    sl.append(settings->getLanguage());
     QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
     env.insert("TESSDATA_PREFIX", settings->getTessdataPath());
     proc.setProcessEnvironment(env);
@@ -908,7 +932,6 @@ MainForm::~MainForm()
     delete graphicsInput;
     delete ba;
     delete pdfx;
-    delete tesMap;
 }
 
 void MainForm::on_actionSave_block_activated()

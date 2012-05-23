@@ -250,11 +250,14 @@ void MainForm::showConfigDlg()
                 settings->setLanguage(selectLangsBox->itemData(newIndex).toString());
             } else {
                 settings->setLanguage("eng");
-                for (int i = 0; i < selectLangsBox->count(); i++)
-                    if (selectLangsBox->itemData(i).toString() == "eng") {
+                for (int i = 0; i < selectLangsBox->count(); i++) {
+                    QString s = selectLangsBox->itemData(i).toString();
+                    if (s == "eng") {
                         newLanguageSelected(i);
+                        selectLangsBox->setCurrentIndex(i);
                         break;
                     }
+                }
             }
 
         }

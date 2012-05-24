@@ -891,7 +891,8 @@ void MainForm::on_actionRecognize_block_activated()
 {
     if (graphicsInput->getCurrentBlock().isNull())
         return;
-    prepareBlockForRecognition(graphicsInput->getCurrentBlock());
+    clearTmpFiles();
+    pages->saveRawBlockForRecognition(graphicsInput->getCurrentBlock(), workingDir + inputFile);
     recognizeInternal();
 }
 

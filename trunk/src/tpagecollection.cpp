@@ -94,6 +94,12 @@ void TPageCollection::savePageForRecognition(const QString &fileName)
     cp()->savePageForRecognition(fileName);
 }
 
+void TPageCollection::saveRawBlockForRecognition(QRect r, const QString &fileName)
+{
+    if (!cp()) return;
+    cp()->saveRawBlockForRecognition(r, fileName);
+}
+
 void TPageCollection::saveBlockForRecognition(QRect r, const QString &fileName)
 {
     if (!cp()) return;

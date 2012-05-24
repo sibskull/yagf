@@ -250,6 +250,12 @@ void TPage::savePageForRecognition(const QString &fileName)
     image.save(fileName, "BMP");
 }
 
+void TPage::saveRawBlockForRecognition(QRect r, const QString &fileName)
+{
+    normalizeRect(r);
+    saveBlockForRecognition(r, fileName);
+}
+
 void TPage::saveBlockForRecognition(QRect r, const QString &fileName)
 {
     int oldw = r.width();

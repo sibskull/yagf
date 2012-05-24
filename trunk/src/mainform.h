@@ -39,7 +39,7 @@ class QGraphicsInput;
 class QMenu;
 class PDFExtractor;
 class ccbuilder;
-
+class QLabel;
 
 const QString version = "0.9.1";
 
@@ -93,6 +93,7 @@ private slots:
     void setSmallIcons();
     void selectHTMLformat();
     void loadFiles(QStringList files);
+    void LangTextChanged(const QString &text);
 private:
     virtual void closeEvent(QCloseEvent *event);
     void initSettings();
@@ -128,6 +129,7 @@ private:
     int ifCounter;
     Settings * settings;
     TPageCollection * pages;
+    QLabel * engineLabel;
 private slots:
     void readyRead(int sig);
     void setResizingCusor();

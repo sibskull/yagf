@@ -31,7 +31,6 @@
 #include <QComboBox>
 #include <QLabel>
 #include <QPixmap>
-#include <QPixmapCache>
 #include <QFileDialog>
 #include <QCloseEvent>
 #include <QPainter>
@@ -53,8 +52,8 @@
 #include <QUrl>
 #include <QRegExp>
 #include <QClipboard>
-#include <QTransform>
 #include <QMap>
+#include <QWidgetAction>
 #include "qgraphicsinput.h"
 #include "utils.h"
 #include "qxtunixsignalcatcher.h"
@@ -63,6 +62,7 @@
 #include <QCheckBox>
 #include <QEvent>
 #include <QCursor>
+#include <QLineEdit>
 
 const QString outputBase = "output";
 const QString outputExt = ".txt";
@@ -79,14 +79,10 @@ MainForm::MainForm(QWidget *parent): QMainWindow(parent)
     setWindowTitle("YAGF");
     //spellChecker = new SpellChecker(textEdit);
     textEdit->enumerateDicts();
-    selectLangsBox = new QComboBox();
-    QLabel *label1 = new QLabel();
-    label1->setMargin(4);
-    label1->setText(trUtf8("Recognition language"));
+
     frame->show();
-    toolBar->addWidget(label1);
-    selectLangsBox->setFrame(true);
-    toolBar->addWidget(selectLangsBox);
+    //toolBar->addWidget(label1);
+    //toolBar->addWidget(selectLangsBox);
     graphicsInput = new QGraphicsInput(QRectF(0, 0, 2000, 2000), graphicsView) ;
     graphicsInput->addToolBarAction(actionHideShowTolbar);
     graphicsInput->addToolBarAction(this->actionTBLV);
@@ -134,18 +130,29 @@ MainForm::MainForm(QWidget *parent): QMainWindow(parent)
     connect(graphicsInput, SIGNAL(deleteBlock(QRect)), pages, SLOT(deleteBlock(QRect)));
     connect(sideBar, SIGNAL(fileRemoved(int)), pages, SLOT(pageRemoved(int)));
 
+    selectLangsBox = new QComboBox();
+    selectLangsBox->setToolTip(trUtf8("Recognition language"));
+    toolBar->insertWidget(actionRecognize, selectLangsBox);
+   // connect(selectLangsBox->lineEdit(), SIGNAL(textChanged(QString)), this, SLOT(LangTextChanged(QString)));
+
     initSettings();
-    if (settings->getSelectedEngine() == UseCuneiform)
+    engineLabel = new QLabel();
+    statusBar()->addPermanentWidget(engineLabel, 0);
+    if (settings->getSelectedEngine() == UseCuneiform) {
         fillLanguagesBoxCuneiform();
-    if (settings->getSelectedEngine() == UseTesseract)
+        engineLabel->setText(trUtf8("Using Cuneiform"));
+
+    }
+    if (settings->getSelectedEngine() == UseTesseract) {
         fillLanguagesBoxTesseract();
+        engineLabel->setText(trUtf8("Using Tesseract"));
+    }
     delTmpFiles();
     scanProcess = new QProcess(this);
     QXtUnixSignalCatcher::connectUnixSignal(SIGUSR2);
     ba = new QByteArray();
     connect(QXtUnixSignalCatcher::catcher(), SIGNAL(unixSignal(int)), this, SLOT(readyRead(int)));
 
-    //textEdit->installEventFilter(this);
     QPixmap l_cursor;
     l_cursor.load(":/resize.png");
     resizeCursor = new QCursor(l_cursor);
@@ -191,7 +198,6 @@ MainForm::MainForm(QWidget *parent): QMainWindow(parent)
     pdfPD.setWindowIcon(QIcon(":/yagf.png"));
     if (pdfx)
         connect(&pdfPD, SIGNAL(canceled()), pdfx, SLOT(cancel()));
-
 }
 
 void MainForm::onShowWindow()
@@ -225,6 +231,13 @@ void MainForm::loadFiles(QStringList files)
             loadFile(files.at(i));
 }
 
+void MainForm::LangTextChanged(const QString &text)
+{
+    if (selectLangsBox->findText(text, Qt::MatchStartsWith) < 0)
+        selectLangsBox->lineEdit()->setText("");
+
+}
+
 void MainForm::showConfigDlg()
 {
     ConfigDialog dialog(this);
@@ -240,10 +253,14 @@ void MainForm::showConfigDlg()
         if (settings->getSelectedEngine() != ose) {
             QString oldLang = selectLangsBox->currentText();
             selectLangsBox->clear();
-            if (settings->getSelectedEngine() == UseCuneiform)
+            if (settings->getSelectedEngine() == UseCuneiform) {
                 fillLanguagesBoxCuneiform();
-            if (settings->getSelectedEngine() == UseTesseract)
+                engineLabel->setText(trUtf8("Using Cuneiform"));
+            }
+            if (settings->getSelectedEngine() == UseTesseract) {
                 fillLanguagesBoxTesseract();
+                engineLabel->setText(trUtf8("Using Tesseract"));
+            }
             int newIndex = selectLangsBox->findText(oldLang);
             if (newIndex >= 0) {
                 selectLangsBox->setCurrentIndex(newIndex);

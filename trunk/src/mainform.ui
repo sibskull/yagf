@@ -551,7 +551,6 @@
    <addaction name="actionCheck_spelling"/>
    <addaction name="separator"/>
    <addaction name="actionSelect_HTML_format"/>
-   <addaction name="separator"/>
   </widget>
   <action name="actionScan">
    <property name="icon">
@@ -939,6 +938,18 @@
   <action name="actionToggle_Large_Small_Icons">
    <property name="text">
     <string>Toggle Large/Small Icons</string>
+   </property>
+  </action>
+  <action name="actionSelect_Recognition_Language">
+   <property name="icon">
+    <iconset resource="yagf.qrc">
+     <normaloff>:/images/system_config_language.png</normaloff>:/images/system_config_language.png</iconset>
+   </property>
+   <property name="text">
+    <string>Select Recognition Language</string>
+   </property>
+   <property name="toolTip">
+    <string>Select Recognition Language</string>
    </property>
   </action>
  </widget>

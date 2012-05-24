@@ -44,5 +44,6 @@
         <file>images/edit_paste.png</file>
         <file>images/scanner48.png</file>
         <file>images/selectmulti.png</file>
+        <file>images/system_config_language.png</file>
     </qresource>
 </RCC>

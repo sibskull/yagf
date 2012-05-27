@@ -129,6 +129,7 @@ MainForm::MainForm(QWidget *parent): QMainWindow(parent)
     connect(graphicsInput, SIGNAL(blockCreated(QRect)), pages, SLOT(addBlock(QRect)));
     connect(graphicsInput, SIGNAL(deleteBlock(QRect)), pages, SLOT(deleteBlock(QRect)));
     connect(sideBar, SIGNAL(fileRemoved(int)), pages, SLOT(pageRemoved(int)));
+    connect (pages, SIGNAL(addSnippet(int)), this, SLOT(addSnippet(int)));
 
     selectLangsBox = new QComboBox();
     selectLangsBox->setToolTip(trUtf8("Recognition language"));
@@ -139,14 +140,15 @@ MainForm::MainForm(QWidget *parent): QMainWindow(parent)
     engineLabel = new QLabel();
     statusBar()->addPermanentWidget(engineLabel, 0);
     if (settings->getSelectedEngine() == UseCuneiform) {
-        fillLanguagesBoxCuneiform();
+        //fillLanguagesBoxCuneiform();
         engineLabel->setText(trUtf8("Using Cuneiform"));
 
     }
     if (settings->getSelectedEngine() == UseTesseract) {
-        fillLanguagesBoxTesseract();
+        //fillLanguagesBoxTesseract();
         engineLabel->setText(trUtf8("Using Tesseract"));
     }
+    fillLangBox();
     delTmpFiles();
     scanProcess = new QProcess(this);
     QXtUnixSignalCatcher::connectUnixSignal(SIGUSR2);
@@ -254,13 +256,12 @@ void MainForm::showConfigDlg()
             QString oldLang = selectLangsBox->currentText();
             selectLangsBox->clear();
             if (settings->getSelectedEngine() == UseCuneiform) {
-                fillLanguagesBoxCuneiform();
                 engineLabel->setText(trUtf8("Using Cuneiform"));
             }
             if (settings->getSelectedEngine() == UseTesseract) {
-                fillLanguagesBoxTesseract();
                 engineLabel->setText(trUtf8("Using Tesseract"));
             }
+            fillLangBox();
             int newIndex = selectLangsBox->findText(oldLang);
             if (newIndex >= 0) {
                 selectLangsBox->setCurrentIndex(newIndex);
@@ -420,20 +421,7 @@ void MainForm::decreaseButtonClicked()
 void MainForm::initSettings()
 {
     settings = Settings::instance();
-    workingDir = QDir::homePath();
-    if (!workingDir.endsWith("/"))
-        workingDir += '/';
-    QDir d(workingDir + ".config");
-    if (d.exists()) workingDir += ".config/";
-    QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
-    workingDir = env.value("XDG_CONFIG_HOME", workingDir);
-    if (!workingDir.endsWith("/"))
-        workingDir += '/';
-    workingDir += "yagf/";
-    QDir dir(workingDir);
-    if (!dir.exists())
-        dir.mkdir(workingDir);
-    settings->readSettings(workingDir);
+    settings->readSettings(settings->workingDir());
     settings->writeSettings();
     if (settings->getFullScreen())
         showFullScreen();
@@ -449,75 +437,6 @@ void MainForm::initSettings()
     li.append(1);
     splitter->setSizes(li);
     toolBar->setIconSize(settings->getIconSize());
-}
-
-void MainForm::fillLanguagesBoxCuneiform()
-{
-    selectLangsBox->addItem(trUtf8("Russian"), QVariant("rus"));
-    selectLangsBox->addItem(trUtf8("Russian-English"), QVariant("ruseng"));
-    selectLangsBox->addItem(trUtf8("Bulgarian"), QVariant("bul"));
-    selectLangsBox->addItem(trUtf8("Croatian"), QVariant("hrv"));
-    selectLangsBox->addItem(trUtf8("Czech"), QVariant("cze"));
-    selectLangsBox->addItem(trUtf8("Danish"), QVariant("dan"));
-    selectLangsBox->addItem(trUtf8("Dutch"), QVariant("dut"));
-    selectLangsBox->addItem(trUtf8("English"), QVariant("eng"));
-    selectLangsBox->addItem(trUtf8("Estonian"), QVariant("est"));
-    selectLangsBox->addItem(trUtf8("French"), QVariant("fra"));
-    selectLangsBox->addItem(trUtf8("German"), QVariant("ger"));
-    selectLangsBox->addItem(trUtf8("Hungarian"), QVariant("hun"));
-    selectLangsBox->addItem(trUtf8("Italian"), QVariant("ita"));
-    selectLangsBox->addItem(trUtf8("Latvian"), QVariant("lav"));
-    selectLangsBox->addItem(trUtf8("Lithuanian"), QVariant("lit"));
-    selectLangsBox->addItem(trUtf8("Polish"), QVariant("pol"));
-    selectLangsBox->addItem(trUtf8("Portuguese"), QVariant("por"));
-    selectLangsBox->addItem(trUtf8("Romanian"), QVariant("rum"));
-    selectLangsBox->addItem(trUtf8("Spanish"), QVariant("spa"));
-    selectLangsBox->addItem(trUtf8("Swedish"), QVariant("swe"));
-    selectLangsBox->addItem(trUtf8("Serbian"), QVariant("srp"));
-    selectLangsBox->addItem(trUtf8("Slovenian"), QVariant("slo"));
-    selectLangsBox->addItem(trUtf8("Ukrainian"), QVariant("ukr"));
-
-}
-
-void MainForm::fillLanguagesBoxTesseract()
-{
-    selectLangsBox->addItem(trUtf8("Russian"), QVariant("rus"));
-    selectLangsBox->addItem(trUtf8("Bulgarian"), QVariant("bul"));
-    selectLangsBox->addItem(trUtf8("Czech"), QVariant("ces"));
-    selectLangsBox->addItem(trUtf8("Danish"), QVariant("dan"));
-    selectLangsBox->addItem(trUtf8("Dutch"), QVariant("nld"));
-    selectLangsBox->addItem(trUtf8("English"), QVariant("eng"));
-    selectLangsBox->addItem(trUtf8("Finnish"), QVariant("fin"));
-    selectLangsBox->addItem(trUtf8("French"), QVariant("fra"));
-    selectLangsBox->addItem(trUtf8("German"), QVariant("deu"));
-    selectLangsBox->addItem(trUtf8("German Gothic"), QVariant("gerf"));
-    selectLangsBox->addItem(trUtf8("Greek"), QVariant("ell"));
-    selectLangsBox->addItem(trUtf8("Hebrew"), QVariant("heb"));
-    selectLangsBox->addItem(trUtf8("Hungarian"), QVariant("hun"));
-    selectLangsBox->addItem(trUtf8("Italian"), QVariant("ita"));
-    selectLangsBox->addItem(trUtf8("Latvian"), QVariant("lav"));
-    selectLangsBox->addItem(trUtf8("Lithuanian"), QVariant("lit"));
-    selectLangsBox->addItem(trUtf8("Norwegian"), QVariant("nor"));
-    selectLangsBox->addItem(trUtf8("Polish"), QVariant("pol"));
-    selectLangsBox->addItem(trUtf8("Portuguese"), QVariant("por"));
-    selectLangsBox->addItem(trUtf8("Romanian"), QVariant("ron"));
-    selectLangsBox->addItem(trUtf8("Spanish"), QVariant("spa"));
-    selectLangsBox->addItem(trUtf8("Swedish"), QVariant("swe"));
-    selectLangsBox->addItem(trUtf8("Swedish Gothic"), QVariant("swef"));
-    selectLangsBox->addItem(trUtf8("Serbian"), QVariant("srp"));
-    selectLangsBox->addItem(trUtf8("Slovenian"), QVariant("slv"));
-    selectLangsBox->addItem(trUtf8("Slovakian"), QVariant("slk"));
-    selectLangsBox->addItem(trUtf8("Turkish"), QVariant("tur"));
-    selectLangsBox->addItem(trUtf8("Ukrainian"), QVariant("ukr"));
-    //selectLangsBox->addItem(trUtf8("Russian-French"), QVariant("rus_fra"));
-    //selectLangsBox->addItem(trUtf8("Russian-German"), QVariant("rus_ger"));
-    //selectLangsBox->addItem(trUtf8("Russian-Spanish"), QVariant("rus_spa"));
-    //selectFormatBox->addItem("TEXT", QVariant("text"));
-    //selectFormatBox->addItem("HTML", QVariant("html"));
-
-//    tesMap->insert("gerf", "deu-frak");
-    //tesMap->insert("swef", "swe-frak");
-
 }
 
 void MainForm::newLanguageSelected(int index)
@@ -572,7 +491,6 @@ void MainForm::loadFile(const QString &fn, bool loadIntoView)
     setCursor(Qt::WaitCursor);
 
     pages->appendPage(fn);
-    sideBar->addItem((QListWidgetItem *) pages->snippet());
     if (loadIntoView) {
         pages->makePageCurrent(pages->count()-1);
         loadPage();
@@ -781,6 +699,17 @@ void MainForm::clearTmpFiles()
     f.remove();
     f.setFileName(workingDir+outputFile);
     f.remove();
+}
+
+void MainForm::fillLangBox()
+{
+    settings->startLangPair();
+    QString full;
+    QString abbr;
+    selectLangsBox->clear();
+    while(settings->getLangPair(full, abbr))
+        selectLangsBox->addItem(trUtf8(full.toAscii()), QVariant(abbr));
+
 }
 
 void MainForm::preparePageForRecognition()
@@ -1044,6 +973,11 @@ void MainForm::showAdvancedSettings()
     if (dlg.exec()) {
         settings->setCropLoaded(dlg.doCrop1());
     }
+}
+
+void MainForm::addSnippet(int index)
+{
+    sideBar->addItem((QListWidgetItem *) pages->snippet());
 }
 
 void MainForm::selectBlocks()

@@ -97,8 +97,6 @@ private slots:
 private:
     virtual void closeEvent(QCloseEvent *event);
     void initSettings();
-    void fillLanguagesBoxCuneiform();
-    void fillLanguagesBoxTesseract();
     void loadFile(const QString &fn, bool loadIntoView = true);
     //void loadFileWithPixmap(const QString &fn, const QPixmap &pixmap);
     void delTmpFiles();
@@ -112,6 +110,7 @@ private:
     QString getFileNameToSaveImage();
     void loadFromCommandLine();
     void clearTmpFiles();
+    void fillLangBox();
 private:
     QComboBox *selectLangsBox;
     QGraphicsInput *graphicsInput;
@@ -138,4 +137,5 @@ private slots:
     void rightMouseClicked(int x, int y, bool inTheBlock);
     void onShowWindow();
     void showAdvancedSettings();
+    void addSnippet(int index);
  };

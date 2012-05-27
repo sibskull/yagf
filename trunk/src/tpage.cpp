@@ -27,6 +27,8 @@
 #include <QImageWriter>
 #include <QSize>
 #include <QRect>
+#include <QFile>
+//#include <QApplication>
 #include <cmath>
 
 TPage::TPage(const int pid, QObject *parent) :

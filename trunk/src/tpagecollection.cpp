@@ -19,7 +19,12 @@
 
 #include "tpagecollection.h"
 #include "qsnippet.h"
-//#include "settings.h"
+#include "qxttiffiohandler.h"
+#include "settings.h"
+#include <QApplication>
+#include <QFile>
+#include <QImage>
+
 
 TPageCollection::TPageCollection(QObject *parent) :
     QObject(parent)
@@ -36,12 +41,38 @@ TPageCollection::~TPageCollection()
 void TPageCollection::appendPage(const QString &fileName)
 {
     //Settings * settings = Settings::instance();
-    TPage * p = new TPage(++pid);
-    if (p->loadFile(fileName)) {
-        pages.append(p);
-        emit addSnippet();
+    if (fileName.endsWith(".tif", Qt::CaseInsensitive) || fileName.endsWith(".tiff", Qt::CaseInsensitive)) {
+        QXtTiffIOHandler * toh = new QXtTiffIOHandler();
+        QFile f(fileName);
+        f.open(QIODevice::ReadOnly);
+        toh->setDevice(&f);
+        if (toh->canRead()) {
+            if (toh->imageCount() == 1) {
+                delete toh;
+                appendPage(fileName);
+                return;
+            } else {
+                for (int i = 0; i < toh->imageCount(); i++) {
+                    QImage img;
+                    toh->jumpToImage(i);
+                    toh->read(&img);
+                    QString nfn = Settings::instance()->workingDir() + QString("tiff-page-%1.jpg").arg(i+1);
+                    img.save(nfn, "JPEG");
+                    appendPage(nfn);
+                    QApplication::processEvents();
+                }
+                delete toh;
+                return;
+            }
+        }
+    } else {
+        TPage * p = new TPage(++pid);
+        if (p->loadFile(fileName)) {
+            pages.append(p);
+            index = pages.count() - 1;
+            emit addSnippet(index);
+        }
     }
-    index = pages.count() - 1;
 }
 
 int TPageCollection::count()

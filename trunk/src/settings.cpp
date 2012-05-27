@@ -21,6 +21,7 @@ Settings * Settings::m_instance = NULL;
 
 Settings::Settings()
 {
+    makeLanguageMaps();
 }
 
 Settings::Settings(const Settings &)
@@ -216,6 +217,99 @@ void Settings::setCropLoaded(const bool value)
     cropLoaded = value;
 }
 
+QString Settings::workingDir()
+{
+    QString wDir = QDir::homePath();
+    if (!wDir.endsWith("/"))
+        wDir += '/';
+    QDir d(wDir + ".config");
+    if (d.exists()) wDir += ".config/";
+    QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
+    wDir = env.value("XDG_CONFIG_HOME", wDir);
+    if (!wDir.endsWith("/"))
+        wDir += '/';
+    wDir += "yagf/";
+    QDir dir(wDir);
+    if (!dir.exists())
+        dir.mkdir(wDir);
+    return wDir;
+}
+
+void Settings::startLangPair()
+{
+    lpi = 0;
+}
+
+bool Settings::getLangPair(QString &full, QString &abbr)
+{
+    QMap<QString, QString> * map;
+    if (selectedEngine == UseCuneiform)
+        map = &cuMap;
+    if (selectedEngine == UseTesseract)
+        map = &tesMap;
+    full = map->keys().at(lpi);
+    abbr = map->value(full);
+    lpi++;
+    if (lpi < map->count())
+        return true;
+    return false;
+}
+
+void Settings::makeLanguageMaps()
+{
+    cuMap.insert("Bulgarian", "bul");
+    cuMap.insert("Czech", "cze");
+    cuMap.insert("Danish", "dan");
+    cuMap.insert("Dutch", "dut");
+    cuMap.insert("English", "eng");
+    cuMap.insert("French", "fra");
+    cuMap.insert("German", "ger");
+    cuMap.insert("Hungarian", "hun");
+    cuMap.insert("Italian", "ita");
+    cuMap.insert("Latvian", "lav");
+    cuMap.insert("Lithuanian", "lit");
+    cuMap.insert("Polish", "pol");
+    cuMap.insert("Portuguese", "por");
+    cuMap.insert("Romanian", "rum");
+    cuMap.insert("Russian", "rus");
+    cuMap.insert("Russian-English", "ruseng");
+    cuMap.insert("Spanish", "spa");
+    cuMap.insert("Serbian", "srp");
+    cuMap.insert("Slovenian", "slo");
+    cuMap.insert("Swedish", "swe");
+    cuMap.insert("Ukrainian", "ukr");
+
+    tesMap.insert("Bulgarian", "bul");
+    tesMap.insert("Czech", "ces");
+    tesMap.insert("Danish", "dan");
+    tesMap.insert("Dutch", "nld");
+    tesMap.insert("English", "eng");
+    tesMap.insert("Finnish", "fin");
+    tesMap.insert("French", "fra");
+    tesMap.insert("German", "deu");
+    tesMap.insert("German Gothic", "gerf");
+    tesMap.insert("Greek", "ell");
+    tesMap.insert("Hebrew", "heb");
+    tesMap.insert("Hungarian", "hun");
+    tesMap.insert("Italian", "ita");
+    tesMap.insert("Latvian", "lav");
+    tesMap.insert("Lithuanian", "lit");
+    tesMap.insert("Norwegian", "nor");
+    tesMap.insert("Polish", "pol");
+    tesMap.insert("Portuguese", "por");
+    tesMap.insert("Romanian", "ron");
+    tesMap.insert("Russian", "rus");
+    tesMap.insert("Serbian", "srp");
+    tesMap.insert("Slovenian", "slv");
+    tesMap.insert("Slovak", "slk");
+    tesMap.insert("Spanish", "spa");
+    tesMap.insert("Swedish", "swe");
+    tesMap.insert("Swedish Gothic", "swef");
+    tesMap.insert("Turkish", "tur");
+    tesMap.insert("Ukrainian", "ukr");
+
+}
+
 void Settings::findTessDataPath()
 {
     QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
@@ -251,85 +345,96 @@ void Settings::findTessDataPath()
 QString Settings::selectDefaultLanguageName()
 {
     QLocale loc = QLocale::system();
-    QString name = "eng";
+    QString name = "";
+    QMap<QString, QString> * map;
+    if (selectedEngine == UseCuneiform)
+        map = &cuMap;
+    if (selectedEngine == UseTesseract)
+        map = &tesMap;
     switch (loc.language()) {
-        case QLocale::Bulgarian:
-            name = "bul";
-            break;
-        case QLocale::Czech:
-            name = "cze";
-            break;
-        case QLocale::Danish:
-            name = "dan";
-            break;
-        case QLocale::German:
-            name = "ger";
-            break;
-        case QLocale::Dutch:
-            name = "dut";
-            break;
-        case QLocale::Russian:
-            {
-                if (selectedEngine == UseCuneiform)
-                    name = "ruseng";
-                else
-                    name = "rus";
-            }
-            break;
-        case QLocale::English:
-            name = "eng";
-            break;
-        case QLocale::Spanish:
-            name = "spa";
-            break;
-        case QLocale::French:
-            name = "fra";
-            break;
-        case QLocale::Hungarian:
-            name = "hun";
-            break;
-        case QLocale::Italian:
-            name = "ita";
-            break;
-        case QLocale::Latvian:
-            name = "lav";
-            break;
-        case QLocale::Lithuanian:
-            name = "lit";
-            break;
-        case QLocale::Polish:
-            name = "pol";
-            break;
-        case QLocale::Portuguese:
-            name = "por";
-            break;
-        case QLocale::Romanian:
-            name = "rum";
-            break;
-        case QLocale::Swedish:
-            name = "swe";
-            break;
-        case QLocale::Serbian:
-            name = "srp";
-            break;
-        case QLocale::Slovenian:
-            name = "slo";
-            break;
-        case QLocale::Ukrainian:
-            name = "ukr";
-        case QLocale::Finnish:
-            name = "fin";
-            break;
-        case QLocale::Greek:
-            name = "ell";
-            break;
-        case QLocale::Hebrew:
-            name = "heb";
-            break;
-        default:
-            name = "eng";
-            break;
-    }
+            case QLocale::Bulgarian:
+                name = map->value("Bulgarian");
+                break;
+            case QLocale::Czech:
+                name = map->value("Czech");
+                break;
+            case QLocale::Danish:
+                name = map->value("Danish");
+                break;
+            case QLocale::German:
+                name = map->value("German");
+                break;
+            case QLocale::Dutch:
+                name = map->value("Dutch");
+                break;
+            case QLocale::Russian:
+                name = map->value("Russian");
+                break;
+            case QLocale::English:
+                name = "eng";
+                break;
+            case QLocale::Spanish:
+                name = map->value("Spanish");
+                break;
+            case QLocale::French:
+                name = map->value("French");
+                break;
+            case QLocale::Hungarian:
+                name = map->value("Hungarian");
+                break;
+            case QLocale::Italian:
+                name = map->value("Italian");
+                break;
+            case QLocale::Latvian:
+                name = map->value("Latvian");
+                break;
+            case QLocale::Lithuanian:
+                name = map->value("Lithuanian");
+                break;
+            case QLocale::Polish:
+                name = map->value("Polish");
+                break;
+            case QLocale::Portuguese:
+                name = map->value("Portuguese");
+                break;
+            case QLocale::Romanian:
+                name = map->value("Romanian");
+                break;
+            case QLocale::Swedish:
+                name = map->value("Swedish");
+                break;
+            case QLocale::Serbian:
+                name = map->value("Serbian");
+                break;
+            case QLocale::Slovenian:
+                name = map->value("Slovenian");
+                break;
+            case QLocale::Slovak:
+                name = map->value("Slovak", "eng");
+                break;
+            case QLocale::Ukrainian:
+                name = map->value("Ukrainian");
+                break;
+            case QLocale::Finnish:
+                name = map->value("Finnish", "eng");
+                break;
+            case QLocale::Greek:
+                name = map->value("Greek", "eng");
+                break;
+            case QLocale::Hebrew:
+                name = map->value("Hebrew", "eng");
+                break;
+            case QLocale::Norwegian:
+                name = map->value("Norwegian", "eng");
+                break;
+            case QLocale::Turkish:
+                name = map->value("Turkish", "eng");
+                break;
+            default:
+                break;
+        }
+    if (name == "")
+        name = "eng";
     return name;
 }
 

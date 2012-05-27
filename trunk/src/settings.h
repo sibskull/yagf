@@ -17,6 +17,8 @@
 #include <QSettings>
 #include <QSize>
 #include <QPoint>
+#include <QMap>
+#include <QLocale>
 
 
 enum SelectedEngine {
@@ -56,7 +58,11 @@ public:
   void setFullScreen(const bool value);
   void setFontSize(const int &value);
   void setCropLoaded(const bool value);
+  QString workingDir();
+  void startLangPair();
+  bool getLangPair(QString &full, QString &abbr);
 private:
+  void makeLanguageMaps();
   void findTessDataPath();
   QString selectDefaultLanguageName();
   Settings();
@@ -76,6 +82,9 @@ private:
   bool fullScreen;
   int fontSize;
   bool cropLoaded;
+  QMap<QString, QString> cuMap;
+  QMap<QString, QString> tesMap;
+  int lpi;
 
   QString mPath;
   QSettings * settings;

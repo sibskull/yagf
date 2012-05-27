@@ -67,7 +67,7 @@ public slots:
     void clear();
 signals:
     void loadPage(); // The page is already current
-    void addSnippet();
+    void addSnippet(int index);
     void cleared();
 private slots:
     void pageSelected(int id);

@@ -38,7 +38,7 @@ TPageCollection::~TPageCollection()
     clear();
 }
 
-void TPageCollection::appendPage(const QString &fileName)
+bool TPageCollection::appendPage(const QString &fileName)
 {
     //Settings * settings = Settings::instance();
     if (fileName.endsWith(".tif", Qt::CaseInsensitive) || fileName.endsWith(".tiff", Qt::CaseInsensitive)) {
@@ -50,7 +50,7 @@ void TPageCollection::appendPage(const QString &fileName)
             if (toh->imageCount() == 1) {
                 delete toh;
                 appendPage(fileName);
-                return;
+                return true;
             } else {
                 for (int i = 0; i < toh->imageCount(); i++) {
                     QImage img;
@@ -62,16 +62,17 @@ void TPageCollection::appendPage(const QString &fileName)
                     QApplication::processEvents();
                 }
                 delete toh;
-                return;
+                return true;
             }
-        }
+        } else return false;
     } else {
         TPage * p = new TPage(++pid);
         if (p->loadFile(fileName)) {
             pages.append(p);
             index = pages.count() - 1;
             emit addSnippet(index);
-        }
+            return true;
+        } else return false;
     }
 }
 

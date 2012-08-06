@@ -33,7 +33,7 @@ class TPageCollection : public QObject
 public:
     explicit TPageCollection(QObject *parent = 0);
     ~TPageCollection();
-    void appendPage(const QString &fileName);
+    bool appendPage(const QString &fileName);
     int count();
     bool makePageCurrent(int index);
     bool makePageCurrentByID(int id);

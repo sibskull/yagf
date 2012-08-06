@@ -31,6 +31,7 @@
 typedef struct _Rect
 {
     qint32 x1, x2, y1, y2;
+    int dotCount;
 } Rect;
 
 bool operator==(Rect r1, Rect r2);

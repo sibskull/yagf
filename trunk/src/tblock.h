@@ -22,6 +22,7 @@
 
 #include <QRect>
 #include <QList>
+#include <QString>
 
 class TBlock : public QRect
 {
@@ -30,8 +31,11 @@ public:
     TBlock(const QRect &r);
     int blockNumber();
     void setBlockNumber(const int value);
+    void setLanguage(const QString &lang);
+    QString getLanguage();
 private:
     int number;
+    QString language;
     
 };
 

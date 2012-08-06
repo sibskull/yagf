@@ -490,11 +490,14 @@ void MainForm::loadFile(const QString &fn, bool loadIntoView)
     QCursor oldCursor = cursor();
     setCursor(Qt::WaitCursor);
 
-    pages->appendPage(fn);
-    if (loadIntoView) {
-        pages->makePageCurrent(pages->count()-1);
-        loadPage();
-        sideBar->item(sideBar->count()-1)->setSelected(true);
+    if (pages->appendPage(fn)) {
+        if (loadIntoView) {
+            pages->makePageCurrent(pages->count()-1);
+            loadPage();
+            sideBar->item(sideBar->count()-1)->setSelected(true);
+        }
+    } else {
+        QMessageBox::warning(this, trUtf8("Failed to Load Image"), fn);
     }
     setCursor(oldCursor);
 }

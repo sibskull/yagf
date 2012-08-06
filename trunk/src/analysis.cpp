@@ -84,6 +84,7 @@ void CCAnalysis::extractComponents(bool extractBars)
             quint32 label = builder->label(x,y);
             if (label) {
                 Rect r;
+                r.dotCount = 0;
                 r.x1 = builder->width();
                 r.x2 = 0;
                 r.y1 =  builder->height();
@@ -91,6 +92,7 @@ void CCAnalysis::extractComponents(bool extractBars)
                 if (!components.contains(label))
                      components.insert(label, r);
                 r = components.value(label);
+                r.dotCount++;
                 if (x < r.x1)
                     r.x1 = x;
                 if (x > r.x2)
@@ -159,8 +161,15 @@ void CCAnalysis::extractComponents(bool extractBars)
             if ((r.x2 - r.x1) > 6*wmed)
                 components.remove(k);
             else {
-                if (((r.y2 - r.y1)*(r.x2 - r.x1) < 30) || ((r.y2 - r.y1) > 4*hmed))
+                int s  = (r.y2 - r.y1)*(r.x2 - r.x1);
+                if (( s < 30) || ((r.y2 - r.y1) > 4*hmed))
                     components.remove(k);
+                else {
+                    if (s == 0) components.remove(k);
+                    else
+                     if (((double)r.dotCount/(double)s) < 0.1)
+                         components.remove(k);
+                }
             }
     }
     wacc = 0;
@@ -412,9 +421,20 @@ void CCAnalysis::addBarsHorizontal()
 
 void CCAnalysis::addBarsVertical()
 {
+    /*int lcont;
+    for (int i = 0; i < builder->width(); i += 10) {
+        lcont = 0;
+        for (int j = 0; j < builder->hight; j += 10) {
+            if (builder->label(i, j) > 0)
+                lcont++;
+            if (lcont > 3)
+                continue;
+        }
+    }*/
     int * li = new int[builder->width()];
     for (int i = 0; i < builder->width(); i++)
         li[i] = 0;
+
     foreach (TextLine tl, lines) {
         if (tl.count() < 3) continue;
         foreach (GlyphInfo gi, tl) {
@@ -422,10 +442,6 @@ void CCAnalysis::addBarsVertical()
                 li[i]++;
         }
 
-        /*for (int i = (tl.first().x - tl.first().h < 0 ? 0 : tl.first().x - tl.first().h); i < tl.last().x; i++) //(tl.last().x < builder->width() ? tl.last().x : builder->width()); i++)
-            li[i] = true;
-//        for (int i = (tl.last().x - tl.last().h < 0 ? 0 : tl.last().x - tl.last().h); i < (tl.last().x + tl.last().h > builder->width() ? builder->width() : tl.last().x + tl.last().h); i++)
-  //          li[i] = true;*/
     }
     int fcount = 0;
     for (int i = 1; i < builder->width(); i++) {

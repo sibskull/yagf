@@ -23,6 +23,7 @@ TBlock::TBlock(int x, int y, int width, int height) :
     QRect(x, y, width, height)
 {
     number = -1;
+    language = "default";
 }
 
 TBlock::TBlock(const QRect &r) : QRect(r.x(), r.y(), r.width(), r.height())
@@ -38,6 +39,16 @@ int TBlock::blockNumber()
 void TBlock::setBlockNumber(const int value)
 {
     number = value;
+}
+
+void TBlock::setLanguage(const QString &lang)
+{
+    language = lang;
+}
+
+QString TBlock::getLanguage()
+{
+    return language;
 }
 
 bool rectLessThan(const QRect &r1, const QRect &r2)

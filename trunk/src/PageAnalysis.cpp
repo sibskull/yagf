@@ -40,11 +40,14 @@
      QImage img1 = image;
      QRect result = blockAllText();
      RotationCropper rc(&img1, QColor("white").rgb(), generalBr);
+     //img1.save("/home/anre/pictures/ttt.png");
      QRect r = rc.crop();
-     result.setWidth(result.width() + r.x());
-     result.setX(result.x() + r.x());
-     result.setHeight(result.height()+r.y());
-     result.setY(result.y() + r.y());
+     QRect r1(result.x() + r.x(), result.y() + r.y(), result.width() + r.width(), result.height() +r.height());
+     //result.setWidth(result.width() + r.x());
+     //result.setX(result.x() + r.x());
+     //result.setHeight(result.height()+r.y());
+     //result.setY(result.y() + r.y());
+     result = r1;
      foreach (Rect rc, bars) {
          bars.removeOne(rc);
          rc.x1 += r.x();
@@ -66,7 +69,7 @@
  {
      qreal x = img.width() / 2;
      qreal y = img.height() / 2;
-     img = img.transformed(QTransform().translate(-x, -y).rotate(m_rotate).translate(x, y), Qt::SmoothTransformation);
+     //img = img.transformed(QTransform().translate(-x, -y).rotate(m_rotate).translate(x, y), Qt::SmoothTransformation);
      if (!img.isNull()) {
          CCBuilder * cb = new CCBuilder(img);
          cb->setGeneralBrightness(360);

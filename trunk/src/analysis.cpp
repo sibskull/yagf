@@ -428,15 +428,32 @@ void CCAnalysis::addBarsVertical()
         for (int j = c.x1; j <= c.x2; j++)
             li[j]++;
     }
+   int liprev = 1000;
     for (int i = 0; i < builder->width(); i++)
+    {
+
+
         if (li[i] < 3) {
-            Rect r;
-            r.x1 = i;
-            r.x2 = r.x1;
-            r.y1 = 0;
-            r.y2 = builder->height()-1;
-            bars.append(r);
-        }
+            if (liprev >= 3) {
+                Rect r;
+                r.x1 = i < builder->width() -3 ? i + 3 : i;
+                r.x2 = r.x1;
+                r.y1 = 0;
+                r.y2 = builder->height()-1;
+                bars.append(r);
+            }
+        } else
+            if (liprev < 3) {
+                Rect r;
+                r.x1 = i > 3 ? i - 3 : i-1;
+                r.x2 = r.x1;
+                r.y1 = 0;
+                 r.y2 = builder->height()-1;
+                bars.append(r);
+
+            }
+        liprev = li[i];
+    }
 
     /*int * li = new int[builder->width()];
     for (int i = 0; i < builder->width(); i++)
@@ -470,16 +487,16 @@ void CCAnalysis::addBarsVertical()
             }
         }
     }*/
-    for (int i = 1; i < builder->width(); i++) {
+   /* for (int i = 1; i < builder->width(); i++) {
         for (int j = bars.count()-1; j >= 0; j--) {
             Rect r = bars.at(j);
             if (abs(r.x2 - r.x1) > abs(r.y2 - r.y1))
                 continue;
             if ((i >= r.x1)&&(i <= r.x2))
-                if (li[i] > 1)
+                if (li[i] > 2)
                     bars.removeOne(r);
         }
-    }
+    }*/
 
     delete[] li;
 }

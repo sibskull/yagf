@@ -18,6 +18,7 @@
 */
 
 #include "ccbuilder.h"
+#include "settings.h"
 #include <QRgb>
 #include <QRect>
 #define XDEBUG

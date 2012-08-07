@@ -65,6 +65,7 @@ public:
         Bars addBars();
         TextLine extractLine();
 	int getGlyphCount();
+    QList<Rect> getGlyphs();
 	int getMediumGlyphHeight();
 	int getMediumGlyphWidth();
 	int getMediumLetterSpace();

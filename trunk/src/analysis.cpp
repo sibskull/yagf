@@ -421,17 +421,24 @@ void CCAnalysis::addBarsHorizontal()
 
 void CCAnalysis::addBarsVertical()
 {
-    /*int lcont;
-    for (int i = 0; i < builder->width(); i += 10) {
-        lcont = 0;
-        for (int j = 0; j < builder->hight; j += 10) {
-            if (builder->label(i, j) > 0)
-                lcont++;
-            if (lcont > 3)
-                continue;
-        }
-    }*/
     int * li = new int[builder->width()];
+    for (int i = 0; i < builder->width(); i++)
+        li[i] = 0;
+    foreach(Rect c, components.values()) {
+        for (int j = c.x1; j <= c.x2; j++)
+            li[j]++;
+    }
+    for (int i = 0; i < builder->width(); i++)
+        if (li[i] < 3) {
+            Rect r;
+            r.x1 = i;
+            r.x2 = r.x1;
+            r.y1 = 0;
+            r.y2 = builder->height()-1;
+            bars.append(r);
+        }
+
+    /*int * li = new int[builder->width()];
     for (int i = 0; i < builder->width(); i++)
         li[i] = 0;
 
@@ -462,7 +469,7 @@ void CCAnalysis::addBarsVertical()
                 fcount = 0;
             }
         }
-    }
+    }*/
     for (int i = 1; i < builder->width(); i++) {
         for (int j = bars.count()-1; j >= 0; j--) {
             Rect r = bars.at(j);
@@ -513,5 +520,10 @@ ginfo::ginfo(int a1, int a2, int a3)
 int CCAnalysis::getGlyphCount()
 {
     return glyphCount;
+}
+
+QList<Rect> CCAnalysis::getGlyphs()
+{
+    return components.values();
 }
 

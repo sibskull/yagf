@@ -47,8 +47,10 @@ void SideBar::itemActive(QListWidgetItem *item, QListWidgetItem *item2)
 {
     if (lock) return;
     lock = true;
-    emit pageSelected(((QSnippet *)item)->pageID());
-    current = ((QSnippet *)item);
+    if (item) {
+        emit pageSelected(((QSnippet *)item)->pageID());
+        current = ((QSnippet *)item);
+    } else current = 0;
     lock = false;
 }
 

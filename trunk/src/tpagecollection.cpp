@@ -67,6 +67,7 @@ bool TPageCollection::appendPage(const QString &fileName)
         } else return false;
     } else {
         TPage * p = new TPage(++pid);
+        connect(p,SIGNAL(refreshView()), this, SIGNAL(loadPage()));
         if (p->loadFile(fileName)) {
             pages.append(p);
             index = pages.count() - 1;

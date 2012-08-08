@@ -40,9 +40,10 @@
      QImage img1 = image;
      QRect result = blockAllText();
      RotationCropper rc(&img1, QColor("white").rgb(), generalBr);
+     CCBuilder cb(img1);
      //img1.save("/home/anre/pictures/ttt.png");
-     QRect r = rc.crop();
-     QRect r1(result.x() + r.x(), result.y() + r.y(), result.width() + r.width(), result.height() +r.height());
+     QRect r = cb.crop();//rc.crop();
+     QRect r1(result.x() + r.x(), result.y() + r.y(), r.width(), r.height());
      //result.setWidth(result.width() + r.x());
      //result.setX(result.x() + r.x());
      //result.setHeight(result.height()+r.y());

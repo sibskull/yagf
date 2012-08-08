@@ -698,6 +698,7 @@ void MainForm::delTmpDir()
 
 void MainForm::clearTmpFiles()
 {
+    QFile::remove(workingDir + "tmp*.bmp");
     QFile f(workingDir+inputFile);
     f.remove();
     f.setFileName(workingDir+outputFile);

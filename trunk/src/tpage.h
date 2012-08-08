@@ -65,7 +65,7 @@ public:
     int pageID();
     void sortBlocksInternal();
 signals:
-    
+    void refreshView();
 public slots:
 private:
     void applyTransforms(QImage &image, qreal scale);

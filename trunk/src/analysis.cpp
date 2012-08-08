@@ -436,7 +436,7 @@ void CCAnalysis::addBarsVertical()
         if (li[i] < 3) {
             if (liprev >= 3) {
                 Rect r;
-                r.x1 = i < builder->width() -3 ? i + 3 : i;
+                r.x1 = i < builder->width() -5 ? i + 5 : i;
                 r.x2 = r.x1;
                 r.y1 = 0;
                 r.y2 = builder->height()-1;

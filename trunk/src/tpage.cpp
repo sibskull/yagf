@@ -28,7 +28,7 @@
 #include <QSize>
 #include <QRect>
 #include <QFile>
-//#include <QApplication>
+#include <QApplication>
 #include <cmath>
 
 TPage::TPage(const int pid, QObject *parent) :
@@ -96,6 +96,7 @@ bool TPage::loadFile(QString fileName, bool loadIntoView)
     scaleImages();
     mFileName = fileName;
     loadedBefore = true;
+
     return true;
 }
 
@@ -349,7 +350,14 @@ void TPage::splitPage()
 {
     clearBlocks();
     BlockSplitter bs;
-    bs.setImage(img2, rotation, 0.5);// sideBar->getScale());
+    if (!deskewed)
+        deskew();
+    QString fn =Settings::instance()->workingDir() + QString::fromUtf8("tmp-%1.bmp").arg((quint64)img2.data_ptr());
+    savePageForRecognition(fn);
+    loadedBefore = false;
+    loadFile(fn);
+    rotation  = 0;
+    bs.setImage(img2, 0, 0.5);// sideBar->getScale());
     bs.getBars();
     bs.splitBlocks();
     QList<Rect> blocks = bs.getBlocks();

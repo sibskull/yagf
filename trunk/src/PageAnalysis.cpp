@@ -168,6 +168,8 @@
      blocks.append(b);
      splitVertical();
      splitHorisontal();
+     splitVertical();
+     splitHorisontal();
 //     qSort(blocks.begin(), blocks.end(), rectLessThan);
      for (int i = blocks.count() -1; i >=0; i--) {
          Rect r  = blocks.at(i);

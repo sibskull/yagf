@@ -192,12 +192,14 @@ void TPage::addBlock(TBlock block)
         blocks.append(block);
     }
     sortBlocksInternal();
+    renumberBlocks();
 }
 
 void TPage::deleteBlock(const TBlock &b)
 {
     blocks.removeOne(b);
     sortBlocksInternal();
+    renumberBlocks();
 }
 
 void TPage::deleteBlock(const QRect &r)
@@ -212,6 +214,7 @@ void TPage::deleteBlock(const QRect &r)
         }
     }
     sortBlocksInternal();
+    renumberBlocks();
 }
 
 TBlock TPage::getBlock(const QRect &r)
@@ -464,3 +467,11 @@ QImage TPage::currentImage()
     return img2;
 }
 
+
+
+void TPage::renumberBlocks()
+{
+    for (int i = 0; i < blocks.count(); i++) {
+        blocks[i].setBlockNumber(i+1);
+    }
+}

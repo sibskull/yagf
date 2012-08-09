@@ -28,6 +28,7 @@
 #include <QPointer>
 
 typedef QList<QAction *> ActionList;
+class TBlock;
 
 class QGraphicsPixmapItem;
 class QGraphicsRectItem;
@@ -58,7 +59,7 @@ public:
     void deleteCurrentBlock();
     void clearBlocks();
     bool addBlock(const QRectF &rect, bool removeObstacles = true);
-    void addBlockColliding(const QRectF &rect);
+    void addBlockColliding(TBlock block);
     void drawLine(int x1, int y1, int x2, int y2);
     void imageOrigin(QPoint &p);
     QPixmap getCurrentImage();

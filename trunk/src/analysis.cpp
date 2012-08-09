@@ -432,7 +432,6 @@ void CCAnalysis::addBarsVertical()
     for (int i = 0; i < builder->width(); i++)
     {
 
-
         if (li[i] < 3) {
             if (liprev >= 3) {
                 Rect r;
@@ -454,50 +453,6 @@ void CCAnalysis::addBarsVertical()
             }
         liprev = li[i];
     }
-
-    /*int * li = new int[builder->width()];
-    for (int i = 0; i < builder->width(); i++)
-        li[i] = 0;
-
-    foreach (TextLine tl, lines) {
-        if (tl.count() < 3) continue;
-        foreach (GlyphInfo gi, tl) {
-            for (int i = (gi.x - gi.h > 0 ? gi.x - gi.h : 0); (i < builder->width()) && (i < gi.x + gi.h); i++)
-                li[i]++;
-        }
-
-    }
-    int fcount = 0;
-    for (int i = 1; i < builder->width(); i++) {
-        if (li[i] < 2) fcount++;
-        else {
-            if (fcount >= mediumGlyphWidth ) { //mediumGlyphHeight) {
-                Rect r;
-                for (int j = i - (fcount + mediumGlyphWidth); j < i; j++) {
-                    if ((li[j-1] < 2)&&(li[j] < 2)&&(li[j+1] < 2)) {
-                        r.x1 = j;
-                        r.x2 = r.x1;
-                        r.y1 = 0;
-                        r.y2 = builder->height()-1;
-                        bars.append(r);
-                        break;
-                    }
-                }
-                fcount = 0;
-            }
-        }
-    }*/
-   /* for (int i = 1; i < builder->width(); i++) {
-        for (int j = bars.count()-1; j >= 0; j--) {
-            Rect r = bars.at(j);
-            if (abs(r.x2 - r.x1) > abs(r.y2 - r.y1))
-                continue;
-            if ((i >= r.x1)&&(i <= r.x2))
-                if (li[i] > 2)
-                    bars.removeOne(r);
-        }
-    }*/
-
     delete[] li;
 }
 

@@ -68,6 +68,7 @@ signals:
     void refreshView();
 public slots:
 private:
+    void renumberBlocks();
     void applyTransforms(QImage &image, qreal scale);
     void rotateImageInternal(QImage &image, qreal angle);
     void scaleImages();

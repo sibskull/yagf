@@ -24,6 +24,7 @@
 #include "PageAnalysis.h"
 #include "math.h"
 #include "ycommon.h"
+#include "tblock.h"
 #include <QPixmap>
 #include <QGraphicsPixmapItem>
 #include <QMessageBox>
@@ -32,6 +33,7 @@
 #include <QKeyEvent>
 #include <QToolBar>
 #include <QLayout>
+#include <QGraphicsTextItem>
 
 
 QGraphicsInput::QGraphicsInput(const QRectF &sceneRect, QGraphicsView *view) :
@@ -204,6 +206,7 @@ QGraphicsRectItem *QGraphicsInput::newBlock(const QRectF &rect)
     res->setZValue(1);
     res->setData(1, "block");
     res->setData(2, "no");
+
     return res;
 }
 
@@ -553,10 +556,22 @@ QPixmap QGraphicsInput::getCurrentImage()
     return (m_image->pixmap());
 }
 
-void QGraphicsInput::addBlockColliding(const QRectF &rect)
+void QGraphicsInput::addBlockColliding(TBlock block)
 {
-    QGraphicsRectItem *block = newBlock(rect);
-    m_CurrentBlockRect = block;
+    QGraphicsRectItem *gi = newBlock(block);
+    m_CurrentBlockRect = gi;
+    QGraphicsTextItem * gte = new QGraphicsTextItem(QString::number(block.blockNumber()), gi);
+    gte->setFont(QFont("Arial", 16));
+    gte->setDefaultTextColor(QColor("white"));
+    QPointF orig = gi->mapToScene(0,0);
+    gte->moveBy(block.x(), block.y());
+/*    QPen p(Qt::SolidLine);
+    QBrush b(Qt::SolidPattern);
+    b.setColor(QColor(0, 0, 127, 255));
+    p.setWidth(2);
+    p.setColor(QColor(0, 0, 255));
+
+    gi->rect().topLeft().*/
 }
 
 

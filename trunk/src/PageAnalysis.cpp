@@ -21,6 +21,7 @@
 #include "CCAnalysis.h"
 #include "ccbuilder.h"
 #include "analysis.h"
+#include "utils.h"
 #include <QImage>
 #include <QPixmap>
 #include <QRect>
@@ -168,8 +169,6 @@
      blocks.append(b);
      splitVertical();
      splitHorisontal();
-     splitVertical();
-     splitHorisontal();
 //     qSort(blocks.begin(), blocks.end(), rectLessThan);
      for (int i = blocks.count() -1; i >=0; i--) {
          Rect r  = blocks.at(i);
@@ -202,17 +201,18 @@
                  if (abs(bar.y2 - bar.y1) > (bar.x2-bar.x1))
                      continue;
                 int ymid = (bar.y1 + bar.y2)/2;
-                if ((block.y1 < (ymid - 5)) &&(block.y2 > (ymid + 5))) {
-                    Rect block1 = block;
-                    block1.y2 = ymid -2;
-                    Rect block2 = block;
-                    block2.y1 = ymid + 2;
-                    blocks.removeAll(block);
-                    blocks.append(block1);
-                    blocks.append(block2);
-                    didSplit = true;
-                    break;
-                }
+                if ((block.y1 < (ymid - 5)) &&(block.y2 > (ymid + 5)))
+                    if (_contains(bar.x1, bar.x2, block.x1)||_contains(bar.x1, bar.x2, block.x2)||_contains(block.x1, block.x2, bar.x1)||_contains(block.x1, block.x2, bar.x2)) {
+                        Rect block1 = block;
+                        block1.y2 = ymid -2;
+                        Rect block2 = block;
+                        block2.y1 = ymid + 2;
+                        blocks.removeAll(block);
+                        blocks.append(block1);
+                        blocks.append(block2);
+                        didSplit = true;
+                        break;
+                    }
             }
         }
      }

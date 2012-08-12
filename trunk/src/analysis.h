@@ -83,7 +83,8 @@ private:
         int findAdjacent(Rect &r);
         void normalizeLines();
         void rotatePhi(qreal phi, const QPoint &c, QPoint &p);
-        void addBarsHorizontal();
+        void addBarsHorizontal(int hoffset = 0, int height = -1, int woffset = 0, int width = -1);
+        void addBarsHorisontalAfterVertical();
         void addBarsVertical();
 private:
         CCBuilder * builder;
@@ -100,6 +101,7 @@ private:
 	int stringsCount;
         qreal k;
     Bars bars;
+    QVector<Rect> verts;
 };
 
 #endif

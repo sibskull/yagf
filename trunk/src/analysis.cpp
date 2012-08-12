@@ -18,6 +18,7 @@
 
 
 #include "analysis.h"
+#include "utils.h"
 #include <math.h>
 
 bool operator==(Rect r1, Rect r2)
@@ -73,6 +74,7 @@ Bars CCAnalysis::addBars()
     extractComponents(true);
     addBarsHorizontal();
     addBarsVertical();
+    addBarsHorisontalAfterVertical();
     return bars;
 }
 
@@ -302,16 +304,22 @@ void CCAnalysis::rotatePhi(qreal phi, const QPoint &c, QPoint &p)
     p.setY(y1+c.y());
 }
 
-void CCAnalysis::addBarsHorizontal()
+void CCAnalysis::addBarsHorizontal(int hoffset, int height, int woffset, int width)
 {
+    if (woffset == 752)
+        int debug = 0;
     bool * li = new bool[builder->height()];
-    for (int i = 0; i < builder->height(); i++)
+    if (height < 0) height = builder->height();
+    if (width < 0) width = builder->width();
+    for (int i = hoffset; i < height; i++)
         li[i] = false;
     foreach (TextLine tl, lines) {
         if (tl.count() == 1) continue;
-        foreach(GlyphInfo gi, tl)
+        foreach(GlyphInfo gi, tl)  // OPTIMIZE
+            if (_contains(woffset, width, gi.x)) {
             for (int i = gi.y - gi.h/2;  i < gi.y + gi.h/2; i++)
                 li[i] = true;
+            }
     }
     int him = 0;
     int hlm = 0;
@@ -319,7 +327,7 @@ void CCAnalysis::addBarsHorizontal()
     int icount = 0;
     int chl = 0;
     int chi = 0;
-    for (int i= 0; i < builder->height(); i++) {
+    for (int i= hoffset; i < height; i++) {
         if (!li[i]) { // empty space
             if (chl > 0) {
                 hlm += chl;
@@ -346,23 +354,14 @@ void CCAnalysis::addBarsHorizontal()
     hlm /= lcount;
     int ilcount = 0;
     int llcount = 0;
-    for (int i = 0; i < builder->height(); i++) {
+    for (int i = hoffset; i < height; i++) {
         if (!li[i]) {
-            /*if (llcount >= 1.5*hlm) {
-                Rect r;
-                r.x1 = 0;
-                r.x2 = builder->width()-1;
-                r.y1 = i - hlm/2;
-                r.y2 = r.y1;
-                bars.append(r);
-                llcount = 0;
-            }*/
             ilcount++;
         } else {
             if (ilcount >= 4*him) {
                 Rect r;
-                r.x1 = 0;
-                r.x2 = builder->width()-1;
+                r.x1 = woffset;
+                r.x2 = width-1;
                 r.y1 = 0;
                 for (int j = i - 3*him; j < i; j++) {
                     if ((!li[j-1]) && (!li[j]) && (!li[j+1])) {
@@ -381,6 +380,25 @@ void CCAnalysis::addBarsHorizontal()
     }
     delete[] li;
 }
+
+void CCAnalysis::addBarsHorisontalAfterVertical()
+{
+    Rect r;
+    r.y1 = 0;
+    r.y2 = builder->height();
+    r.x1 = builder->width();
+    r.x2 = r.x1;
+    verts.append(r);
+    for (int i = 1; i < verts.count(); i++) {
+        addBarsHorizontal(0, -1, verts[i-1].x2, verts[i].x1);
+    }
+   /* r.x1 = verts[5].x2;
+    r.x2 = verts[6].x1;
+    r.y1 = (verts[6].y1 + verts[6].y2)/2;
+    r.y2 = r.y1;
+    bars.append(r);*/
+}
+
 
 /*void CCAnalysis::addBarsHorizontal()
 {
@@ -440,6 +458,7 @@ void CCAnalysis::addBarsVertical()
                 r.y1 = 0;
                 r.y2 = builder->height()-1;
                 bars.append(r);
+                verts.append(r);
             }
         } else
             if (liprev < 3) {
@@ -449,7 +468,7 @@ void CCAnalysis::addBarsVertical()
                 r.y1 = 0;
                  r.y2 = builder->height()-1;
                 bars.append(r);
-
+                verts.append(r);
             }
         liprev = li[i];
     }

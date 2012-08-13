@@ -62,11 +62,14 @@ CCAnalysis::~CCAnalysis()
 	
 }
 
-void CCAnalysis::analize(bool extractBars)
+bool CCAnalysis::analize(bool extractBars)
 {
-    extractComponents(extractBars);
-    classifyGlyphs();
-    normalizeLines();
+    if (extractComponents(extractBars)) {
+        classifyGlyphs();
+        normalizeLines();
+        return true;
+    }
+    return false;
 }
 
 Bars CCAnalysis::addBars()
@@ -78,7 +81,7 @@ Bars CCAnalysis::addBars()
     return bars;
 }
 
-void CCAnalysis::extractComponents(bool extractBars)
+bool CCAnalysis::extractComponents(bool extractBars)
 {
     components.clear();
     for (int y = 0; y < builder->height(); y++) {
@@ -117,8 +120,13 @@ void CCAnalysis::extractComponents(bool extractBars)
         hacc +=(r.y2 - r.y1);
         count++;
     }
-    quint32 wmed = wacc/count;
-    quint32 hmed = hacc/count;
+
+    quint32 wmed;
+    quint32 hmed;
+    if (count != 0) {
+        wmed = wacc/count;
+        hmed = hacc/count;
+    } else return false;
 
     if (extractBars) {
         foreach(quint32 k, components.keys()) {
@@ -182,12 +190,13 @@ void CCAnalysis::extractComponents(bool extractBars)
         hacc +=(r.y2 - r.y1);
         count++;
     }
-    if (count == 0) return;
+    if (count == 0) return false;
     wmed = wacc/count;
     hmed = hacc/count;
     mediumGlyphWidth = wmed;
     mediumGlyphHeight = hmed;
     glyphCount = count;
+    return true;
 }
 
 int CCAnalysis::getGlyphBoxCount()

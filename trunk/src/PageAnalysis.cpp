@@ -38,6 +38,8 @@
 
  QRect BlockSplitter::getRootBlock(const QImage &image)
  {
+     if (image.isNull())
+         return QRect(0,0,0,0);
      QImage img1 = image;
      QRect result = blockAllText();
      RotationCropper rc(&img1, QColor("white").rgb(), generalBr);

@@ -61,7 +61,7 @@ class CCAnalysis : public QObject
 public:
         CCAnalysis(CCBuilder * builder);
 	~CCAnalysis();
-        void analize(bool extractBars = false);
+        bool analize(bool extractBars = false);
         Bars addBars();
         TextLine extractLine();
 	int getGlyphCount();
@@ -78,7 +78,7 @@ public:
         qreal getK();
         void rotateLines(qreal phi, const QPoint &c = QPoint(0,0));
 private:
-        void extractComponents(bool extractBars = false);
+        bool extractComponents(bool extractBars = false);
         void classifyGlyphs();
         int findAdjacent(Rect &r);
         void normalizeLines();

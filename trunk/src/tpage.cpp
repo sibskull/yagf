@@ -304,23 +304,24 @@ void TPage::deskew()
     if (deskewed) return;
     if (imageLoaded) {
         CCAnalysis * an = new CCAnalysis(ccbuilder);
-        an->analize();
-        QImage timg = tryRotate(img2, -atan(an->getK())*360/6.283);
-        CCBuilder * cb2 = new CCBuilder(timg);
-        cb2->setGeneralBrightness(360);
-        cb2->setMaximumColorComponent(100);
-        cb2->labelCCs();
-        CCAnalysis * an2 = new CCAnalysis(cb2);
-        an2->analize();
-        qreal angle = -atan(an2->getK())*360/6.283;
-        delete an2;
-        delete cb2;
-        if (abs(angle*10) >= abs(5))
-            angle += (-atan(an->getK())*360/6.283);
-        else
-            angle = -atan(an->getK())*360/6.283;
-        rotate(angle);
-        deskewed = true;
+        if (an->analize()) {
+            QImage timg = tryRotate(img2, -atan(an->getK())*360/6.283);
+            CCBuilder * cb2 = new CCBuilder(timg);
+            cb2->setGeneralBrightness(360);
+            cb2->setMaximumColorComponent(100);
+            cb2->labelCCs();
+            CCAnalysis * an2 = new CCAnalysis(cb2);
+            an2->analize();
+            qreal angle = -atan(an2->getK())*360/6.283;
+            delete an2;
+            delete cb2;
+            if (abs(angle*10) >= abs(5))
+                angle += (-atan(an->getK())*360/6.283);
+            else
+                angle = -atan(an->getK())*360/6.283;
+            rotate(angle);
+            deskewed = true;
+        }
         delete an;
     }
 }
@@ -365,18 +366,12 @@ void TPage::splitPage()
     bs.splitBlocks();
     QList<Rect> blocks = bs.getBlocks();
     qreal sf = 2.0*scale;
-    //QRect cr = bs.getRotationCropRect(currentImage());
     foreach (Rect block, blocks) {
         QRect r;
         block.x1 *=sf;
         block.y1 *=sf;
         block.x2 *= sf;
         block.y2 *=sf;
-
-      /*  block.x1 += cr.x();
-        block.y1 += cr.y();
-        block.x2 += cr.x();
-        block.y2 += cr.y();*/
 
         r.setX(block.x1);
         r.setY(block.y1);

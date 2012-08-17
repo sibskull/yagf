@@ -19,9 +19,7 @@
 
 #include "tpagecollection.h"
 #include "qsnippet.h"
-#ifdef TIFF_IO
 #include "qxttiffiohandler.h"
-#endif
 #include "settings.h"
 #include <QApplication>
 #include <QFile>
@@ -42,8 +40,7 @@ TPageCollection::~TPageCollection()
 
 bool TPageCollection::appendPage(const QString &fileName)
 {
-    //Settings * settings = Settings::instance();
-    #ifdef TIFF_IO
+#ifdef TIFF_IO
     if (fileName.endsWith(".tif", Qt::CaseInsensitive) || fileName.endsWith(".tiff", Qt::CaseInsensitive)) {
         QXtTiffIOHandler * toh = new QXtTiffIOHandler();
         QFile f(fileName);

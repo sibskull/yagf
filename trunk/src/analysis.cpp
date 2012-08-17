@@ -399,11 +399,6 @@ void CCAnalysis::addBarsHorisontalAfterVertical()
     for (int i = 1; i < verts.count(); i++) {
         addBarsHorizontal(0, -1, verts[i-1].x2, verts[i].x1);
     }
-   /* r.x1 = verts[5].x2;
-    r.x2 = verts[6].x1;
-    r.y1 = (verts[6].y1 + verts[6].y2)/2;
-    r.y2 = r.y1;
-    bars.append(r);*/
 }
 
 

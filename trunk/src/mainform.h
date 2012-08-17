@@ -114,7 +114,6 @@ private:
 private:
     QComboBox *selectLangsBox;
     QGraphicsInput *graphicsInput;
-    QString workingDir;
     QString fileName;
     QCursor *resizeCursor;
     QCursor *resizeBlockCursor;
@@ -130,6 +129,7 @@ private:
     TPageCollection * pages;
     QLabel * engineLabel;
 private slots:
+    bool findEngine();
     void readyRead(int sig);
     void setResizingCusor();
     void setUnresizingCusor();

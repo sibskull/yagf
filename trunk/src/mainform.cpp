@@ -464,7 +464,7 @@ void MainForm::scanImage()
         sl.append("-s");
         sl.append("-n");
         sl.append("-N");
-        sl.append(workingDir + "input.png");
+        sl.append(settings->workingDir() + "input.png");
         QStringList env = QProcess::systemEnvironment();
         QFileInfo lib;
         lib.setFile("/usr/local/lib/yagf/libxspreload.so");
@@ -505,7 +505,7 @@ void MainForm::loadFile(const QString &fn, bool loadIntoView)
 void MainForm::delTmpFiles()
 {
 
-    QDir dir(workingDir);
+    QDir dir(settings->workingDir());
     dir.setFilter(QDir::Files | QDir::NoSymLinks);
     for (uint i = 0; i < dir.count(); i++) {
         if (dir[i].endsWith("jpg") || dir[i].endsWith("bmp") || dir[i].endsWith("png") || dir[i].endsWith("txt"))
@@ -527,7 +527,7 @@ void MainForm::loadPreviousPage()
 bool MainForm::useTesseract(const QString &inputFile)
 {
     QProcess proc;
-    proc.setWorkingDirectory(workingDir);
+    proc.setWorkingDirectory(settings->workingDir());
     QStringList sl;
     sl.append(inputFile);
     sl.append(outputBase);
@@ -551,7 +551,7 @@ bool MainForm::useTesseract(const QString &inputFile)
 bool MainForm::useCuneiform(const QString &inputFile, const QString &outputFile)
 {
     QProcess proc;
-    proc.setWorkingDirectory(workingDir);
+    proc.setWorkingDirectory(settings->workingDir());
     QStringList sl;
     sl.append("-l");
     sl.append(settings->getLanguage());
@@ -561,8 +561,8 @@ bool MainForm::useCuneiform(const QString &inputFile, const QString &outputFile)
     else
         sl.append("html");
     sl.append("-o");
-    sl.append(workingDir + outputFile);
-    sl.append(workingDir + inputFile);
+    sl.append(settings->workingDir() + outputFile);
+    sl.append(settings->workingDir() + inputFile);
     proc.start("cuneiform", sl);
     proc.waitForFinished(-1);
     if (proc.exitCode()) {
@@ -585,7 +585,7 @@ void MainForm::recognizeInternal()
         if (!useTesseract(inputFile))
            return;
     }
-    QFile textFile(workingDir + outputFile);
+    QFile textFile(settings->workingDir() + outputFile);
     textFile.open(QIODevice::ReadOnly);
     QByteArray text = textFile.readAll();
     textFile.close();
@@ -609,33 +609,12 @@ void MainForm::recognizeInternal()
 
 void MainForm::recognize()
 {
-    QFile::remove(workingDir + "input*.bmp");
+    QFile::remove(settings->workingDir() + "input*.bmp");
     if (!pages->pageValid()) {
         QMessageBox::critical(this, trUtf8("Error"), trUtf8("No image loaded"));
         return;
     }
-    if (settings->getSelectedEngine() == UseCuneiform) {
-        if (!findProgram("cuneiform")) {
-            if (findProgram("tesseract")) {
-                QMessageBox::warning(this, trUtf8("Warning"), trUtf8("cuneiform not found, switching to tesseract"));
-                settings->setSelectedEngine(UseTesseract);
-            } else {
-                QMessageBox::warning(this, trUtf8("Warning"), trUtf8("No recognition engine found.\nPlease install either cuneiform or tesseract"));
-                return;
-            }
-        }
-     }
-    if (settings->getSelectedEngine() == UseTesseract) {
-        if (!findProgram("tesseract")) {
-            if (findProgram("cuneiform")) {
-                QMessageBox::warning(this, trUtf8("Warning"), trUtf8("tesseract not found, switching to cuneiform"));
-                settings->setSelectedEngine(UseCuneiform);
-            } else {
-                QMessageBox::warning(this, trUtf8("Warning"), trUtf8("No recognition engine found.\nPlease install either cuneiform or tesseract"));
-                return;
-            }
-        }
-     }
+    if (!findEngine()) return;
     if (pages->blockCount() > 0) {
         for (int i = 0; i < pages->blockCount(); i++) {
                 prepareBlockForRecognition(i);
@@ -669,12 +648,12 @@ void MainForm::showHelp()
 
 void MainForm::readyRead(int sig)
 {
-    QFile f(workingDir + "/input.png");
-    QString newName = QString(workingDir + "/scan-input-%1.png").arg(ifCounter);
+    QFile f(settings->workingDir() + "input.png");
+    QString newName = QString(settings->workingDir() + "scan-input-%1.png").arg(ifCounter);
     ifCounter++;
-    QFileInfo fi(workingDir + "/" + newName);
+    QFileInfo fi(newName);
     if (fi.exists()) {
-        QFile f2(workingDir + "/" + newName);
+        QFile f2(newName);
         f2.remove();
     }
     f.rename(newName);
@@ -685,23 +664,23 @@ void MainForm::readyRead(int sig)
 void MainForm::delTmpDir()
 {
     QDir dir;
-    dir.setPath(workingDir + "output_files");
+    dir.setPath(settings->workingDir() + "output_files");
     dir.setFilter(QDir::Files | QDir::NoSymLinks);
     for (uint i = 0; i < dir.count(); i++) {
         if (dir[i].endsWith("jpg") || dir[i].endsWith("bmp"))
             dir.remove(dir[i]);
     }
-    dir.rmdir(workingDir + "output_files");
+    dir.rmdir(settings->workingDir() + "output_files");
 
 }
 
 
 void MainForm::clearTmpFiles()
 {
-    QFile::remove(workingDir + "tmp*.bmp");
-    QFile f(workingDir+inputFile);
+    QFile::remove(settings->workingDir() + "tmp*.bmp");
+    QFile f(settings->workingDir()+inputFile);
     f.remove();
-    f.setFileName(workingDir+outputFile);
+    f.setFileName(settings->workingDir()+outputFile);
     f.remove();
 }
 
@@ -719,19 +698,19 @@ void MainForm::fillLangBox()
 void MainForm::preparePageForRecognition()
 {
     clearTmpFiles();
-    pages->savePageForRecognition(workingDir + inputFile);
+    pages->savePageForRecognition(settings->workingDir() + inputFile);
 }
 
 void MainForm::prepareBlockForRecognition(const QRect &r)
 {
     clearTmpFiles();
-    pages->saveBlockForRecognition(r, workingDir + inputFile);
+    pages->saveBlockForRecognition(r, settings->workingDir() + inputFile);
 }
 
 void MainForm::prepareBlockForRecognition(int index)
 {
     clearTmpFiles();
-    pages->saveBlockForRecognition(index, workingDir + inputFile);
+    pages->saveBlockForRecognition(index, settings->workingDir() + inputFile);
 }
 
 void MainForm::setResizingCusor()
@@ -820,12 +799,39 @@ void MainForm::on_ActionDeleteBlock_activated()
     pages->deleteBlock(r);
 }
 
+bool MainForm::findEngine() {
+	if (settings->getSelectedEngine() == UseCuneiform) {
+        	if (!findProgram("cuneiform")) {
+        	    if (findProgram("tesseract")) {
+        	        QMessageBox::warning(this, trUtf8("Warning"), trUtf8("cuneiform not found, switching to tesseract"));
+        	        settings->setSelectedEngine(UseTesseract);
+        	    } else {
+        	        QMessageBox::warning(this, trUtf8("Warning"), trUtf8("No recognition engine found.\nPlease install either cuneiform or tesseract"));
+        	        return false;
+        	    }
+       		}
+     	}
+    	if (settings->getSelectedEngine() == UseTesseract) {
+        	if (!findProgram("tesseract")) {
+        	    if (findProgram("cuneiform")) {
+        	        QMessageBox::warning(this, trUtf8("Warning"), trUtf8("tesseract not found, switching to cuneiform"));
+        	        settings->setSelectedEngine(UseCuneiform);
+       	     } else {
+        	        QMessageBox::warning(this, trUtf8("Warning"), trUtf8("No recognition engine found.\nPlease install either cuneiform or tesseract"));
+        	        return false;
+       	    }
+        }
+     }
+	return true;
+}
+
 void MainForm::on_actionRecognize_block_activated()
 {
-    if (graphicsInput->getCurrentBlock().isNull())
+     if (!findEngine()) return;
+     if (graphicsInput->getCurrentBlock().isNull())
         return;
     clearTmpFiles();
-    pages->saveRawBlockForRecognition(graphicsInput->getCurrentBlock(), workingDir + inputFile);
+    pages->saveRawBlockForRecognition(graphicsInput->getCurrentBlock(), settings->workingDir() + inputFile);
     recognizeInternal();
 }
 
@@ -932,8 +938,8 @@ void MainForm::pasteimage()
     if (pm.isNull()) return;
     QCursor oldCursor = cursor();
     setCursor(Qt::WaitCursor);
-    QString tmpFile = "input-01.jpg";
-    QFileInfo fi(workingDir + tmpFile);
+    QString tmpFile = "input-01.png";
+    QFileInfo fi(settings->workingDir() + tmpFile);
     while (fi.exists()) {
         QString digits = extractDigits(tmpFile);
         bool result;
@@ -945,9 +951,9 @@ void MainForm::pasteimage()
         while (newDigits.size() < digits.size())
             newDigits = '0' + newDigits;
         tmpFile = tmpFile.replace(digits, newDigits);
-        fi.setFile(workingDir, tmpFile);
+        fi.setFile(settings->workingDir(), tmpFile);
     }
-    pm.save(fi.absoluteFilePath(), "JPEG");
+    pm.save(fi.absoluteFilePath(), "PNG");
     loadFile(fi.absoluteFilePath());
     setCursor(oldCursor);
 }

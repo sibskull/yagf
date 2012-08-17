@@ -40,7 +40,7 @@ FILE* fopen(const char* path, const char* mode) {
     printf("called %s\n", path);
 FILE* (*real_fopen)(const char*, const char*) =
 dlsym(RTLD_NEXT, "fopen");
-    if (strstr(path, "input.jpg")== NULL)
+    if (strstr(path, "input.png")== NULL)
         return real_fopen(path, mode);
 if (strstr(mode, "r"))
     return 0;

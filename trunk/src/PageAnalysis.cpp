@@ -47,10 +47,6 @@
      //img1.save("/home/anre/pictures/ttt.png");
      QRect r = cb.crop();//rc.crop();
      QRect r1(result.x() + r.x(), result.y() + r.y(), r.width(), r.height());
-     //result.setWidth(result.width() + r.x());
-     //result.setX(result.x() + r.x());
-     //result.setHeight(result.height()+r.y());
-     //result.setY(result.y() + r.y());
      result = r1;
      foreach (Rect rc, bars) {
          bars.removeOne(rc);
@@ -83,8 +79,6 @@
          foreach(TextLine l, lines)
              if (l.count() < 3)
                  lines.removeOne(l);
-         //QPoint orig;
-         //graphicsInput->imageOrigin(orig);
          int minX = 100000;
          int minY = 100000;
          int maxX = 0;

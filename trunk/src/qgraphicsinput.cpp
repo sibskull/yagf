@@ -563,15 +563,7 @@ void QGraphicsInput::addBlockColliding(TBlock block)
     QGraphicsTextItem * gte = new QGraphicsTextItem(QString::number(block.blockNumber()), gi);
     gte->setFont(QFont("Arial", 16));
     gte->setDefaultTextColor(QColor("white"));
-    QPointF orig = gi->mapToScene(0,0);
     gte->moveBy(block.x(), block.y());
-/*    QPen p(Qt::SolidLine);
-    QBrush b(Qt::SolidPattern);
-    b.setColor(QColor(0, 0, 127, 255));
-    p.setWidth(2);
-    p.setColor(QColor(0, 0, 255));
-
-    gi->rect().topLeft().*/
 }
 
 

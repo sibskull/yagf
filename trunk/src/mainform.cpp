@@ -27,6 +27,7 @@
 #include "advancedconfigdialog.h"
 #include "mainform.h"
 #include "tpagecollection.h"
+#include "scanner.h"
 #include <signal.h>
 #include <QComboBox>
 #include <QLabel>
@@ -200,6 +201,7 @@ MainForm::MainForm(QWidget *parent): QMainWindow(parent)
     pdfPD.setWindowIcon(QIcon(":/yagf.png"));
     if (pdfx)
         connect(&pdfPD, SIGNAL(canceled()), pdfx, SLOT(cancel()));
+    scanner =  NULL;
 }
 
 void MainForm::onShowWindow()
@@ -453,36 +455,13 @@ void MainForm::newLanguageSelected(int index)
 
 void MainForm::scanImage()
 {
-    scanProcess->terminate();
-    scanProcess->waitForFinished(10000);
-    if (useXSane) {
-        if (!findProgram("xsane")) {
-            QMessageBox::warning(this, trUtf8("Warning"), trUtf8("xsane not found"));
-            return;
-        }
-        QStringList sl;
-        sl.append("-s");
-        sl.append("-n");
-        sl.append("-N");
-        sl.append(workingDir + "input.jpg");
-        QStringList env = QProcess::systemEnvironment();
-        QFileInfo lib;
-        lib.setFile("/usr/local/lib/yagf/libxspreload.so");
-        if (!lib.exists())
-            lib.setFile("/usr/lib/yagf/libxspreload.so");
-        if (!lib.exists())
-            lib.setFile("/usr/lib64/yagf/libxspreload.so");
-        if (!lib.exists())
-            lib.setFile("/usr/local/lib64/yagf/libxspreload.so");
-        if (!lib.exists()) {
-            QMessageBox::warning(this, trUtf8("Error"), trUtf8("libxspreload.so not found"));
-            return;
-        }
-        env.append("LD_PRELOAD=" + lib.filePath());
-        scanProcess->setEnvironment(env);
-        scanProcess->start("xsane", sl);
-//      proc.waitForFinished(-1);
+    ScannerFactory sf;
+    if (!scanner) {
+        scanner = sf.createScannerFE("xsane");
+        scanner->setOutputFile(settings->workingDir() + "output.png");
+        connect(scanner, SIGNAL(processFinished()), this, SLOT(scannerExited()), Qt::QueuedConnection);
     }
+    scanner->exec();
 }
 
 void MainForm::loadFile(const QString &fn, bool loadIntoView)
@@ -669,8 +648,8 @@ void MainForm::showHelp()
 
 void MainForm::readyRead(int sig)
 {
-    QFile f(workingDir + "/input.jpg");
-    QString newName = QString(workingDir + "/scan-input-%1.jpg").arg(ifCounter);
+    QFile f(workingDir + "/output.png");
+    QString newName = QString(workingDir + "/scan-input-%1.png").arg(ifCounter);
     ifCounter++;
     QFileInfo fi(workingDir + "/" + newName);
     if (fi.exists()) {
@@ -982,6 +961,13 @@ void MainForm::showAdvancedSettings()
 void MainForm::addSnippet(int index)
 {
     sideBar->addItem((QListWidgetItem *) pages->snippet());
+}
+
+void MainForm::scannerExited()
+{
+    if (scanner)
+        delete scanner;
+    scanner = NULL;
 }
 
 void MainForm::selectBlocks()

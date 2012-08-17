@@ -130,7 +130,6 @@ bool RotationCropper::checkHorzLine(int y)
     //int maxlstripe = 0;
     //int currentlstripe = 0;
     QRgb * line = (QRgb *) image->scanLine(y);
-    int curline =0;
     for (int i = 0; i < image->width(); i++) {
         if ((qRed(line[i]) == 1) && (qGreen(line[i]) == 2) && (qBlue(line[i]) == 3)) {
             skipCount++;

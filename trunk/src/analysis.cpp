@@ -315,8 +315,6 @@ void CCAnalysis::rotatePhi(qreal phi, const QPoint &c, QPoint &p)
 
 void CCAnalysis::addBarsHorizontal(int hoffset, int height, int woffset, int width)
 {
-    if (woffset == 752)
-        int debug = 0;
     bool * li = new bool[builder->height()];
     if (height < 0) height = builder->height();
     if (width < 0) width = builder->width();

@@ -71,9 +71,6 @@
 
  QRect BlockSplitter::blockAllText()
  {
-     qreal x = img.width() / 2;
-     qreal y = img.height() / 2;
-     //img = img.transformed(QTransform().translate(-x, -y).rotate(m_rotate).translate(x, y), Qt::SmoothTransformation);
      if (!img.isNull()) {
          CCBuilder * cb = new CCBuilder(img);
          cb->setGeneralBrightness(360);
@@ -86,8 +83,6 @@
          foreach(TextLine l, lines)
              if (l.count() < 3)
                  lines.removeOne(l);
-         //QPoint orig;
-         //graphicsInput->imageOrigin(orig);
          int minX = 100000;
          int minY = 100000;
          int maxX = 0;

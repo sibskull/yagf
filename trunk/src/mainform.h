@@ -44,6 +44,7 @@ class QLabel;
 const QString version = "0.9.1";
 
 class TPageCollection;
+class ScannerBase;
 
 class MainForm : public QMainWindow, public Ui::MainWindow
 {
@@ -129,6 +130,7 @@ private:
     Settings * settings;
     TPageCollection * pages;
     QLabel * engineLabel;
+    ScannerBase * scanner;
 private slots:
     void readyRead(int sig);
     void setResizingCusor();
@@ -138,4 +140,5 @@ private slots:
     void onShowWindow();
     void showAdvancedSettings();
     void addSnippet(int index);
+    void scannerExited();
  };

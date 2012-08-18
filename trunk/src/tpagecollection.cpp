@@ -196,6 +196,13 @@ QString TPageCollection::fileName()
     return cp()->fileName();
 }
 
+bool TPageCollection::savePageAsImage(const QString &fileName, const QString &format)
+{
+    if (!cp())
+        return false;
+    return cp()->savePageAsImage(fileName, format);
+}
+
 void TPageCollection::makeLarger()
 {
     if (!cp()) return;

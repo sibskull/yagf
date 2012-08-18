@@ -50,6 +50,7 @@ public:
     int blockCount();
     void clearBlocks();
     void savePageForRecognition(const QString &fileName);
+    bool savePageAsImage(const QString &fileName, const QString &format);
     void saveRawBlockForRecognition(QRect r, const QString &fileName);
     void saveBlockForRecognition(QRect r, const QString &fileName);
     void saveBlockForRecognition(int index, const QString &fileName);

@@ -256,6 +256,14 @@ void TPage::savePageForRecognition(const QString &fileName)
     image.save(fileName, "BMP");
 }
 
+bool TPage::savePageAsImage(const QString &fileName, const QString &format)
+{
+    QImageReader ir(mFileName);
+    QImage image = ir.read();
+    //applyTransforms(image, 1);
+    return image.save(fileName, format.toAscii().data());
+}
+
 void TPage::saveRawBlockForRecognition(QRect r, const QString &fileName)
 {
     normalizeRect(r);

@@ -52,6 +52,7 @@ public:
     TBlock getSelectedBlock();
     bool pageValid();
     QString fileName();
+    bool savePageAsImage(const QString &fileName, const QString &format);
 public slots:
     void makeLarger();
     void makeSmaller();

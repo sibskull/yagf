@@ -848,18 +848,20 @@ void MainForm::on_actionCheck_spelling_triggered()
 
 void MainForm::on_actionSave_current_image_activated()
 {
-    QString fn = getFileNameToSaveImage();
-    if (!fn.isEmpty())
-        pages->savePageForRecognition(fn);
+    QString format;
+    QString fn = getFileNameToSaveImage(format);
+    if (!fn.isEmpty()) {
+        if (!(pages->savePageAsImage(fn, format)))
+            QMessageBox::warning(this, QObject::trUtf8("Warning"), QObject::trUtf8("Failed to save the image"));
+    }
 }
 
-QString MainForm::getFileNameToSaveImage()
+QString MainForm::getFileNameToSaveImage(QString &format)
 {
     QString jpegFilter = QObject::trUtf8("JPEG Files (*.jpg)");
     QString pngFilter = QObject::trUtf8("PNG Files (*.png)");
-    //QString imageSaveFailed = QObject::trUtf8("Failed to save the image");
     QStringList filters;
-    QString format = "JPEG";
+    format = "JPEG";
     filters << jpegFilter << pngFilter;
     QFileDialog dialog(this,
                        trUtf8("Save Image"), settings->getLastOutputDir());
@@ -896,7 +898,8 @@ MainForm::~MainForm()
 
 void MainForm::on_actionSave_block_activated()
 {
-    QString fn = getFileNameToSaveImage();
+    QString format;
+    QString fn = getFileNameToSaveImage(format);
     if (!fn.isEmpty())
         pages->saveBlockForRecognition(graphicsInput->getCurrentBlock(), fn);
 }

@@ -107,7 +107,7 @@ private:
     void recognizeInternal();
     bool useCuneiform(const QString &inputFile, const QString &outputFile);
     bool useTesseract(const QString &inputFile);
-    QString getFileNameToSaveImage();
+    QString getFileNameToSaveImage(QString &format);
     void loadFromCommandLine();
     void clearTmpFiles();
     void fillLangBox();

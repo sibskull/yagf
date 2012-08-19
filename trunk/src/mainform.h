@@ -44,6 +44,7 @@ class QLabel;
 const QString version = "0.9.1";
 
 class TPageCollection;
+class ScannerBase;
 
 class MainForm : public QMainWindow, public Ui::MainWindow
 {
@@ -118,7 +119,7 @@ private:
     QCursor *resizeCursor;
     QCursor *resizeBlockCursor;
     bool useXSane;
-    QProcess *scanProcess;
+    ScannerBase * scanner;
     QByteArray *ba;
     //SpellChecker *spellChecker;
     QMenu *m_menu;

@@ -32,6 +32,11 @@ ScannerBase::ScannerBase(QObject *parent) :
     environment.append(QProcess::systemEnvironment());
 }
 
+ScannerBase::~ScannerBase()
+{
+    waitFor();
+}
+
 void ScannerBase::addParameter(const QString &s)
 {
     parameters.append(s);
@@ -82,12 +87,14 @@ QString ScannerFactory::findPreloadLibrary()
 {
     QFileInfo lib;
     lib.setFile("/usr/local/lib/yagf/libxspreload.so");
-    if (!lib.exists())
-        lib.setFile("/usr/lib/yagf/libxspreload.so");
-    if (!lib.exists())
-        lib.setFile("/usr/lib64/yagf/libxspreload.so");
-    if (!lib.exists())
-        lib.setFile("/usr/local/lib64/yagf/libxspreload.so");
+    if (!lib.exists()) {
+            lib.setFile("/usr/lib/yagf/libxspreload.so");
+            if (!lib.exists()) {
+                lib.setFile("/usr/lib64/yagf/libxspreload.so");
+                if (!lib.exists())
+                    lib.setFile("/usr/local/lib64/yagf/libxspreload.so");
+            }
+    }
     if (lib.exists())
         return lib.filePath();
     else return "";
@@ -111,7 +118,7 @@ ScannerFactory::ScannerFactory()
 
 ScannerBase *ScannerFactory::createScannerFE(const QString &name)
 {
-    if (name == "xsane")
+    if (fes.contains(name))
         return new XSaneScannerFE(preloadPath);
     return NULL;
 }

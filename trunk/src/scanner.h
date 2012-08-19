@@ -11,6 +11,7 @@ class ScannerBase : public QObject
     Q_OBJECT
 public:
     explicit ScannerBase(QObject *parent = 0);
+    ~ScannerBase();
     void addParameter(const QString &s);
     void addEnvironmentVar(const QString &s);
     void setOutputFile(const QString &s);

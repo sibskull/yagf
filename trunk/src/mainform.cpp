@@ -27,6 +27,7 @@
 #include "advancedconfigdialog.h"
 #include "mainform.h"
 #include "tpagecollection.h"
+#include "scanner.h"
 #include <signal.h>
 #include <QComboBox>
 #include <QLabel>
@@ -68,6 +69,7 @@ const QString outputBase = "output";
 const QString outputExt = ".txt";
 const QString inputFile = "input.bmp";
 const QString outputFile = "output.txt";
+const QString scanOutputFile = "input.png";
 
 
 MainForm::MainForm(QWidget *parent): QMainWindow(parent)
@@ -104,6 +106,7 @@ MainForm::MainForm(QWidget *parent): QMainWindow(parent)
 
     statusBar()->show();
     useXSane = TRUE;
+    scanner = NULL;
     //rotation = 0;
     m_menu = new QMenu(graphicsView);
     ifCounter = 0;
@@ -150,7 +153,6 @@ MainForm::MainForm(QWidget *parent): QMainWindow(parent)
     }
     fillLangBox();
     delTmpFiles();
-    scanProcess = new QProcess(this);
     QXtUnixSignalCatcher::connectUnixSignal(SIGUSR2);
     ba = new QByteArray();
     connect(QXtUnixSignalCatcher::catcher(), SIGNAL(unixSignal(int)), this, SLOT(readyRead(int)));
@@ -374,7 +376,10 @@ void MainForm::closeEvent(QCloseEvent *event)
         }
 
     }
-    scanProcess->terminate();
+    if (scanner) {
+        delete scanner;
+        scanner = NULL;
+    }
     settings->setSize(size());
     settings->setPosition(pos());
     settings->setFullScreen(isFullScreen());
@@ -453,35 +458,21 @@ void MainForm::newLanguageSelected(int index)
 
 void MainForm::scanImage()
 {
-    scanProcess->terminate();
-    scanProcess->waitForFinished(10000);
+
     if (useXSane) {
-        if (!findProgram("xsane")) {
-            QMessageBox::warning(this, trUtf8("Warning"), trUtf8("xsane not found"));
+        if (scanner) {
+            delete scanner;
+        }
+        ScannerFactory * sf = new ScannerFactory();
+        scanner = sf->createScannerFE("xsane");
+        if (scanner == NULL) {
+            QMessageBox::warning(this, trUtf8("Scanning is impossible"), trUtf8("No scanning front-end is found. Please install XSane in order to perform scanning."));
             return;
         }
-        QStringList sl;
-        sl.append("-s");
-        sl.append("-n");
-        sl.append("-N");
-        sl.append(settings->workingDir() + "input.png");
-        QStringList env = QProcess::systemEnvironment();
-        QFileInfo lib;
-        lib.setFile("/usr/local/lib/yagf/libxspreload.so");
-        if (!lib.exists())
-            lib.setFile("/usr/lib/yagf/libxspreload.so");
-        if (!lib.exists())
-            lib.setFile("/usr/lib64/yagf/libxspreload.so");
-        if (!lib.exists())
-            lib.setFile("/usr/local/lib64/yagf/libxspreload.so");
-        if (!lib.exists()) {
-            QMessageBox::warning(this, trUtf8("Error"), trUtf8("libxspreload.so not found"));
-            return;
-        }
-        env.append("LD_PRELOAD=" + lib.filePath());
-        scanProcess->setEnvironment(env);
-        scanProcess->start("xsane", sl);
-//      proc.waitForFinished(-1);
+        scanner->setOutputFile(settings->workingDir() + scanOutputFile);
+        delete sf;
+        scanner->exec();
+
     }
 }
 
@@ -648,7 +639,7 @@ void MainForm::showHelp()
 
 void MainForm::readyRead(int sig)
 {
-    QFile f(settings->workingDir() + "input.png");
+    QFile f(settings->workingDir() + scanOutputFile);
     QString newName = QString(settings->workingDir() + "scan-input-%1.png").arg(ifCounter);
     ifCounter++;
     QFileInfo fi(newName);

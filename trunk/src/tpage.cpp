@@ -267,10 +267,10 @@ bool TPage::savePageAsImage(const QString &fileName, const QString &format)
 void TPage::saveRawBlockForRecognition(QRect r, const QString &fileName)
 {
     normalizeRect(r);
-    saveBlockForRecognition(r, fileName);
+    saveBlockForRecognition(r, fileName, "BMP");
 }
 
-void TPage::saveBlockForRecognition(QRect r, const QString &fileName)
+void TPage::saveBlockForRecognition(QRect r, const QString &fileName, const QString &format)
 {
     int oldw = r.width();
     int oldh = r.height();
@@ -281,12 +281,12 @@ void TPage::saveBlockForRecognition(QRect r, const QString &fileName)
     QImageReader ir(mFileName);
     QImage image = ir.read();
     applyTransforms(image, 1);
-    image.copy(r).save(fileName);
+    image.copy(r).save(fileName, format.toAscii().data());
 }
 
 void TPage::saveBlockForRecognition(int index, const QString &fileName)
 {
-    saveBlockForRecognition(blocks.at(index), fileName);
+    saveBlockForRecognition(blocks.at(index), fileName, "BMP");
 }
 
 void TPage::selectBlock(const QRect &r)

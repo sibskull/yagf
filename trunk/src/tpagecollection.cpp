@@ -137,10 +137,10 @@ void TPageCollection::saveRawBlockForRecognition(QRect r, const QString &fileNam
     cp()->saveRawBlockForRecognition(r, fileName);
 }
 
-void TPageCollection::saveBlockForRecognition(QRect r, const QString &fileName)
+void TPageCollection::saveBlockForRecognition(QRect r, const QString &fileName, const QString &format)
 {
     if (!cp()) return;
-    cp()->saveBlockForRecognition(r, fileName);
+    cp()->saveBlockForRecognition(r, fileName, format);
 }
 
 void TPageCollection::saveBlockForRecognition(int index, const QString &fileName)

@@ -43,7 +43,7 @@ public:
     QPixmap pixmap();
     void savePageForRecognition(const QString &fileName);
     void saveRawBlockForRecognition(QRect r, const QString &fileName);
-    void saveBlockForRecognition(QRect r, const QString &fileName);
+    void saveBlockForRecognition(QRect r, const QString &fileName, const QString &format = "BMP");
     void saveBlockForRecognition(int index, const QString &fileName);
     int blockCount();
     TBlock getBlock(const QRect &r);

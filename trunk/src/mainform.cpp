@@ -901,7 +901,7 @@ void MainForm::on_actionSave_block_activated()
     QString format;
     QString fn = getFileNameToSaveImage(format);
     if (!fn.isEmpty())
-        pages->saveBlockForRecognition(graphicsInput->getCurrentBlock(), fn);
+        pages->saveBlockForRecognition(graphicsInput->getCurrentBlock(), fn, format);
 }
 
 void MainForm::on_actionCheck_spelling_activated()

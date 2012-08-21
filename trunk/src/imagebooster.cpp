@@ -44,9 +44,9 @@ void ImageBooster::boost(QImage *image)
                 r = r*8/10;
                 g = g*8/10;
                 b = b*8/10;
-                r = r*r/140;
-                g = g*g/140;
-                b = b*b/140;
+                r = r*r/80;
+                g = g*g/80;
+                b = b*b/80;
                 //r = r*10/7;
                 if (r > 255) r = 255;
                 //g = g*10/7;
@@ -57,8 +57,7 @@ void ImageBooster::boost(QImage *image)
                // gl[j] = g;
               //  bl[j] = b;
                // brl[j] = r+ g+ b;
-                QColor c(r, g, b);
-                line[j] = c.rgba();
+                line[j] = ((255 & 0xff) << 24) | ((r & 0xff) << 16) | ((g & 0xff) << 8) | (b & 0xff);
             }
             //sharpenEdges(rl, gl, bl, brl, w);
         }
@@ -69,9 +68,9 @@ void ImageBooster::boost(QImage *image)
                 int r = qRed(line[j]);
                 int g = qGreen(line[j]);
                 int b = qBlue(line[j]);
-                r = r*r/140;
-                g = g*g/140;
-                b = b*b/140;
+                r = r*r/80;
+                g = g*g/80;
+                b = b*b/80;
                 r = r*10/9;
                 if (r > 255) r = 255;
                 g = g*10/9;
@@ -82,8 +81,7 @@ void ImageBooster::boost(QImage *image)
                 //gl[j] = g;
                // bl[j] = b;
                // brl[j] = r+ g+ b;
-                QColor c(r, g, b);
-                line[j] = c.rgba();
+                line[j] = ((255 & 0xff) << 24) | ((r & 0xff) << 16) | ((g & 0xff) << 8) | (b & 0xff);
             }
             //sharpenEdges(rl, gl, bl, brl, w);
 
@@ -93,6 +91,66 @@ void ImageBooster::boost(QImage *image)
     //delete[] rl;
     //delete[] bl;
     //delete[] brl;
+}
+
+void ImageBooster::brighten(QImage *image, int p, int q)
+{
+    if (!image)
+        return;
+    int h = image->height();
+    int w = image->width();
+    if (h*w == 0) return;
+    for(int i = 0; i < h; i++) {
+        QRgb * line = (QRgb *) image->scanLine(i);
+        for (int j = 0; j < w; j++) {
+            int r = qRed(line[j]);
+            int g = qGreen(line[j]);
+            int b = qBlue(line[j]);
+            r = r*p/q;
+            g = g*p/q;
+            b = b*p/q;
+            QColor c(r, g, b);
+            line[j] = c.rgba();
+        }
+    }
+}
+
+QImage * ImageBooster::sharpen(QImage * origin){
+    QImage * newImage = new QImage(* origin);
+
+    int kernel [3][3]= {{0,-1,0},
+                        {-1,5,-1},
+                        {0,-1,0}};
+    int kernelSize = 3;
+    int sumKernel = 1;
+    int r,g,b;
+    QColor color;
+
+    for(int x=kernelSize/2; x<newImage->width()-(kernelSize/2); x++){
+        for(int y=kernelSize/2; y<newImage->height()-(kernelSize/2); y++){
+
+            r = 0;
+            g = 0;
+            b = 0;
+
+            for(int i = -kernelSize/2; i<= kernelSize/2; i++){
+                for(int j = -kernelSize/2; j<= kernelSize/2; j++){
+                    color = QColor(origin->pixel(x+i, y+j));
+                    r += color.red()*kernel[kernelSize/2+i][kernelSize/2+j];
+                    g += color.green()*kernel[kernelSize/2+i][kernelSize/2+j];
+                    b += color.blue()*kernel[kernelSize/2+i][kernelSize/2+j];
+                }
+            }
+
+            r = qBound(0, r/sumKernel, 255);
+            g = qBound(0, g/sumKernel, 255);
+            b = qBound(0, b/sumKernel, 255);
+
+            newImage->setPixel(x,y, qRgb(r,g,b));
+
+        }
+    }
+    return newImage;
 }
 
 void ImageBooster::buildProfile(QImage * image)

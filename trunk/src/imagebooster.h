@@ -11,6 +11,8 @@ public:
     explicit ImageBooster(QObject *parent = 0);
     ~ImageBooster();
     void boost(QImage * image);
+    void brighten(QImage * image, int p, int q);
+    QImage * sharpen(QImage * origin);
 signals:
 
 public slots:

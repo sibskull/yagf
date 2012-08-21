@@ -1,0 +1,153 @@
+#include "imagebooster.h"
+#include <QColor>
+
+ImageBooster::ImageBooster(QObject *parent) :
+    QObject(parent)
+{
+    profile = new quint32[16];
+    for (int i =0; i  < 16; i++)
+        profile[i] = 0;
+}
+
+ImageBooster::~ImageBooster()
+{
+    delete[] profile;
+}
+
+void ImageBooster::boost(QImage *image)
+{
+    if (!image)
+        return;
+    int h = image->height();
+    int w = image->width();
+    if (h*w == 0) return;
+    buildProfile(image);
+    int imax = 0;
+    quint32 pmax = 0;
+    for (int i = 0; i < 16; i++) {
+        if (profile[i] > pmax) {
+            imax = i;
+            pmax = profile[i];
+        }
+    }
+   // quint32 * rl = new quint32[w];
+  //  quint32 * gl = new quint32[w];
+  //  quint32 * bl = new quint32[w];
+  //  quint32 * brl = new quint32[w];
+    if (imax > 10) {
+        for(int i = 0; i < h; i++) {
+            QRgb * line = (QRgb *) image->scanLine(i);
+            for (int j = 0; j < w; j++) {
+                int r = qRed(line[j]);
+                int g = qGreen(line[j]);
+                int b = qBlue(line[j]);
+                r = r*8/10;
+                g = g*8/10;
+                b = b*8/10;
+                r = r*r/140;
+                g = g*g/140;
+                b = b*b/140;
+                //r = r*10/7;
+                if (r > 255) r = 255;
+                //g = g*10/7;
+                if (g > 255) g = 255;
+                //b = b*10/7;
+                if (b > 255) b = 255;
+               // rl[j] = r;
+               // gl[j] = g;
+              //  bl[j] = b;
+               // brl[j] = r+ g+ b;
+                QColor c(r, g, b);
+                line[j] = c.rgba();
+            }
+            //sharpenEdges(rl, gl, bl, brl, w);
+        }
+    } else {
+        for(int i = 0; i < h; i++) {
+            QRgb * line = (QRgb *) image->scanLine(i);
+            for (int j = 0; j < w; j++) {
+                int r = qRed(line[j]);
+                int g = qGreen(line[j]);
+                int b = qBlue(line[j]);
+                r = r*r/140;
+                g = g*g/140;
+                b = b*b/140;
+                r = r*10/9;
+                if (r > 255) r = 255;
+                g = g*10/9;
+                if (g > 255) g = 255;
+                b = b*10/9;
+                if (b > 255) b = 255;
+                //rl[j] = r;
+                //gl[j] = g;
+               // bl[j] = b;
+               // brl[j] = r+ g+ b;
+                QColor c(r, g, b);
+                line[j] = c.rgba();
+            }
+            //sharpenEdges(rl, gl, bl, brl, w);
+
+        }
+    }
+    //delete [] gl;
+    //delete[] rl;
+    //delete[] bl;
+    //delete[] brl;
+}
+
+void ImageBooster::buildProfile(QImage * image)
+{
+    int h = image->height();
+    int w = image->width();
+    if (h*w == 0) return;
+    for(int i = 0; i < h; i++) {
+        QRgb * line = (QRgb *) image->scanLine(i);
+        for (int j = 0; j < w; j++) {
+            int brightness = qRed(line[j])+qGreen(line[j])+qBlue(line[j]);
+            brightness /= 48;
+            profile[brightness]++;
+        }
+    }
+}
+
+void ImageBooster::sharpenEdges(quint32 *r, quint32 *g, quint32 *b, quint32 *br, int w)
+{
+    quint32 sp[4];
+    quint32 mDelta = 0;
+    quint32 counter = 0;
+    quint32 * deltas = new quint32[w];
+    for (int i = 3; i < w; i++) {
+        sp[0] = br[i-3];
+        sp[1] = br[i-2];
+        sp[2] = br[i-1];
+        sp[3] = br[i];
+        if ( ( (sp[0]-sp[1])*(sp[1]-sp[2]) > 0)&&((sp[1]-sp[2])*(sp[2]-sp[3]) > 0)) {
+            mDelta += abs(sp[0]-sp[3]);
+            counter++;
+            deltas[i] = mDelta;
+        } else deltas[i] = 0;
+    }
+    if (counter)
+        mDelta /= counter;
+    else {
+        delete[] deltas;
+        return;
+    }
+    int i = 3;
+    while (i < w) {
+        if (deltas[i] > mDelta) {
+            if (br[i-3] < br[i]) {
+                r[i-2] = r[i-3];
+                g[i-2] = g[i-3];
+                b[i-2] = b[i-3];
+            } else {
+                r[i-1] = r[i];
+                g[i-1] = g[i];
+                b[i-1] = b[i];
+            }
+            i++;
+        }
+        i++;
+    }
+    delete[] deltas;
+}

@@ -18,6 +18,7 @@
 */
 
 #include "tpage.h"
+#include "imagebooster.h"
 #include "settings.h"
 #include "ccbuilder.h"
 #include "CCAnalysis.h"
@@ -147,6 +148,8 @@ bool TPage::makeSmaller()
 void TPage::rotate(qreal angle)
 {
     rotateImageInternal(img2, angle);
+
+
     rotation += angle;
     scaleImages();
     clearBlocks();
@@ -253,6 +256,8 @@ void TPage::savePageForRecognition(const QString &fileName)
     QImageReader ir(mFileName);
     QImage image = ir.read();
     applyTransforms(image, 1);
+    ImageBooster booster;
+    booster.boost(&image);
     image.save(fileName, "BMP");
 }
 

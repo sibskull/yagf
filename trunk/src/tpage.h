@@ -21,6 +21,7 @@
 #define TPAGE_H
 
 #include "tblock.h"
+#include "analysis.h"
 #include <QObject>
 #include <QRect>
 #include <QImage>
@@ -77,6 +78,8 @@ private:
     void scaleRect(QRect &rect);
     QImage tryRotate(QImage image, qreal angle);
     QImage currentImage();
+    void saveTmpPage(const QString &fileName, bool boost, bool brighten);
+    QList<Rect> splitInternal();
 private:
     qreal scale;
     qreal rotation;

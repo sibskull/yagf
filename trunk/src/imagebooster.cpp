@@ -44,9 +44,9 @@ void ImageBooster::boost(QImage *image)
                 r = r*8/10;
                 g = g*8/10;
                 b = b*8/10;
-                r = r*r/80;
-                g = g*g/80;
-                b = b*b/80;
+                r = r*r/160;
+                g = g*g/160;
+                b = b*b/160;
                 //r = r*10/7;
                 if (r > 255) r = 255;
                 //g = g*10/7;
@@ -68,9 +68,9 @@ void ImageBooster::boost(QImage *image)
                 int r = qRed(line[j]);
                 int g = qGreen(line[j]);
                 int b = qBlue(line[j]);
-                r = r*r/80;
-                g = g*g/80;
-                b = b*b/80;
+                r = r*r/160;
+                g = g*g/160;
+                b = b*b/160;
                 r = r*10/9;
                 if (r > 255) r = 255;
                 g = g*10/9;
@@ -109,8 +109,10 @@ void ImageBooster::brighten(QImage *image, int p, int q)
             r = r*p/q;
             g = g*p/q;
             b = b*p/q;
-            QColor c(r, g, b);
-            line[j] = c.rgba();
+            if (r > 255) r = 255;
+            if (g > 255) g = 255;
+            if (b > 255) b = 255;
+            line[j] =  ((255 & 0xff) << 24) | ((r & 0xff) << 16) | ((g & 0xff) << 8) | (b & 0xff);
         }
     }
 }

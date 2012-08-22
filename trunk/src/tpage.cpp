@@ -256,8 +256,6 @@ void TPage::savePageForRecognition(const QString &fileName)
     QImageReader ir(mFileName);
     QImage image = ir.read();
     applyTransforms(image, 1);
-    ImageBooster booster;
-    booster.boost(&image);
     image.save(fileName, "BMP");
 }
 
@@ -363,21 +361,41 @@ void TPage::blockAllText()
     addBlock(r);
 }
 
-void TPage::splitPage()
-{
+QList<Rect> TPage::splitInternal() {
     clearBlocks();
     BlockSplitter bs;
-    if (!deskewed)
-        deskew();
-    QString fn =Settings::instance()->workingDir() + QString::fromUtf8("tmp-%1.bmp").arg((quint64)img2.data_ptr());
-    savePageForRecognition(fn);
-    loadedBefore = false;
-    loadFile(fn);
     rotation  = 0;
     bs.setImage(img2, 0, 0.5);// sideBar->getScale());
     bs.getBars();
     bs.splitBlocks();
-    QList<Rect> blocks = bs.getBlocks();
+    return bs.getBlocks();
+}
+
+void TPage::splitPage()
+{
+    if (!deskewed)
+        deskew();
+    QString fn =Settings::instance()->workingDir() + QString::fromUtf8("tmp-%1.bmp").arg((quint64)img2.data_ptr());
+    saveTmpPage(fn, true, false);
+    loadedBefore = false;
+    loadFile(fn);
+    QList<Rect> blocks = splitInternal();
+    /*if (blocks.count() == 0) {
+        deskew();
+        fn =Settings::instance()->workingDir() + QString::fromUtf8("tmp-%1.bmp").arg((quint64)img2.data_ptr());
+        saveTmpPage(fn, true, false);
+        loadedBefore = false;
+        loadFile(fn);
+        blocks = splitInternal();
+    }*/
+    if (blocks.count() == 0) {
+        deskew();
+        fn =Settings::instance()->workingDir() + QString::fromUtf8("tmp-%1.bmp").arg((quint64)img2.data_ptr());
+        saveTmpPage(fn, false, true);
+        loadedBefore = false;
+        loadFile(fn);
+        blocks = splitInternal();
+    }
     qreal sf = 2.0*scale;
     foreach (Rect block, blocks) {
         QRect r;
@@ -473,6 +491,19 @@ QImage TPage::currentImage()
     if (scale <= 0.25)
         return img4;
     return img2;
+}
+
+void TPage::saveTmpPage(const QString &fileName, bool boost, bool brighten)
+{
+    QImageReader ir(mFileName);
+    QImage image = ir.read();
+    ImageBooster booster;
+    if (boost)
+        booster.boost(&image);
+    if (brighten)
+        booster.brighten(&image,2,1);
+    applyTransforms(image, 1);
+    image.save(fileName, "BMP");
 }
 
 

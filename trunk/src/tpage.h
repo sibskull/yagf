@@ -78,8 +78,9 @@ private:
     void scaleRect(QRect &rect);
     QImage tryRotate(QImage image, qreal angle);
     QImage currentImage();
-    void saveTmpPage(const QString &fileName, bool boost, bool brighten);
+    void saveTmpPage(const QString &fileName, bool boost, bool brighten, int p = 1, int q =1);
     QList<Rect> splitInternal();
+    void prepareCCBuilder();
 private:
     qreal scale;
     qreal rotation;
@@ -96,6 +97,7 @@ private:
     TBlocks blocks;
     bool imageLoaded;
     bool loadedBefore;
+    bool preprocessed;
     QString mFileName;
     CCBuilder * ccbuilder;
     Settings * settings;

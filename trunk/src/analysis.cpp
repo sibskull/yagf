@@ -365,7 +365,7 @@ void CCAnalysis::addBarsHorizontal(int hoffset, int height, int woffset, int wid
         if (!li[i]) {
             ilcount++;
         } else {
-            if (ilcount >= 4*him) {
+            if (ilcount >= 5*him) {
                 Rect r;
                 r.x1 = woffset;
                 r.x2 = width-1;

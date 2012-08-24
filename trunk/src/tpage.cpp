@@ -40,6 +40,7 @@ TPage::TPage(const int pid, QObject *parent) :
     ccbuilder = NULL;
     rotation = 0;
     deskewed = false;
+    preprocessed = false;
     mFileName.clear();
     this->pid = pid;
 }
@@ -63,6 +64,7 @@ bool TPage::loadFile(QString fileName, bool loadIntoView)
         if(mFileName.isEmpty()) return false;
         fileName = mFileName;
     }
+
     rotation = 0;
     crop1.setX(0);
     crop1.setY(0);
@@ -75,20 +77,26 @@ bool TPage::loadFile(QString fileName, bool loadIntoView)
     imageLoaded = !img2.isNull();
     if (!imageLoaded)
         return false;
+    if (ccbuilder){
+        delete ccbuilder;
+        ccbuilder = 0;
+    }
     if (!loadedBefore) {
-        ccbuilder = new CCBuilder(img2);
         settings = Settings::instance();
         if (settings->getCropLoaded()) {
+            ccbuilder = new CCBuilder(img2);
             ccbuilder->setGeneralBrightness(360);
             ccbuilder->setMaximumColorComponent(100);
             QRect r = ccbuilder->crop();
             crop1 = r;
             img2 = img2.copy(crop1);
             delete ccbuilder;
-            ccbuilder = new CCBuilder(img2);
+            ccbuilder = 0;
+          //  ccbuilder = new CCBuilder(img2);
+
         }
-        ccbuilder->labelCCs();
-        mGeneralBrightness = ccbuilder->getGB();
+        //ccbuilder->labelCCs();
+        //mGeneralBrightness = ccbuilder->getGB();
     } else {
         if (settings->getCropLoaded())
             img2 = img2.copy(crop1);
@@ -157,6 +165,10 @@ void TPage::rotate(qreal angle)
 
 void TPage::unload()
 {
+    if (ccbuilder){
+        delete ccbuilder;
+        ccbuilder = 0;
+    }
     img2 = QImage(0,0,QImage::Format_ARGB32);
     img4 = QImage(0,0,QImage::Format_ARGB32);
     img6 = QImage(0,0,QImage::Format_ARGB32);
@@ -314,6 +326,7 @@ void TPage::deskew()
 {
     if (deskewed) return;
     if (imageLoaded) {
+        prepareCCBuilder();
         CCAnalysis * an = new CCAnalysis(ccbuilder);
         if (an->analize()) {
             QImage timg = tryRotate(img2, -atan(an->getK())*360/6.283);
@@ -354,6 +367,7 @@ void TPage::rotate180()
 
 void TPage::blockAllText()
 {
+    prepareCCBuilder();
     clearBlocks();
     BlockSplitter bs;
     bs.setImage(img2, rotation, scale);
@@ -371,15 +385,26 @@ QList<Rect> TPage::splitInternal() {
     return bs.getBlocks();
 }
 
+void TPage::prepareCCBuilder()
+{
+    if (!ccbuilder) {
+        ccbuilder = new CCBuilder(img2);
+        ccbuilder->setGeneralBrightness(360);
+        ccbuilder->setMaximumColorComponent(100);
+        ccbuilder->labelCCs();
+    }
+}
+
 void TPage::splitPage()
 {
+    prepareCCBuilder();
     if (!deskewed)
         deskew();
-    QString fn =Settings::instance()->workingDir() + QString::fromUtf8("tmp-%1.bmp").arg((quint64)img2.data_ptr());
-    saveTmpPage(fn, true, false);
-    loadedBefore = false;
-    loadFile(fn);
-    QList<Rect> blocks = splitInternal();
+        QString fn =Settings::instance()->workingDir() + QString::fromUtf8("tmp-%1.bmp").arg((quint64)img2.data_ptr());
+        saveTmpPage(fn, !preprocessed, false);
+        loadedBefore = false;
+        loadFile(fn);
+        QList<Rect> blocks = splitInternal();
     /*if (blocks.count() == 0) {
         deskew();
         fn =Settings::instance()->workingDir() + QString::fromUtf8("tmp-%1.bmp").arg((quint64)img2.data_ptr());
@@ -388,14 +413,23 @@ void TPage::splitPage()
         loadFile(fn);
         blocks = splitInternal();
     }*/
-    if (blocks.count() == 0) {
-        deskew();
-        fn =Settings::instance()->workingDir() + QString::fromUtf8("tmp-%1.bmp").arg((quint64)img2.data_ptr());
-        saveTmpPage(fn, false, true);
-        loadedBefore = false;
-        loadFile(fn);
-        blocks = splitInternal();
+    if (!preprocessed) {
+        if (blocks.count() == 0) {
+            deskew();
+            fn =Settings::instance()->workingDir() + QString::fromUtf8("tmp-%1.bmp").arg((quint64)img2.data_ptr());
+            saveTmpPage(fn, false, true, 2);
+            loadedBefore = false;
+            loadFile(fn);
+            blocks = splitInternal();
+        } else {
+            saveTmpPage(fn, false, true, 7, 5);
+            loadedBefore = false;
+            loadFile(fn);
+            blocks = splitInternal();
+
+        }
     }
+    preprocessed = true;
     qreal sf = 2.0*scale;
     foreach (Rect block, blocks) {
         QRect r;
@@ -493,7 +527,7 @@ QImage TPage::currentImage()
     return img2;
 }
 
-void TPage::saveTmpPage(const QString &fileName, bool boost, bool brighten)
+void TPage::saveTmpPage(const QString &fileName, bool boost, bool brighten, int p, int q)
 {
     QImageReader ir(mFileName);
     QImage image = ir.read();
@@ -501,7 +535,8 @@ void TPage::saveTmpPage(const QString &fileName, bool boost, bool brighten)
     if (boost)
         booster.boost(&image);
     if (brighten)
-        booster.brighten(&image,2,1);
+        booster.brighten(&image,p,q);
+    //    booster.flatten(&image);
     applyTransforms(image, 1);
     image.save(fileName, "BMP");
 }

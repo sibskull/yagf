@@ -117,6 +117,40 @@ void ImageBooster::brighten(QImage *image, int p, int q)
     }
 }
 
+void ImageBooster::flatten(QImage *image)
+{
+    if (!image)
+        return;
+    int h = image->height();
+    int w = image->width();
+    if (h*w == 0) return;
+    for (int i = 0; i < h; i++) {
+        QRgb * line = (QRgb *) image->scanLine(i);
+        int start = 300;
+        qreal med1 = 0;
+        qreal med = 0;
+        analyseStripe(line, i, w, med, med1, start);
+        while (start < w) {
+            for (int j = start; j < 300; j++) {
+                int r = qRed(line[j]);
+                int g = qGreen(line[j]);
+                int b = qBlue(line[j]);
+                r = r*10/5;
+                g = g*10/5;
+                b = b*10/5;
+                if (r > 255) r = 255;
+                if (g > 255) g = 255;
+                if (b > 255) b = 255;
+                line[j] =  ((255 & 0xff) << 24) | ((r & 0xff) << 16) | ((g & 0xff) << 8) | (b & 0xff);
+            }
+            med1 = med;
+            start+=300;
+            analyseStripe(line, i, w, med, med1, start);
+        }
+    }
+
+}
+
 QImage * ImageBooster::sharpen(QImage * origin){
     QImage * newImage = new QImage(* origin);
 
@@ -210,4 +244,32 @@ void ImageBooster::sharpenEdges(quint32 *r, quint32 *g, quint32 *b, quint32 *br,
         i++;
     }
     delete[] deltas;
+}
+
+void ImageBooster::analyseStripe(QRgb * line, int i, int w, qreal &med, qreal &med1, int &start)
+{
+    if (start < 300) start = 300;
+    for (int j = start; j < w - 600; j+=300) {
+        int sum = 0;
+        for (int k = j; k < j+300; k++) {
+            sum += (qRed(line[k]) + qGreen(line[k]) + qBlue(line[k]));
+        }
+        med = sum/300;
+        if ((sum - med1 < 100)&&(sum - med1 > 10)) {
+            med = sum;
+            start = j;
+            return;
+        }
+        if ((sum - med1 > -100)&&(sum - med1 < -10)) {
+            med = sum;
+            start = j-300;
+            return;
+        }
+
+        med1 = sum;
+
+
+    }
+    start = w;
+
 }

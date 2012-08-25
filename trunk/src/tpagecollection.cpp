@@ -255,7 +255,7 @@ void TPageCollection::blockAllText()
 void TPageCollection::splitPage()
 {
     if (!cp()) return;
-    cp()->splitPage();
+    cp()->splitPage(true);
     emit loadPage();
 }
 

@@ -46,7 +46,7 @@
      CCBuilder cb(img1);
      //img1.save("/home/anre/pictures/ttt.png");
      QRect r = cb.crop();//rc.crop();
-     QRect r1(result.x() + r.x(), result.y() + r.y(), r.width(), r.height());
+     QRect r1(result.x() + r.x(), result.y() + r.y(), result.width(), result.height());
      result = r1;
      foreach (Rect rc, bars) {
          bars.removeOne(rc);
@@ -153,7 +153,7 @@
  void BlockSplitter::splitBlocks()
  {
      QRect r = getRootBlock(img);
-     Rect b;
+    Rect b;
      b.x1 = r.x();
      b.y1 = r.y();
      b.x2 = b.x1 + r.width();

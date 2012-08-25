@@ -839,12 +839,15 @@ void MainForm::on_actionCheck_spelling_triggered()
 
 void MainForm::on_actionSave_current_image_activated()
 {
+    QCursor oc = cursor();
+    setCursor(Qt::WaitCursor);
     QString format;
     QString fn = getFileNameToSaveImage(format);
     if (!fn.isEmpty()) {
         if (!(pages->savePageAsImage(fn, format)))
             QMessageBox::warning(this, QObject::trUtf8("Warning"), QObject::trUtf8("Failed to save the image"));
     }
+    setCursor(oc);
 }
 
 QString MainForm::getFileNameToSaveImage(QString &format)
@@ -860,7 +863,6 @@ QString MainForm::getFileNameToSaveImage(QString &format)
     dialog.setAcceptMode(QFileDialog::AcceptSave);
     dialog.setDefaultSuffix("jpg");
     if (dialog.exec()) {
-        setCursor(Qt::WaitCursor);
         if (dialog.selectedNameFilter() == jpegFilter) {
             format = "JPEG";
             dialog.setDefaultSuffix("jpg");

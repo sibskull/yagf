@@ -62,7 +62,7 @@ public:
     void rotate90CCW();
     void rotate180();
     void blockAllText();
-    void splitPage();
+    void splitPage(bool preprocess);
     QString fileName();
     int pageID();
     void sortBlocksInternal();
@@ -78,7 +78,7 @@ private:
     void scaleRect(QRect &rect);
     QImage tryRotate(QImage image, qreal angle);
     QImage currentImage();
-    void saveTmpPage(const QString &fileName, bool boost, bool brighten, int p = 1, int q =1);
+    void saveTmpPage(const QString &fileName, bool cc,bool boost, bool brighten, int p = 1, int q =1);
     QList<Rect> splitInternal();
     void prepareCCBuilder();
 private:

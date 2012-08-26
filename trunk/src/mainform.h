@@ -139,4 +139,5 @@ private slots:
     void onShowWindow();
     void showAdvancedSettings();
     void addSnippet(int index);
+    void preprocessPage();
  };

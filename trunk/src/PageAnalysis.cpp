@@ -116,6 +116,8 @@
          delete an;
          generalBr = cb->getGB();
          delete cb;
+         minX = minX <= 0 ? 1 :minX;
+         minY = minY <= 0 ? 1 :minY;
          return QRect(minX*2*m_scale, minY*2*m_scale, (maxX-minX)*2*m_scale, (maxY-minY)*2*m_scale);
      }
      return QRect(0, 0, 0, 0);

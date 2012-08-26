@@ -93,6 +93,7 @@ MainForm::MainForm(QWidget *parent): QMainWindow(parent)
     graphicsInput->addToolBarAction(actionRotate_90_CCW);
     graphicsInput->addToolBarAction(actionRotate_180);
     graphicsInput->addToolBarAction(actionRotate_90_CW);
+    graphicsInput->addToolBarAction(actionPrepare_Page);
     graphicsInput->addToolBarAction(actionDeskew);
     graphicsInput->addToolBarSeparator();
     graphicsInput->addToolBarAction(actionSelect_Text_Area);
@@ -986,9 +987,22 @@ void MainForm::addSnippet(int index)
     sideBar->addItem((QListWidgetItem *) pages->snippet());
 }
 
+void MainForm::preprocessPage()
+{
+    QCursor oldCursor = cursor();
+    setCursor(Qt::WaitCursor);
+    if (!pages->splitPage(true))
+        QMessageBox::warning(this, trUtf8("Warning"), trUtf8("Failed to detect text areas on this page.\nThe page possibly lacks contrast. Try to select blocks manually."));
+    setCursor(oldCursor);
+}
+
 void MainForm::selectBlocks()
 {
-    pages->splitPage();
+    QCursor oldCursor = cursor();
+    setCursor(Qt::WaitCursor);
+    if (!pages->splitPage(false))
+        QMessageBox::warning(this, trUtf8("Warning"), trUtf8("Failed to detect text areas on this page.\nThe page possibly lacks contrast. Try to select blocks manually."));
+    setCursor(oldCursor);
 }
 
 void MainForm::setSmallIcons()

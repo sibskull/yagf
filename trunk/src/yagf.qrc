@@ -44,5 +44,7 @@
         <file>images/edit_paste.png</file>
         <file>images/scanner48.png</file>
         <file>images/selectmulti.png</file>
+        <file>images/tools_wizard.png</file>
+        <file>images/tools_wizard_small.png</file>
     </qresource>
 </RCC>

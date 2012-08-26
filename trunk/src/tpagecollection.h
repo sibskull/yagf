@@ -61,7 +61,7 @@ public slots:
     void rotate180();
     void deskew();
     void blockAllText();
-    void splitPage();
+    bool splitPage(bool preprocess);
     void addBlock(const QRect & rect);
     void deleteBlock(const QRect & rect);
     void clearBlocks();

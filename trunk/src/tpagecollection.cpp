@@ -252,11 +252,12 @@ void TPageCollection::blockAllText()
     emit loadPage();
 }
 
-void TPageCollection::splitPage()
+bool TPageCollection::splitPage(bool preprocess)
 {
-    if (!cp()) return;
-    cp()->splitPage(true);
+    if (!cp()) return false;
+    bool res = cp()->splitPage(preprocess);
     emit loadPage();
+    return res;
 }
 
 void TPageCollection::addBlock(const QRect &rect)

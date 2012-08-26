@@ -1,4 +1,4 @@
-/*
+ /*
     YAGF - cuneiform and tesseract OCR graphical front-end
     Copyright (C) 2009-2012 Andrei Borovsky <anb@symmetrica.net>
 
@@ -322,7 +322,7 @@ TBlock TPage::getSelectedBlock()
     return selectedBlock;
 }
 
-void TPage::deskew()
+void TPage::deskew(bool recreateCB)
 {
     if (deskewed) return;
     if (imageLoaded) {
@@ -347,7 +347,8 @@ void TPage::deskew()
             deskewed = true;
             delete ccbuilder;
             ccbuilder = 0;
-            prepareCCBuilder();
+            if (recreateCB)
+                prepareCCBuilder();
         }
         delete an;
     }
@@ -397,7 +398,7 @@ void TPage::prepareCCBuilder()
     }
 }
 
-void TPage::splitPage(bool preprocess)
+bool TPage::splitPage(bool preprocess)
 {
     QList<Rect> blocks;
     prepareCCBuilder();
@@ -420,7 +421,7 @@ void TPage::splitPage(bool preprocess)
             if (blocks.count() == 0) {
                 saveTmpPage(fn, false, false, true, 2);
             } else {
-                saveTmpPage(fn, false, false, false, 6, 5);
+                saveTmpPage(fn, false, false, false, 7, 5);
             }
             loadedBefore = false;
             loadFile(fn);
@@ -445,6 +446,7 @@ void TPage::splitPage(bool preprocess)
         r.setHeight(block.y2 - block.y1);
         addBlock(r);
     }
+    return blocks.count() != 0;
 }
 
 QString TPage::fileName()
@@ -541,7 +543,7 @@ void TPage::saveTmpPage(const QString &fileName, bool cc, bool boost, bool brigh
         booster.brighten(&image,p,q);
     if (cc) {
         deskewed = false;
-        deskew();
+        deskew(false);
     }
     //    booster.flatten(&image);
     applyTransforms(image, 1);

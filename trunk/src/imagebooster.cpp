@@ -1,3 +1,22 @@
+/*
+    YAGF - cuneiform and tesseract OCR graphical front-ends
+    Copyright (C) 2009-2012 Andrei Borovsky <anb@symmetrica.net>
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+*/
+
 #include "imagebooster.h"
 #include <QColor>
 
@@ -151,30 +170,31 @@ void ImageBooster::flatten(QImage *image)
 
 }
 
-QImage * ImageBooster::sharpen(QImage * origin){
-    QImage * newImage = new QImage(* origin);
+void ImageBooster::sharpen(QImage * image){
+    QImage * newImage = new QImage(* image);
 
-    int kernel [3][3]= {{0,-1,0},
+    int k [3][3]= {{0,-1,0},
                         {-1,5,-1},
                         {0,-1,0}};
-    int kernelSize = 3;
+    int ks = 3;
     int sumKernel = 1;
     int r,g,b;
+    int bpl = image->bytesPerLine();
     QColor color;
 
-    for(int x=kernelSize/2; x<newImage->width()-(kernelSize/2); x++){
-        for(int y=kernelSize/2; y<newImage->height()-(kernelSize/2); y++){
+    for(int x=ks/2; x<newImage->width()-(ks/2); x++){
+        for(int y=ks/2; y<newImage->height()-(ks/2); y++){
 
             r = 0;
             g = 0;
             b = 0;
 
-            for(int i = -kernelSize/2; i<= kernelSize/2; i++){
-                for(int j = -kernelSize/2; j<= kernelSize/2; j++){
-                    color = QColor(origin->pixel(x+i, y+j));
-                    r += color.red()*kernel[kernelSize/2+i][kernelSize/2+j];
-                    g += color.green()*kernel[kernelSize/2+i][kernelSize/2+j];
-                    b += color.blue()*kernel[kernelSize/2+i][kernelSize/2+j];
+            for(int i = -ks/2; i<= ks/2; i++){
+                for(int j = -ks/2; j<= ks/2; j++){
+                    color = QColor(image->pixel(x+i, y+j));
+                    r += color.red()*k[ks/2+i][ks/2+j];
+                    g += color.green()*k[ks/2+i][ks/2+j];
+                    b += color.blue()*k[ks/2+i][ks/2+j];
                 }
             }
 
@@ -186,7 +206,12 @@ QImage * ImageBooster::sharpen(QImage * origin){
 
         }
     }
-    return newImage;
+    for (int i = 0; i < image->height(); i++) {
+        uchar * dest = image->scanLine(i);
+        uchar * src = newImage->scanLine(i);
+        strncpy((char*)dest, (char*)src, bpl);
+    }
+    delete newImage;
 }
 
 void ImageBooster::buildProfile(QImage * image)

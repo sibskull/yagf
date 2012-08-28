@@ -28,6 +28,7 @@
 #include "mainform.h"
 #include "tpagecollection.h"
 #include "scanner.h"
+#include "projectsaver.h"
 #include <signal.h>
 #include <QComboBox>
 #include <QLabel>
@@ -994,6 +995,19 @@ void MainForm::preprocessPage()
     if (!pages->splitPage(true))
         QMessageBox::warning(this, trUtf8("Warning"), trUtf8("Failed to detect text areas on this page.\nThe page possibly lacks contrast. Try to select blocks manually."));
     setCursor(oldCursor);
+}
+
+void MainForm::saveProject()
+{
+    QString dir = QFileDialog::getExistingDirectory(this, QObject::trUtf8("Save Project"), "");
+    QDir dinfo(dir);
+    if (dinfo.entryList().count() > 2) {
+        QMessageBox::warning(this, "Warning", "The selected directoy is not empty. Please select another one.");
+        return;
+    }
+    ProjectSaver ps;
+    if (!ps.save(dir))
+        QMessageBox::warning(this, "Warning", "Failed to save project.");
 }
 
 void MainForm::selectBlocks()

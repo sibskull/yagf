@@ -140,4 +140,5 @@ private slots:
     void showAdvancedSettings();
     void addSnippet(int index);
     void preprocessPage();
+    void saveProject();
  };

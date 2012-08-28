@@ -486,6 +486,7 @@
     <addaction name="action_Save"/>
     <addaction name="separator"/>
     <addaction name="actionSave_current_image"/>
+    <addaction name="actionSave_Project"/>
     <addaction name="separator"/>
     <addaction name="actionQuit"/>
    </widget>
@@ -964,6 +965,11 @@
     <string>Prepare the page for recognitoin</string>
    </property>
   </action>
+  <action name="actionSave_Project">
+   <property name="text">
+    <string>Save Project...</string>
+   </property>
+  </action>
  </widget>
  <customwidgets>
   <customwidget>
@@ -1231,6 +1237,22 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>actionSave_Project</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>saveProject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>586</x>
+     <y>613</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>959</x>
+     <y>568</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>rotateCWButtonClicked()</slot>
@@ -1249,5 +1271,6 @@
   <slot>selectBlocks()</slot>
   <slot>setSmallIcons()</slot>
   <slot>preprocessPage()</slot>
+  <slot>saveProject()</slot>
  </slots>
 </ui>

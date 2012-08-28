@@ -170,27 +170,26 @@ void ImageBooster::flatten(QImage *image)
 
 }
 
-void ImageBooster::sharpen(QImage * image){
+void ImageBooster::sharpen(QImage * image)
+{
     QImage * newImage = new QImage(* image);
 
-    int k [3][3]= {{0,-1,0},
-                        {-1,5,-1},
-                        {0,-1,0}};
+    int k [3][3]= {{0,-1,0}, {-1,5,-1}, {0,-1,0}};
     int ks = 3;
     int sumKernel = 1;
     int r,g,b;
     int bpl = image->bytesPerLine();
     QColor color;
 
-    for(int x=ks/2; x<newImage->width()-(ks/2); x++){
-        for(int y=ks/2; y<newImage->height()-(ks/2); y++){
+    for(int x=ks/2; x<newImage->width()-(ks/2); x++) {
+        for(int y=ks/2; y<newImage->height()-(ks/2); y++) {
 
             r = 0;
             g = 0;
             b = 0;
 
-            for(int i = -ks/2; i<= ks/2; i++){
-                for(int j = -ks/2; j<= ks/2; j++){
+            for(int i = -ks/2; i<= ks/2; i++) {
+                for(int j = -ks/2; j<= ks/2; j++) {
                     color = QColor(image->pixel(x+i, y+j));
                     r += color.red()*k[ks/2+i][ks/2+j];
                     g += color.green()*k[ks/2+i][ks/2+j];

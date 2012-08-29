@@ -53,6 +53,9 @@ public:
     bool pageValid();
     QString fileName();
     bool savePageAsImage(const QString &fileName, const QString &format);
+    bool isDeskewed();
+    bool isPreprocessed();
+    qreal getRotation();
 public slots:
     void makeLarger();
     void makeSmaller();

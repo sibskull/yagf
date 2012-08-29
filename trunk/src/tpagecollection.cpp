@@ -208,6 +208,27 @@ bool PageCollection::savePageAsImage(const QString &fileName, const QString &for
     return cp()->savePageAsImage(fileName, format);
 }
 
+bool PageCollection::isDeskewed()
+{
+    if (cp())
+        return cp()->isDeskewed();
+    return false;
+}
+
+bool PageCollection::isPreprocessed()
+{
+    if (cp())
+        return cp()->isPreprocessed();
+    return false;
+}
+
+qreal PageCollection::getRotation()
+{
+    if (cp())
+        return cp()->getRotation();
+    return 0;
+}
+
 void PageCollection::makeLarger()
 {
     if (!cp()) return;

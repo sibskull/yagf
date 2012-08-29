@@ -464,6 +464,21 @@ void Page::sortBlocksInternal()
     sortBlocks(blocks);
 }
 
+bool Page::isDeskewed()
+{
+    return deskewed;
+}
+
+bool Page::isPreprocessed()
+{
+    return preprocessed;
+}
+
+qreal Page::getRotation()
+{
+    return rotation;
+}
+
 
 void Page::applyTransforms(QImage &image, qreal scale)
 {

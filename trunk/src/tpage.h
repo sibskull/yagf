@@ -66,6 +66,9 @@ public:
     QString fileName();
     int pageID();
     void sortBlocksInternal();
+    bool isDeskewed();
+    bool isPreprocessed();
+    qreal getRotation();
 signals:
     void refreshView();
 public slots:

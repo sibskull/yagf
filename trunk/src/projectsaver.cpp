@@ -28,6 +28,11 @@
 const QString URI = "symmetrica.net/yagf";
 const QString VERSION = "0.9.2";
 
+inline QString boolToString(bool value)
+{
+    return value ? "true" : "false";
+}
+
 ProjectSaver::ProjectSaver(QObject *parent) :
     QObject(parent)
 {
@@ -47,10 +52,7 @@ bool ProjectSaver::save(const QString &dir)
     stream->writeStartElement(URI, "yagf");
     stream->writeAttribute(URI, "version", VERSION);
     writeSettings();
-    beginWritePage();
-    writeBlock();
-    stream->writeEndElement();
-    stream->writeEndElement();
+    writePages();
     stream->writeEndDocument();
     f.flush();
     delete stream;
@@ -58,13 +60,19 @@ bool ProjectSaver::save(const QString &dir)
     return true;
 }
 
-void ProjectSaver::beginWritePage()
+void ProjectSaver::writePages()
 {
-    stream->writeStartElement(URI, "page");
     PageCollection * pc = PageCollection::instance();
-    stream->writeAttribute(URI, "image", "file.png");
-    stream->writeAttribute(URI, "deskewed", "true");
-    stream->writeAttribute(URI, "preprocessed", "true");
+    for (int i =0; i < pc->count(); i++) {
+        stream->writeStartElement(URI, "page");
+        pc->makePageCurrent(i);
+        stream->writeAttribute(URI, "image", copyFile(pc->fileName()));
+        stream->writeAttribute(URI, "deskewed", boolToString(pc->isDeskewed()));
+        stream->writeAttribute(URI, "rotation", QString::number(pc->getRotation()));
+        stream->writeAttribute(URI, "preprocessed", boolToString(pc->isPreprocessed()));
+
+        stream->writeEndElement();
+    }
 
 }
 
@@ -86,6 +94,7 @@ void ProjectSaver::writeSettings()
         engine = "tesseract";
     stream->writeAttribute(URI, "engine", engine);
     stream->writeAttribute(URI, "defaultlanguage", settings->getLanguage());
+    stream->writeEndElement();
 }
 
 QString ProjectSaver::copyFile(const QString &source)

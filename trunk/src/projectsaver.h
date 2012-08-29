@@ -34,7 +34,7 @@ signals:
     
 public slots:
 private:
-    void beginWritePage();
+    void writePages();
     void writeBlock();
     void writeSettings();
     QString copyFile(const QString &source);

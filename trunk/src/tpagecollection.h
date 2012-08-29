@@ -27,12 +27,12 @@
 
 class QSnippet;
 
-class TPageCollection : public QObject
+class PageCollection : public QObject
 {
     Q_OBJECT
 public:
-    explicit TPageCollection(QObject *parent = 0);
-    ~TPageCollection();
+    static PageCollection * instance();
+    static void clearCollection();
     bool appendPage(const QString &fileName);
     int count();
     bool makePageCurrent(int index);
@@ -46,10 +46,10 @@ public:
     void saveBlockForRecognition(QRect r, const QString &fileName, const QString &format = "BMP");
     void saveBlockForRecognition(int index, const QString &fileName);
     int blockCount();
-    TBlock getBlock(const QRect &r);
-    TBlock getBlock(int index);
+    Block getBlock(const QRect &r);
+    Block getBlock(int index);
     void selectBlock(const QRect &r);
-    TBlock getSelectedBlock();
+    Block getSelectedBlock();
     bool pageValid();
     QString fileName();
     bool savePageAsImage(const QString &fileName, const QString &format);
@@ -74,12 +74,16 @@ private slots:
     void pageSelected(int id);
     void pageRemoved(int id);
 private:
-     TPage * cp();
+    PageCollection(QObject *parent = 0);
+    PageCollection(const PageCollection &);
+    ~PageCollection();
+     Page * cp();
      int id2Index(int id);
 private:
-    QVector<TPage *> pages;
+    QVector<Page *> pages;
     int index;
     int pid;
+    static PageCollection * m_instance;
 };
 
 #endif // TPAGECOLLECTION_H

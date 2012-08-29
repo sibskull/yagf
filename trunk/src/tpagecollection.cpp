@@ -27,20 +27,25 @@
 #include <QFile>
 #include <QImage>
 
+PageCollection * PageCollection::m_instance = NULL;
 
-TPageCollection::TPageCollection(QObject *parent) :
+PageCollection::PageCollection(QObject *parent) :
     QObject(parent)
 {
     index = -1;
     pid = 0;
 }
 
-TPageCollection::~TPageCollection()
+PageCollection::PageCollection(const PageCollection &)
+{
+}
+
+PageCollection::~PageCollection()
 {
     clear();
 }
 
-bool TPageCollection::appendPage(const QString &fileName)
+bool PageCollection::appendPage(const QString &fileName)
 {
     #ifdef TIFF_IO
     if (fileName.endsWith(".tif", Qt::CaseInsensitive) || fileName.endsWith(".tiff", Qt::CaseInsensitive)) {
@@ -70,7 +75,7 @@ bool TPageCollection::appendPage(const QString &fileName)
     } else 
     #endif // TIFF_IO
 {
-        TPage * p = new TPage(++pid);
+        Page * p = new Page(++pid);
         connect(p,SIGNAL(refreshView()), this, SIGNAL(loadPage()));
         if (p->loadFile(fileName)) {
             pages.append(p);
@@ -81,28 +86,28 @@ bool TPageCollection::appendPage(const QString &fileName)
     }
 }
 
-int TPageCollection::count()
+int PageCollection::count()
 {
     return pages.count();
 }
 
-bool TPageCollection::makePageCurrent(int index)
+bool PageCollection::makePageCurrent(int index)
 {
     this->index = index;
     return index < pages.count();
 }
 
-bool TPageCollection::makePageCurrentByID(int id)
+bool PageCollection::makePageCurrentByID(int id)
 {
     return makePageCurrent(id2Index(id)) >= 0;
 }
 
-void TPageCollection::setBeforeFirst()
+void PageCollection::setBeforeFirst()
 {
     index = -1;
 }
 
-bool TPageCollection::makeNextPageCurrent()
+bool PageCollection::makeNextPageCurrent()
 {
     index++;
     if (index < count())
@@ -111,7 +116,7 @@ bool TPageCollection::makeNextPageCurrent()
     return false;
 }
 
-QSnippet *TPageCollection::snippet()
+QSnippet *PageCollection::snippet()
 {
     if (!cp()) return NULL;
     QSnippet * s = new QSnippet();
@@ -119,31 +124,31 @@ QSnippet *TPageCollection::snippet()
     return s;
 }
 
-QPixmap TPageCollection::pixmap()
+QPixmap PageCollection::pixmap()
 {
     if (!cp()) return QPixmap();
     return cp()->displayPixmap();
 }
 
-void TPageCollection::savePageForRecognition(const QString &fileName)
+void PageCollection::savePageForRecognition(const QString &fileName)
 {
     if (!cp()) return;
     cp()->savePageForRecognition(fileName);
 }
 
-void TPageCollection::saveRawBlockForRecognition(QRect r, const QString &fileName)
+void PageCollection::saveRawBlockForRecognition(QRect r, const QString &fileName)
 {
     if (!cp()) return;
     cp()->saveRawBlockForRecognition(r, fileName);
 }
 
-void TPageCollection::saveBlockForRecognition(QRect r, const QString &fileName, const QString &format)
+void PageCollection::saveBlockForRecognition(QRect r, const QString &fileName, const QString &format)
 {
     if (!cp()) return;
     cp()->saveBlockForRecognition(r, fileName, format);
 }
 
-void TPageCollection::saveBlockForRecognition(int index, const QString &fileName)
+void PageCollection::saveBlockForRecognition(int index, const QString &fileName)
 {
     if (!cp()) return;
     if (index == 0)
@@ -151,108 +156,108 @@ void TPageCollection::saveBlockForRecognition(int index, const QString &fileName
     cp()->saveBlockForRecognition(index, fileName);
 }
 
-int TPageCollection::blockCount()
+int PageCollection::blockCount()
 {
     if (!cp()) return 0;
     return cp()->blockCount();
 }
 
-TBlock TPageCollection::getBlock(const QRect &r)
+Block PageCollection::getBlock(const QRect &r)
 {
-    TBlock block(0,0,0,0);
+    Block block(0,0,0,0);
     if (!cp()) return block;
     return cp()->getBlock(r);
 }
 
-TBlock TPageCollection::getBlock(int index)
+Block PageCollection::getBlock(int index)
 {
-    TBlock block(0,0,0,0);
+    Block block(0,0,0,0);
     if (!cp()) return block;
     return cp()->getBlock(index);
 }
 
-void TPageCollection::selectBlock(const QRect &r)
+void PageCollection::selectBlock(const QRect &r)
 {
     if (!cp()) return;
     cp()->selectBlock(r);
 }
 
-TBlock TPageCollection::getSelectedBlock()
+Block PageCollection::getSelectedBlock()
 {
-    TBlock block(0,0,0,0);
+    Block block(0,0,0,0);
     if (!cp()) return block;
     return cp()->getSelectedBlock();
 }
 
-bool TPageCollection::pageValid()
+bool PageCollection::pageValid()
 {
     return cp() != 0;
 }
 
-QString TPageCollection::fileName()
+QString PageCollection::fileName()
 {
     if (!cp())
         return "";
     return cp()->fileName();
 }
 
-bool TPageCollection::savePageAsImage(const QString &fileName, const QString &format)
+bool PageCollection::savePageAsImage(const QString &fileName, const QString &format)
 {
     if (!cp())
         return false;
     return cp()->savePageAsImage(fileName, format);
 }
 
-void TPageCollection::makeLarger()
+void PageCollection::makeLarger()
 {
     if (!cp()) return;
     cp()->makeLarger();
     emit loadPage();
 }
 
-void TPageCollection::makeSmaller()
+void PageCollection::makeSmaller()
 {
     if (!cp()) return;
     cp()->makeSmaller();
     emit loadPage();
 }
 
-void TPageCollection::rotate90CW()
+void PageCollection::rotate90CW()
 {
     if (!cp()) return;
     cp()->rotate90CW();
     emit loadPage();
 }
 
-void TPageCollection::rotate90CCW()
+void PageCollection::rotate90CCW()
 {
     if (!cp()) return;
     cp()->rotate90CCW();
     emit loadPage();
 }
 
-void TPageCollection::rotate180()
+void PageCollection::rotate180()
 {
     if (!cp()) return;
     cp()->rotate180();
     emit loadPage();
 }
 
-void TPageCollection::deskew()
+void PageCollection::deskew()
 {
     if (!cp()) return;
     cp()->deskew();
     emit loadPage();
 }
 
-void TPageCollection::blockAllText()
+void PageCollection::blockAllText()
 {
     if (!cp()) return;
     cp()->blockAllText();
     emit loadPage();
 }
 
-bool TPageCollection::splitPage(bool preprocess)
+bool PageCollection::splitPage(bool preprocess)
 {
     if (!cp()) return false;
     bool res = cp()->splitPage(preprocess);
@@ -260,59 +265,60 @@ bool TPageCollection::splitPage(bool preprocess)
     return res;
 }
 
-void TPageCollection::addBlock(const QRect &rect)
+void PageCollection::addBlock(const QRect &rect)
 {
     if (!cp()) return;
-    TBlock block(rect.x(), rect.y(), rect.width(), rect.height());
+    Block block(rect.x(), rect.y(), rect.width(), rect.height());
     cp()->addBlock(block);
 }
 
-void TPageCollection::deleteBlock(const QRect &rect)
+void PageCollection::deleteBlock(const QRect &rect)
 {
     if (!cp()) return;
     cp()->deleteBlock(rect);
 }
 
-void TPageCollection::clearBlocks()
+void PageCollection::clearBlocks()
 {
     if (!cp()) return;
     cp()->clearBlocks();
 }
 
-void TPageCollection::clear()
+void PageCollection::clear()
 {
-    foreach (TPage * p, pages) {
+    foreach (Page * p, pages) {
         delete p;
     }
     pages.clear();
     emit cleared();
     index = -1;
+    pid = 0;
 }
 
 
-TPage *TPageCollection::cp()
+Page *PageCollection::cp()
 {
     if ((index < 0)|| (index >= count()))
-        return (TPage*) 0;
+        return (Page*) 0;
     return pages.at(index);
 }
 
-int TPageCollection::id2Index(int id)
+int PageCollection::id2Index(int id)
 {
-    foreach (TPage *p, pages) {
+    foreach (Page *p, pages) {
         if (p->pageID() == id)
             return pages.indexOf(p);
     }
     return -1;
 }
 
-void TPageCollection::pageSelected(int id)
+void PageCollection::pageSelected(int id)
 {
     makePageCurrent(id2Index(id));
     emit loadPage();
 }
 
-void TPageCollection::pageRemoved(int id)
+void PageCollection::pageRemoved(int id)
 {
     int index = id2Index(id);
     if (index >= 0) {
@@ -323,4 +329,17 @@ void TPageCollection::pageRemoved(int id)
         index = pages.count() - 1;
     makePageCurrent(index);
     emit loadPage();
+}
+
+PageCollection *PageCollection::instance()
+{
+    if (!m_instance)
+        m_instance = new PageCollection();
+    return m_instance;
+}
+
+void PageCollection::clearCollection()
+{
+    if (m_instance)
+        m_instance->clear();
 }

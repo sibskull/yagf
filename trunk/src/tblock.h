@@ -24,11 +24,11 @@
 #include <QList>
 #include <QString>
 
-class TBlock : public QRect
+class Block : public QRect
 {
 public:
-    explicit TBlock( int x, int y, int width, int height );
-    TBlock(const QRect &r);
+    explicit Block( int x, int y, int width, int height );
+    Block(const QRect &r);
     int blockNumber();
     void setBlockNumber(const int value);
     void setLanguage(const QString &lang);
@@ -39,7 +39,7 @@ private:
     
 };
 
-typedef QList<TBlock> TBlocks;
+typedef QList<Block> TBlocks;
 
 void sortBlocks(TBlocks &blocks);
 

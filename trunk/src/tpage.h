@@ -30,12 +30,12 @@
 class CCBuilder;
 class Settings;
 
-class TPage : public QObject
+class Page : public QObject
 {
     Q_OBJECT
 public:
-    explicit TPage(const int pid, QObject *parent = 0);
-    ~TPage();
+    explicit Page(const int pid, QObject *parent = 0);
+    ~Page();
     bool loadFile(QString fileName, bool loadIntoView = true);
     QPixmap displayPixmap();
     QImage thumbnail();
@@ -43,11 +43,11 @@ public:
     bool makeSmaller();
     void rotate(qreal angle);
     void unload();
-    void addBlock(TBlock block);
-    void deleteBlock(const TBlock &b);
+    void addBlock(Block block);
+    void deleteBlock(const Block &b);
     void deleteBlock(const QRect &r);
-    TBlock getBlock(const QRect &r);
-    TBlock getBlock(int index);
+    Block getBlock(const QRect &r);
+    Block getBlock(int index);
     int blockCount();
     void clearBlocks();
     void savePageForRecognition(const QString &fileName);
@@ -56,7 +56,7 @@ public:
     void saveBlockForRecognition(QRect r, const QString &fileName, const QString &format);
     void saveBlockForRecognition(int index, const QString &fileName);
     void selectBlock(const QRect &r);
-    TBlock getSelectedBlock();
+    Block getSelectedBlock();
     void deskew(bool recreateCB = true);
     void rotate90CW();
     void rotate90CCW();
@@ -103,7 +103,7 @@ private:
     Settings * settings;
     int blockPointer;
     int pid;
-    TBlock selectedBlock;
+    Block selectedBlock;
 };
 
 #endif // TPAGE_H

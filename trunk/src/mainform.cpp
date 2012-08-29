@@ -77,7 +77,7 @@ MainForm::MainForm(QWidget *parent): QMainWindow(parent)
 {
     setupUi(this);
 
-    pages = new TPageCollection();
+    pages = PageCollection::instance();
 
     setWindowTitle("YAGF");
     //spellChecker = new SpellChecker(textEdit);
@@ -389,7 +389,7 @@ void MainForm::closeEvent(QCloseEvent *event)
     delTmpFiles();
     event->accept();
     QXtUnixSignalCatcher::catcher()->disconnectUnixSugnals();
-    delete pages;
+    pages->clear();
 }
 
 void MainForm::rotateCWButtonClicked()

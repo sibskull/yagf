@@ -43,7 +43,7 @@ class QLabel;
 
 const QString version = "0.9.1";
 
-class TPageCollection;
+class PageCollection;
 class ScannerBase;
 
 class MainForm : public QMainWindow, public Ui::MainWindow
@@ -127,7 +127,7 @@ private:
     QProgressDialog pdfPD;
     int ifCounter;
     Settings * settings;
-    TPageCollection * pages;
+    PageCollection * pages;
     QLabel * engineLabel;
 private slots:
     bool findEngine();

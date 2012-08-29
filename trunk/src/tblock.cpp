@@ -19,34 +19,34 @@
 
 #include "tblock.h"
 
-TBlock::TBlock(int x, int y, int width, int height) :
+Block::Block(int x, int y, int width, int height) :
     QRect(x, y, width, height)
 {
     number = -1;
     language = "default";
 }
 
-TBlock::TBlock(const QRect &r) : QRect(r.x(), r.y(), r.width(), r.height())
+Block::Block(const QRect &r) : QRect(r.x(), r.y(), r.width(), r.height())
 {
     number = -1;
 }
 
-int TBlock::blockNumber()
+int Block::blockNumber()
 {
     return number;
 }
 
-void TBlock::setBlockNumber(const int value)
+void Block::setBlockNumber(const int value)
 {
     number = value;
 }
 
-void TBlock::setLanguage(const QString &lang)
+void Block::setLanguage(const QString &lang)
 {
     language = lang;
 }
 
-QString TBlock::getLanguage()
+QString Block::getLanguage()
 {
     return language;
 }

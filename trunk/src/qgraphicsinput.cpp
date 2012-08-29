@@ -556,7 +556,7 @@ QPixmap QGraphicsInput::getCurrentImage()
     return (m_image->pixmap());
 }
 
-void QGraphicsInput::addBlockColliding(TBlock block)
+void QGraphicsInput::addBlockColliding(Block block)
 {
     QGraphicsRectItem *gi = newBlock(block);
     m_CurrentBlockRect = gi;

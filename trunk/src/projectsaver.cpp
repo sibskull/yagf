@@ -70,17 +70,25 @@ void ProjectSaver::writePages()
         stream->writeAttribute(URI, "deskewed", boolToString(pc->isDeskewed()));
         stream->writeAttribute(URI, "rotation", QString::number(pc->getRotation()));
         stream->writeAttribute(URI, "preprocessed", boolToString(pc->isPreprocessed()));
-
+        writeBlocks();
         stream->writeEndElement();
     }
 
 }
 
-void ProjectSaver::writeBlock()
+void ProjectSaver::writeBlocks()
 {
-    stream->writeStartElement(URI, "block");
-    stream->writeAttribute(URI, "language", "eng");
-    stream->writeEndElement();
+    PageCollection * pc = PageCollection::instance();
+    for (int i = 0; i < pc->blockCount(); i++) {
+        stream->writeStartElement(URI, "block");
+        Block b =pc->getBlock(i);
+        stream->writeAttribute(URI, "left", QString::number(b.left()));
+        stream->writeAttribute(URI, "top", QString::number(b.top()));
+        stream->writeAttribute(URI, "width", QString::number(b.width()));
+        stream->writeAttribute(URI, "height", QString::number(b.height()));
+        // stream->writeAttribute(URI, "language", "eng");
+        stream->writeEndElement();
+    }
 }
 
 void ProjectSaver::writeSettings()

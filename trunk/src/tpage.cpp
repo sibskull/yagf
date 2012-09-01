@@ -479,6 +479,16 @@ qreal Page::getRotation()
     return rotation;
 }
 
+void Page::setDeskewed(bool value)
+{
+    deskewed = value;
+}
+
+void Page::setPreprocessed(bool value)
+{
+    preprocessed = value;
+}
+
 
 void Page::applyTransforms(QImage &image, qreal scale)
 {

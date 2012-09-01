@@ -56,6 +56,10 @@ public:
     bool isDeskewed();
     bool isPreprocessed();
     qreal getRotation();
+    void setRotation(const qreal value);
+    void setDeskewed(const bool value);
+    void setPreprocessed(const bool value);
+    void reloadPage();
 public slots:
     void makeLarger();
     void makeSmaller();

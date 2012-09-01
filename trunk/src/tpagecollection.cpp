@@ -229,6 +229,29 @@ qreal PageCollection::getRotation()
     return 0;
 }
 
+void PageCollection::setRotation(const qreal value)
+{
+    if (cp())
+        cp()->rotate(value);
+}
+
+void PageCollection::setDeskewed(const bool value)
+{
+    if (cp())
+        cp()->setDeskewed(value);
+}
+
+void PageCollection::setPreprocessed(const bool value)
+{
+    if (cp())
+        cp()->setPreprocessed(value);
+}
+
+void PageCollection::reloadPage()
+{
+    emit loadPage();
+}
+
 void PageCollection::makeLarger()
 {
     if (!cp()) return;

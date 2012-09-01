@@ -172,31 +172,42 @@ bool ProjectLoader::readSettings()
         settings->setSelectedEngine(UseCuneiform);
     emit engineChanged();
     QString language = stream->attributes().value(URI, "defaultlanguage").toString();
-    settings->setLanguage(language);
-
-
+    if (!language.isEmpty())
+        settings->setLanguage(language);
+    emit languageChanged();
     return true;
-
-
-
 }
 
 void ProjectLoader::loadPage()
 {
-    QString image = * stream->attributes().value(URI, "image").string();
+    QString image = stream->attributes().value(URI, "image").toString();
     QString fn = directory + image;
     bool oldcl = Settings::instance()->getCropLoaded();
     Settings::instance()->setCropLoaded(false);
     PageCollection * pc = PageCollection::instance();
     Settings::instance()->setCropLoaded(oldcl);
     pc->appendPage(fn);
+    QString value = stream->attributes().value(URI, "rotation").toString();
+    if (!value.isEmpty()) {
+        pc->setRotation(value.toDouble());
+    }
+    value = stream->attributes().value(URI, "deskewed").toString();
+    if (!value.isEmpty()) {
+        pc->setDeskewed(value.endsWith("true", Qt::CaseInsensitive) ? true : false);
+    }
+    value = stream->attributes().value(URI, "preprocessed").toString();
+    if (!value.isEmpty()) {
+        pc->setPreprocessed(value.endsWith("true", Qt::CaseInsensitive) ? true : false);
+    }
+
 }
 
 bool ProjectLoader::readPages()
 {
     if (!readNextElement())
        return false;
-    if (stream->name() != "page")
+    QString name;
+    if ((name = stream->name().toString()) != "page")
         return false;
     while(stream->name() == "page") {
         loadPage();
@@ -204,12 +215,15 @@ bool ProjectLoader::readPages()
         if (!readNextElement())
            break;
      }
-
+    PageCollection::instance()->reloadPage();
     return true;
 
 }
 
 bool ProjectLoader::readNextElement()
 {
-    return stream->readNextStartElement();
+    while (!stream->readNextStartElement())
+        if (stream->atEnd())
+            return false;
+    return true;
 }

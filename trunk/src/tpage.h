@@ -69,6 +69,8 @@ public:
     bool isDeskewed();
     bool isPreprocessed();
     qreal getRotation();
+    void setDeskewed(bool value);
+    void setPreprocessed(bool value);
 signals:
     void refreshView();
 public slots:

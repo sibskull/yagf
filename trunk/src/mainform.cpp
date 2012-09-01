@@ -999,20 +999,31 @@ void MainForm::preprocessPage()
 
 void MainForm::saveProject()
 {
-    QString dir = QFileDialog::getExistingDirectory(this, QObject::trUtf8("Select Project Directory"), "");
-    if (dir.isEmpty())
-        return;
-    QCursor oldCursor = cursor();
-    QDir dinfo(dir);
-    if (dinfo.entryList().count() > 2) {
-        QMessageBox::warning(this, "Warning", "The selected directoy is not empty. Please select or create another one.");
+    if (settings->getProjectDir().isEmpty()) {
+        QString dir = QFileDialog::getExistingDirectory(this, QObject::trUtf8("Select Project Directory"), "");
+        if (dir.isEmpty())
+            return;
+        QCursor oldCursor = cursor();
+        QDir dinfo(dir);
+        if (dinfo.entryList().count() > 2) {
+            QMessageBox::warning(this, "Warning", "The selected directoy is not empty. Please select or create another one.");
+        } else {
+            ProjectSaver ps;
+            if (!ps.save(dir))
+                QMessageBox::warning(this, "Warning", "Failed to save project.");
+            else
+                settings->setProjectDir(dir);
+        }
+        setCursor(oldCursor);
     } else {
+        QCursor oldCursor = cursor();
         ProjectSaver ps;
-        if (!ps.save(dir))
+        if (!ps.save(settings->getProjectDir()))
             QMessageBox::warning(this, "Warning", "Failed to save project.");
+        setCursor(oldCursor);
     }
-    setCursor(oldCursor);
-}
+
+ }
 
 void MainForm::loadProject()
 {
@@ -1024,6 +1035,8 @@ void MainForm::loadProject()
     ProjectLoader pl;
     if (!pl.load(dir))
         QMessageBox::warning(this, "Warning", "Failed to load project.");
+    else
+        settings->setProjectDir(dir);
     setCursor(oldCursor);
 
 }

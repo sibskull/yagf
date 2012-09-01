@@ -54,11 +54,10 @@ signals:
 public slots:
 private:
     bool readPages();
-    //void writeBlocks();
+    bool readBlocks();
     bool readSettings();
     void loadPage();
     bool readNextElement();
-    //QString copyFile(const QString &source);
 private:
     QXmlStreamReader * stream;
     QString directory;

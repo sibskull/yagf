@@ -255,6 +255,16 @@ bool Settings::getLangPair(QString &full, QString &abbr)
     return false;
 }
 
+void Settings::setProjectDir(const QString &dir)
+{
+    projectDir = dir;
+}
+
+QString Settings::getProjectDir()
+{
+    return projectDir;
+}
+
 void Settings::makeLanguageMaps()
 {
     cuMap.insert("Bulgarian", "bul");

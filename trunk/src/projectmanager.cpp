@@ -45,7 +45,7 @@ bool ProjectSaver::save(const QString &dir)
     if (!directory.endsWith("/")) directory = directory + "/";
     QString fileName = directory+"yagf_project.xml";
     QFile f(fileName);
-    if (!f.open(QIODevice::WriteOnly))
+    if (!f.open(QIODevice::WriteOnly|QIODevice::Truncate))
         return false;
     stream = new QXmlStreamWriter(&f);
     stream->setAutoFormatting(true);
@@ -112,10 +112,10 @@ QString ProjectSaver::copyFile(const QString &source)
     QString dir = fi.absolutePath();
     if (!dir.endsWith("/"))
         dir = dir + "/";
-    if (dir == directory)
-        return source;
     QString base = fi.baseName();
     QString fileName = base+".png";
+    if (dir == directory)
+        return fileName;
     QString newName = directory + fileName;
     if (source.endsWith(".png", Qt::CaseInsensitive)) {
         if (QFile::copy(source, newName))
@@ -212,12 +212,28 @@ bool ProjectLoader::readPages()
     while(stream->name() == "page") {
         loadPage();
 
-        if (!readNextElement())
+        if (!readBlocks())
            break;
      }
     PageCollection::instance()->reloadPage();
     return true;
 
+}
+
+bool ProjectLoader::readBlocks()
+{
+    if (!readNextElement())
+        return false;
+    while (stream->name() == "block") {
+        int top = stream->attributes().value(URI, "top").toString().toInt();
+        int left = stream->attributes().value(URI, "left").toString().toInt();
+        int width = stream->attributes().value(URI, "width").toString().toInt();
+        int height = stream->attributes().value(URI, "height").toString().toInt();
+        PageCollection::instance()->addBlock(QRect(left, top, width, height));
+        if (!readNextElement())
+            return false;
+    }
+    return true;
 }
 
 bool ProjectLoader::readNextElement()

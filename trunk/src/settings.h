@@ -61,6 +61,8 @@ public:
   QString workingDir();
   void startLangPair();
   bool getLangPair(QString &full, QString &abbr);
+  void setProjectDir(const QString &dir);
+  QString getProjectDir();
 private:
   void makeLanguageMaps();
   void findTessDataPath();
@@ -73,6 +75,7 @@ private:
   QString outputFormat;
   QString lastDir;
   QString lastOutputDir;
+  QString projectDir;
   bool checkSpelling;
   QString tessdataPath;
   SelectedEngine selectedEngine;

@@ -141,4 +141,5 @@ private slots:
     void addSnippet(int index);
     void preprocessPage();
     void saveProject();
+    void loadProject();
  };

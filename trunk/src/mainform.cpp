@@ -28,7 +28,7 @@
 #include "mainform.h"
 #include "tpagecollection.h"
 #include "scanner.h"
-#include "projectsaver.h"
+#include "projectmanager.h"
 #include <signal.h>
 #include <QComboBox>
 #include <QLabel>
@@ -999,15 +999,33 @@ void MainForm::preprocessPage()
 
 void MainForm::saveProject()
 {
-    QString dir = QFileDialog::getExistingDirectory(this, QObject::trUtf8("Save Project"), "");
+    QString dir = QFileDialog::getExistingDirectory(this, QObject::trUtf8("Select Project Directory"), "");
+    if (dir.isEmpty())
+        return;
+    QCursor oldCursor = cursor();
     QDir dinfo(dir);
     if (dinfo.entryList().count() > 2) {
-        QMessageBox::warning(this, "Warning", "The selected directoy is not empty. Please select another one.");
-        return;
+        QMessageBox::warning(this, "Warning", "The selected directoy is not empty. Please select or create another one.");
+    } else {
+        ProjectSaver ps;
+        if (!ps.save(dir))
+            QMessageBox::warning(this, "Warning", "Failed to save project.");
     }
-    ProjectSaver ps;
-    if (!ps.save(dir))
-        QMessageBox::warning(this, "Warning", "Failed to save project.");
+    setCursor(oldCursor);
+}
+
+void MainForm::loadProject()
+{
+    pages->clear();
+    QString dir = QFileDialog::getExistingDirectory(this, QObject::trUtf8("Select Project Directory"), "");
+    if (dir.isEmpty())
+        return;
+    QCursor oldCursor = cursor();
+    ProjectLoader pl;
+    if (!pl.load(dir))
+        QMessageBox::warning(this, "Warning", "Failed to load project.");
+    setCursor(oldCursor);
+
 }
 
 void MainForm::selectBlocks()

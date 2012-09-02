@@ -17,10 +17,10 @@
 
 */
 
-#include "src/texteditor.h"
-#include "src/settings.h"
-#include "src/ycommon.h"
-#include "src/utils.h"
+#include "texteditor.h"
+#include "settings.h"
+#include "ycommon.h"
+#include "utils.h"
 #include <QClipboard>
 #include <QFileDialog>
 #include <QKeyEvent>

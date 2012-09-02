@@ -992,22 +992,22 @@
   <customwidget>
    <class>QXtGraphicsView</class>
    <extends>QGraphicsView</extends>
-   <header location="global">src/qxtgraphicsview.h</header>
+   <header location="global">qxtgraphicsview.h</header>
   </customwidget>
   <customwidget>
    <class>SideBar</class>
    <extends>QListWidget</extends>
-   <header location="global">src/sidebar.h</header>
+   <header location="global">sidebar.h</header>
   </customwidget>
   <customwidget>
    <class>DropLabel</class>
    <extends>QLabel</extends>
-   <header>src/droplabel.h</header>
+   <header>droplabel.h</header>
   </customwidget>
   <customwidget>
    <class>TextEditor</class>
    <extends>QTextEdit</extends>
-   <header>src/texteditor.h</header>
+   <header>texteditor.h</header>
   </customwidget>
  </customwidgets>
  <resources>

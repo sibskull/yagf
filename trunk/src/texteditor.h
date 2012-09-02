@@ -22,7 +22,7 @@
 
 #include <QFile>
 #include <QTextEdit>
-#include "src/spellchecker.h"
+#include "spellchecker.h"
 
 
 class TextEditor : public QTextEdit

@@ -17,8 +17,8 @@
 
 */
 
-#include "src/sidebar.h"
-#include "src/qsnippet.h"
+#include "sidebar.h"
+#include "qsnippet.h"
 #include <QStringList>
 #include <QDragEnterEvent>
 #include <QDragLeaveEvent>

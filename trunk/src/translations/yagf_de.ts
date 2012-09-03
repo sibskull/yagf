@@ -46,38 +46,6 @@
         <translation>Erkennungs-Sprache</translation>
     </message>
     <message>
-        <source>Undo	Ctrl+Z</source>
-        <translation>Rückgängig	Ctrl+Z</translation>
-    </message>
-    <message>
-        <source>Redo	Ctrl+Shift+Z</source>
-        <translation>Wiederherstellen	Ctrl+Shift+Z</translation>
-    </message>
-    <message>
-        <source>Select All	Ctrl+A</source>
-        <translation>Alles markieren	Ctrl+A</translation>
-    </message>
-    <message>
-        <source>Cut	Ctrl+X</source>
-        <translation>Ausschneiden	Ctrl+X</translation>
-    </message>
-    <message>
-        <source>Copy	Ctrl+C</source>
-        <translation>Kopieren	Ctrl+C</translation>
-    </message>
-    <message>
-        <source>Paste	Ctrl+V</source>
-        <translation>Einfügen	Ctrl+V</translation>
-    </message>
-    <message>
-        <source>Larger Font	Ctrl++</source>
-        <translation>Schrift vergrößern	Ctrl++</translation>
-    </message>
-    <message>
-        <source>Smaller Font	Ctrl+-</source>
-        <translation>Schrift verkleinern	Ctrl+-</translation>
-    </message>
-    <message>
         <source>Open Image</source>
         <translation>Bild öffnen</translation>
     </message>
@@ -90,120 +58,12 @@
         <translation>Nicht gespeicherter Text im Bearbeitungsfenster. Jetzt speichern?</translation>
     </message>
     <message>
-        <source>Russian</source>
-        <translation>Russisch</translation>
-    </message>
-    <message>
-        <source>Russian-English</source>
-        <translation>Russisch-Englisch</translation>
-    </message>
-    <message>
-        <source>Bulgarian</source>
-        <translation>Bulgarisch</translation>
-    </message>
-    <message>
-        <source>Croatian</source>
-        <translation>Kroatisch</translation>
-    </message>
-    <message>
-        <source>Czech</source>
-        <translation>Tschechisch</translation>
-    </message>
-    <message>
-        <source>Danish</source>
-        <translation>Dänisch</translation>
-    </message>
-    <message>
-        <source>Dutch</source>
-        <translation>Holländisch</translation>
-    </message>
-    <message>
-        <source>English</source>
-        <translation>Englisch</translation>
-    </message>
-    <message>
-        <source>Estonian</source>
-        <translation>Estnisch</translation>
-    </message>
-    <message>
-        <source>French</source>
-        <translation>Französisch</translation>
-    </message>
-    <message>
-        <source>German</source>
-        <translation>Deutsch</translation>
-    </message>
-    <message>
-        <source>Hungarian</source>
-        <translation>Ungarisch</translation>
-    </message>
-    <message>
-        <source>Italian</source>
-        <translation>Italienisch</translation>
-    </message>
-    <message>
-        <source>Latvian</source>
-        <translation>Lettisch</translation>
-    </message>
-    <message>
-        <source>Lithuanian</source>
-        <translation>Litauisch</translation>
-    </message>
-    <message>
-        <source>Polish</source>
-        <translation>Polnisch</translation>
-    </message>
-    <message>
-        <source>Portuguese</source>
-        <translation>Portugiesisch</translation>
-    </message>
-    <message>
-        <source>Romanian</source>
-        <translation>Rumänisch</translation>
-    </message>
-    <message>
-        <source>Spanish</source>
-        <translation>Spanisch</translation>
-    </message>
-    <message>
-        <source>Swedish</source>
-        <translation>Schwedisch</translation>
-    </message>
-    <message>
-        <source>Serbian</source>
-        <translation>Serbisch</translation>
-    </message>
-    <message>
-        <source>Slovenian</source>
-        <translation>Slowenisch</translation>
-    </message>
-    <message>
-        <source>Ukrainian</source>
-        <translation>Ukrainisch</translation>
-    </message>
-    <message>
         <source>Warning</source>
         <translation>Warnung</translation>
     </message>
     <message>
-        <source>xsane not found</source>
-        <translation>Konnte «XSane» nicht finden</translation>
-    </message>
-    <message>
         <source>Error</source>
         <translation>Fehler</translation>
-    </message>
-    <message>
-        <source>libxspreload.so not found</source>
-        <translation>&quot;libxspreload.so&quot; nicht gefunden</translation>
-    </message>
-    <message>
-        <source>Image loading error</source>
-        <translation>Fehler beim Laden des Bildes</translation>
-    </message>
-    <message>
-        <source>Image %1 could not be loaded</source>
-        <translation>Bild %1 konnte nicht geladen werden</translation>
     </message>
     <message>
         <source>Starting cuneiform failed</source>
@@ -220,18 +80,6 @@
     <message>
         <source>No image loaded</source>
         <translation>Kein Bild geöffnet</translation>
-    </message>
-    <message>
-        <source>Text Files (*.txt)</source>
-        <translation>Textdateien (*.txt)</translation>
-    </message>
-    <message>
-        <source>HTML Files (*.html)</source>
-        <translation>HTML-Dateien (*.html)</translation>
-    </message>
-    <message>
-        <source>Save Text</source>
-        <translation>Text speichern</translation>
     </message>
     <message>
         <source>About YAGF</source>
@@ -282,26 +130,6 @@
         <translation>Das ausgewählte Verzeichnis ist nicht leer</translation>
     </message>
     <message>
-        <source>Finnish (tesseract only)</source>
-        <translation>Finnisch (nur tesseract)</translation>
-    </message>
-    <message>
-        <source>Greek (tesseract only)</source>
-        <translation>Griechisch (nur tesseract)</translation>
-    </message>
-    <message>
-        <source>Norwegian (tesseract only)</source>
-        <translation>Norwegisch (nur tesseract)</translation>
-    </message>
-    <message>
-        <source>Slovakian (tesseract only)</source>
-        <translation>Slowakisch (nur tesseract)</translation>
-    </message>
-    <message>
-        <source>Turkish (tesseract only)</source>
-        <translation>Türkisch (nur tesseract)</translation>
-    </message>
-    <message>
         <source>Starting tesseract failed</source>
         <translation>tesseract startete nicht</translation>
     </message>
@@ -323,21 +151,34 @@ Bitte cuneiform und/oder tesseract installieren</translation>
         <source>No PDF converter installed</source>
         <translation>Kein PDF Konvertierer installiert</translation>
     </message>
-    <message>
-        <source>German Gothic (tesseract 3+)</source>
-        <translation>Deutsche Fraktur (tesseract 3+)</translation>
-    </message>
-    <message>
-        <source>Hebrew (tesseract 3.0.1+)</source>
-        <translation>Hebräisch (tesseract 3.0.1+)</translation>
-    </message>
-    <message>
-        <source>Swedish Gothic (tesseract 3+)</source>
-        <translation>Schwedische Fraktur (tesseract 3+)</translation>
-    </message>
     <message utf8="true">
         <source>&lt;p align=&quot;center&quot;&gt;&lt;b&gt;YAGF - Yet Another Graphical Front-end for cuneiform and tesseract OCR engines&lt;/b&gt;&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;Version %1&lt;/p&gt; &lt;p align=&quot;center&quot;&gt;Ⓒ 2009-2012 Andrei Borovsky&lt;/p&gt; This is a free software distributed under GPL v3. Visit &lt;a href=&quot;http://symmetrica.net/cuneiform-linux/yagf-en.html&quot;&gt;http://symmetrica.net/cuneiform-linux/yagf-en.html&lt;/a&gt; for more details.</source>
         <translation>&lt;p align=&quot;center&quot;&gt;&lt;b&gt;YAGF - Yet Another Graphical Front-end (Noch ein weiteres grafisches Frontend) fürr cuneiform und tesseract OCR (Optical Character Recognition = Optische Zeichen Erkennung) engines&lt;/b&gt;&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;Version %1&lt;/p&gt; &lt;p align=&quot;center&quot;&gt;Ⓒ 2009-2012 Andrei Borovsky&lt;/p&gt; Dies ist freie Softwater die unter der GPL v3 verbreitet wird. Besuchen Sie &lt;a href=&quot;http://symmetrica.net/cuneiform-linux/yagf-en.html&quot;&gt;http://symmetrica.net/cuneiform-linux/yagf-en.html&lt;/a&gt; für weitere Informationen. {2009-2012?}</translation>
+    </message>
+    <message>
+        <source>Using Cuneiform</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Using Tesseract</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Scanning is impossible</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No scanning front-end is found. Please install XSane in order to perform scanning.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Failed to Load Image</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Failed to detect text areas on this page.
+The page possibly lacks contrast. Try to select blocks manually.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -606,6 +447,30 @@ Bitte cuneiform und/oder tesseract installieren</translation>
         <source>Toggle Large/Small Icons</source>
         <translation>Große/kleine Icons</translation>
     </message>
+    <message>
+        <source>toolBar_2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select Recognition Language</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Prepare Page</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Prepare the page for recognitoin</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Save Project...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Load Project...</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>PopplerDialog</name>
@@ -659,6 +524,130 @@ Try to install an appropriate aspell dictionary.</source>
         <translation>Erforderliches (%1) Wörterbuch nicht gefunden.
 Rechtschreibprüfung ist deaktiviert.
 Bitte entsprechendes aspell Wörterbuch installieren.</translation>
+    </message>
+    <message>
+        <source>Warning</source>
+        <translation type="unfinished">Warnung</translation>
+    </message>
+    <message>
+        <source>Select Project Directory</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Bulgarian</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Czech</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Danish</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Dutch</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>English</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>French</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>German</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Hungarian</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Italian</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Latvian</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Lithuanian</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Polish</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Portuguese</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Romanian</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Russian</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Russian-English</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Spanish</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Serbian</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Slovenian</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Swedish</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ukrainian</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Finnish</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>German Gothic</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Greek</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Hebrew</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Norwegian</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Slovak</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Swedish Gothic</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Turkish</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

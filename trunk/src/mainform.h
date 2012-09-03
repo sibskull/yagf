@@ -41,7 +41,7 @@ class PDFExtractor;
 class ccbuilder;
 class QLabel;
 
-const QString version = "0.9.1";
+const QString version = "0.9.2";
 
 class PageCollection;
 class ScannerBase;

@@ -1006,11 +1006,11 @@ void MainForm::saveProject()
         QCursor oldCursor = cursor();
         QDir dinfo(dir);
         if (dinfo.entryList().count() > 2) {
-            QMessageBox::warning(this, "Warning", "The selected directoy is not empty. Please select or create another one.");
+            QMessageBox::warning(this, trUtf8("Warning"), trUtf8("The selected directoy is not empty. Please select or create another one."));
         } else {
             ProjectSaver ps;
             if (!ps.save(dir))
-                QMessageBox::warning(this, "Warning", "Failed to save project.");
+                QMessageBox::warning(this, trUtf8("Warning"), trUtf8("Failed to save the project."));
             else
                 settings->setProjectDir(dir);
         }
@@ -1019,7 +1019,7 @@ void MainForm::saveProject()
         QCursor oldCursor = cursor();
         ProjectSaver ps;
         if (!ps.save(settings->getProjectDir()))
-            QMessageBox::warning(this, "Warning", "Failed to save project.");
+            QMessageBox::warning(this, trUtf8("Warning"), trUtf8("Failed to save the project."));
         setCursor(oldCursor);
     }
 
@@ -1034,7 +1034,7 @@ void MainForm::loadProject()
     QCursor oldCursor = cursor();
     ProjectLoader pl;
     if (!pl.load(dir))
-        QMessageBox::warning(this, "Warning", "Failed to load project.");
+        QMessageBox::warning(this, trUtf8("Warning"), trUtf8("Failed to load project."));
     else
         settings->setProjectDir(dir);
     setCursor(oldCursor);

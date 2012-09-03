@@ -179,6 +179,18 @@ Please install either cuneiform or tesseract</source>
 The page possibly lacks contrast. Try to select blocks manually.</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>The selected directoy is not empty. Please select or create another one.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Failed to save the project.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Failed to load project.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>MainWindow</name>

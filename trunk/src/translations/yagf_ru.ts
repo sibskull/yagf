@@ -180,6 +180,18 @@ Please install either cuneiform or tesseract</source>
 The page possibly lacks contrast. Try to select blocks manually.</source>
         <translation>Не удалось найти ткстовые области на странице. Возможно, изображение отсканировано со слишком низким контрастом. Попробуйт выделить блоки вручную.</translation>
     </message>
+    <message>
+        <source>The selected directoy is not empty. Please select or create another one.</source>
+        <translation>Выбранный каталог содержит файлы. Выберите пустой каталог или создайте новый.</translation>
+    </message>
+    <message>
+        <source>Failed to save the project.</source>
+        <translation>Ошибка при сохранении проекта.</translation>
+    </message>
+    <message>
+        <source>Failed to load project.</source>
+        <translation>Невозможно открыть проект.</translation>
+    </message>
 </context>
 <context>
     <name>MainWindow</name>

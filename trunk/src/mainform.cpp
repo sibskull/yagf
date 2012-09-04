@@ -684,7 +684,7 @@ void MainForm::fillLangBox()
     QString abbr;
     selectLangsBox->clear();
     while(settings->getLangPair(full, abbr))
-        selectLangsBox->addItem(trUtf8(full.toAscii()), QVariant(abbr));
+        selectLangsBox->addItem(full, QVariant(abbr));
 
 }
 

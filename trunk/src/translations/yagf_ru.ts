@@ -555,8 +555,7 @@ Try to install an appropriate aspell dictionary.</source>
     </message>
     <message>
         <source>Danish</source>
-        <translation>Датский
-</translation>
+        <translation>Датский</translation>
     </message>
     <message>
         <source>Dutch</source>
@@ -576,7 +575,7 @@ Try to install an appropriate aspell dictionary.</source>
     </message>
     <message>
         <source>Hungarian</source>
-        <translation>Вергнский</translation>
+        <translation>Венгерский</translation>
     </message>
     <message>
         <source>Italian</source>

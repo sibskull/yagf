@@ -974,7 +974,7 @@
     <string>Prepare Page</string>
    </property>
    <property name="toolTip">
-    <string>Prepare the page for recognitoin</string>
+    <string>Prepare the page for recognition</string>
    </property>
   </action>
   <action name="actionSave_Project">
@@ -1261,8 +1261,8 @@
    <slot>saveProject()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>586</x>
-     <y>613</y>
+     <x>-1</x>
+     <y>-1</y>
     </hint>
     <hint type="destinationlabel">
      <x>959</x>

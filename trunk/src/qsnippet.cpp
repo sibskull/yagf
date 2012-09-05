@@ -37,6 +37,7 @@ bool QSnippet::setPage(int id, const QString &name, const QImage &image)
     this->name = name;
     setToolTip(name);
     pid = id;
+    ih = image.height();iw = image.width();
     return true;
 }
 
@@ -49,4 +50,15 @@ int QSnippet::pageID()
 {
     return pid;
 }
+
+int QSnippet::imageHeight()
+{
+    return ih;
+}
+
+int QSnippet::imageWidth()
+{
+    return iw;
+}
+
 

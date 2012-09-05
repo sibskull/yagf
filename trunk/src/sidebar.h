@@ -29,6 +29,7 @@ class SideBar : public QListWidget
     Q_OBJECT
 public:
     explicit SideBar(QWidget *parent = 0);
+    void addItem ( QSnippet * item );
     void clearBlocks();
     void select(const QString &name);
     void selectFirstFile();

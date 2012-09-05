@@ -26,6 +26,7 @@
 #include <QUrl>
 #include <QFileInfo>
 #include <QDrag>
+#include <QSize>
 
 
 SideBar::SideBar(QWidget *parent) :
@@ -40,6 +41,21 @@ SideBar::SideBar(QWidget *parent) :
     setAcceptDrops(true);
     setDropIndicatorShown(true);
     lock = false;
+}
+
+void SideBar::addItem(QSnippet *item)
+{
+    setAlternatingRowColors(false);
+    QSize size= item->sizeHint();
+    size.setWidth(width());
+    if(item->imageWidth() == 0)
+        return;
+    int h = item->imageHeight()*100/item->imageWidth();
+    if (h > width()+2) h = width()+2;
+
+    size.setHeight(item->imageHeight() < width() ? item->imageHeight() + 2 : h + 2);
+    item->setSizeHint(size);
+    QListWidget::addItem(item);
 }
 
 

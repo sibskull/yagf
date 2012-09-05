@@ -985,7 +985,7 @@ void MainForm::showAdvancedSettings()
 
 void MainForm::addSnippet(int index)
 {
-    sideBar->addItem((QListWidgetItem *) pages->snippet());
+    sideBar->addItem(pages->snippet());
 }
 
 void MainForm::preprocessPage()

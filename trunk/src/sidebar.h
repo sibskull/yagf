@@ -49,6 +49,7 @@ private:
     QSnippet * getItemByName(const QString &name);
     QSnippet * current;
     bool lock;
+    bool dragging;
 };
 
 #endif // SIDEBAR_H

@@ -41,6 +41,7 @@ SideBar::SideBar(QWidget *parent) :
     setAcceptDrops(true);
     setDropIndicatorShown(true);
     lock = false;
+    dragging = false;
 }
 
 void SideBar::addItem(QSnippet *item)
@@ -93,6 +94,8 @@ QStringList SideBar::mimeTypes() const
 
 Qt::DropActions SideBar::supportedDropActions() const
 {
+    if (dragging)
+    return 0;
     return Qt::CopyAction | Qt::MoveAction;
 }
 
@@ -114,6 +117,7 @@ bool SideBar::dropMimeData(int index, const QMimeData *data, Qt::DropAction acti
 
 void SideBar::startDrag(Qt::DropActions supportedActions)
 {
+        dragging = true;
         supportedActions |= Qt::MoveAction;
         QDrag * drag = new QDrag(this);
         QMimeData *mimeData = new QMimeData();
@@ -132,6 +136,7 @@ void SideBar::startDrag(Qt::DropActions supportedActions)
             }
         }
         current = 0;
+        dragging = false;
 }
 
 QSnippet * SideBar::getItemByName(const QString &name)

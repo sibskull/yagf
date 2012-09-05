@@ -471,15 +471,15 @@ The page possibly lacks contrast. Try to select blocks manually.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Prepare the page for recognitoin</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Save Project...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Load Project...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Prepare the page for recognition</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

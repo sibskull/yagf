@@ -472,16 +472,16 @@ The page possibly lacks contrast. Try to select blocks manually.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Prepare the page for recognitoin</source>
-        <translation>Подготовить страницу к распознаванию</translation>
-    </message>
-    <message>
         <source>Save Project...</source>
         <translation>Сохранить проект...</translation>
     </message>
     <message>
         <source>Load Project...</source>
         <translation>Загрузить проект...</translation>
+    </message>
+    <message>
+        <source>Prepare the page for recognition</source>
+        <translation type="unfinished">Подготовить страницу для распознавания</translation>
     </message>
 </context>
 <context>

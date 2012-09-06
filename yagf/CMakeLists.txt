@@ -1,29 +1,41 @@
 project(yagf C CXX)
 cmake_minimum_required(VERSION 2.6.0)
+# Setting MPTIFF_SUPPORT to true turns on the multi-image tiffs support. In this case YAGF requires various libtiff development files
+# that may are incompatible with the Qt's JPEG reader on some systems. So Qt (and YAGF) may lose the ability to read jpegs.
+# You have been warned!
+set(MPTIFF_SUPPORT false)
+if(MPTIFF_SUPPORT)
+set(TIFFIO_SRC src/qxttiffiohandler.cpp)
+endif(MPTIFF_SUPPORT)
 set(SOURCES src/main.cpp src/mainform.cpp src/qgraphicsinput.cpp src/utils.cpp src/qxtunixsignalcatcher.cpp src/spellchecker.cpp src/BlockAnalysis.cpp src/PageAnalysis.cpp
     src/SkewAnalysis.cpp src/CCAnalysis.cpp src/qxtgraphicsproxywidget.cpp src/popplerdialog.cpp src/pdfextractor.cpp src/pdf2ppt.cpp src/ghostscr.cpp 
-    src/configdialog.cpp src/advancedconfigdialog.cpp src/ccbuilder.cpp src/analysis.cpp src/qsnippet.cpp src/sidebar.cpp src/droplabel.cpp src/projectmanager.cpp src/settings.cpp)
-set (HEADERS src/settings.h)
+    src/configdialog.cpp src/advancedconfigdialog.cpp src/ccbuilder.cpp src/analysis.cpp src/qsnippet.cpp src/sidebar.cpp src/droplabel.cpp src/projectmanager.cpp src/settings.cpp
+    src/texteditor.cpp src/tblock.cpp src/tpage.cpp src/tpagecollection.cpp ${TIFFIO_SRC} src/scanner.cpp src/imagebooster.cpp)
+set(HEADERS src/settings.h)
 set(INT_SOURCES src/preload.c)
 set(UIS src/mainform.ui src/popplerdialog.ui src/configdialog.ui src/advancedconfigdialog.ui)
 set(MOC_HEADERS src/mainform.h src/qxtunixsignalcatcher.h src/qxtunixscinternal.h src/qgraphicsinput.h src/qxtgraphicsproxywidget.h src/qxtgraphicsview.h
     src/popplerdialog.h src/pdfextractor.h src/pdf2ppt.h src/configdialog.h src/advancedconfigdialog.h src/ccbuilder.h src/qsnippet.h src/sidebar.h
-    src/droplabel.h src/projectmanager.h)
+    src/droplabel.h src/projectmanager.h src/texteditor.h src/tblock.h src/tpage.h src/tpagecollection.h src/scanner.h src/imagebooster.h)
 set (yagf_RCCS src/yagf.qrc)
 set(QM_FILES ${CMAKE_BINARY_DIR}/yagf_ru.qm ${CMAKE_BINARY_DIR}/yagf_lt.qm ${CMAKE_BINARY_DIR}/yagf_de.qm ${CMAKE_BINARY_DIR}/yagf_pl.qm ${CMAKE_BINARY_DIR}/yagf_uk.qm)
 set (LIB_PATH_SUFFIX )
 add_definitions(-Wall -g)
 find_package(Qt4 4.6 REQUIRED)
 find_package(ASPELL REQUIRED)
+if(MPTIFF_SUPPORT)
+add_definitions(-DTIFF_IO)
+find_package(TIFF REQUIRED)
+endif(MPTIFF_SUPPORT)
 include(${QT_USE_FILE})
 qt4_wrap_ui(UI_HEADERS ${UIS})
 qt4_wrap_cpp(MOC_SRCS ${MOC_HEADERS})
 qt4_add_resources(yagf_RCC_SRCS ${yagf_RCCS})
-include_directories( ${CMAKE_BINARY_DIR} ${PROJECT_SOURCE_DIR})
+include_directories( ${CMAKE_BINARY_DIR} ${PROJECT_SOURCE_DIR}/src)
 add_executable(yagf ${SOURCES} ${UI_HEADERS} ${MOC_SRCS} ${yagf_RCC_SRCS} ${QM_FILES})
 add_library(xspreload SHARED ${INT_SOURCES})
 target_link_libraries(xspreload dl)
-target_link_libraries(yagf ${QT_LIBRARIES} ${ASPELL_LIBRARIES})
+target_link_libraries(yagf ${QT_LIBRARIES} ${ASPELL_LIBRARIES} ${TIFF_LIBRARIES})
 add_custom_target(translations DEPENDS ${QM_FILES})
 qt4_add_translation(${CMAKE_BINARY_DIR}/yagf_ru.qm ${PROJECT_SOURCE_DIR}/src/mainform.cpp ${PROJECT_SOURCE_DIR}/src/popplerdialog.cpp ${MOC_SRCS} ${UI_HEADERS} ${PROJECT_SOURCE_DIR}/src/translations/yagf_ru.ts)
 qt4_add_translation(${CMAKE_BINARY_DIR}/yagf_lt.qm ${PROJECT_SOURCE_DIR}/src/mainform.cpp ${PROJECT_SOURCE_DIR}/src/popplerdialog.cpp ${MOC_SRCS} ${UI_HEADERS} ${PROJECT_SOURCE_DIR}/src/translations/yagf_lt.ts)

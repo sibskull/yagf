@@ -58,36 +58,8 @@
         <translation>В окне редактора несохраненный текст. Сохранить?</translation>
     </message>
     <message>
-        <source>Russian</source>
-        <translation>Русский</translation>
-    </message>
-    <message>
-        <source>Croatian</source>
-        <translation>Хорватский</translation>
-    </message>
-    <message>
-        <source>English</source>
-        <translation>Английский</translation>
-    </message>
-    <message>
-        <source>French</source>
-        <translation>Французский</translation>
-    </message>
-    <message>
-        <source>German</source>
-        <translation>Немецкий</translation>
-    </message>
-    <message>
-        <source>Russian-English</source>
-        <translation>Русский-английский</translation>
-    </message>
-    <message>
         <source>Warning</source>
         <translation>Предупреждение</translation>
-    </message>
-    <message>
-        <source>xsane not found</source>
-        <translation>xsane не найден</translation>
     </message>
     <message>
         <source>Error</source>
@@ -110,10 +82,6 @@
         <translation>программа не найдена</translation>
     </message>
     <message>
-        <source>Save Text</source>
-        <translation>Сохранить текст</translation>
-    </message>
-    <message>
         <source>About YAGF</source>
         <translation>О программе</translation>
     </message>
@@ -122,128 +90,8 @@
         <translation>http://symmetrica.net/cuneiform-linux/yagf-ru.html</translation>
     </message>
     <message>
-        <source>Czech</source>
-        <translation>Чешский</translation>
-    </message>
-    <message>
-        <source>Bulgarian</source>
-        <translation>Болгарский</translation>
-    </message>
-    <message>
-        <source>Danish</source>
-        <translation>Датский</translation>
-    </message>
-    <message>
-        <source>Dutch</source>
-        <translation>Голландский</translation>
-    </message>
-    <message>
-        <source>Estonian</source>
-        <translation>Эстонский</translation>
-    </message>
-    <message>
-        <source>Hungarian</source>
-        <translation>Венгерский</translation>
-    </message>
-    <message>
-        <source>Italian</source>
-        <translation>Итальянский</translation>
-    </message>
-    <message>
-        <source>Latvian</source>
-        <translation>Латышский</translation>
-    </message>
-    <message>
-        <source>Lithuanian</source>
-        <translation>Литовский</translation>
-    </message>
-    <message>
-        <source>Polish</source>
-        <translation>Польский</translation>
-    </message>
-    <message>
-        <source>Portuguese</source>
-        <translation>Португальский</translation>
-    </message>
-    <message>
-        <source>Romanian</source>
-        <translation>Румынский</translation>
-    </message>
-    <message>
-        <source>Spanish</source>
-        <translation>Испанский</translation>
-    </message>
-    <message>
-        <source>Swedish</source>
-        <translation>Шведский</translation>
-    </message>
-    <message>
-        <source>Serbian</source>
-        <translation>Сербский</translation>
-    </message>
-    <message>
-        <source>Slovenian</source>
-        <translation>Словенский</translation>
-    </message>
-    <message>
-        <source>Ukrainian</source>
-        <translation>Украинский</translation>
-    </message>
-    <message>
-        <source>libxspreload.so not found</source>
-        <translation>Библиотека libxspreload.so не найдена</translation>
-    </message>
-    <message>
-        <source>Image loading error</source>
-        <translation>Ошибка загрузки изображения</translation>
-    </message>
-    <message>
-        <source>Image %1 could not be loaded</source>
-        <translation>Невозможно загрузить файл %1</translation>
-    </message>
-    <message>
-        <source>Text Files (*.txt)</source>
-        <translation>Текстовые файлы (*.txt)</translation>
-    </message>
-    <message>
-        <source>HTML Files (*.html)</source>
-        <translation>Файлы HTML (*.html)</translation>
-    </message>
-    <message>
         <source>Save Image</source>
         <translation>Сохранить изображение</translation>
-    </message>
-    <message>
-        <source>Undo	Ctrl+Z</source>
-        <translation>Отменить	Ctrl+Z</translation>
-    </message>
-    <message>
-        <source>Redo	Ctrl+Shift+Z</source>
-        <translation>Вернуть	Ctrl+Shift+Z</translation>
-    </message>
-    <message>
-        <source>Select All	Ctrl+A</source>
-        <translation>Выделить все	Ctrl+A</translation>
-    </message>
-    <message>
-        <source>Cut	Ctrl+X</source>
-        <translation>Вырезать	Ctrl+X</translation>
-    </message>
-    <message>
-        <source>Larger Font	Ctrl++</source>
-        <translation>Увеличить шрифт	Ctrl++</translation>
-    </message>
-    <message>
-        <source>Smaller Font	Ctrl+-</source>
-        <translation>Уменьшить шрифт	Ctrl+-</translation>
-    </message>
-    <message>
-        <source>Copy	Ctrl+C</source>
-        <translation>Копировать	Ctrl+C</translation>
-    </message>
-    <message>
-        <source>Paste	Ctrl+V</source>
-        <translation>Вставить	Ctrl+V</translation>
     </message>
     <message>
         <source>Recognizing pages...</source>
@@ -282,26 +130,6 @@
         <translation>Выбранная директория - не пустая</translation>
     </message>
     <message>
-        <source>Finnish (tesseract only)</source>
-        <translation>Финский (только tesseract)</translation>
-    </message>
-    <message>
-        <source>Greek (tesseract only)</source>
-        <translation>Греческий (только tesseract)</translation>
-    </message>
-    <message>
-        <source>Norwegian (tesseract only)</source>
-        <translation>Норвежский (только tesseract)</translation>
-    </message>
-    <message>
-        <source>Slovakian (tesseract only)</source>
-        <translation>Словацкий (только tesseract)</translation>
-    </message>
-    <message>
-        <source>Turkish (tesseract only)</source>
-        <translation>Турецкий (только tesseract)</translation>
-    </message>
-    <message>
         <source>Starting tesseract failed</source>
         <translation>Не удалось запустить tesseract</translation>
     </message>
@@ -323,21 +151,46 @@ Please install either cuneiform or tesseract</source>
         <source>No PDF converter installed</source>
         <translation>Конвертер PDF не установлен</translation>
     </message>
-    <message>
-        <source>German Gothic (tesseract 3+)</source>
-        <translation>Немецкий готический (tesseract 3+)</translation>
-    </message>
-    <message>
-        <source>Hebrew (tesseract 3.0.1+)</source>
-        <translation>Иврит (tesseract 3.0.1+)</translation>
-    </message>
-    <message>
-        <source>Swedish Gothic (tesseract 3+)</source>
-        <translation>Шведский готический (tesseract 3+)</translation>
-    </message>
     <message utf8="true">
         <source>&lt;p align=&quot;center&quot;&gt;&lt;b&gt;YAGF - Yet Another Graphical Front-end for cuneiform and tesseract OCR engines&lt;/b&gt;&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;Version %1&lt;/p&gt; &lt;p align=&quot;center&quot;&gt;Ⓒ 2009-2012 Andrei Borovsky&lt;/p&gt; This is a free software distributed under GPL v3. Visit &lt;a href=&quot;http://symmetrica.net/cuneiform-linux/yagf-en.html&quot;&gt;http://symmetrica.net/cuneiform-linux/yagf-en.html&lt;/a&gt; for more details.</source>
         <translation>&lt;p align=&quot;center&quot;&gt;&lt;b&gt;YAGF - Графическая оболочка для программ распознавания текста cuneiform и tesseract&lt;/b&gt;&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;Версия %1&lt;/p&gt; &lt;p align=&quot;center&quot;&gt;Ⓒ 2009-2012 Андрей Боровский&lt;/p&gt; YAGF - открытое программное обеспечение, которое распространяется на условиях лицензии GPL v3. Вы найдете подробности на странице &lt;a href=&quot;http://symmetrica.net/cuneiform-linux/yagf-en.html&quot;&gt;http://symmetrica.net/cuneiform-linux/yagf-ru.html&lt;/a&gt;.</translation>
+    </message>
+    <message>
+        <source>Using Cuneiform</source>
+        <translation>Используется Cuneiform</translation>
+    </message>
+    <message>
+        <source>Using Tesseract</source>
+        <translation>Используется Tesseract</translation>
+    </message>
+    <message>
+        <source>Scanning is impossible</source>
+        <translation>Сканирование невозможно</translation>
+    </message>
+    <message>
+        <source>No scanning front-end is found. Please install XSane in order to perform scanning.</source>
+        <translation>Программа сканирования не найдена. Необходимо установить XSane.</translation>
+    </message>
+    <message>
+        <source>Failed to Load Image</source>
+        <translation>Невозможно загруить выбранное изобажение</translation>
+    </message>
+    <message>
+        <source>Failed to detect text areas on this page.
+The page possibly lacks contrast. Try to select blocks manually.</source>
+        <translation>Не удалось найти ткстовые области на странице. Возможно, изображение отсканировано со слишком низким контрастом. Попробуйт выделить блоки вручную.</translation>
+    </message>
+    <message>
+        <source>The selected directoy is not empty. Please select or create another one.</source>
+        <translation>Выбранный каталог содержит файлы. Выберите пустой каталог или создайте новый.</translation>
+    </message>
+    <message>
+        <source>Failed to save the project.</source>
+        <translation>Ошибка при сохранении проекта.</translation>
+    </message>
+    <message>
+        <source>Failed to load project.</source>
+        <translation>Невозможно открыть проект.</translation>
     </message>
 </context>
 <context>
@@ -600,11 +453,35 @@ Please install either cuneiform or tesseract</source>
     </message>
     <message>
         <source>Splits text into several blocks</source>
-        <translation type="unfinished">Разбить текст на блоки</translation>
+        <translation>Разбить текст на блоки</translation>
     </message>
     <message>
         <source>Toggle Large/Small Icons</source>
         <translation>Большие/маленькие иконки</translation>
+    </message>
+    <message>
+        <source>toolBar_2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select Recognition Language</source>
+        <translation>Выбор языка распознавания</translation>
+    </message>
+    <message>
+        <source>Prepare Page</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Save Project...</source>
+        <translation>Сохранить проект...</translation>
+    </message>
+    <message>
+        <source>Load Project...</source>
+        <translation>Загрузить проект...</translation>
+    </message>
+    <message>
+        <source>Prepare the page for recognition</source>
+        <translation type="unfinished">Подготовить страницу для распознавания</translation>
     </message>
 </context>
 <context>
@@ -659,6 +536,130 @@ Try to install an appropriate aspell dictionary.</source>
         <translation>Требуемый орфографический словарь (%1) не найден.
 Проверка орфографии будет отключена.
 Попробуйте установить соответствующий словарь aspell.</translation>
+    </message>
+    <message>
+        <source>Warning</source>
+        <translation>Предупреждение</translation>
+    </message>
+    <message>
+        <source>Select Project Directory</source>
+        <translation>Выбор директории проекта</translation>
+    </message>
+    <message>
+        <source>Bulgarian</source>
+        <translation>Болгарский</translation>
+    </message>
+    <message>
+        <source>Czech</source>
+        <translation>Чешский</translation>
+    </message>
+    <message>
+        <source>Danish</source>
+        <translation>Датский</translation>
+    </message>
+    <message>
+        <source>Dutch</source>
+        <translation>Голландский</translation>
+    </message>
+    <message>
+        <source>English</source>
+        <translation>Английский</translation>
+    </message>
+    <message>
+        <source>French</source>
+        <translation>Французский</translation>
+    </message>
+    <message>
+        <source>German</source>
+        <translation>Немецкий</translation>
+    </message>
+    <message>
+        <source>Hungarian</source>
+        <translation>Венгерский</translation>
+    </message>
+    <message>
+        <source>Italian</source>
+        <translation>Итальянский</translation>
+    </message>
+    <message>
+        <source>Latvian</source>
+        <translation>Латышский</translation>
+    </message>
+    <message>
+        <source>Lithuanian</source>
+        <translation>Литовский</translation>
+    </message>
+    <message>
+        <source>Polish</source>
+        <translation>Польский</translation>
+    </message>
+    <message>
+        <source>Portuguese</source>
+        <translation>Португальский</translation>
+    </message>
+    <message>
+        <source>Romanian</source>
+        <translation>Румынский</translation>
+    </message>
+    <message>
+        <source>Russian</source>
+        <translation>Русский</translation>
+    </message>
+    <message>
+        <source>Russian-English</source>
+        <translation>Русский-английский</translation>
+    </message>
+    <message>
+        <source>Spanish</source>
+        <translation>Испанский</translation>
+    </message>
+    <message>
+        <source>Serbian</source>
+        <translation>Сербский</translation>
+    </message>
+    <message>
+        <source>Slovenian</source>
+        <translation>Словенский</translation>
+    </message>
+    <message>
+        <source>Swedish</source>
+        <translation>Шведский</translation>
+    </message>
+    <message>
+        <source>Ukrainian</source>
+        <translation>Украинский</translation>
+    </message>
+    <message>
+        <source>Finnish</source>
+        <translation>Финский</translation>
+    </message>
+    <message>
+        <source>German Gothic</source>
+        <translation>Немецкий готический</translation>
+    </message>
+    <message>
+        <source>Greek</source>
+        <translation>Греческий</translation>
+    </message>
+    <message>
+        <source>Hebrew</source>
+        <translation>Иврит</translation>
+    </message>
+    <message>
+        <source>Norwegian</source>
+        <translation>Норевежский</translation>
+    </message>
+    <message>
+        <source>Slovak</source>
+        <translation>Словацкий</translation>
+    </message>
+    <message>
+        <source>Swedish Gothic</source>
+        <translation>Шведский готический</translation>
+    </message>
+    <message>
+        <source>Turkish</source>
+        <translation>Турецкий</translation>
     </message>
 </context>
 <context>

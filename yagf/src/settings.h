@@ -17,6 +17,8 @@
 #include <QSettings>
 #include <QSize>
 #include <QPoint>
+#include <QMap>
+#include <QLocale>
 
 
 enum SelectedEngine {
@@ -27,8 +29,7 @@ enum SelectedEngine {
 class Settings
 {
 public:
-  Settings();
-  ~Settings();
+  static Settings * instance();
   void readSettings(const QString &path);
   void writeSettings();
   QString getLanguage();
@@ -57,14 +58,24 @@ public:
   void setFullScreen(const bool value);
   void setFontSize(const int &value);
   void setCropLoaded(const bool value);
+  QString workingDir();
+  void startLangPair();
+  bool getLangPair(QString &full, QString &abbr);
+  void setProjectDir(const QString &dir);
+  QString getProjectDir();
 private:
+  void makeLanguageMaps();
   void findTessDataPath();
   QString selectDefaultLanguageName();
+  Settings();
+  Settings(const Settings &);
+  ~Settings();
 private:
   QString language;
   QString outputFormat;
   QString lastDir;
   QString lastOutputDir;
+  QString projectDir;
   bool checkSpelling;
   QString tessdataPath;
   SelectedEngine selectedEngine;
@@ -74,9 +85,13 @@ private:
   bool fullScreen;
   int fontSize;
   bool cropLoaded;
+  QMap<QString, QString> cuMap;
+  QMap<QString, QString> tesMap;
+  int lpi;
 
   QString mPath;
   QSettings * settings;
+  static Settings * m_instance;
 };
 
 #endif

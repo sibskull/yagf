@@ -23,13 +23,17 @@
 #include "analysis.h"
 #include "PageAnalysis.h"
 #include "math.h"
+#include "ycommon.h"
+#include "tblock.h"
 #include <QPixmap>
 #include <QGraphicsPixmapItem>
 #include <QMessageBox>
 #include <QGraphicsSceneMouseEvent>
+#include <QGraphicsPixmapItem>
 #include <QKeyEvent>
 #include <QToolBar>
 #include <QLayout>
+#include <QGraphicsTextItem>
 
 
 QGraphicsInput::QGraphicsInput(const QRectF &sceneRect, QGraphicsView *view) :
@@ -40,12 +44,15 @@ QGraphicsInput::QGraphicsInput(const QRectF &sceneRect, QGraphicsView *view) :
     selecting  = NoSelect;
     hasImage = false;
     m_LastSelected = 0;
-    m_scale = 1;
-    m_rotate = 0;
     buttonPressed = Qt::NoButton;
     near_res = 0;
     magnifierCursor = new QCursor(Qt::SizeAllCursor);
     toolbar = 0;
+    redRect.setX(0);
+    redRect.setY(0);
+    redRect.setWidth(0);
+    redRect.setHeight(0);
+    xred = false;
  }
 
 QGraphicsInput::~QGraphicsInput()
@@ -79,29 +86,16 @@ void QGraphicsInput::addToolBar()
     ((QXtGraphicsView *) views().at(0))->sendScrollSignal();
 }
 
-bool QGraphicsInput::loadImage(const QImage &image, bool clearBlocks)
+bool QGraphicsInput::loadImage(const QPixmap &pixmap)
 {
-    if (clearBlocks || (!hasImage)) {
-        m_rotate = 0;
-        this->clear();
-        items().clear();
-        m_LastSelected = 0;
-        m_CurrentBlockRect = 0;
-    }
-    if ((!clearBlocks) && hasImage) {
-        this->removeItem(m_image);
-    }
-    //m_image = this->addPixmap(QPixmap::fromImage(image));
+    clear();
+    m_LastSelected = 0;
+    m_CurrentBlockRect = 0;
+//    clearBlocks();
+    m_image = addPixmap(pixmap);
+    setSceneRect(pixmap.rect());
+    m_image->setZValue(-1);
     QApplication::processEvents();
-    //old_pixmap = image;
-    pm2 = image.scaledToWidth(image.width() / 2);
-    m_image = this->addPixmap(QPixmap::fromImage(pm2));
-    pm4 = pm2.scaledToWidth(pm2.width() / 2);
-    pm8 = pm4.scaledToWidth(pm4.width() / 2);
-    pm16 = pm8.scaledToWidth(pm8.width() / 2);
-    this->setSceneRect(image.rect());
-    m_scale = 0.5;
-    m_realImage = image;
     //m_realImage->setData(1, "image");
     //m_realImage->hide();
     this->setFocus();
@@ -109,7 +103,6 @@ bool QGraphicsInput::loadImage(const QImage &image, bool clearBlocks)
     m_image->setAcceptedMouseButtons(Qt::LeftButton | Qt::RightButton | Qt::MidButton);
     m_image->setAcceptHoverEvents(true);
     m_image->setData(1, "image");
-    this->setSceneRect(0,0,m_realImage.width(),m_realImage.height());
     addToolBar();
     if (m_view) {
         m_view->centerOn(0, 0);
@@ -181,6 +174,10 @@ void QGraphicsInput::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
                 //clik!!!
                 leftMouseRelease(mouseEvent->scenePos().x(), mouseEvent->scenePos().y());
             }
+            else emit blockCreated(QRectF2Rect(m_CurrentBlockRect->rect()));
+            if (xred)
+                emit deleteBlock(redRect);
+            xred = false;
             m_CurrentBlockRect = 0;
         }
         if (selecting == StartSelect) {
@@ -209,6 +206,7 @@ QGraphicsRectItem *QGraphicsInput::newBlock(const QRectF &rect)
     res->setZValue(1);
     res->setData(1, "block");
     res->setData(2, "no");
+
     return res;
 }
 
@@ -264,6 +262,9 @@ void QGraphicsInput::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
         }
     QRectF newRect;
     if (near_res && (mouseEvent->buttons()&Qt::LeftButton)) {
+        if (!xred)
+            redRect = QRectF2Rect(m_LastSelected->rect());
+        xred = true;
         QRectF newRect = m_LastSelected->mapRectToScene(m_LastSelected->rect());
         switch (near_res) {
             case 1:
@@ -340,6 +341,9 @@ void QGraphicsInput::leftMouseRelease(qreal x, qreal y)
                 r->setData(2, "yes");
                 m_LastSelected = r;
                 selBlockRect = m_LastSelected->rect();
+                redRect = QRectF2Rect(selBlockRect); // ATT
+
+//                emit addBlock(QRectF2Rect(selBlockRect));
             } else {
                 m_LastSelected = 0;
                 r->setData(2, "no");
@@ -404,80 +408,14 @@ int QGraphicsInput::nearActiveBorder(qreal x, qreal y)
     return 0;
 }
 
-QImage QGraphicsInput::getActiveBlock()
+QRect QGraphicsInput::getActiveBlock()
 {
-    return extractImage(m_LastSelected);
+    return QRectF2Rect(m_LastSelected->rect());
 }
 
-QImage QGraphicsInput::getCurrentBlock()
+QRect QGraphicsInput::getCurrentBlock()
 {
-    return extractImage(m_CurrentBlockRect);
-}
-
-
-QImage QGraphicsInput::extractImage(QGraphicsRectItem *item)
-{
-    if ((item == 0) || (!hasImage)) {
-        return QImage(0, 0);
-    }
-    QRectF rect = item->mapRectToScene(item->rect());
-    if ((rect.right()/ m_scale) > m_realImage.width())
-        rect.setRight(m_realImage.width()*m_scale);
-    if ((rect.bottom()/ m_scale) > m_realImage.height())
-        rect.setBottom(m_realImage.height()*m_scale);
-
-    return m_realImage.copy(rect.left() / m_scale, rect.top() / m_scale, (rect.right() - rect.left()) / m_scale, (rect.bottom() - rect.top()) / m_scale);
-}
-
-void QGraphicsInput::setViewScale(qreal scale, qreal angle)
-{
-    if (!hasImage) return;
-        if ((scale == 0) || (scale < 0.0625) || (scale > 0.5))
-            return;
-    //    m_view->scale(scale,  scale);
-        this->removeItem(m_image);
-        for (int i = 0; i < this->items().size(); i++)
-            if (items().at(i)->data(1) != "image") {
-                double sf = scale/m_scale;
-                items().at(i)->scale(sf, sf); // Silly as this line seems it is the only way to scale rectangles correctly.
-            }
-        m_scale = scale;
-        QImage imgr;
-            //if (real_scale == 1)
-            //  m_image = this->addPixmap(QPixmap::fromImage(old_pixmap));
-            //else
-            if (m_scale == 0.5) {
-                //real_scale = 0.5;
-                imgr = pm2;
-            }
-            else if (m_scale == 0.25)
-                imgr = pm4;
-            else if (m_scale == 0.125)
-                imgr = pm8;
-            else if (m_scale == 0.0625)
-                imgr = pm16;
-    qreal x = imgr.width() / 2;
-    qreal y = imgr.height() / 2;
-    m_rotate += angle;
-    imgr = imgr.transformed(QTransform().translate(-x, -y).rotate(m_rotate).translate(x, y), Qt::SmoothTransformation);
-    m_image = addPixmap(QPixmap::fromImage(imgr));
-    m_realImage = m_realImage.transformed(QTransform().translate(-x, -y).rotate(angle).translate(x, y), Qt::SmoothTransformation);
-    m_image->setFocus();
-    m_image->setAcceptedMouseButtons(Qt::LeftButton | Qt::RightButton | Qt::MidButton);
-    m_image->setAcceptHoverEvents(true);
-    m_image->setData(1, "image");
-    m_image->show();
-    m_view->centerOn(0, 0);
-}
-
-
-int QGraphicsInput::blocksCount()
-{
-    int res = 0;
-    for (int i = 0; i < items().count(); i++)
-        if (items().at(i)->data(1) == "block")
-            res++;
-    return res;
+    return QRectF2Rect(m_CurrentBlockRect->rect());
 }
 
 void QGraphicsInput::deleteCurrentBlock()
@@ -500,110 +438,13 @@ void QGraphicsInput::deleteBlock(int index)
     }
 }
 
-QImage QGraphicsInput::getBlockByIndex(int index)
-{
-    int count = 0;
-    for (int i = 0; i < items().count(); i++) {
-        if (items().at(i)->data(1) == "block") {
-            if (index == count) {
-                return extractImage((QGraphicsRectItem *)items().at(i));
-            }
-            count++;
-        }
-    }
-    return QImage(0, 0);
-}
-
-QRectF QGraphicsInput::getBlockRectByIndex(int index)
-{
-    int count = 0;
-    for (int i = 0; i < items().count(); i++) {
-        if (items().at(i)->data(1) == "block") {
-            if (index == count) {
-                QRectF rect = items().at(i)->mapRectToScene(((QGraphicsRectItem *) items().at(i))->rect());
-                return QRectF(rect.left() / m_scale, rect.top() / m_scale, (rect.right() - rect.left()) / m_scale, (rect.bottom() - rect.top()) / m_scale);
-            }
-            count++;
-        }
-    }
-    return QRectF(0, 0, 0, 0);
-}
-
-void QGraphicsInput::clearBlocks()
+void QGraphicsInput::clearBlocks() // KEEP
 {
     for (int i = items().count() - 1; i >= 0; i--) {
         if (items().at(i)->data(1) == "block") {
             deleteBlockRect((QGraphicsRectItem *)items().at(i));
         }
     }
-}
-
-qreal QGraphicsInput::getScale()
-{
-    return m_scale;
-}
-
-qreal QGraphicsInput::getAngle()
-{
-    return m_rotate;
-}
-
-QPixmap QGraphicsInput::getImage()
-{
-    return hasImage ? QPixmap::fromImage(m_realImage) : 0;
-}
-
-const float stdwidth = 2550.;
-
-QImage QGraphicsInput::getAdaptedImage()
-{
-
-    /*if (!hasImage)
-        return QPixmap(0,0);
-    if (m_realImage->pixmap().width() > 8000) {
-            return pm8;
-        }
-    if (m_realImage->pixmap().width() > 4000) {
-        return pm4;
-    }
-    if (m_realImage->pixmap().width() > 2000) {
-        return pm2;
-    }
-    return m_realImage->pixmap();*/
-    if (m_realImage.isNull())
-        return QImage(0,0);
-    if (m_realImage.width() < m_realImage.height()) {
-        if (m_realImage.width() / stdwidth >= 0.75)
-            return m_realImage.scaledToWidth(stdwidth);
-    } else {
-        if (m_realImage.height() / stdwidth >= 0.75)
-            return m_realImage.scaledToHeight(stdwidth);
-    }
-
-    return m_realImage;
-}
-
-QImage * QGraphicsInput::getSmallImage()
-{
-    if (pm2.isNull())
-        return NULL;
-    return &pm2;
-}
-
-void QGraphicsInput::cropImage()
-{
-    if (!hasImage)
-        return;
-    if (m_LastSelected) {
-        //QPixmap pm = extractPixmap(m_LastSelected);
-        loadImage(extractImage(m_LastSelected));
-        clearTransform();
-    }
-}
-
-void QGraphicsInput::cropImage(const QRect &rect)
-{
-    this->loadImage(m_realImage.copy(rect));
 }
 
 void QGraphicsInput::setMagnifierCursor(QCursor *cursor)
@@ -637,17 +478,10 @@ void QGraphicsInput::setToolBarVisible()
     } else {
         for (int i = 1; i < actionList.count(); i++)
             actionList.at(i)->setVisible(true);
-            toolbar->setMaximumWidth(400);
-            toolbar->setMinimumWidth(400);
+            toolbar->setMaximumWidth(480);
+            toolbar->setMinimumWidth(480);
             actionList.at(0)->setText(QString::fromUtf8("<<"));
     }
-}
-
-void QGraphicsInput::undo()
-{
-    if (hasImage)
-        loadImage(m_realImage);
-    clearTransform();
 }
 
 void QGraphicsInput::wheelEvent(QGraphicsSceneWheelEvent *wheelEvent)
@@ -656,10 +490,9 @@ void QGraphicsInput::wheelEvent(QGraphicsSceneWheelEvent *wheelEvent)
         int delta = wheelEvent->delta();
         qreal coeff = delta < 0 ? 1 / (1 - delta / (360.)) : 1 + delta / (240.);
         if (coeff >= 1)
-            coeff = 2;
+            emit increaseMe();
         else
-            coeff = 0.5;
-        this->setViewScale(coeff, 0);
+            emit decreaseMe();
         wheelEvent->accept();
         m_view->viewport()->setCursor(*magnifierCursor);
     } else
@@ -672,11 +505,11 @@ void QGraphicsInput::keyReleaseEvent(QKeyEvent *keyEvent)
         m_view->viewport()->setCursor(Qt::ArrowCursor);
     if (keyEvent->modifiers() & Qt::ControlModifier) {
         if ((keyEvent->key() == Qt::Key_Plus) || (keyEvent->key() == Qt::Key_Equal)) {
-            this->setViewScale(2, 0);
+            emit increaseMe();
             return;
         }
         if ((keyEvent->key() == Qt::Key_Minus) || (keyEvent->key() == Qt::Key_Underscore)) {
-            this->setViewScale(0.5, 0);
+            emit decreaseMe();
             return;
         }
 
@@ -693,12 +526,6 @@ void QGraphicsInput::clearTransform()
         tr.reset();
         m_view->setTransform(tr);
     }
-}
-
-bool QGraphicsInput::loadNewImage(const QPixmap &image)
-{
-    clearTransform();
-    return loadImage(image.toImage());
 }
 
 void QGraphicsInput::keyPressEvent(QKeyEvent *keyEvent)
@@ -729,129 +556,14 @@ QPixmap QGraphicsInput::getCurrentImage()
     return (m_image->pixmap());
 }
 
-QImage * QGraphicsInput::getImageBy16()
+void QGraphicsInput::addBlockColliding(Block block)
 {
-    return &pm16;
+    QGraphicsRectItem *gi = newBlock(block);
+    m_CurrentBlockRect = gi;
+    QGraphicsTextItem * gte = new QGraphicsTextItem(QString::number(block.blockNumber()), gi);
+    gte->setFont(QFont("Arial", 16));
+    gte->setDefaultTextColor(QColor("white"));
+    gte->moveBy(block.x(), block.y());
 }
 
-void QGraphicsInput::rotateImage(qreal deg)
-{
-    if (hasImage) {
-        clearBlocks();
-        setViewScale(sideBar->getScale(), deg); //rotateImage(deg,  graphicsView->width()/2, graphicsView->height()/2);
-        sideBar->setRotation(getAngle());
-    }
-}
 
-void QGraphicsInput::setSideBar(SideBar *value)
-{
-    sideBar = value;
-}
-
-void QGraphicsInput::deskew(QImage *img)
-{
-    if (img) {
-        QTransform tr;
-        tr.rotate(getAngle());
-        QImage img1 = img->transformed(tr);
-        CCBuilder * cb = new CCBuilder(img1);
-        cb->setGeneralBrightness(360);
-        cb->setMaximumColorComponent(100);
-        cb->labelCCs();
-        CCAnalysis * an = new CCAnalysis(cb);
-        an->analize();
-    /*for (int j = 0; j < an->getGlyphBoxCount(); j++) {
-        Rect r = an->getGlyphBox(j);
-        graphicsInput->newBlock(QRect(2*r.x1, 2*r.y1, 2*r.x2-2*r.x1, 2*r.y2-2*r.y1));
-        this->graphicsInput->addBlock(QRect(2*r.x1, 2*r.y1, 2*r.x2-2*r.x1, 2*r.y2-2*r.y1), false);
-    }*/
-        //QRect r = cb->crop();
-        //graphicsInput->newBlock(QRect(2*r.x(), 2*r.y(), 2*(r.width()), 2*(r.height())));
-        //this->graphicsInput->addBlock(QRect(2*r.x(), 2*r.y(), 2*(r.width()), 2*(r.height())), false);
-        QImage img2 = tryRotate(img1, -atan(an->getK())*360/6.283);
-
-        CCBuilder * cb2 = new CCBuilder(img2);
-        cb2->setGeneralBrightness(360);
-        cb2->setMaximumColorComponent(100);
-        cb2->labelCCs();
-        CCAnalysis * an2 = new CCAnalysis(cb2);
-        an2->analize();
-        qreal angle = -atan(an2->getK())*360/6.283;
-        delete an2;
-        delete cb2;
-        if (abs(angle*10) >= abs(5))
-            angle += (-atan(an->getK())*360/6.283);
-        else
-            angle = -atan(an->getK())*360/6.283;
-
-        rotateImage(angle);
-
-//        QImage  img = graphicsInput->getCurrentImage().toImage();
-        //graphicsInput->newBlock(QRect(r.x(), r.y(), (r.width()), (r.height())));
-        //this->graphicsInput->addBlock(QRect(r.x(), r.y(), (r.width()), (r.height())), false);
-
-        delete an;
-        delete cb;
-        //blockAllText(r.x(), r.y());
-    }
-
-}
-
-QImage QGraphicsInput::tryRotate(QImage image, qreal angle)
-{
-    qreal x = image.width() / 2;
-    qreal y = image.height() / 2;
-    return image.transformed(QTransform().translate(-x, -y).rotate(angle).translate(x, y), Qt::SmoothTransformation);
-}
-
-void QGraphicsInput::addBlockColliding(const QRectF &rect)
-{
-    QGraphicsRectItem *block = newBlock(rect);
-    m_CurrentBlockRect = block;
-}
-
-void QGraphicsInput::splitPage()
-{
-    clearBlocks();
-    BlockSplitter bs;
-    bs.setImage(*(getSmallImage()), sideBar->getRotation(), 0.5);// sideBar->getScale());
-    //QRect r = bs.getRootBlock(graphicsInput->getCurrentImage().toImage());
-    //Bars bars = bs.getBars();
-    //foreach (Rect rc, bars) {
-     //   graphicsInput->addLine(rc.x1, rc.y1, rc.x2, rc.y2);
-    //}
-    bs.getBars();
-    bs.splitBlocks();
-    QList<Rect> blocks = bs.getBlocks();
-    qreal sf = 2.0*sideBar->getScale();
-    QRect cr = bs.getRotationCropRect(getCurrentImage().toImage());
-    foreach (Rect block, blocks) {
-        QRect r;
-        block.x1 *=sf;
-        block.y1 *=sf;
-        block.x2 *= sf;
-        block.y2 *=sf;
-
-        block.x1 += cr.x();
-        block.y1 += cr.y();
-        block.x2 += cr.x();
-        block.y2 += cr.y();
-
-        r.setX(block.x1);
-        r.setY(block.y1);
-        r.setWidth(block.x2 - block.x1);
-        r.setHeight(block.y2 - block.y1);
-        sideBar->addBlock(r);
-        addBlockColliding(r);
-    }
-}
-
-void QGraphicsInput::blockAllText()
-{
-    clearBlocks();
-    BlockSplitter bs;
-    bs.setImage(*getSmallImage(), sideBar->getRotation(), sideBar->getScale());
-    QRect r = bs.getRootBlock(getCurrentImage().toImage());
-    sideBar->addBlock(r);
-    addBlock(r);
-}

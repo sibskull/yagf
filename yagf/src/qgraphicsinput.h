@@ -28,6 +28,7 @@
 #include <QPointer>
 
 typedef QList<QAction *> ActionList;
+class Block;
 
 class QGraphicsPixmapItem;
 class QGraphicsRectItem;
@@ -51,45 +52,26 @@ class QGraphicsInput : public QGraphicsScene
 public:
     explicit QGraphicsInput(const QRectF &sceneRect, QGraphicsView *view = 0);
     ~QGraphicsInput();
-    bool loadImage(const QImage &image, bool clearBlocks = true);
-    bool loadNewImage(const QPixmap &image);
     void setView(QGraphicsView *view);
-    QImage getActiveBlock();
-    QImage getCurrentBlock();
-    void setViewScale(qreal scale, qreal angle);
-    int blocksCount();
+    QRect getActiveBlock();
+    QRect getCurrentBlock();
     void deleteBlock(int index);
     void deleteCurrentBlock();
-    QImage getBlockByIndex(int index);
-    QRectF getBlockRectByIndex(int index);
     void clearBlocks();
-    qreal getScale();
-    qreal getAngle();
-    QPixmap getImage();
-    QImage getAdaptedImage();
-    QImage * getSmallImage();
-    QImage * getImageBy16();
     bool addBlock(const QRectF &rect, bool removeObstacles = true);
-    void addBlockColliding(const QRectF &rect);
+    void addBlockColliding(Block block);
     void drawLine(int x1, int y1, int x2, int y2);
     void imageOrigin(QPoint &p);
     QPixmap getCurrentImage();
-    void setSideBar(SideBar * value);
 
-    void cropImage();
-    void cropImage(const QRect &rect);
     void cropWhiteFrame();
-    void rotateImage(qreal deg);
-    void deskew(QImage *img);
-    void splitPage();
-    void blockAllText();
 
-    void undo();
     void setMagnifierCursor(QCursor *cursor);
     void addToolBarAction(QAction * action);
     void addToolBarSeparator();
     void setToolBarVisible();
     QGraphicsRectItem *newBlock(const QRectF &rect);
+    bool loadImage(const QPixmap &pixmap);
 
     //setMagnifierCursor(QCursor * cursor = );
 protected:
@@ -103,38 +85,33 @@ signals:
     void leftMouseClicked(int x, int y, bool blockSelected);
     void rightMouseClicked(int x, int y, bool inTheBlock);
     void keyPressed(int key);
-public slots:
+    void increaseMe();
+    void decreaseMe();
+    void blockCreated(QRect rect);
+    void deleteBlock(QRect rect);
+private slots:
 private:
     void leftMouseRelease(qreal x, qreal y);
     void rightMouseRelease(qreal x, qreal y);
     int nearActiveBorder(qreal x, qreal y);
     void clearTransform();
     void addToolBar();
-    QImage tryRotate(QImage image, qreal angle);
-    QImage extractImage(QGraphicsRectItem *item);
     void deleteBlockRect(QGraphicsRectItem *item);
     QGraphicsView *m_view;
     QGraphicsPixmapItem *m_image;
-    QImage m_realImage;
-    //QImage old_pixmap;
-    QImage pm2;
-    QImage pm4;
-    QImage pm8;
-    QImage pm16;
     QGraphicsRectItem *m_CurrentBlockRect;
     QGraphicsRectItem *m_LastSelected;
     SelectStates selecting;
     QRectF blockRect;
     QRectF selBlockRect;
     bool hasImage;
-    qreal  m_scale;
-    qreal m_rotate;
     Qt::MouseButton buttonPressed;
     QCursor *magnifierCursor;
     int near_res;
     QPointer<QToolBar> toolbar;
     ActionList actionList;
-    SideBar * sideBar;
+    QRect redRect;
+    bool xred;
 };
 
 #endif // QGRAPHICSINPUT_H

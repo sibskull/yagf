@@ -1,5 +1,5 @@
 /*
-    YAGF - cuneiform OCR graphical front-end
+    YAGF - cuneiform and tesseract OCR graphical front-end
     Copyright (C) 2009-2012 Andrei Borovsky <anb@symmetrica.net>
 
     This program is free software: you can redistribute it and/or modify
@@ -14,39 +14,33 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 */
 
-#ifndef IMAGEIOMANAGER_H
-#define IMAGEIOMANAGER_H
+#ifndef TBLOCK_H
+#define TBLOCK_H
 
-#include <QObject>
-#include <QImageReader>
-#include <QPixmap>
+#include <QRect>
+#include <QList>
+#include <QString>
 
-class ImageIOManager : public QObject
+class Block : public QRect
 {
-    Q_OBJECT
 public:
-    explicit ImageIOManager(QObject *parent = 0);
-    ~ImageIOManager();
-    bool open(const QString &fileName);
-    QPixmap & pixmap(int sf = 2);
-    void clearFragment();
-signals:
-
-public slots:
-
+    explicit Block( int x, int y, int width, int height );
+    Block(const QRect &r);
+    int blockNumber();
+    void setBlockNumber(const int value);
+    void setLanguage(const QString &lang);
+    QString getLanguage();
 private:
-    void makeSmall();
-    QString file;
-    QImageReader ir;
-    QImage *imgb2;
-    QImage *imgb4;
-    QImage *imgb8;
-    QPixmap pmb2;
-    QPixmap pmb4;
-    QPixmap pmb8;
-    QPixmap * fragment;
+    int number;
+    QString language;
+    
 };
 
-#endif // IMAGEIOMANAGER_H
+typedef QList<Block> TBlocks;
+
+void sortBlocks(TBlocks &blocks);
+
+#endif // TBLOCK_H

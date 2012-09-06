@@ -57,16 +57,10 @@ void DropLabel::dragLeaveEvent(QDragLeaveEvent *event)
 
 void DropLabel::dropEvent(QDropEvent *event)
 {
-  //  QList<QListWidgetItem *> lwi = lw->selectedItems();
-    if (event->mimeData()->formats().contains("text/uri-list")) {
-        setCursor(Qt::ArrowCursor);
-        event->setDropAction(Qt::MoveAction);
+    if (event->dropAction() == Qt::MoveAction)
+        event->ignore();
+    else
         event->accept();
-
-    }
-    //    foreach(QListWidgetItem * iw, lwi)
-    //        lw->model()->removeRow(lw->row(iw));
-    //}
 }
 
 void DropLabel::setListWidget(QListWidget *w)

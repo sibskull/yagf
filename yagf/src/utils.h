@@ -25,5 +25,10 @@ QString extractFileName(const QString &path);
 QString extractFilePath(const QString &path);
 QString extractDigits(const QString &fn);
 bool findProgram(const QString &name);
+inline bool _contains(qreal x1, qreal x2, qreal xc)
+{
+    return ((xc >= x1) && (xc <= x2)) || ((xc <= x1) && (xc >= x2));
+}
+
 
 #endif

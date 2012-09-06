@@ -48,8 +48,9 @@ int main(int argc, char *argv[])
     QApplication app(argc, argv);
     parseCmdLine(app.arguments());
     QTranslator translator;
-    if (!translator.load("yagf_" + QLocale::system().name(), "/usr/local/share/yagf/translations"))
-        translator.load("yagf_" + QLocale::system().name(), "/usr/share/yagf/translations");
+    QString qmName = "yagf_" + QLocale::system().name();
+    if (!translator.load(qmName, "/usr/local/share/yagf/translations"))
+        translator.load(qmName, "/usr/share/yagf/translations");
     app.installTranslator(&translator);
     QTranslator translator2;
     translator2.load("qt_" + QLocale::system().name(), "/usr/share/qt4/translations");

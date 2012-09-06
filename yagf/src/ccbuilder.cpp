@@ -18,6 +18,7 @@
 */
 
 #include "ccbuilder.h"
+#include "settings.h"
 #include <QRgb>
 #include <QRect>
 #define XDEBUG
@@ -477,6 +478,8 @@ int CCBuilder::labelCCs()
     image = tmp;
     w = image.width();
     h = image.height();
+    if (w*h == 0)
+        return 0;
     labels = new quint32 [image.height()*image.width()];
     flags = new bool[image.height()];
     memset(flags, 0, sizeof(bool)*image.height());

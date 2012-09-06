@@ -17,45 +17,46 @@
 
 */
 
-#ifndef SPELLCHECKER_H
-#define SPELLCHECKER_H
+#ifndef TEXTEDITOR_H
+#define TEXTEDITOR_H
 
-#include <QString>
-#include <QMap>
-#include <aspell.h>
+#include <QFile>
+#include <QTextEdit>
+#include "spellchecker.h"
 
-typedef QMap<QString, QString> StringMap;
 
-class QTextEdit;
-class QRegExp;
-class QTextCursor;
-class QStringList;
-
-class SpellChecker
+class TextEditor : public QTextEdit
 {
+    Q_OBJECT
+    
 public:
-    SpellChecker(QTextEdit *textEdit);
-    ~SpellChecker();
+    explicit TextEditor(QWidget *parent = 0);
+    ~TextEditor();
+    bool textSaved();
+    bool spellCheck(const QString &lang);
     void unSpellCheck();
-    void setLanguage(const QString &lang);
-    bool spellCheck();  //Returns false only if the dictionary not found. Otherwise always true.
-    void checkWord();
     void enumerateDicts();
     bool hasDict(const QString &shname);
-    QStringList suggestions();
+public slots:
+    void saveText();
+protected:
+    void keyPressEvent ( QKeyEvent * e );
+    void wheelEvent ( QWheelEvent * e );
+private slots:
+    void contextMenuRequested(const QPoint& point);
+    void enlargeFont();
+    void decreaseFont();
+    void updateSP();
+    void replaceWord();
+    void copyAvailable(bool yes);
+    void textChanged();
+    void copyClipboard();
 private:
-    void _checkWord(QTextCursor *cursor);
-    QTextEdit *m_textEdit;
-    QRegExp *m_regExp;
-    QString m_lang1;
-    QString m_lang2;
-    StringMap *m_map;
-    AspellConfig *spell_config1;
-    AspellConfig *spell_config2;
-    AspellSpeller *spell_checker1;
-    AspellSpeller *spell_checker2;
-    QStringList *dictList;
-	QString bad_language;
+    void saveHtml(QFile *file);
+private:
+    SpellChecker spellChecker;
+    bool hasCopy;
+    bool mTextSaved;
 };
 
-#endif // SPELLCHECKER_H
+#endif // TEXTEDITOR_H

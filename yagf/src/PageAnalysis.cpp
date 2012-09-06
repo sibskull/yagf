@@ -21,6 +21,7 @@
 #include "CCAnalysis.h"
 #include "ccbuilder.h"
 #include "analysis.h"
+#include "utils.h"
 #include <QImage>
 #include <QPixmap>
 #include <QRect>
@@ -37,14 +38,16 @@
 
  QRect BlockSplitter::getRootBlock(const QImage &image)
  {
+     if (image.isNull())
+         return QRect(0,0,0,0);
      QImage img1 = image;
      QRect result = blockAllText();
      RotationCropper rc(&img1, QColor("white").rgb(), generalBr);
-     QRect r = rc.crop();
-     result.setWidth(result.width() + r.x());
-     result.setX(result.x() + r.x());
-     result.setHeight(result.height()+r.y());
-     result.setY(result.y() + r.y());
+     CCBuilder cb(img1);
+     //img1.save("/home/anre/pictures/ttt.png");
+     QRect r = cb.crop();//rc.crop();
+     QRect r1(result.x() + r.x(), result.y() + r.y(), result.width(), result.height());
+     result = r1;
      foreach (Rect rc, bars) {
          bars.removeOne(rc);
          rc.x1 += r.x();
@@ -64,9 +67,7 @@
 
  QRect BlockSplitter::blockAllText()
  {
-     qreal x = img.width() / 2;
-     qreal y = img.height() / 2;
-     img = img.transformed(QTransform().translate(-x, -y).rotate(m_rotate).translate(x, y), Qt::SmoothTransformation);
+     //img = img.transformed(QTransform().translate(-x, -y).rotate(m_rotate).translate(x, y), Qt::SmoothTransformation);
      if (!img.isNull()) {
          CCBuilder * cb = new CCBuilder(img);
          cb->setGeneralBrightness(360);
@@ -74,13 +75,10 @@
          cb->labelCCs();
          CCAnalysis * an = new CCAnalysis(cb);
          an->analize();
-  //       an->rotateLines(-atan(an->getK()));
          lines = an->getLines();
          foreach(TextLine l, lines)
              if (l.count() < 3)
                  lines.removeOne(l);
-         //QPoint orig;
-         //graphicsInput->imageOrigin(orig);
          int minX = 100000;
          int minY = 100000;
          int maxX = 0;
@@ -118,6 +116,8 @@
          delete an;
          generalBr = cb->getGB();
          delete cb;
+         minX = minX <= 0 ? 1 :minX;
+         minY = minY <= 0 ? 1 :minY;
          return QRect(minX*2*m_scale, minY*2*m_scale, (maxX-minX)*2*m_scale, (maxY-minY)*2*m_scale);
      }
      return QRect(0, 0, 0, 0);
@@ -150,19 +150,12 @@
      }
  }
 
- bool rectLessThan(const Rect &r1, const Rect &r2)
- {
-     if (r1.y1 < r2.y1)
-         return true;
-     if (r1.x1 < r2.x1)
-         return true;
-     return false;
- }
+
 
  void BlockSplitter::splitBlocks()
  {
      QRect r = getRootBlock(img);
-     Rect b;
+    Rect b;
      b.x1 = r.x();
      b.y1 = r.y();
      b.x2 = b.x1 + r.width();
@@ -171,7 +164,7 @@
      blocks.append(b);
      splitVertical();
      splitHorisontal();
-     qSort(blocks.begin(), blocks.end(), rectLessThan);
+//     qSort(blocks.begin(), blocks.end(), rectLessThan);
      for (int i = blocks.count() -1; i >=0; i--) {
          Rect r  = blocks.at(i);
          if (!isBlockRecogniseable(r))
@@ -203,17 +196,18 @@
                  if (abs(bar.y2 - bar.y1) > (bar.x2-bar.x1))
                      continue;
                 int ymid = (bar.y1 + bar.y2)/2;
-                if ((block.y1 < (ymid - 5)) &&(block.y2 > (ymid + 5))) {
-                    Rect block1 = block;
-                    block1.y2 = ymid -2;
-                    Rect block2 = block;
-                    block2.y1 = ymid + 2;
-                    blocks.removeAll(block);
-                    blocks.append(block1);
-                    blocks.append(block2);
-                    didSplit = true;
-                    break;
-                }
+                if ((block.y1 < (ymid - 5)) &&(block.y2 > (ymid + 5)))
+                    if (_contains(bar.x1, bar.x2, block.x1)||_contains(bar.x1, bar.x2, block.x2)||_contains(block.x1, block.x2, bar.x1)||_contains(block.x1, block.x2, bar.x2)) {
+                        Rect block1 = block;
+                        block1.y2 = ymid -2;
+                        Rect block2 = block;
+                        block2.y1 = ymid + 2;
+                        blocks.removeAll(block);
+                        blocks.append(block1);
+                        blocks.append(block2);
+                        didSplit = true;
+                        break;
+                    }
             }
         }
      }

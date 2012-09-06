@@ -21,7 +21,22 @@
 #define YCOMMMON_H
 #include <QList>
 #include <QPoint>
+#include <QRect>
+#include <QRectF>
 
 typedef QList<QPoint> QPointList;
+
+inline QRect QRectF2Rect(const QRectF &rf)
+{
+    QRect r;
+    r.setX(rf.x());
+    r.setY(rf.y());
+    r.setWidth(rf.width());
+    r.setHeight(rf.height());
+    return r;
+}
+
+
+
 
 #endif

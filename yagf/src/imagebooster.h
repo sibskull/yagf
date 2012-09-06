@@ -1,6 +1,6 @@
 /*
     YAGF - cuneiform and tesseract OCR graphical front-ends
-    Copyright (C) 2009-2011 Andrei Borovsky <anb@symmetrica.net>
+    Copyright (C) 2009-2012 Andrei Borovsky <anb@symmetrica.net>
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -17,26 +17,31 @@
 
 */
 
-#ifndef DROPLABEL_H
-#define DROPLABEL_H
-#include <QLabel>
+#ifndef IMAGEBOOSTER_H
+#define IMAGEBOOSTER_H
 
-class QListWidget;
+#include <QObject>
+#include <QImage>
 
-class DropLabel : public QLabel
+class ImageBooster : public QObject
 {
     Q_OBJECT
 public:
-    DropLabel(QWidget * parent = 0, Qt::WindowFlags f = 0);
-    void setListWidget(QListWidget * w);
+    explicit ImageBooster(QObject *parent = 0);
+    ~ImageBooster();
+    void boost(QImage * image);
+    void brighten(QImage * image, int p, int q);
+    void flatten(QImage * image);
+    void sharpen(QImage * image);
 signals:
-    void pageRemoved(int id);
-protected:
-    void dragEnterEvent(QDragEnterEvent *event);
-    void dragLeaveEvent(QDragLeaveEvent *event);
-    void dropEvent(QDropEvent *event);
+
+public slots:
 private:
-   QListWidget * lw;
+    void buildProfile(QImage *image);
+    void sharpenEdges(quint32 * r, quint32 * g, quint32 * b, quint32 * br, int w);
+    void analyseStripe(QRgb *line, int i, int w, qreal &med, qreal &med1, int &start);
+private:
+    quint32 * profile;
 };
 
-#endif // DROPLABEL_H
+#endif // IMAGEBOOSTER_H

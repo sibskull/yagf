@@ -1,4 +1,6 @@
-<!DOCTYPE TS><TS>
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE TS>
+<TS version="2.0">
 <context>
     <name>AdvancedConfigDialog</name>
     <message>
@@ -37,7 +39,7 @@
         <translation>Розташування теки tessdata</translation>
     </message>
 </context>
-<context encoding="UTF-8">
+<context>
     <name>MainForm</name>
     <message>
         <source>Recognition language</source>
@@ -56,36 +58,8 @@
         <translation>У вікні редактора незбережений текст. Зберегти?</translation>
     </message>
     <message>
-        <source>Russian</source>
-        <translation>Російська</translation>
-    </message>
-    <message>
-        <source>Croatian</source>
-        <translation>Хорватська</translation>
-    </message>
-    <message>
-        <source>English</source>
-        <translation>Англійська</translation>
-    </message>
-    <message>
-        <source>French</source>
-        <translation>Французька</translation>
-    </message>
-    <message>
-        <source>German</source>
-        <translation>Німецька</translation>
-    </message>
-    <message>
-        <source>Russian-English</source>
-        <translation>Російсько-англійська</translation>
-    </message>
-    <message>
         <source>Warning</source>
         <translation>Попередження</translation>
-    </message>
-    <message>
-        <source>xsane not found</source>
-        <translation>xsane не знайдено</translation>
     </message>
     <message>
         <source>Error</source>
@@ -108,10 +82,6 @@
         <translation>програму не знайдено</translation>
     </message>
     <message>
-        <source>Save Text</source>
-        <translation>Зберегти текст</translation>
-    </message>
-    <message>
         <source>About YAGF</source>
         <translation>Про програму</translation>
     </message>
@@ -120,129 +90,8 @@
         <translation>http://symmetrica.net/cuneiform-linux/yagf-en.html</translation>
     </message>
     <message>
-        <source>Czech</source>
-        <translation>Чеська
-</translation>
-    </message>
-    <message>
-        <source>Bulgarian</source>
-        <translation>Болгарська</translation>
-    </message>
-    <message>
-        <source>Danish</source>
-        <translation>Данська</translation>
-    </message>
-    <message>
-        <source>Dutch</source>
-        <translation>Голандська</translation>
-    </message>
-    <message>
-        <source>Estonian</source>
-        <translation>Естонська</translation>
-    </message>
-    <message>
-        <source>Hungarian</source>
-        <translation>Угорська</translation>
-    </message>
-    <message>
-        <source>Italian</source>
-        <translation>Італійська</translation>
-    </message>
-    <message>
-        <source>Latvian</source>
-        <translation>Латвійська</translation>
-    </message>
-    <message>
-        <source>Lithuanian</source>
-        <translation>Литовська</translation>
-    </message>
-    <message>
-        <source>Polish</source>
-        <translation>Польська</translation>
-    </message>
-    <message>
-        <source>Portuguese</source>
-        <translation>Португальска</translation>
-    </message>
-    <message>
-        <source>Romanian</source>
-        <translation>Румунська</translation>
-    </message>
-    <message>
-        <source>Spanish</source>
-        <translation>Іспанська</translation>
-    </message>
-    <message>
-        <source>Swedish</source>
-        <translation>Шведська</translation>
-    </message>
-    <message>
-        <source>Serbian</source>
-        <translation>Сербська</translation>
-    </message>
-    <message>
-        <source>Slovenian</source>
-        <translation>Словенська</translation>
-    </message>
-    <message>
-        <source>Ukrainian</source>
-        <translation>Українська</translation>
-    </message>
-    <message>
-        <source>libxspreload.so not found</source>
-        <translation>libxspreload.so не знайдено</translation>
-    </message>
-    <message>
-        <source>Image loading error</source>
-        <translation>Помилка завантаження зображення</translation>
-    </message>
-    <message>
-        <source>Image %1 could not be loaded</source>
-        <translation>Неможливо завантажити зображення %1</translation>
-    </message>
-    <message>
-        <source>Text Files (*.txt)</source>
-        <translation>Текстові файли (*.txt)</translation>
-    </message>
-    <message>
-        <source>HTML Files (*.html)</source>
-        <translation>Файли HTML (*.html)</translation>
-    </message>
-    <message>
         <source>Save Image</source>
         <translation>Зберегти зображення</translation>
-    </message>
-    <message>
-        <source>Undo<byte value="x9"/>Ctrl+Z</source>
-        <translation>Повернути<byte value="x9"/>Ctrl+Z</translation>
-    </message>
-    <message>
-        <source>Redo<byte value="x9"/>Ctrl+Shift+Z</source>
-        <translation>Повторити<byte value="x9"/>Ctrl+Shift+Z</translation>
-    </message>
-    <message>
-        <source>Select All<byte value="x9"/>Ctrl+A</source>
-        <translation>Виділити все<byte value="x9"/>Ctrl+A</translation>
-    </message>
-    <message>
-        <source>Cut<byte value="x9"/>Ctrl+X</source>
-        <translation>Вирізати<byte value="x9"/>Ctrl+X</translation>
-    </message>
-    <message>
-        <source>Larger Font<byte value="x9"/>Ctrl++</source>
-        <translation>Збільшити шрифт<byte value="x9"/>Ctrl++</translation>
-    </message>
-    <message>
-        <source>Smaller Font<byte value="x9"/>Ctrl+-</source>
-        <translation>Зменшити шрифт<byte value="x9"/>Ctrl+-</translation>
-    </message>
-    <message>
-        <source>Copy<byte value="x9"/>Ctrl+C</source>
-        <translation>Копіювати<byte value="x9"/>Ctrl+C</translation>
-    </message>
-    <message>
-        <source>Paste<byte value="x9"/>Ctrl+V</source>
-        <translation>Вставити<byte value="x9"/>Ctrl+V</translation>
     </message>
     <message>
         <source>Recognizing pages...</source>
@@ -281,26 +130,6 @@
         <translation>Вибрана тека непорожня</translation>
     </message>
     <message>
-        <source>Finnish (tesseract only)</source>
-        <translation>Фінська (лише tesseract)</translation>
-    </message>
-    <message>
-        <source>Greek (tesseract only)</source>
-        <translation>Грецька (лише tesseract)</translation>
-    </message>
-    <message>
-        <source>Norwegian (tesseract only)</source>
-        <translation>Норвезька (лише tesseract)</translation>
-    </message>
-    <message>
-        <source>Slovakian (tesseract only)</source>
-        <translation>Словацька (лише tesseract)</translation>
-    </message>
-    <message>
-        <source>Turkish (tesseract only)</source>
-        <translation>Турецька (лише tesseract)</translation>
-    </message>
-    <message>
         <source>Starting tesseract failed</source>
         <translation>Невдалий запуск tesseract</translation>
     </message>
@@ -322,21 +151,46 @@ Please install either cuneiform or tesseract</source>
         <source>No PDF converter installed</source>
         <translation>Не встановлено PDF-конвертера</translation>
     </message>
-    <message>
-        <source>German Gothic (tesseract 3+)</source>
-        <translation>Німецька готська (лише tesseract)</translation>
-    </message>
-    <message>
-        <source>Hebrew (tesseract 3.0.1+)</source>
-        <translation>Іврит (лише tesseract)</translation>
-    </message>
-    <message>
-        <source>Swedish Gothic (tesseract 3+)</source>
-        <translation>Шведська готська (лише tesseract)</translation>
-    </message>
-    <message encoding="UTF-8">
+    <message utf8="true">
         <source>&lt;p align=&quot;center&quot;&gt;&lt;b&gt;YAGF - Yet Another Graphical Front-end for cuneiform and tesseract OCR engines&lt;/b&gt;&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;Version %1&lt;/p&gt; &lt;p align=&quot;center&quot;&gt;Ⓒ 2009-2012 Andrei Borovsky&lt;/p&gt; This is a free software distributed under GPL v3. Visit &lt;a href=&quot;http://symmetrica.net/cuneiform-linux/yagf-en.html&quot;&gt;http://symmetrica.net/cuneiform-linux/yagf-en.html&lt;/a&gt; for more details.</source>
         <translation>&lt;p align=&quot;center&quot;&gt;&lt;b&gt;YAGF - Ще один графічний фронт-енд (Yet Another Graphical Front-end) для рушіїв з розпізнавання cuneiform та tesseract&lt;/b&gt;&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;Version %1&lt;/p&gt; &lt;p align=&quot;center&quot;&gt;Ⓒ 2009-2012 Andrei Borovsky&lt;/p&gt; Це вільне програмне забезпечення, яке поширюється піл ліцензією GPL v3. Відвідайте &lt;a href=&quot;http://symmetrica.net/cuneiform-linux/yagf-en.html&quot;&gt;http://symmetrica.net/cuneiform-linux/yagf-en.html&lt;/a&gt; , щоб отримати більше інформації.</translation>
+    </message>
+    <message>
+        <source>Using Cuneiform</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Using Tesseract</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Scanning is impossible</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No scanning front-end is found. Please install XSane in order to perform scanning.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Failed to Load Image</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Failed to detect text areas on this page.
+The page possibly lacks contrast. Try to select blocks manually.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The selected directoy is not empty. Please select or create another one.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Failed to save the project.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Failed to load project.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -582,10 +436,6 @@ Please install either cuneiform or tesseract</source>
         <translation>Вирівняти</translation>
     </message>
     <message>
-        <source>Correct the page skew</source>
-        <translation>Виправити нахил сторінки</translation>
-    </message>
-    <message>
         <source>Advanced Settings</source>
         <translation>Роширені налаштування</translation>
     </message>
@@ -604,6 +454,34 @@ Please install either cuneiform or tesseract</source>
     <message>
         <source>Toggle Large/Small Icons</source>
         <translation>Перемикнути великі/маленькі піктограми</translation>
+    </message>
+    <message>
+        <source>toolBar_2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Correct the page skew </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select Recognition Language</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Prepare Page</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Save Project...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Load Project...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Prepare the page for recognition</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -658,6 +536,130 @@ Try to install an appropriate aspell dictionary.</source>
         <translation>Потрібні словники орфографії (%1) не знайдено.
 Перевірку орфографії вимкнено.
 Спробуйте встановити відповідний словник aspell.</translation>
+    </message>
+    <message>
+        <source>Warning</source>
+        <translation type="unfinished">Попередження</translation>
+    </message>
+    <message>
+        <source>Select Project Directory</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Bulgarian</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Czech</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Danish</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Dutch</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>English</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>French</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>German</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Hungarian</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Italian</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Latvian</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Lithuanian</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Polish</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Portuguese</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Romanian</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Russian</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Russian-English</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Spanish</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Serbian</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Slovenian</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Swedish</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ukrainian</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Finnish</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>German Gothic</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Greek</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Hebrew</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Norwegian</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Slovak</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Swedish Gothic</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Turkish</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

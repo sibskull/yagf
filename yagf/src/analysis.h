@@ -31,6 +31,7 @@
 typedef struct _Rect
 {
     qint32 x1, x2, y1, y2;
+    int dotCount;
 } Rect;
 
 bool operator==(Rect r1, Rect r2);
@@ -60,10 +61,11 @@ class CCAnalysis : public QObject
 public:
         CCAnalysis(CCBuilder * builder);
 	~CCAnalysis();
-        void analize(bool extractBars = false);
+        bool analize(bool extractBars = false);
         Bars addBars();
         TextLine extractLine();
 	int getGlyphCount();
+    QList<Rect> getGlyphs();
 	int getMediumGlyphHeight();
 	int getMediumGlyphWidth();
 	int getMediumLetterSpace();
@@ -76,12 +78,13 @@ public:
         qreal getK();
         void rotateLines(qreal phi, const QPoint &c = QPoint(0,0));
 private:
-        void extractComponents(bool extractBars = false);
+        bool extractComponents(bool extractBars = false);
         void classifyGlyphs();
         int findAdjacent(Rect &r);
         void normalizeLines();
         void rotatePhi(qreal phi, const QPoint &c, QPoint &p);
-        void addBarsHorizontal();
+        void addBarsHorizontal(int hoffset = 0, int height = -1, int woffset = 0, int width = -1);
+        void addBarsHorisontalAfterVertical();
         void addBarsVertical();
 private:
         CCBuilder * builder;
@@ -98,6 +101,7 @@ private:
 	int stringsCount;
         qreal k;
     Bars bars;
+    QVector<Rect> verts;
 };
 
 #endif

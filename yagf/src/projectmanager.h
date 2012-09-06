@@ -16,19 +16,50 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "qsnippet.h"
-#include <QString>
-#include <QList>
+#include <QObject>
 
-typedef QList<QSnippet *> SnippetList;
 
-class ProjectManager : public QObject
+class QXmlStreamWriter;
+class QXmlStreamReader;
+
+class ProjectSaver : public QObject
 {
+    Q_OBJECT
 public:
-    ProjectManager(SnippetList * sl);
-    ~ProjectManager();
-    void save(const QString &fileName);
-    void load(const QString &fileName);
+    explicit ProjectSaver(QObject *parent = 0);
+    bool save(const QString &dir);
+signals:
+
+public slots:
 private:
-    SnippetList * snippets;
+    void writePages();
+    void writeBlocks();
+    void writeSettings();
+    QString copyFile(const QString &source);
+private:
+    QXmlStreamWriter * stream;
+    QString directory;
+
+};
+
+class ProjectLoader : public QObject
+{
+    Q_OBJECT
+public:
+    explicit ProjectLoader(QObject *parent = 0);
+    bool load(const QString &dir);
+signals:
+    void languageChanged();
+    void engineChanged();
+public slots:
+private:
+    bool readPages();
+    bool readBlocks();
+    bool readSettings();
+    void loadPage();
+    bool readNextElement();
+private:
+    QXmlStreamReader * stream;
+    QString directory;
+
 };

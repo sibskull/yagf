@@ -26,33 +26,22 @@
 #include <QRect>
 #include <QPixmap>
 
-typedef QList<QRect> BolockList;
-
 class QSnippet : public QListWidgetItem
 {
 public:
     explicit QSnippet(QListWidget *parent = 0);
-    bool addFile(const QString &name, const QImage * image = NULL);
-    void setRotation(qreal rot);
-    qreal getRotation();
-    void setScale(double sc);
-    double getScale();
-    void setCrop1(const QRect &rect);
-    QRect getCrop1();
-    void setCrop2(const QRect &rect);
-    QRect getCrop2();
+    bool setPage(int id, const QString &name, const QImage &image = QImage());
     QString getName();
-    BolockList * blocks();
+    int pageID();
+    int imageHeight();
+    int imageWidth();
 signals:
-
 public slots:
 private:
-    BolockList blockList;
-    qreal rotation;
-    double scale;
     QString name;
-    QRect crop1;
-    QRect crop2;
-};
+    int pid;
+    int ih;
+    int iw
+;};
 
 #endif // QSNIPPET_H

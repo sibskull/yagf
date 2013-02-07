@@ -18,12 +18,12 @@
 */
 
 #include "tpage.h"
-#include "imagebooster.h"
 #include "settings.h"
 #include "ccbuilder.h"
 #include "CCAnalysis.h"
 #include "PageAnalysis.h"
 #include "analysis.h"
+#include "imageprocessor.h"
 #include <QImageReader>
 #include <QImageWriter>
 #include <QSize>
@@ -81,26 +81,14 @@ bool Page::loadFile(QString fileName, bool loadIntoView)
         delete ccbuilder;
         ccbuilder = 0;
     }
-    if (!loadedBefore) {
-        settings = Settings::instance();
-        if (settings->getCropLoaded()) {
-            ccbuilder = new CCBuilder(img2);
-            ccbuilder->setGeneralBrightness(360);
-            ccbuilder->setMaximumColorComponent(100);
-            QRect r = ccbuilder->crop();
-            crop1 = r;
-            img2 = img2.copy(crop1);
-            delete ccbuilder;
-            ccbuilder = 0;
-          //  ccbuilder = new CCBuilder(img2);
-
-        }
-        //ccbuilder->labelCCs();
-        //mGeneralBrightness = ccbuilder->getGB();
-    } else {
-        if (settings->getCropLoaded())
-            img2 = img2.copy(crop1);
-    }
+    ImageProcessor ip;
+    ip.binarize(img2);
+    settings = Settings::instance();
+    if (settings->getCropLoaded())
+        ip.crop();
+    img2 = ip.finalize();
+    img2.save("/home/andrei/yy/bin.png"
+              );
     rotateImageInternal(img2, rotation);
     scaleImages();
     mFileName = fileName;
@@ -331,8 +319,6 @@ void Page::deskew(bool recreateCB)
         if (an->analize()) {
             QImage timg = tryRotate(img2, -atan(an->getK())*360/6.283);
             CCBuilder * cb2 = new CCBuilder(timg);
-            cb2->setGeneralBrightness(360);
-            cb2->setMaximumColorComponent(100);
             cb2->labelCCs();
             CCAnalysis * an2 = new CCAnalysis(cb2);
             an2->analize();
@@ -392,8 +378,6 @@ void Page::prepareCCBuilder()
 {
     if (!ccbuilder) {
         ccbuilder = new CCBuilder(img2);
-        ccbuilder->setGeneralBrightness(360);
-        ccbuilder->setMaximumColorComponent(100);
         ccbuilder->labelCCs();
     }
 }
@@ -404,7 +388,7 @@ bool Page::splitPage(bool preprocess)
     prepareCCBuilder();
     if (preprocess) {
         QString fn =Settings::instance()->workingDir() + QString::fromUtf8("tmp-%1.bmp").arg((quint64)img2.data_ptr());
-        saveTmpPage(fn, !preprocessed, !preprocessed, false);
+        saveTmpPage(fn, !preprocessed, !preprocessed);
         loadedBefore = false;
         loadFile(fn);
         blocks = splitInternal();
@@ -416,17 +400,6 @@ bool Page::splitPage(bool preprocess)
         loadFile(fn);
         blocks = splitInternal();
     }*/
-        if (!preprocessed) {
-            fn =Settings::instance()->workingDir() + QString::fromUtf8("tmp-%1.bmp").arg((quint64)img2.data_ptr());
-            if (blocks.count() == 0) {
-                saveTmpPage(fn, false, false, true, 2);
-            } else {
-                saveTmpPage(fn, false, false, false, 7, 5);
-            }
-            loadedBefore = false;
-            loadFile(fn);
-            blocks = splitInternal();
-        }
         preprocessed = true;
     } else {
         deskew();
@@ -555,17 +528,18 @@ QImage Page::currentImage()
     return img2;
 }
 
-void Page::saveTmpPage(const QString &fileName, bool cc, bool boost, bool brighten, int p, int q)
+void Page::saveTmpPage(const QString &fileName, bool cc, bool binarize)
 {
     QImageReader ir(mFileName);
     QImage image = ir.read().convertToFormat(QImage::Format_ARGB32);
     if (image.isNull())
         return;
-    ImageBooster booster;
-    if (boost)
-        booster.boost(&image);
-    if (brighten)
-        booster.brighten(&image,p,q);
+    if (binarize) {
+        ImageProcessor ip;
+        ip.binarize(image);
+        image = ip.finalize();
+    }
+
     if (cc) {
         deskewed = false;
         deskew(false);

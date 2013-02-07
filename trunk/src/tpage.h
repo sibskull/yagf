@@ -83,7 +83,7 @@ private:
     void scaleRect(QRect &rect);
     QImage tryRotate(QImage image, qreal angle);
     QImage currentImage();
-    void saveTmpPage(const QString &fileName, bool cc,bool boost, bool brighten, int p = 1, int q =1);
+    void saveTmpPage(const QString &fileName, bool cc, bool binarize);
     QList<Rect> splitInternal();
     void prepareCCBuilder();
 private:

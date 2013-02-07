@@ -42,7 +42,7 @@
          return QRect(0,0,0,0);
      QImage img1 = image;
      QRect result = blockAllText();
-     RotationCropper rc(&img1, QColor("white").rgb(), generalBr);
+     RotationCropper rc(&img1, QColor("white").rgb());
      CCBuilder cb(img1);
      //img1.save("/home/anre/pictures/ttt.png");
      QRect r = cb.crop();//rc.crop();
@@ -70,8 +70,6 @@
      //img = img.transformed(QTransform().translate(-x, -y).rotate(m_rotate).translate(x, y), Qt::SmoothTransformation);
      if (!img.isNull()) {
          CCBuilder * cb = new CCBuilder(img);
-         cb->setGeneralBrightness(360);
-         cb->setMaximumColorComponent(100);
          cb->labelCCs();
          CCAnalysis * an = new CCAnalysis(cb);
          an->analize();
@@ -114,7 +112,6 @@
          bars = an->addBars();
 
          delete an;
-         generalBr = cb->getGB();
          delete cb;
          minX = minX <= 0 ? 1 :minX;
          minY = minY <= 0 ? 1 :minY;
@@ -181,7 +178,7 @@
  {
      const QImage * img = &image;
      QImage * img2 = const_cast<QImage *>(img);
-     RotationCropper rc(img2, QColor("white").rgb(), generalBr);
+     RotationCropper rc(img2, QColor("white").rgb());
      return rc.crop();
  }
 

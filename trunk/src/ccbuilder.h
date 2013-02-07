@@ -47,11 +47,6 @@ public:
 
     ~CCBuilder();
 
-    /* This method sets the threshold for the basckround. If pixel r+g+b value is greater than this value the pixel is considered
-       as the (white) background. Otherwise it is considered as the foregraound to be analyzed. */
-    void setGeneralBrightness(int value);
-    void setMaximumColorComponent(int value);
-
     /* This method resets CCs labels so that they occupy a continuos range of numbers */
     void compactLabels();
 
@@ -69,8 +64,6 @@ public:
 
     QRect crop();
 
-    int getGB();
-
 signals:
 
 public slots:
@@ -82,13 +75,11 @@ private:
     void setLabel(int x, int y, int newValue);
     void relabelLineLR(int y);
     void relabelLineRL(int y);
-    bool isForeground(QRgb value);
+    inline bool isForeground(QRgb value);
     void scanFirstLineLR();
     void scanLineLR(int y);
     void labelLeftmostPoint(int y);
     void labelRightmostPoint(int y);
-    int generalBrightness;
-    int maximumComponentBrightness;
     QImage image;
     quint32 * labels;
     bool * flags;

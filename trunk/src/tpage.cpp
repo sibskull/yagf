@@ -85,7 +85,7 @@ bool Page::loadFile(QString fileName, bool loadIntoView)
     ip.binarize(img2);
     settings = Settings::instance();
     if (settings->getCropLoaded())
-        ip.crop();
+        crop1 = ip.crop();
     img2 = ip.finalize();
     img2.save("/home/andrei/yy/bin.png"
               );

@@ -89,7 +89,6 @@ private:
 private:
     qreal scale;
     qreal rotation;
-    int mGeneralBrightness;
     QRect crop1;
     QRect crop2;
     bool deskewed;

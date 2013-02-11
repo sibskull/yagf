@@ -24,20 +24,8 @@ Binarize::Binarize(QObject *parent) :
 {
 }
 
-const QRgb clBlack = qRgb(0,0,0);
-const QRgb clWhite = qRgb(255,255,255);
-
-
-void Binarize::otsu(const QImage &input, QImage &output, int left, int top, int width, int height)
+int Binarize::otsu(const QImage &input, quint32 &background, int left, int top, int width, int height)
 {
-   uchar lut[256*3] = {0};
-   int lutcount = 0;
-   for (int i = 0; i < 256; i++) {
-       for(int j = 0; j < 3; j++) {
-           lut[lutcount] = i;
-           lutcount++;
-       }
-   }
 
     if (!width)
         width = input.width();
@@ -45,15 +33,11 @@ void Binarize::otsu(const QImage &input, QImage &output, int left, int top, int 
         height = input.height();
     float hist[259]={0.0F};
     uint ht[259] = {0};
-    output = input;
+ //   output = input;
     for (int y = top; y < height; y++) {
-       QRgb * lineIn = (QRgb *)input.scanLine(y);
-       quint32 * lineOut = (quint32 *)output.scanLine(y);
+       quint32 * lineIn = (quint32 *)input.scanLine(y);
        for(int x = left; x < width; x++) {
-           QRgb cur = lineIn[x];
-           uint grayLevel = (qRed(cur) + qGreen(cur) + qBlue(cur));
-           ht[lut[grayLevel]]++;
-           lineOut[x] = lut[grayLevel];
+           ht[lineIn[x]]++;
       }
     }
 
@@ -104,10 +88,22 @@ void Binarize::otsu(const QImage &input, QImage &output, int left, int top, int 
        }
     }
 
+    quint32 bgcount = 0;
+    quint64 bgaccum = 0;
+
     for (int y = top; y < height; y++) {
-        quint32 * lineOut = (quint32 *)output.scanLine(y);
+        quint32 * lineIn = (quint32 *)input.scanLine(y);
         for (int x = left; x < width; x++) {
-           lineOut[x] = lineOut[x] < maxK ? clBlack : clWhite;
-       }
+            if (lineIn[x] >= maxK) {
+                bgaccum += lineIn[x];
+                bgcount++;
+            }
+        }
     }
+
+    if (bgcount)
+        background = bgaccum/bgcount;
+    else
+        background = 0;
+    return maxK;
 }

@@ -20,6 +20,10 @@
 #define BINARIZE_H
 
 #include <QObject>
+#include <QRgb>
+
+const QRgb clBlack = qRgb(0,0,0);
+const QRgb clWhite = qRgb(255,255,255);
 
 class QImage;
 
@@ -28,7 +32,7 @@ class Binarize : public QObject
     Q_OBJECT
 public:
     explicit Binarize(QObject *parent = 0);
-    static void otsu(const QImage &input, QImage &output, int left = 0, int top = 0, int width = 0, int height = 0);
+    static int otsu(const QImage &input, quint32 &background, int left = 0, int top = 0, int width = 0, int height = 0);
 signals:
     
 public slots:

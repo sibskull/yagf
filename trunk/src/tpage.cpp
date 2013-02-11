@@ -82,7 +82,7 @@ bool Page::loadFile(QString fileName, bool loadIntoView)
         ccbuilder = 0;
     }
     ImageProcessor ip;
-    ip.binarize(img2);
+    ip.start(img2);
     settings = Settings::instance();
     if (settings->getCropLoaded())
         crop1 = ip.crop();
@@ -537,7 +537,7 @@ void Page::saveTmpPage(const QString &fileName, bool cc, bool binarize)
         return;
     if (binarize) {
         ImageProcessor ip;
-        ip.binarize(image);
+        ip.start(image);
         image = ip.finalize();
     }
 

@@ -32,10 +32,15 @@ class Binarize : public QObject
     Q_OBJECT
 public:
     explicit Binarize(QObject *parent = 0);
-    static int otsu(const QImage &input, quint32 &background, int left = 0, int top = 0, int width = 0, int height = 0);
+    int otsu(const QImage &input, quint32 &background, int left = 0, int top = 0, int width = 0, int height = 0);
+    int otsuMinimized(const QImage &input, quint32 median, quint32 upperbound, quint32 lowerBound, quint32 &background, int left = 0, int top = 0, int width = 0, int height = 0);
 signals:
     
 public slots:
+
+private:
+    quint32 m_maxSigma;
+    uchar m_maxK;
     
 };
 

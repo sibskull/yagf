@@ -21,7 +21,8 @@
 #include <QImage>
 
 ImageProcessor::ImageProcessor(QObject *parent) :
-    QObject(parent)
+    QObject(parent), bin()
+
 {
 }
 
@@ -29,13 +30,12 @@ void ImageProcessor::start(const QImage &input)
 {
    img = input;
    toGrayScale(input);
-   m_treshold = Binarize::otsu(gray, m_middleBG);
+   m_treshold = bin.otsu(gray, m_middleBG);
 }
 
-void ImageProcessor::binarize(const QImage &input)
+void ImageProcessor::binarize()
 {
-    img = input;
-    m_treshold = Binarize::otsu(gray, m_treshold);
+    m_treshold = bin.otsu(gray, m_middleBG);
 }
 
 QRect ImageProcessor::crop()
@@ -48,33 +48,46 @@ QRect ImageProcessor::crop()
         img = img.copy(newleft, newtop, newright-newleft, newbottom-newtop);
         gray = gray.copy(newleft, newtop, newright-newleft, newbottom-newtop);
     //}
-    return QRect(newleft, newtop, img.width(), img.height());
+        return QRect(newleft, newtop, img.width(), img.height());
+}
+
+void ImageProcessor::rebinarize( quint32 upper, quint32 lower)
+{
+    m_treshold = bin.otsuMinimized(gray, m_treshold, upper, lower, m_middleBG);
+}
+
+void ImageProcessor::nomalizeBackgroud()
+{
+    qreal k[9] = {1};
+    quint32 prevBG = m_middleBG;
+    quint32 l = img.width()/8;
+    for (int y = 0; y < img.height(); y++) {
+        quint32 * lineGray = (quint32 *)gray.scanLine(y);
+        for (int i =0; i <9; i++) {
+            prevBG = getMediumBG(&lineGray[i*8], l, prevBG);
+            k[i] = (qreal)m_middleBG/prevBG;
+        }
+        for (int x = 0; x < img.width(); x++) {
+            int ind = x/l;
+            if ((k[ind] - 1 < -0.02)||(k[ind] - 1 > 0.02)) {
+              //  if (k[ind] < 1)
+                //    lineGray[x] = lineGray[x]*k[ind]*(255 - lineGray[x]);
+                //else
+                quint32 nlg = lineGray[x]*k[ind];
+                lineGray[x] = nlg > 255 ? 255 : nlg;
+
+            }
+
+        }
+
+    }
 }
 
 QImage ImageProcessor::finalize()
 {
-    quint32 k[8] = {m_treshold};
-    quint32 prevk = m_treshold;
-    quint32 l = img.width()/8;
     for (int y = 0; y < img.height(); y++) {
         QRgb * lineGray = (QRgb *)gray.scanLine(y);
         QRgb * lineImg = (QRgb *)img.scanLine(y);
-        /*for (int i =0; i <8; i++)
-            for (int j = 0; j < l; j++) {
-                quint32 ind = i*l + j;
-                if (lineMask[ind] == clWhite) {
-                    QRgb pix = lineImg[ind];
-                    quint32 grl = (qRed(pix) + qGreen(pix) + qBlue(pix))/3;
-                    acc += grl;
-                    count++;
-                }
-                if (count < 64)
-                    k[i] = prevk;
-                else {
-                    k[i] = acc/count;
-                    prevk = k[i];
-                }
-            }*/
         for (int x = 0; x < img.width(); x++) {
            if (lineGray[x] < m_treshold)
                 lineImg[x] = qRgb(qRed(lineImg[x])/2,qGreen(lineImg[x])/2,qBlue(lineImg[x])/2);

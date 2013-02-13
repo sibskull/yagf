@@ -19,6 +19,7 @@
 #ifndef IMAGEPROCESSOR_H
 #define IMAGEPROCESSOR_H
 
+#include <binarize.h>
 #include <QObject>
 #include <QImage>
 
@@ -34,14 +35,17 @@ class ImageProcessor : public QObject
 public:
     explicit ImageProcessor(QObject *parent = 0);
     void start(const QImage &input);
-    void binarize(const QImage &input);
+    void binarize();
     QRect crop();
+    void rebinarize(quint32 upper, quint32 lower);
+    void nomalizeBackgroud();
     QImage finalize();
 signals:
     
 public slots:
 private:
     int state;
+    Binarize bin;
     QImage output;
     QImage img;
     QImage mask;
@@ -54,7 +58,9 @@ private:
     int cropBottom(const QImage &input);
     int cropLeft(const QImage &input);
     int cropRight(const QImage &input);
+
     uchar getMediumBG(QRgb * line, uint length, uchar prev);
+
     
 };
 

@@ -84,6 +84,82 @@ int Binarize::otsu(const QImage &input, quint32 &background, int left, int top, 
           sigmaK  = ((ut*wk - uk)*(ut*wk - uk))/(wk*(1-wk));
        if (sigmaK > maxSigmaK) {
            maxK = k;
+           m_maxK = maxK;
+           maxSigmaK = sigmaK;
+           m_maxSigma = sigmaK;
+       }
+    }
+
+    quint32 bgcount = 0;
+    quint64 bgaccum = 0;
+
+    for (int y = top; y < height; y++) {
+        quint32 * lineIn = (quint32 *)input.scanLine(y);
+        for (int x = left; x < width; x++) {
+            if (lineIn[x] >= maxK) {
+                bgaccum += lineIn[x];
+                bgcount++;
+            }
+        }
+    }
+
+    if (bgcount)
+        background = bgaccum/bgcount;
+    else
+        background = 0;
+    return maxK;
+}
+
+int Binarize::otsuMinimized(const QImage &input, quint32 median, quint32 upperbound, quint32 lowerBound, quint32 &background, int left, int top, int width, int height)
+{
+
+    if (!width)
+        width = input.width();
+    if (!height)
+        height = input.height();
+    float hist[259]={0.0F};
+    uint ht[259] = {0};
+ //   output = input;
+    for (int y = top; y < height; y++) {
+       quint32 * lineIn = (quint32 *)input.scanLine(y);
+       for(int x = left; x < width; x++) {
+           int  jj = lineIn[x];
+           ht[lineIn[x]]++;
+      }
+    }
+
+
+    int size = width*height;
+
+
+    for (int i = 0; i < 256; i++) {
+        hist[i] = ht[i];
+        hist[i]/=size;
+    }
+
+
+    float ut = 0;
+    for (int i = 0; i < 256; i++)
+       ut+= i*hist[i];
+
+    int maxK= m_maxK;
+    int maxSigmaK= m_maxSigma;
+
+    uint mink = median - lowerBound;
+    uint upto = median + upperbound;
+    for (int k = mink; k < upto; ++k) {
+       float wk = 0;
+       for (int i = 0; i <= k; ++i)
+           wk += hist[i];
+       float uk = 0;
+       for (int i = 0; i <=k; ++i)
+       uk += i*hist[i];
+
+       float sigmaK = 0;
+       if ((wk !=0) && (wk!=1))
+          sigmaK  = ((ut*wk - uk)*(ut*wk - uk))/(wk*(1-wk));
+       if (sigmaK > maxSigmaK) {
+           maxK = k;
            maxSigmaK = sigmaK;
        }
     }
@@ -106,4 +182,5 @@ int Binarize::otsu(const QImage &input, quint32 &background, int left, int top, 
     else
         background = 0;
     return maxK;
+
 }

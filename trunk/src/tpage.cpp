@@ -86,8 +86,14 @@ bool Page::loadFile(QString fileName, bool loadIntoView)
     settings = Settings::instance();
     if (settings->getCropLoaded())
         crop1 = ip.crop();
-
-    img2 = ip.finalize();
+    ip.binarize();
+    //img2 = img2.copy(crop1);
+    //ip.rebinarize(64, 64);
+    //ip.start(img2);
+    //crop1 = ip.crop();
+    ip.nomalizeBackgroud();
+    //ip.rebinarize(16, 16);
+      img2 = ip.finalize();
     img2.save("/home/andrei/yy/bin.png"
               );
     rotateImageInternal(img2, rotation);
@@ -145,8 +151,6 @@ bool Page::makeSmaller()
 void Page::rotate(qreal angle)
 {
     rotateImageInternal(img2, angle);
-
-
     rotation += angle;
     scaleImages();
     clearBlocks();
@@ -331,6 +335,8 @@ void Page::deskew(bool recreateCB)
             else
                 angle = -atan(an->getK())*360/6.283;
             rotate(angle);
+            QString fn = saveTmpPage(false, false);
+            loadFile(fn);
             deskewed = true;
             delete ccbuilder;
             ccbuilder = 0;
@@ -388,8 +394,7 @@ bool Page::splitPage(bool preprocess)
     QList<Rect> blocks;
     prepareCCBuilder();
     if (preprocess) {
-        QString fn =Settings::instance()->workingDir() + QString::fromUtf8("tmp-%1.bmp").arg((quint64)img2.data_ptr());
-        saveTmpPage(fn, !preprocessed, !preprocessed);
+        QString fn = saveTmpPage(!preprocessed, !preprocessed);
         loadedBefore = false;
         loadFile(fn);
         blocks = splitInternal();
@@ -529,15 +534,18 @@ QImage Page::currentImage()
     return img2;
 }
 
-void Page::saveTmpPage(const QString &fileName, bool cc, bool binarize)
+QString Page::saveTmpPage(bool cc, bool binarize)
 {
+    QString fileName =Settings::instance()->workingDir() + QString::fromUtf8("tmp-%1.bmp").arg((quint64)img2.data_ptr() - (((quint64)&cc)>>1));
     QImageReader ir(mFileName);
     QImage image = ir.read().convertToFormat(QImage::Format_ARGB32);
     if (image.isNull())
-        return;
+        return fileName;
     if (binarize) {
         ImageProcessor ip;
         ip.start(image);
+        ip.nomalizeBackgroud();
+        //ip.rebinarize(16, 16);
         image = ip.finalize();
     }
 
@@ -548,6 +556,7 @@ void Page::saveTmpPage(const QString &fileName, bool cc, bool binarize)
     //    booster.flatten(&image);
     applyTransforms(image, 1);
     image.save(fileName, "BMP");
+    return fileName;
 }
 
 

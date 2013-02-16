@@ -77,7 +77,7 @@ bool PageCollection::appendPage(const QString &fileName)
 {
         Page * p = new Page(++pid);
         connect(p,SIGNAL(refreshView()), this, SIGNAL(loadPage()));
-        if (p->loadFile(fileName)) {
+        if (p->loadFile(fileName, 0)) {
             pages.append(p);
             index = pages.count() - 1;
             emit addSnippet(index);

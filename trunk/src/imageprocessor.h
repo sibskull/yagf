@@ -40,6 +40,8 @@ public:
     void rebinarize(quint32 upper, quint32 lower);
     void nomalizeBackgroud();
     QImage finalize();
+    void tiledBinarize();
+    QImage tiledFinalize();
 signals:
     
 public slots:

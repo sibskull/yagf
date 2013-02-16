@@ -50,7 +50,7 @@ Page::~Page()
     delete ccbuilder;
 }
 
-bool Page::loadFile(QString fileName, bool loadIntoView)
+bool Page::loadFile(QString fileName, int tiled, bool loadIntoView)
 {
     // TODO: перенести в TPages.
     /*if ((fileName != "") && (sideBar->getFileNames().contains(fileName))) {
@@ -83,17 +83,22 @@ bool Page::loadFile(QString fileName, bool loadIntoView)
     }
     ImageProcessor ip;
     ip.start(img2);
+    ip.binarize();
     settings = Settings::instance();
     if (settings->getCropLoaded())
         crop1 = ip.crop();
-    ip.binarize();
+    if (tiled)
+        ip.tiledBinarize();
     //img2 = img2.copy(crop1);
     //ip.rebinarize(64, 64);
     //ip.start(img2);
     //crop1 = ip.crop();
-    ip.nomalizeBackgroud();
+    //ip.nomalizeBackgroud();
     //ip.rebinarize(16, 16);
-      img2 = ip.finalize();
+    if (tiled)
+        img2 = ip.tiledFinalize();
+    else
+        img2 = ip.finalize();
     img2.save("/home/andrei/yy/bin.png"
               );
     rotateImageInternal(img2, rotation);
@@ -336,7 +341,7 @@ void Page::deskew(bool recreateCB)
                 angle = -atan(an->getK())*360/6.283;
             rotate(angle);
             QString fn = saveTmpPage(false, false);
-            loadFile(fn);
+            loadFile(fn, 1);
             deskewed = true;
             delete ccbuilder;
             ccbuilder = 0;
@@ -396,7 +401,7 @@ bool Page::splitPage(bool preprocess)
     if (preprocess) {
         QString fn = saveTmpPage(!preprocessed, !preprocessed);
         loadedBefore = false;
-        loadFile(fn);
+        loadFile(fn, 1);
         blocks = splitInternal();
     /*if (blocks.count() == 0) {
         deskew();

@@ -30,7 +30,7 @@ void ImageProcessor::start(const QImage &input)
 {
    img = input;
    toGrayScale(input);
-   m_treshold = bin.otsu(gray, m_middleBG);
+   //m_treshold = bin.otsu(gray, m_middleBG);
 }
 
 void ImageProcessor::binarize()
@@ -67,6 +67,8 @@ void ImageProcessor::nomalizeBackgroud()
             prevBG = getMediumBG(&lineGray[i*8], l, prevBG);
             k[i] = (qreal)m_middleBG/prevBG;
         }
+
+
         for (int x = 0; x < img.width(); x++) {
             int ind = x/l;
             if ((k[ind] - 1 < -0.02)||(k[ind] - 1 > 0.02)) {
@@ -93,6 +95,30 @@ QImage ImageProcessor::finalize()
                 lineImg[x] = qRgb(qRed(lineImg[x])/2,qGreen(lineImg[x])/2,qBlue(lineImg[x])/2);
            else
                lineImg[x] = qRgb(255, 255, 255);
+        }
+    }
+    return img;
+}
+
+void ImageProcessor::tiledBinarize()
+{
+    Binarize bin;
+    mask = bin.tiledOtsu(gray);
+}
+
+QImage ImageProcessor::tiledFinalize()
+{
+    for (int y = 0; y < img.height(); y++) {
+        QRgb * lineMask = (QRgb *)gray.scanLine(y);
+        QRgb * lineImg = (QRgb *)img.scanLine(y);
+        for (int x = 0; x < img.width(); x++) {
+           uchar r =  qRed(lineImg[x]);
+           uchar g = qGreen(lineImg[x]);
+           uchar b = qBlue(lineImg[x]);
+           if (lineMask[x] == clBlack)
+               lineImg[x] = clBlack;
+           else
+               lineImg[x] = qRgb((r+255)/2 , (g+255)/2, (b+255)/2);
         }
     }
     return img;
@@ -141,7 +167,10 @@ int ImageProcessor::cropTop(const QImage &input)
                 count = 0;
             }
         }
-
+        if (count) {
+            strx += count/8;
+            count = 0;
+        }
         //if (count/(input.width() + 1 - count) >= 15)
         if(strx < 8)
             newtop++;
@@ -167,6 +196,11 @@ int ImageProcessor::cropBottom(const QImage &input)
                 count = 0;
             }
         }
+        if (count) {
+            strx += count/8;
+            count = 0;
+        }
+
         if(strx < 8)
             newbottom--;
         else break;
@@ -190,6 +224,8 @@ int ImageProcessor::cropLeft(const QImage &input)
                count = 0;
            }
         }
+        if (count)
+            strx += count/8;
         if (strx<8)
             newleft++;
         else break;
@@ -213,6 +249,8 @@ int ImageProcessor::cropRight(const QImage &input)
                count = 0;
            }
         }
+        if (count)
+            strx += count/8;
         if (strx<8)
             newright--;
         else break;

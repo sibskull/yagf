@@ -36,7 +36,7 @@ class Page : public QObject
 public:
     explicit Page(const int pid, QObject *parent = 0);
     ~Page();
-    bool loadFile(QString fileName, bool loadIntoView = true);
+    bool loadFile(QString fileName, int tiled, bool loadIntoView = true);
     QPixmap displayPixmap();
     QImage thumbnail();
     bool makeLarger();

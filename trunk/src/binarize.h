@@ -33,10 +33,14 @@ class Binarize : public QObject
 public:
     explicit Binarize(QObject *parent = 0);
     int otsu(const QImage &input, quint32 &background, int left = 0, int top = 0, int width = 0, int height = 0);
+    QImage tiledOtsu(const QImage &input);
     int otsuMinimized(const QImage &input, quint32 median, quint32 upperbound, quint32 lowerBound, quint32 &background, int left = 0, int top = 0, int width = 0, int height = 0);
 signals:
     
 public slots:
+
+private:
+    void fillMask(const QImage &input, int threshold, int left, int top, int width, int height, QImage &mask);
 
 private:
     quint32 m_maxSigma;

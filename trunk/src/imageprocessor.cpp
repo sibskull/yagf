@@ -105,6 +105,7 @@ void ImageProcessor::tiledBinarize()
 {
     Binarize bin;
     mask = bin.tiledOtsu(gray);
+    m_treshold = clBlack + 128;
 }
 
 QImage ImageProcessor::tiledFinalize()
@@ -154,7 +155,7 @@ void ImageProcessor::toGrayScale(const QImage &input)
 
 int ImageProcessor::cropTop(const QImage &input)
 {
-    int newtop = 0;
+    int newtop = 1;
     for (int y = 0; y < input.height(); y++) {
         quint32 * lineOut = (quint32 *)gray.scanLine(y);
         int count = 0;

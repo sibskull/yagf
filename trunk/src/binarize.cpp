@@ -94,19 +94,19 @@ QImage Binarize::tiledOtsu(const QImage &input)
     bool landscape = input.width() > input.height();
     if (landscape) {
         yfin = y + input.height();
-        xfin = x + 0.4*input.width();
+        xfin = x + 0.5*input.width();
     } else {
         xfin = x + input.width();
-        yfin = y + 0.33*input.height();
+        yfin = y + 0.5*input.height();
     }
     buildHist(input, x, y, xfin, yfin);
     int th = otsu();
     polishHist(th);
     fillMask(input, th, x, y, xfin, yfin, mask);
-    if (landscape) {
+    /*if (landscape) {
         y = 0;
         x = xfin;
-        xfin = x + 0.2*input.width();
+        xfin = x + 0.33*input.width();
     } else {
         x = 0;
         y = yfin;
@@ -115,15 +115,15 @@ QImage Binarize::tiledOtsu(const QImage &input)
     buildHist(input, x, y, xfin, yfin);
     th = otsu();
     polishHist(th);
-    fillMask(input, th, x, y, xfin, yfin, mask);
+    fillMask(input, th, x, y, xfin, yfin, mask);*/
     if (landscape) {
         y = 0;
         x = xfin;
-        xfin = input.width() - x;
+        xfin = input.width();
     } else {
         x = 0;
         y = yfin;
-        yfin = input.height() - y;
+        yfin = input.height();
     }
     buildHist(input, x, y, xfin, yfin);
     th = otsu();

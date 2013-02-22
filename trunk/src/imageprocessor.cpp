@@ -35,7 +35,8 @@ void ImageProcessor::start(const QImage &input)
 
 void ImageProcessor::binarize()
 {
-    m_treshold = bin.otsu(gray, m_middleBG);
+    bin.buildHist(gray, 0, 0, gray.width(), gray.height());
+    m_treshold = bin.otsu();
 }
 
 QRect ImageProcessor::crop()

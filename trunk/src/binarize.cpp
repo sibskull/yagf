@@ -24,14 +24,8 @@ Binarize::Binarize(QObject *parent) :
 {
 }
 
-int Binarize::otsu(const QImage &input, quint32 &background, int left, int top, int width, int height)
+void Binarize::buildHist(const QImage &input, int left, int top, int width, int height)
 {
-
-    if (!width)
-        width = input.width();
-    if (!height)
-        height = input.height();
-    float hist[259]={0.0F};
     uint ht[259] = {0};
  //   output = input;
     for (int y = top; y < height; y++) {
@@ -41,19 +35,6 @@ int Binarize::otsu(const QImage &input, quint32 &background, int left, int top, 
       }
     }
 
-/*    for (int y = top; y < height; y++) {
-       QRgb * lineIn = (uchar *)input.scanLine(y);
-       QRgb * lineOut = (QRgb *)output.scanLine(y);
-       for(int x = left; x < width; x++) {
-           QRgb cur = lineIn[x];
-           //int r = /3;
-           //int g = qGreen(cur)/3;
-           //int b = qBlue(cur)/3;
-           uint grayLevel = (qRed(cur) + qGreen(cur) + qBlue(cur))/3;
-           lineOut[x] = 0xFF000000 +grayLevel;
-           hist[grayLevel]+=1;
-       }
-    }*/
 
     int size = (width - left)*(height-top);
 
@@ -62,6 +43,11 @@ int Binarize::otsu(const QImage &input, quint32 &background, int left, int top, 
         hist[i] = ht[i];
         hist[i]/=size;
     }
+
+}
+
+int Binarize::otsu()
+{
 
     float ihist[256];
     float ut = 0;
@@ -92,23 +78,6 @@ int Binarize::otsu(const QImage &input, quint32 &background, int left, int top, 
        }
     }
 
-    quint32 bgcount = 0;
-    quint64 bgaccum = 0;
-
-    /*for (int y = top; y < height; y++) {
-        quint32 * lineIn = (quint32 *)input.scanLine(y);
-        for (int x = left; x < width; x++) {
-            if (lineIn[x] >= maxK) {
-                bgaccum += lineIn[x];
-                bgcount++;
-            }
-        }
-    }
-
-    if (bgcount)
-        background = bgaccum/bgcount;
-    else*/
-        background = maxK;
     return maxK;
 }
 
@@ -117,30 +86,50 @@ QImage Binarize::tiledOtsu(const QImage &input)
     QImage mask(input.size(), input.format());
     int xstep = input.width()/8;
     int ystep  = input.height()/8;
+    if (xstep < 64) xstep = 64;
+    if (ystep < 64) ystep = 64;
     int y = 0;
-    quint32 bg;
-    int yfin = y + ystep <= input.height() ? y + ystep : input.height();
-    while (y < yfin) {
-        int x = 0;
-        int xfin = x + xstep <= input.width() ? x + xstep : input.width();
-        while (x < xfin) {
-            bool line = true;
-            for (int i = y; i < yfin; i++) {
-                quint32 * rgb = (quint32*) input.scanLine(i);
-                if (rgb[x] > 8)
-                    line = false;
-            }
-            if (line) x++; else break;
-        }
-        while (x < xfin) {
-            int th = otsu(input, bg, x, y, xfin, yfin);
-            fillMask(input, th, x, y, xfin, yfin, mask);
-            x = xfin;
-            xfin = x + xstep <= input.width() ? x + xstep : input.width();
-        }
-        y = yfin;
-        yfin = y + ystep <= input.height() ? y + ystep : input.height();
+    int x = 0;
+    int xfin, yfin;
+    bool landscape = input.width() > input.height();
+    if (landscape) {
+        yfin = y + input.height();
+        xfin = x + 0.4*input.width();
+    } else {
+        xfin = x + input.width();
+        yfin = y + 0.33*input.height();
     }
+    buildHist(input, x, y, xfin, yfin);
+    int th = otsu();
+    polishHist(th);
+    fillMask(input, th, x, y, xfin, yfin, mask);
+    if (landscape) {
+        y = 0;
+        x = xfin;
+        xfin = x + 0.2*input.width();
+    } else {
+        x = 0;
+        y = yfin;
+        yfin = y + 0.33*input.height();
+    }
+    buildHist(input, x, y, xfin, yfin);
+    th = otsu();
+    polishHist(th);
+    fillMask(input, th, x, y, xfin, yfin, mask);
+    if (landscape) {
+        y = 0;
+        x = xfin;
+        xfin = input.width() - x;
+    } else {
+        x = 0;
+        y = yfin;
+        yfin = input.height() - y;
+    }
+    buildHist(input, x, y, xfin, yfin);
+    th = otsu();
+    polishHist(th);
+    fillMask(input, th, x, y, xfin, yfin, mask);
+
     return mask;
 }
 
@@ -231,4 +220,22 @@ void Binarize::fillMask(const QImage &input, int threshold, int left, int top, i
                 lineOut[x] = clBlack;
         }
     }
+}
+
+void Binarize::polishHist(int &th)
+{
+    uint ww = 4;
+    for (int k = 0; k < 256 - ww; k++) {
+        float sum = 0;
+        for (int l = k; l < k + ww; l++)
+            sum += hist[l];
+        if (sum >= 0.25) {
+            if (k > 200) {
+                th = th - 32;
+                break;
+            }
+
+        }
+    }
+    if (th > 220) th-=32;
 }

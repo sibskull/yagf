@@ -83,22 +83,22 @@ bool Page::loadFile(QString fileName, int tiled, bool loadIntoView)
     }
     ImageProcessor ip;
     ip.start(img2);
-    ip.binarize();
+    ip.tiledBinarize();
     settings = Settings::instance();
     if (settings->getCropLoaded())
         crop1 = ip.crop();
-    if (tiled)
-        ip.tiledBinarize();
+    //if (tiled)
+    //    ip.tiledBinarize();
     //img2 = img2.copy(crop1);
     //ip.rebinarize(64, 64);
     //ip.start(img2);
     //crop1 = ip.crop();
     //ip.nomalizeBackgroud();
     //ip.rebinarize(16, 16);
-    if (tiled)
+    //if (tiled)
         img2 = ip.tiledFinalize();
-    else
-        img2 = ip.finalize();
+    //else
+    //    img2 = ip.finalize();
     img2.save("/home/andrei/yy/bin.png"
               );
     rotateImageInternal(img2, rotation);

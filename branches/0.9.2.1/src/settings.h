@@ -67,8 +67,8 @@ public:
   bool getLangPair(QString &full, QString &abbr);
   void setProjectDir(const QString &dir);
   QString getProjectDir();
-private:
   void makeLanguageMaps();
+private:
   void findTessDataPath();
   QString selectDefaultLanguageName();
   Settings();

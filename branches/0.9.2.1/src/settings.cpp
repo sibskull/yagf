@@ -21,7 +21,7 @@ Settings * Settings::m_instance = NULL;
 
 Settings::Settings()
 {
-    makeLanguageMaps();
+    //makeLanguageMaps();
 }
 
 Settings::Settings(const Settings &)

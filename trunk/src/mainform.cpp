@@ -1,6 +1,6 @@
 /*
     YAGF - cuneiform and tesseract OCR graphical front-end
-    Copyright (C) 2009-2012 Andrei Borovsky <anb@symmetrica.net>
+    Copyright (C) 2009-2013 Andrei Borovsky <anb@symmetrica.net>
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -29,6 +29,7 @@
 #include "tpagecollection.h"
 #include "scanner.h"
 #include "projectmanager.h"
+#include "forcelocaledialog.h"
 #include <signal.h>
 #include <QComboBox>
 #include <QLabel>
@@ -204,6 +205,9 @@ MainForm::MainForm(QWidget *parent): QMainWindow(parent)
     pdfPD.setWindowIcon(QIcon(":/yagf.png"));
     if (pdfx)
         connect(&pdfPD, SIGNAL(canceled()), pdfx, SLOT(cancel()));
+
+    menu_Settings->addAction("UI Language", this, SLOT(setUILanguage()));
+
 }
 
 void MainForm::onShowWindow()
@@ -428,8 +432,6 @@ void MainForm::decreaseButtonClicked()
 void MainForm::initSettings()
 {
     settings = Settings::instance();
-    settings->readSettings(settings->workingDir());
-    settings->writeSettings();
     if (settings->getFullScreen())
         showFullScreen();
     else {
@@ -1072,4 +1074,28 @@ void MainForm::selectHTMLformat()
     else
     settings->setOutputFormat("text");
 
+}
+
+void MainForm::setUILanguage()
+{
+    ForceLocaleDialog fld(this);
+    if (settings->useNoLocale())
+        fld.setOption(ForceLocaleDialog::NoLocale);
+    else {
+        if (settings->useRussianLocale())
+            fld.setOption(ForceLocaleDialog::RussianLocale);
+        else {
+            fld.setOption(ForceLocaleDialog::DefaultLocale);
+        }
+    }
+    if (fld.exec() == QDialog::Accepted) {
+        settings->setNoLocale(false);
+        settings->setRussianLocale(false);
+        if (fld.getOption() == ForceLocaleDialog::NoLocale)
+            settings->setNoLocale(true);
+        else {
+            if (fld.getOption() == ForceLocaleDialog::RussianLocale)
+                settings->setRussianLocale(true);
+        }
+    }
 }

@@ -33,6 +33,10 @@ public:
   void readSettings(const QString &path);
   void writeSettings();
   QString getLanguage();
+  bool useNoLocale();
+  bool useRussianLocale();
+  void setNoLocale(bool value);
+  void setRussianLocale(bool value);
   QString getOutputFormat();
   QString getLastDir();
   QString getLastOutputDir();
@@ -63,8 +67,8 @@ public:
   bool getLangPair(QString &full, QString &abbr);
   void setProjectDir(const QString &dir);
   QString getProjectDir();
-private:
   void makeLanguageMaps();
+private:
   void findTessDataPath();
   QString selectDefaultLanguageName();
   Settings();
@@ -88,7 +92,8 @@ private:
   QMap<QString, QString> cuMap;
   QMap<QString, QString> tesMap;
   int lpi;
-
+  bool noLocale;
+  bool RussianLocale;
   QString mPath;
   QSettings * settings;
   static Settings * m_instance;

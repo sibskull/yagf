@@ -20,7 +20,9 @@
 #include <QTranslator>
 #include <QLocale>
 #include <stdio.h>
+#include <QLibraryInfo>
 #include "mainform.h"
+#include "settings.h"
 
 void parseCmdLine(const QStringList &args)
 {
@@ -47,14 +49,25 @@ int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
     parseCmdLine(app.arguments());
+    Settings * settings = Settings::instance();
+    settings->readSettings(settings->workingDir());
+    settings->writeSettings();
     QTranslator translator;
     QString qmName = "yagf_" + QLocale::system().name();
-    if (!translator.load(qmName, "/usr/local/share/yagf/translations"))
-        translator.load(qmName, "/usr/share/yagf/translations");
-    app.installTranslator(&translator);
+    if (settings->useRussianLocale())
+        qmName = "yagf_ru";
+    if (!settings->useNoLocale()) {
+        translator.load(qmName, QString(QML_INSTALL_PATH));
+        app.installTranslator(&translator);
+        settings->makeLanguageMaps();
+    }
     QTranslator translator2;
-    translator2.load("qt_" + QLocale::system().name(), "/usr/share/qt4/translations");
-    app.installTranslator(&translator2);
+    if (settings->useRussianLocale())
+        translator2.load("qt_ru_RU", QLibraryInfo::location(QLibraryInfo::TranslationsPath));
+    else
+        translator2.load("qt_" + QLocale::system().name(), QLibraryInfo::location(QLibraryInfo::TranslationsPath));
+    if (!settings->useNoLocale())
+        app.installTranslator(&translator2);
     MainForm window;
     window.show();
     return app.exec();

@@ -81,13 +81,13 @@ bool Page::loadFile(QString fileName, int tiled, bool loadIntoView)
         delete ccbuilder;
         ccbuilder = 0;
     }
-    ImageProcessor ip;
-    ip.start(img2);
-    ip.tiledBinarize();
+    //ImageProcessor ip;
+    //ip.start(img2);
+    //ip.tiledBinarize();
     settings = Settings::instance();
-    if (settings->getCropLoaded())
-        crop1 = ip.crop();
-    img2 = ip.tiledFinalize();
+    //if (settings->getCropLoaded())
+    //    crop1 = ip.crop();
+    //img2 = ip.tiledFinalize();
     rotateImageInternal(img2, rotation);
     scaleImages();
     mFileName = fileName;
@@ -534,11 +534,11 @@ QString Page::saveTmpPage(bool cc, bool binarize)
     if (image.isNull())
         return fileName;
     if (binarize) {
-        ImageProcessor ip;
-        ip.start(image);
-        ip.nomalizeBackgroud();
+        //ImageProcessor ip;
+        //ip.start(image);
+        //ip.nomalizeBackgroud();
         //ip.rebinarize(16, 16);
-        image = ip.finalize();
+        //image = ip.finalize();
     }
 
     if (cc) {

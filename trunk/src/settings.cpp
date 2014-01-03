@@ -21,7 +21,7 @@ Settings * Settings::m_instance = NULL;
 
 Settings::Settings()
 {
-    makeLanguageMaps();
+    //makeLanguageMaps();
 }
 
 Settings::Settings(const Settings &)
@@ -62,7 +62,9 @@ void Settings::readSettings(const QString &path)
     if (outputFormat == "") outputFormat = "text";
     checkSpelling = settings->value("mainWindow/checkSpelling", bool(true)).toBool();
     bool ok;
-    fontSize = settings->value("mainWindow/fontSize", int(12)).toInt(&ok);
+    fontSize = settings->value("mainwindow/fontSize", int(12)).toInt(&ok);
+    noLocale = settings->value("mainwindow/nolocale", QVariant(false)).toBool();
+    RussianLocale = settings->value("mainwindow/rulocale", QVariant(false)).toBool();
     findTessDataPath();
     tessdataPath = settings->value("ocr/tessData", QVariant(tessdataPath)).toString();
     if (tessdataPath.isEmpty())
@@ -84,8 +86,11 @@ void Settings::writeSettings()
     settings->setValue("mainwindow/lastDir", lastDir);
     settings->setValue("mainWindow/checkSpelling", checkSpelling);
     settings->setValue("mainwindow/lastOutputDir", lastOutputDir);
-    settings->setValue("mainWindow/fontSize", fontSize);
+    settings->setValue("mainwindow/fontSize", fontSize);
+    settings->setValue("mainwindow/nolocale", noLocale);
+    settings->setValue("mainwindow/rulocale", RussianLocale);
     settings->setValue("ocr/language", language);
+
     //settings->setValue("ocr/singleColumn", singleColumn);
     settings->setValue("ocr/outputFormat", outputFormat);
     QString engine = selectedEngine == UseCuneiform ? QString("cuneiform") : QString("tesseract");
@@ -456,4 +461,24 @@ QSize Settings::getIconSize()
 void Settings::setIconSize(const QSize &value)
 {
     iconSize = value;
+}
+
+bool Settings::useNoLocale()
+{
+    return noLocale;
+}
+
+bool Settings::useRussianLocale()
+{
+    return RussianLocale;
+}
+
+void Settings::setNoLocale(bool value)
+{
+    noLocale = value;
+}
+
+void Settings::setRussianLocale(bool value)
+{
+    RussianLocale = value;
 }

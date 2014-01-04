@@ -23,7 +23,7 @@
 #include "CCAnalysis.h"
 #include "PageAnalysis.h"
 #include "analysis.h"
-#include "imageprocessor.h"
+#include "core/imageprocessor.h"
 #include <QImageReader>
 #include <QImageWriter>
 #include <QSize>

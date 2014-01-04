@@ -78,7 +78,6 @@ private:
     void renumberBlocks();
     void applyTransforms(QImage &image, qreal scale);
     void rotateImageInternal(QImage &image, qreal angle);
-    void scaleImages();
     void normalizeRect(QRect &rect);
     void scaleRect(QRect &rect);
     QImage tryRotate(QImage image, qreal angle);
@@ -93,11 +92,6 @@ private:
     QRect crop2;
     bool deskewed;
     QImage img;
-    QImage img2;
-    QImage img4;
-    QImage img6;
-    QImage img8;
-    QImage img16;
     TBlocks blocks;
     bool imageLoaded;
     bool loadedBefore;

@@ -23,6 +23,7 @@
 #include "common.h"
 //#include "qipconnectedcomponents.h"
 #include <QImage>
+#include <QPoint>
 #include <QSharedPointer>
 
 
@@ -118,7 +119,7 @@ public:
       */
     QIPBlackAndWhiteImage crop() const;
 
-    void cropGrayScaleImage(QIPGrayscaleImage ** image);
+    QPoint cropGrayScaleImage(QIPGrayscaleImage ** image);
 
     bool isNull() const;
 private:

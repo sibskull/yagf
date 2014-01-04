@@ -72,9 +72,8 @@ bool Page::loadFile(QString fileName, int tiled, bool loadIntoView)
     crop1.setHeight(0);
     scale = 0.5;
     QImageReader ir(fileName);
-    ir.setScaledSize(QSize(ir.size().width()/2, ir.size().height()/2));
-    img2 = ir.read();
-    imageLoaded = !img2.isNull();
+    img = ir.read();
+    imageLoaded = !img.isNull();
     if (!imageLoaded)
         return false;
     if (ccbuilder){
@@ -88,8 +87,7 @@ bool Page::loadFile(QString fileName, int tiled, bool loadIntoView)
     //if (settings->getCropLoaded())
     //    crop1 = ip.crop();
     //img2 = ip.tiledFinalize();
-    rotateImageInternal(img2, rotation);
-    scaleImages();
+    rotateImageInternal(img, rotation);
     mFileName = fileName;
     loadedBefore = true;
 
@@ -103,12 +101,12 @@ QPixmap Page::displayPixmap()
 
 QImage Page::thumbnail()
 {
-    return img16;
+    return img.scaled(img.width()*0.125, img.height()*0.125);
 }
 
 bool Page::makeLarger()
 {
-    if (scale >= 0.5) return false;
+    if (scale >= 1.0) return false;
     if (scale < 0.2) {
         scale = 0.2;
         return true;
@@ -117,8 +115,20 @@ bool Page::makeLarger()
         scale = 0.25;
         return true;
     }
-    if (scale < 0.5)
+    if (scale < 0.3) {
+        scale = 0.3;
+        return true;
+    }
+    if (scale < 0.5) {
         scale = 0.5;
+        return true;
+    }
+    if (scale < 0.75) {
+        scale = 0.75;
+        return true;
+    }
+    if (scale < 1.0)
+        scale = 1.0;
     return true;
 }
 
@@ -126,6 +136,18 @@ bool Page::makeSmaller()
 {
     if (scale <= 0.125) {
         return false;
+    }
+    if (scale > 0.75) {
+        scale = 0.75;
+        return true;
+    }
+    if (scale > 0.5) {
+        scale = 0.5;
+        return true;
+    }
+    if (scale > 0.3) {
+        scale = 0.3;
+        return true;
     }
     if (scale > 0.25) {
         scale = 0.25;
@@ -142,9 +164,8 @@ bool Page::makeSmaller()
 
 void Page::rotate(qreal angle)
 {
-    rotateImageInternal(img2, angle);
+    rotateImageInternal(img, angle);
     rotation += angle;
-    scaleImages();
     clearBlocks();
 }
 
@@ -154,11 +175,7 @@ void Page::unload()
         delete ccbuilder;
         ccbuilder = 0;
     }
-    img2 = QImage(0,0,QImage::Format_ARGB32);
-    img4 = QImage(0,0,QImage::Format_ARGB32);
-    img6 = QImage(0,0,QImage::Format_ARGB32);
-    img8 = QImage(0,0,QImage::Format_ARGB32);
-    img16 = QImage(0,0,QImage::Format_ARGB32);
+    img = QImage(0,0,QImage::Format_ARGB32);
     imageLoaded = false;
 }
 
@@ -314,7 +331,7 @@ void Page::deskew(bool recreateCB)
         prepareCCBuilder();
         CCAnalysis * an = new CCAnalysis(ccbuilder);
         if (an->analize()) {
-            QImage timg = tryRotate(img2, -atan(an->getK())*360/6.283);
+            QImage timg = tryRotate(img, -atan(an->getK())*360/6.283);
             CCBuilder * cb2 = new CCBuilder(timg);
             cb2->labelCCs();
             CCAnalysis * an2 = new CCAnalysis(cb2);
@@ -359,7 +376,7 @@ void Page::blockAllText()
     prepareCCBuilder();
     clearBlocks();
     BlockSplitter bs;
-    bs.setImage(img2, rotation, scale);
+    bs.setImage(img, rotation, scale);
     QRect r = bs.getRootBlock(currentImage());
     addBlock(r);
 }
@@ -368,7 +385,7 @@ QList<Rect> Page::splitInternal() {
     clearBlocks();
     BlockSplitter bs;
     //rotation  = 0;
-    bs.setImage(img2, 0, 0.5);// sideBar->getScale());
+    bs.setImage(img, 0, 1.0);// sideBar->getScale());
     bs.splitBlocks();
     return bs.getBlocks();
 }
@@ -376,7 +393,7 @@ QList<Rect> Page::splitInternal() {
 void Page::prepareCCBuilder()
 {
     if (!ccbuilder) {
-        ccbuilder = new CCBuilder(img2);
+        ccbuilder = new CCBuilder(img);
         ccbuilder->labelCCs();
     }
 }
@@ -480,14 +497,6 @@ void Page::rotateImageInternal(QImage &image, qreal angle)
     image = image.transformed(QTransform().translate(-x, -y).rotate(angle).translate(x, y), Qt::SmoothTransformation);
 }
 
-void Page::scaleImages()
-{
-    img4 = img2.scaledToWidth(img2.width() / 2);
-    img6 = img2.scaledToWidth(img2.width() / 2.5);
-    img8 = img4.scaledToWidth(img4.width() / 2);
-    img16 = img8.scaledToWidth(img8.width() / 2);
-}
-
 void Page::normalizeRect(QRect &rect)
 {
     qreal oldw = rect.width();
@@ -517,18 +526,12 @@ QImage Page::tryRotate(QImage image, qreal angle)
 
 QImage Page::currentImage()
 {
-    if (scale <= 0.125)
-        return img8;
-    if (scale <= 0.2)
-        return img6;
-    if (scale <= 0.25)
-        return img4;
-    return img2;
+    return img.scaled(img.width()*scale, img.height()*scale);
 }
 
 QString Page::saveTmpPage(bool cc, bool binarize)
 {
-    QString fileName =Settings::instance()->workingDir() + QString::fromUtf8("tmp-%1.bmp").arg((quint64)img2.data_ptr() - (((quint64)&cc)>>1));
+    QString fileName =Settings::instance()->workingDir() + QString::fromUtf8("tmp-%1.bmp").arg((quint64)img.data_ptr() - (((quint64)&cc)>>1));
     QImageReader ir(mFileName);
     QImage image = ir.read().convertToFormat(QImage::Format_ARGB32);
     if (image.isNull())

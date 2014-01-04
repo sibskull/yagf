@@ -38,10 +38,10 @@ ImageProcessor::~ImageProcessor()
 QRect ImageProcessor::crop()
 {
     bwimg = new QIPBlackAndWhiteImage(img->binarize(QIPGrayscaleImage::OtsuBinarization));
-    bwimg->cropGrayScaleImage(&img);
+    QPoint p = bwimg->cropGrayScaleImage(&img);
     delete bwimg;
     bwimg = NULL;
-    return QRect(0,0,img->width(), img->height());
+    return QRect(p.x(),p.y(), img->width(), img->height());
 }
 
 void ImageProcessor::loadImage(const QImage &image)

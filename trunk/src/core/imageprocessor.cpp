@@ -27,6 +27,8 @@ ImageProcessor::ImageProcessor(QObject *parent) :
     QObject(parent)
 
 {
+    img = NULL;
+    bwimg = NULL;
 }
 
 ImageProcessor::~ImageProcessor()
@@ -47,6 +49,11 @@ QRect ImageProcessor::crop()
 void ImageProcessor::loadImage(const QImage &image)
 {
     img = new QIPGrayscaleImage(image);
+}
+
+QImage ImageProcessor::gsImage() const
+{
+    return img->toImage();
 }
 
 

@@ -88,23 +88,20 @@ IntRect QIPBlackAndWhiteImage::cropInternal(bool upperLeft) const
                 break;
             }
         }
-        quint32 minL = w;
-        for (int y = 0; y < h; y++) {
-            quint8 * line = scanLine(y);
-            for (int x = 1; x < w; x++) {
-                if (line[x] != line[x-1]) {
-                    if (line[x] == 1) { //white
-                        if (minL > x)
-                            minL = x;
-                    } else { //black
-                        if (minL > x - 4)
-                            minL = x - 4;
-                    }
-                    break;
-                }
+        for (int x = 0; x < w; x++) {
+            quint32  bin[2] = {0,0};
+            quint32 min;
+            for (int y = 0; y < h; y++) {
+                quint8 * line = scanLine(y);
+                bin[line[x]]++;
+            }
+            min = bin[0] < bin[1] ? bin[0] : bin[1];
+            if (min > 10) {
+                        result.x1 = x >4? x-4:x;
+                        break;
             }
         }
-        result.x1 = minL;
+        //result.x1 = minL;
     } else {
         for (int y = h-1; y > 0; y--) {
             quint32 stepCount = 0;
@@ -120,28 +117,21 @@ IntRect QIPBlackAndWhiteImage::cropInternal(bool upperLeft) const
                 break;
             }
         }
-        quint32 maxL = 0;
-        for (int y = 0; y < h; y++) {
-            quint8 * line = scanLine(y);
-            for (int x = w-2; x > 0; x--) {
-                if (line[x] != line[x+1]) {
-                    if (line[x] == 1) { //white
-                        if (maxL < x)
-                            maxL = x;
-                    } else { //black
-                        if (w - x > 4) {
-                            if (maxL < x + 4)
-                                maxL = x + 4;
-                        } else {
-                            if (maxL < x)
-                                maxL = x;
-                        }
-                    }
-                    break;
-                }
+        for (int x = w-2; x > 0; x--) {
+            quint32  bin[2] = {0,0};
+            quint32 min;
+            for (int y = 0; y < h; y++) {
+                quint8 * line = scanLine(y);
+                bin[line[x]]++;
             }
+            min = bin[0] < bin[1] ? bin[0] : bin[1];
+            if (min > 10) {
+                        result.x2 = x >4? x-4:x;
+                        break;
+            }
+
         }
-        result.x2 = maxL;
+
     }
     return result;
 }
@@ -358,7 +348,7 @@ QPoint QIPBlackAndWhiteImage::cropGrayScaleImage(QIPGrayscaleImage **image)
         r2 = future2.result();
     #endif
         QIPGrayscaleImage * tmp = new QIPGrayscaleImage((*image)->copy(r1.x1, r2.x2, r1.y1, r2.y2));
-        delete image;
+        delete *image;
         (*image) = tmp;
         return QPoint(r1.x1,r2.x2);
 }

@@ -32,6 +32,7 @@ public:
     ~ImageProcessor();
     QRect crop();
     void loadImage(const QImage &image);
+    QImage gsImage() const;
 signals:
     
 public slots:

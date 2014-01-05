@@ -80,7 +80,10 @@ bool Page::loadFile(QString fileName, int tiled, bool loadIntoView)
         delete ccbuilder;
         ccbuilder = 0;
     }
-    //ImageProcessor ip;
+    ImageProcessor ip;
+    ip.loadImage(img);
+    ip.crop();
+    img = ip.gsImage();
     //ip.start(img2);
     //ip.tiledBinarize();
     settings = Settings::instance();

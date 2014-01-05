@@ -347,6 +347,8 @@ QPoint QIPBlackAndWhiteImage::cropGrayScaleImage(QIPGrayscaleImage **image)
         r1 = future1.result();
         r2 = future2.result();
     #endif
+        if ((r2.x2-r1.x1 < 32)&&(r2.y2-r1.y1 < 32))
+            return QPoint(0,0);
         QIPGrayscaleImage * tmp = new QIPGrayscaleImage((*image)->copy(r1.x1, r2.x2, r1.y1, r2.y2));
         delete *image;
         (*image) = tmp;

@@ -59,8 +59,9 @@ int main(int argc, char *argv[])
     if (!settings->useNoLocale()) {
         translator.load(qmName, QString(QML_INSTALL_PATH));
         app.installTranslator(&translator);
-        settings->makeLanguageMaps();
+
     }
+    settings->makeLanguageMaps();
     QTranslator translator2;
     if (settings->useRussianLocale())
         translator2.load("qt_ru_RU", QLibraryInfo::location(QLibraryInfo::TranslationsPath));

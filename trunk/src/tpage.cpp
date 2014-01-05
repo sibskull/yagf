@@ -73,23 +73,25 @@ bool Page::loadFile(QString fileName, int tiled, bool loadIntoView)
     scale = 0.5;
     QImageReader ir(fileName);
     img = ir.read();
+
     imageLoaded = !img.isNull();
     if (!imageLoaded)
         return false;
+    if (img.format() != QImage::Format_ARGB32)
+        img = img.convertToFormat(QImage::Format_ARGB32);
+
     if (ccbuilder){
         delete ccbuilder;
         ccbuilder = 0;
     }
     ImageProcessor ip;
     ip.loadImage(img);
-    ip.crop();
+    settings = Settings::instance();
+    if (settings->getCropLoaded())
+        ip.crop();
     img = ip.gsImage();
     //ip.start(img2);
     //ip.tiledBinarize();
-    settings = Settings::instance();
-    //if (settings->getCropLoaded())
-    //    crop1 = ip.crop();
-    //img2 = ip.tiledFinalize();
     rotateImageInternal(img, rotation);
     mFileName = fileName;
     loadedBefore = true;

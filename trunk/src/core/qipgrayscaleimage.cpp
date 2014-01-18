@@ -239,10 +239,29 @@ void QIPGrayscaleImage::wienerFilter()
 
 void QIPGrayscaleImage::blendImage(const QIPBlackAndWhiteImage &image)
 {
+    if (w*h < 32) return;
+    if (h < 4) return;
     const quint8 * bw = image.data.data();
     quint8 * gs = data.data();
-    for (int i = 0; i < w*h; i++)
+    for (int i = 0; i < w; i++)
         gs[i] = bw[i] == 1 ? qMin(gs[i] + 32, 255) : gs[i]*3/4;
+    for (int i = 0; i < w*h; i+=w) {
+        gs[i] = bw[i] == 1 ? qMin(gs[i] + 32, 255) : gs[i]*3/4;
+        gs[i+w] = bw[i+w] == 1 ? qMin(gs[i+w] + 32, 255) : gs[i+w]*3/4;
+    }
+    for (int i = w*(h-1); i < w*h; i++)
+        gs[i] = bw[i] == 1 ? qMin(gs[i] + 32, 255) : gs[i]*3/4;
+    for (int i = w+1; i < w*(h-1)-1; i++) {
+        if (bw[i] == 1) {
+            if ((bw[i-1] != 0)||(bw[i+1] != 0))
+                if ((bw[i-w] != 0)||(bw[i+w] != 0))
+                    if ((bw[i-w-1] != 0)||(bw[i+w+1] != 0))
+                        if ((bw[i-w+1] != 0)||(bw[i+w-1] != 0))
+                                gs[i] = qMin(gs[i] + 32, 255);
+
+        } else
+            gs[i] = gs[i]*3/4;
+    }
 }
 
 QIPGrayscaleImage::QIPGrayscaleImage(quint32 width, quint32 height) : data(new quint8[width*height])

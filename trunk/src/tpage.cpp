@@ -302,8 +302,6 @@ void Page::saveBlockForRecognition(QRect r, const QString &fileName, const QStri
 {
     //QRect rs = scaleRect(r);
     QImage image = img.copy(r);
-    //QImageReader ir(mFileName);
-    //QImage image = ir.read();
     //applyTransforms(image, 1);
     image.save(fileName, format.toAscii().data());
 }
@@ -338,7 +336,10 @@ void Page::deskew(bool recreateCB)
         prepareCCBuilder();
         CCAnalysis * an = new CCAnalysis(ccbuilder);
         if (an->analize()) {
-            QImage timg = tryRotate(img, -atan(an->getK())*360/6.283);
+            QImage timg;
+            if ((img.height() > 3800)||(img.width() > 3800))
+                return;
+            timg = tryRotate(img, -atan(an->getK())*360/6.283);
             CCBuilder * cb2 = new CCBuilder(timg);
             cb2->labelCCs();
             CCAnalysis * an2 = new CCAnalysis(cb2);
@@ -346,6 +347,7 @@ void Page::deskew(bool recreateCB)
             qreal angle = -atan(an2->getK())*360/6.283;
             delete an2;
             delete cb2;
+
             if (abs(angle*10) >= abs(5))
                 angle += (-atan(an->getK())*360/6.283);
             else

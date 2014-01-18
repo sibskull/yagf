@@ -72,8 +72,14 @@ bool Page::loadFile(QString fileName, int tiled, bool loadIntoView)
     crop1.setHeight(0);
     scale = 0.5;
     QImageReader ir(fileName);
-    img = ir.read();
+    if ((ir.size().width() > 7500)||(ir.size().height() > 7500)) {
+        ir.setScaledSize(QSize(ir.size().width()/4, ir.size().height()/4));
+    } else {
+        if ((ir.size().width() > 3800)||(ir.size().height() > 3800))
+            ir.setScaledSize(QSize(ir.size().width()/2, ir.size().height()/2));
+    }
 
+    img = ir.read();
     imageLoaded = !img.isNull();
     if (!imageLoaded)
         return false;
@@ -344,7 +350,7 @@ void Page::deskew(bool recreateCB)
             cb2->labelCCs();
             CCAnalysis * an2 = new CCAnalysis(cb2);
             an2->analize();
-            qreal angle = -atan(an2->getK())*360/6.283;
+           qreal angle = -atan(an2->getK())*360/6.283;
             delete an2;
             delete cb2;
 

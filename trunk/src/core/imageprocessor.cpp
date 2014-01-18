@@ -48,7 +48,7 @@ QRect ImageProcessor::crop()
 
 void ImageProcessor::loadImage(const QImage &image)
 {
-    img = new QIPGrayscaleImage(image);
+    img = new QIPGrayscaleImage(image,QIPGrayscaleImage::MinValue);
 }
 
 QImage ImageProcessor::gsImage() const

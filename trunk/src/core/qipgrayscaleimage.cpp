@@ -247,7 +247,7 @@ void QIPGrayscaleImage::blendImage(const QIPBlackAndWhiteImage &image)
         gs[i] = bw[i] == 1 ? qMin(gs[i] + 32, 255) : gs[i]*3/4;
     for (int i = 0; i < w*h; i+=w) {
         gs[i] = bw[i] == 1 ? qMin(gs[i] + 32, 255) : gs[i]*3/4;
-        gs[i+w] = bw[i+w] == 1 ? qMin(gs[i+w] + 32, 255) : gs[i+w]*3/4;
+        gs[i+w-1] = bw[i+w-1] == 1 ? qMin(gs[i+w-1] + 32, 255) : gs[i+w-1]*3/4;
     }
     for (int i = w*(h-1); i < w*h; i++)
         gs[i] = bw[i] == 1 ? qMin(gs[i] + 32, 255) : gs[i]*3/4;

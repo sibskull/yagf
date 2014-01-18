@@ -33,6 +33,7 @@ public:
     QRect crop();
     void loadImage(const QImage &image);
     QImage gsImage() const;
+    void binarize();
 signals:
     
 public slots:

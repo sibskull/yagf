@@ -78,8 +78,8 @@ private:
     void renumberBlocks();
     void applyTransforms(QImage &image, qreal scale);
     void rotateImageInternal(QImage &image, qreal angle);
-    void normalizeRect(QRect &rect);
-    void scaleRect(QRect &rect);
+    QRect scaleRect(QRect &rect);
+    QRect scaleRectToScale(QRect &rect);
     QImage tryRotate(QImage image, qreal angle);
     QImage currentImage();
     QString saveTmpPage(bool cc, bool binarize);

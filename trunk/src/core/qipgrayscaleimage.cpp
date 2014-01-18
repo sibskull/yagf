@@ -237,6 +237,14 @@ void QIPGrayscaleImage::wienerFilter()
     qr_wiener_filter(data.data(),w,h);
 }
 
+void QIPGrayscaleImage::blendImage(const QIPBlackAndWhiteImage &image)
+{
+    const quint8 * bw = image.data.data();
+    quint8 * gs = data.data();
+    for (int i = 0; i < w*h; i++)
+        gs[i] = bw[i] == 1 ? qMin(gs[i] + 32, 255) : gs[i]*3/4;
+}
+
 QIPGrayscaleImage::QIPGrayscaleImage(quint32 width, quint32 height) : data(new quint8[width*height])
 {
     w = width;

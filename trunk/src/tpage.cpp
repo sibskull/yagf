@@ -93,6 +93,9 @@ bool Page::loadFile(QString fileName, int tiled, bool loadIntoView)
     //ip.start(img2);
     //ip.tiledBinarize();
     rotateImageInternal(img, rotation);
+    ip.loadImage(img);
+    ip.binarize();
+    img = ip.gsImage();
     mFileName = fileName;
     loadedBefore = true;
 
@@ -200,7 +203,8 @@ inline bool qrects_equal(QRect &r1, QRect &r2)
 void Page::addBlock(Block block)
 {
     QRect r = block;
-    normalizeRect(r);
+    //normalizeRect(r);
+    scaleRect(r);
     bool add = true;
     foreach (Block b, blocks) {
         QRect r1 = b;
@@ -227,7 +231,8 @@ void Page::deleteBlock(const Block &b)
 void Page::deleteBlock(const QRect &r)
 {
     QRect rx = r;
-    normalizeRect(rx);
+    scaleRect(rx);
+    //normalizeRect(rx);
     foreach (Block b, blocks) {
         QRect r1 = b;
         if (qrects_equal(rx, r1)) {
@@ -242,7 +247,8 @@ void Page::deleteBlock(const QRect &r)
 Block Page::getBlock(const QRect &r)
 {
     QRect rn =r;
-    normalizeRect(rn);
+    scaleRectToScale(rn);
+    //normalizeRect(rn);
     foreach (Block b, blocks) {
         QRect r1 = b;
         if (qrects_equal(rn,r1)) {
@@ -256,7 +262,7 @@ Block Page::getBlock(const QRect &r)
 Block Page::getBlock(int index)
 {
     Block b = blocks.at(index);
-    scaleRect(b);
+    scaleRectToScale(b);
     return b;
 }
 
@@ -288,22 +294,18 @@ bool Page::savePageAsImage(const QString &fileName, const QString &format)
 
 void Page::saveRawBlockForRecognition(QRect r, const QString &fileName)
 {
-    normalizeRect(r);
+
     saveBlockForRecognition(r, fileName, "BMP");
 }
 
 void Page::saveBlockForRecognition(QRect r, const QString &fileName, const QString &format)
 {
-    int oldw = r.width();
-    int oldh = r.height();
-    r.setX(r.x()*2);
-    r.setY(r.y()*2);
-    r.setWidth(oldw*2);
-    r.setHeight(oldh*2);
-    QImageReader ir(mFileName);
-    QImage image = ir.read();
-    applyTransforms(image, 1);
-    image.copy(r).save(fileName, format.toAscii().data());
+    //QRect rs = scaleRect(r);
+    QImage image = img.copy(r);
+    //QImageReader ir(mFileName);
+    //QImage image = ir.read();
+    //applyTransforms(image, 1);
+    image.save(fileName, format.toAscii().data());
 }
 
 void Page::saveBlockForRecognition(int index, const QString &fileName)
@@ -314,7 +316,7 @@ void Page::saveBlockForRecognition(int index, const QString &fileName)
 void Page::selectBlock(const QRect &r)
 {
     QRect rn =r;
-    normalizeRect(rn);
+    //normalizeRect(rn);
     foreach (Block b, blocks) {
         QRect r1 = b;
         if (rn == r1) {
@@ -502,24 +504,27 @@ void Page::rotateImageInternal(QImage &image, qreal angle)
     image = image.transformed(QTransform().translate(-x, -y).rotate(angle).translate(x, y), Qt::SmoothTransformation);
 }
 
-void Page::normalizeRect(QRect &rect)
+QRect Page::scaleRect(QRect &rect)
 {
+    qreal iscale = 1./scale;
     qreal oldw = rect.width();
     qreal oldh = rect.height();
-    rect.setX(rect.x()*0.5/scale);
-    rect.setY(rect.y()*0.5/scale);
-    rect.setWidth(oldw*0.5/scale);
-    rect.setHeight(oldh*0.5/scale);
+    rect.setX(rect.x()*iscale);
+    rect.setY(rect.y()*iscale);
+    rect.setWidth(oldw*iscale);
+    rect.setHeight(oldh*iscale);
+    return rect;
 }
 
-void Page::scaleRect(QRect &rect)
+QRect Page::scaleRectToScale(QRect &rect)
 {
     qreal oldw = rect.width();
     qreal oldh = rect.height();
-    rect.setX(rect.x()/0.5*scale);
-    rect.setY(rect.y()/0.5*scale);
-    rect.setWidth(oldw/0.5*scale);
-    rect.setHeight(oldh/0.5*scale);
+    rect.setX(rect.x()*scale);
+    rect.setY(rect.y()*scale);
+    rect.setWidth(oldw*scale);
+    rect.setHeight(oldh*scale);
+    return rect;
 }
 
 QImage Page::tryRotate(QImage image, qreal angle)
@@ -567,3 +572,4 @@ void Page::renumberBlocks()
         blocks[i].setBlockNumber(i+1);
     }
 }
+

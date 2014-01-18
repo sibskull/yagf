@@ -195,6 +195,8 @@ public:
     void invert();
 
     void wienerFilter();
+
+    void blendImage(const QIPBlackAndWhiteImage &image);
 signals:
     
 public slots:

@@ -355,6 +355,7 @@ QPoint QIPBlackAndWhiteImage::cropGrayScaleImage(QIPGrayscaleImage **image)
         return QPoint(r1.x1,r2.x2);
 }
 
+
 bool QIPBlackAndWhiteImage::isNull() const
 {
     return w*h == 0;

@@ -56,4 +56,10 @@ QImage ImageProcessor::gsImage() const
     return img->toImage();
 }
 
+void ImageProcessor::binarize()
+{
+    bwimg = new QIPBlackAndWhiteImage(img->binarize(QIPGrayscaleImage::GatosBinarization));
+    img->blendImage(*bwimg);
+}
+
 

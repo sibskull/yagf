@@ -62,4 +62,30 @@ void ImageProcessor::binarize()
     img->blendImage(*bwimg);
 }
 
+void ImageProcessor::polishImage(QImage &image)
+{
+    for(int y =1; y < image.height()-1; y++) {
+        QRgb * line = (QRgb *) image.scanLine(y);
+        QRgb * linep = (QRgb *) image.scanLine(y-1);
+        QRgb * linen = (QRgb *) image.scanLine(y+1);
+        //if
+        for (int x = 1; x < image.width()-1; x++) {
+            if (line[x]%255 > 64) {
+                if ((line[x-1]%255 < 64)&&(line[x+1]%255 < 64))
+                    line[x] = 0xFF404040;
+                else
+                if ((linep[x]%255 < 64)&&(linen[x]%255 < 64))
+                    line[x] = 0xFF404040;
+                else
+                    if ((linep[x-1]%255 < 64)&&(linen[x+1]%255 < 64))
+                        line[x] = 0xFF404040;
+                else
+                        if ((linep[x+1]%255 < 64)&&(linen[x-1]%255 < 64))
+                            line[x] = 0xFF404040;
+            }
+        }
+    }
+
+}
+
 

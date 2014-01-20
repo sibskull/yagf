@@ -34,6 +34,7 @@ public:
     void loadImage(const QImage &image);
     QImage gsImage() const;
     void binarize();
+    static void polishImage(QImage &image);
 signals:
     
 public slots:

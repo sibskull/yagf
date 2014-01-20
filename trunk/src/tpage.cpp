@@ -357,7 +357,12 @@ void Page::deskew(bool recreateCB)
                 angle += (-atan(an->getK())*360/6.283);
             else
                 angle = -atan(an->getK())*360/6.283;
+            if (abs(angle) < 0.001) {
+                deskewed = true;
+                return;
+            }
             rotate(angle);
+            ImageProcessor::polishImage(img);
             QString fn = saveTmpPage(false, false);
             loadFile(fn, 1);
             deskewed = true;

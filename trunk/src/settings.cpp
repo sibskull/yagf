@@ -70,6 +70,7 @@ void Settings::readSettings(const QString &path)
     if (tessdataPath.isEmpty())
         findTessDataPath();
     cropLoaded =  settings->value("processing/crop1", QVariant(true)).toBool();
+    autoDeskew =  settings->value("processing/deskew", QVariant(true)).toBool();
     size = settings->value("mainwindow/size", QSize(800, 600)).toSize();
     iconSize = settings->value("mainwindow/iconSize", QSize(48, 48)).toSize();
     position = settings->value("mainwindow/pos", QPoint(0, 0)).toPoint();
@@ -97,6 +98,7 @@ void Settings::writeSettings()
     settings->setValue("ocr/engine", engine);
     settings->setValue("ocr/tessData", tessdataPath);
     settings->setValue("processing/crop1", cropLoaded);
+    settings->setValue("processing/deskew", autoDeskew);
     settings->sync();
 }
 
@@ -155,6 +157,11 @@ bool Settings::getFullScreen()
 int Settings::getFontSize()
 {
     return fontSize;
+}
+
+bool Settings::getAutoDeskew()
+{
+    return autoDeskew;
 }
 
 bool Settings::getCropLoaded()
@@ -220,6 +227,11 @@ void Settings::setFontSize(const int &value)
 void Settings::setCropLoaded(const bool value)
 {
     cropLoaded = value;
+}
+
+void Settings::setAutoDeskew(const bool value)
+{
+    autoDeskew = value;
 }
 
 QString Settings::workingDir()

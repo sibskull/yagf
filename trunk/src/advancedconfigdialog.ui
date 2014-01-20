@@ -27,6 +27,16 @@
       </widget>
      </item>
      <item>
+      <widget class="QCheckBox" name="checkBox_2">
+       <property name="text">
+        <string>Deskew Loaded Images</string>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
       <spacer name="verticalSpacer">
        <property name="orientation">
         <enum>Qt::Vertical</enum>

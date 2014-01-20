@@ -40,3 +40,13 @@ void AdvancedConfigDialog::setCrop1(const bool value)
 {
     ui->checkBox->setCheckState((value == true ? Qt::Checked : Qt::Unchecked)) ;
 }
+
+bool AdvancedConfigDialog::doDeskew()
+{
+    return ui->checkBox_2->checkState() == Qt::Checked;
+}
+
+void AdvancedConfigDialog::setDeskew(const bool value)
+{
+    ui->checkBox_2->setCheckState((value == true ? Qt::Checked : Qt::Unchecked)) ;
+}

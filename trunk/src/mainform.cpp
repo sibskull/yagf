@@ -980,8 +980,10 @@ void MainForm::showAdvancedSettings()
 {
     AdvancedConfigDialog dlg;
     dlg.setCrop1(settings->getCropLoaded());
+    dlg.setDeskew(settings->getAutoDeskew());
     if (dlg.exec()) {
         settings->setCropLoaded(dlg.doCrop1());
+        settings->setAutoDeskew(dlg.doDeskew());
     }
 }
 

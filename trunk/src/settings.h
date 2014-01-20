@@ -48,6 +48,7 @@ public:
   QPoint getPosition();
   bool getFullScreen();
   int getFontSize();
+  bool getAutoDeskew();
   bool getCropLoaded();
   void setLanguage(const QString &value);
   void setOutputFormat(const QString &value);
@@ -62,6 +63,7 @@ public:
   void setFullScreen(const bool value);
   void setFontSize(const int &value);
   void setCropLoaded(const bool value);
+  void setAutoDeskew(const bool value);
   QString workingDir();
   void startLangPair();
   bool getLangPair(QString &full, QString &abbr);
@@ -94,6 +96,7 @@ private:
   int lpi;
   bool noLocale;
   bool RussianLocale;
+  bool autoDeskew;
   QString mPath;
   QSettings * settings;
   static Settings * m_instance;

@@ -35,6 +35,8 @@ public:
     ~AdvancedConfigDialog();
     bool doCrop1();
     void setCrop1(const bool value);
+    bool doDeskew();
+    void setDeskew(const bool value);
 private:
     Ui::AdvancedConfigDialog *ui;
 };

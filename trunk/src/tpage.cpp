@@ -104,7 +104,6 @@ bool Page::loadFile(QString fileName, int tiled, bool loadIntoView)
     img = ip.gsImage();
     mFileName = fileName;
     loadedBefore = true;
-
     return true;
 }
 

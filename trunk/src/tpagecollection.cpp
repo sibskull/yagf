@@ -81,6 +81,8 @@ bool PageCollection::appendPage(const QString &fileName)
             pages.append(p);
             index = pages.count() - 1;
             emit addSnippet(index);
+            if (Settings::instance()->getAutoDeskew())
+                deskew();
             return true;
         } else return false;
     }

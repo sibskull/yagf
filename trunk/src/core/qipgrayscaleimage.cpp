@@ -255,14 +255,12 @@ void QIPGrayscaleImage::blendImage(const QIPBlackAndWhiteImage &image)
     uint d1 = 3;
     uint d2 = 4;
     uint ra = 0;
+    uint c = 0;
+
     for (int i = w+1; i < w*(h-1)-1; i++) {
         if (bw[i] == 1) {
-            ra = (3*ra + gs[i])/4;
-            if (ra < 100) {
-                up = 64;
-                d1 = 1;
-                d2 = 2;
-            }
+            ra += gs[i];
+            c++;
             if ((bw[i-1] != 0)||(bw[i+1] != 0))
                 if ((bw[i-2] != 0)||(bw[i+1] != 0))
                 if ((bw[i-w] != 0)||(bw[i+w] != 0))
@@ -273,6 +271,9 @@ void QIPGrayscaleImage::blendImage(const QIPBlackAndWhiteImage &image)
         } else
             gs[i] = gs[i]*d1/d2;
     }
+    if (ra/c < 198)
+        for (int i = w+1; i < w*(h-1)-1; i++)
+            gs[i] = qMin(gs[i]+32, 255);
 }
 
 QIPGrayscaleImage::QIPGrayscaleImage(quint32 width, quint32 height) : data(new quint8[width*height])

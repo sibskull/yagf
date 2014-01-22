@@ -292,7 +292,8 @@ void PageCollection::rotate180()
 void PageCollection::deskew()
 {
     if (!cp()) return;
-    cp()->deskew();
+    if (cp()->textHorizontal())
+        cp()->deskew();
     emit loadPage();
 }
 

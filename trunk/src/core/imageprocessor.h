@@ -35,6 +35,7 @@ public:
     QImage gsImage() const;
     void binarize();
     static void polishImage(QImage &image);
+    static bool isTextHorizontal(QImage &image);
 signals:
     
 public slots:

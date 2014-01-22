@@ -334,16 +334,16 @@ Block Page::getSelectedBlock()
     return selectedBlock;
 }
 
-void Page::deskew(bool recreateCB)
+bool Page::deskew(bool recreateCB)
 {
-    if (deskewed) return;
+    if (deskewed) return false;
     if (imageLoaded) {
         prepareCCBuilder();
         CCAnalysis * an = new CCAnalysis(ccbuilder);
         if (an->analize()) {
             QImage timg;
             if ((img.height() > 3800)||(img.width() > 3800))
-                return;
+                return false;
             timg = tryRotate(img, -atan(an->getK())*360/6.283);
             CCBuilder * cb2 = new CCBuilder(timg);
             cb2->labelCCs();
@@ -359,7 +359,7 @@ void Page::deskew(bool recreateCB)
                 angle = -atan(an->getK())*360/6.283;
             if (abs(angle) < 0.001) {
                 deskewed = true;
-                return;
+                return false;
             }
             rotate(angle);
             ImageProcessor::polishImage(img);
@@ -373,6 +373,7 @@ void Page::deskew(bool recreateCB)
         }
         delete an;
     }
+    return true;
 }
 
 void Page::rotate90CW()
@@ -454,6 +455,11 @@ bool Page::splitPage(bool preprocess)
         addBlock(r);
     }
     return blocks.count() != 0;
+}
+
+bool Page::textHorizontal()
+{
+    return ImageProcessor::isTextHorizontal(img);
 }
 
 QString Page::fileName()

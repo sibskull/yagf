@@ -57,12 +57,13 @@ public:
     void saveBlockForRecognition(int index, const QString &fileName);
     void selectBlock(const QRect &r);
     Block getSelectedBlock();
-    void deskew(bool recreateCB = true);
+    bool deskew(bool recreateCB = true);
     void rotate90CW();
     void rotate90CCW();
     void rotate180();
     void blockAllText();
     bool splitPage(bool preprocess);
+    bool textHorizontal();
     QString fileName();
     int pageID();
     void sortBlocksInternal();

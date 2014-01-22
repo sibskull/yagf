@@ -20,6 +20,7 @@
 #include "qipgrayscaleimage.h"
 #include "qipblackandwhiteimage.h"
 #include <QImage>
+#include <QMap>
 
 const uint m_treshold = 0;
 
@@ -86,6 +87,40 @@ void ImageProcessor::polishImage(QImage &image)
         }
     }
 
+}
+
+bool ImageProcessor::isTextHorizontal(QImage &image)
+{
+    return true;
+    if (image.width() > image.height())
+        return true;
+    QMap<int, int> stripes;
+    for (int y = 600; y < image.height() - 600; y++) {
+        quint8 * line = image.scanLine(y);
+        for (int x = 1200; x < image.width()*4 - 1200; x+=160) {
+            if (stripes.contains(x)) {
+                if (line[x] > 128)
+                    stripes.insert(x, stripes.value(x)+1);
+                else
+                    if (stripes.value(x) < 600)
+                        stripes.insert(x, 0);
+            } else
+                stripes.insert(x, 0);
+        }
+    }
+    int longCount = 0;
+    int shortCount = 0;
+    foreach (int count, stripes.values()) {
+        if (count >= 600)
+            longCount++;
+        else
+            shortCount++;
+    }
+    if (longCount*2 > shortCount)
+        return false;
+    if (longCount*3 > shortCount)
+        return true;
+    return true;
 }
 
 

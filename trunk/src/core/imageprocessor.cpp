@@ -61,6 +61,7 @@ void ImageProcessor::binarize()
 {
     bwimg = new QIPBlackAndWhiteImage(img->binarize(QIPGrayscaleImage::GatosBinarization));
     img->blendImage(*bwimg);
+    //img->darken(235);
 }
 
 void ImageProcessor::polishImage(QImage &image)
@@ -87,6 +88,67 @@ void ImageProcessor::polishImage(QImage &image)
         }
     }
 
+}
+
+void ImageProcessor::polishImage2(QImage &image)
+{
+
+    /*for (int y = 0; y < image.height(); y++) {
+        quint8 * line = image.scanLine(y);
+        uint strokLen = 24;
+        for (int x = 0; x < image.width()*4 - strokLen*4; x+=strokLen*2) {
+            int strokes[8] = {0};
+            int xvals[8] = {0};
+            int curstrok = 0;
+            for (int t = x+4; t < x+strokLen*4; t+=4) {
+                if (abs(line[t]-line[t-4]) > strokes[curstrok]) {
+                        strokes[curstrok] = line[t]-line[t-4];
+                        xvals[curstrok] = t;
+                }
+                else
+                    curstrok++;
+                if (curstrok >= 8)
+                    break;
+            }
+            if (curstrok < 4)
+                break;
+            int start = -1;
+            int stop = -1;
+            int k = 0;
+            while (k < curstrok -1) {
+                if (((strokes[k] < 0)&&(strokes[k+1] < 0))||((strokes[k] > 0)&&(strokes[k+1] > 0))) {
+                    strokes[k] += strokes[k+1];
+                    xvals[k] = xvals[k+1];
+                    for (int l = k+1; l < curstrok-1; l++)
+                        strokes[l] = strokes[l+1];
+                    curstrok--;
+                } else k++;
+            }
+            if (curstrok < 4)
+                break;
+            for (int m = 1; m < curstrok-1; m++) {
+                if (start < 0) {
+                    if (strokes[m-1] < -15)
+                        if (strokes[m] > 7)
+                            if (-strokes[m-1] > strokes[m])
+                                start = xvals[m];
+                } else {
+                    if (strokes[m-1] < -7)
+                        if (strokes[m] > 15)
+                            if (strokes[m] > -strokes[m-1]) {
+                                stop = xvals[m];
+                                break;
+                            }
+
+                }
+                if (stop > 0) {
+                    for (int p = start; p < stop; p +=4)
+                        line[p] = 60;
+                }
+
+            }
+        }
+    }*/
 }
 
 bool ImageProcessor::isTextHorizontal(QImage &image)

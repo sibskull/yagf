@@ -197,6 +197,7 @@ public:
     void wienerFilter();
 
     void blendImage(const QIPBlackAndWhiteImage &image);
+    void darken(uint threshold);
 signals:
     
 public slots:

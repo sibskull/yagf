@@ -153,6 +153,21 @@ void QIPGrayscaleImage::copyInternal(const IntRect &r, uint *image) const
 
 }
 
+void QIPGrayscaleImage::darken(uint threshold)
+{
+    uint dataSize = w*h;
+    quint8 * d = (quint8 *)data.data();
+    uint ac = 0;
+    for (uint i = 0; i < dataSize; i++) {
+        ac = ac + d[i];
+    }
+    ac = ac/dataSize;
+    if (ac > threshold)
+        for (uint i = 0; i < dataSize; i++) {
+            d[i] = qMax(0, d[i]*d[i]/255);
+        }
+}
+
 quint32 QIPGrayscaleImage::width() const
 {
     return w;
@@ -274,6 +289,8 @@ void QIPGrayscaleImage::blendImage(const QIPBlackAndWhiteImage &image)
     if (ra/c < 198)
         for (int i = w+1; i < w*(h-1)-1; i++)
             gs[i] = qMin(gs[i]+32, 255);
+    for (int i = w+1; i < w*(h-1)-1; i++)
+        if ((gs[i] < 190)&&(gs[i]>32)) gs[i]-=32;
 }
 
 QIPGrayscaleImage::QIPGrayscaleImage(quint32 width, quint32 height) : data(new quint8[width*height])

@@ -174,6 +174,21 @@ bool SpellChecker::spellCheck()
     }
     QTextCursor cursor(m_textEdit->document());
     while (!cursor.isNull() && !cursor.atEnd()) {
+        if (hasHyphen(&cursor)) {
+            QString cc = checkConcatenation(&cursor);
+            if (!cc.isEmpty()) {
+                cursor.movePosition(QTextCursor::PreviousWord);
+                cursor.movePosition(QTextCursor::PreviousWord);
+                cursor.select(QTextCursor::WordUnderCursor);
+                cursor.removeSelectedText();
+                cursor.select(QTextCursor::WordUnderCursor);
+                cursor.removeSelectedText();
+                cursor.movePosition(QTextCursor::NextWord);
+                cursor.select(QTextCursor::WordUnderCursor);
+                cursor.removeSelectedText();
+                cursor.insertText(cc);
+            }
+        }
         _checkWord(&cursor);
         QTextCursor oldc = cursor;
         if (!cursor.movePosition(QTextCursor::NextWord,
@@ -214,9 +229,8 @@ void SpellChecker::_checkWord(QTextCursor *cursor)
     //selText = selText.remove("\"");
     //selText = selText.remove("(");
     //selText = selText.remove(")");
-    QByteArray ba = selText.toUtf8();
-    if ((aspell_speller_check(spell_checker1, ba.data(), ba.size()) == 0) &&
-            (aspell_speller_check(spell_checker2, ba.data(), ba.size()) == 0)) {
+
+    if (!checkWordSpelling(selText)) {
         QTextCharFormat fmt = cursor->charFormat();
         fmt.setUnderlineColor(QColor(Qt::red));
         fmt.setUnderlineStyle(QTextCharFormat::SpellCheckUnderline);
@@ -229,12 +243,49 @@ void SpellChecker::_checkWord(QTextCursor *cursor)
     cursor->clearSelection();
 }
 
+bool SpellChecker::checkWordSpelling(const QString &word)
+{
+    QByteArray ba = word.toUtf8();
+    return (aspell_speller_check(spell_checker1, ba.data(), ba.size()) != 0) ||
+            (aspell_speller_check(spell_checker2, ba.data(), ba.size()) != 0);
+}
+
 void SpellChecker::checkWord()
 {
     if ((spell_checker1 == 0) || (spell_checker2 == 0))
         return;
     QTextCursor cursor = m_textEdit->textCursor();
     _checkWord(&cursor);
+}
+
+bool SpellChecker::hasHyphen(QTextCursor * cursor)
+{
+    if ((spell_checker1 == 0) || (spell_checker2 == 0))
+        return false;
+    cursor->movePosition(QTextCursor::EndOfWord);
+    //cursor->movePosition(QTextCursor::NextCharacter);
+    cursor->select(QTextCursor::WordUnderCursor);
+    QString selText = cursor->selectedText();
+    cursor->movePosition(QTextCursor::PreviousWord);
+    if (selText.endsWith(QString::fromUtf8("-")))
+        return true;
+    return false;
+}
+
+QString SpellChecker::checkConcatenation(QTextCursor *cursor)
+{
+    cursor->movePosition(QTextCursor::PreviousWord);
+    cursor->select(QTextCursor::WordUnderCursor);
+    QString word1 = cursor->selectedText();
+    cursor->movePosition(QTextCursor::NextWord);
+    //cursor->movePosition(QTextCursor::NextWord);
+    cursor->select(QTextCursor::WordUnderCursor);
+    QString word2 = cursor->selectedText();
+    cursor->movePosition(QTextCursor::PreviousWord);
+    QString word = word1+word2;
+    if (checkWordSpelling(word))
+        return word;
+    return "";
 }
 
 QStringList SpellChecker::suggestions()

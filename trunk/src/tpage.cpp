@@ -441,13 +441,19 @@ bool Page::splitPage(bool preprocess)
         deskew();
         blocks = splitInternal();
     }
-    qreal sf = 2.0*scale;
+    qreal sf = scale;
     foreach (Rect block, blocks) {
         QRect r;
         block.x1 *=sf;
         block.y1 *=sf;
         block.x2 *= sf;
         block.y2 *=sf;
+
+        block.x1 -=4;
+        block.y1 +=6;
+        block.x2 -= 4;
+        block.y2 +=6;
+
 
         r.setX(block.x1);
         r.setY(block.y1);

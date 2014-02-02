@@ -99,9 +99,7 @@ void PageCollection::newPage(const QString &fileName, qreal rotation, bool prepr
         p->rotate(rotation);
         index = pages.count() - 1;
         emit addSnippet(index);
-        if (Settings::instance()->getAutoDeskew())
-            deskew();
-
+        makePageCurrent(index);
     }
 
 }

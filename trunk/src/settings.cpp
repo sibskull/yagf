@@ -77,6 +77,10 @@ void Settings::readSettings(const QString &path)
     position = settings->value("mainwindow/pos", QPoint(0, 0)).toPoint();
     fullScreen = settings->value("mainwindow/fullScreen", QVariant(false)).toBool();
     darkBackgroundThreshold = settings->value("tweaks/darkBackgroundThreshold", QVariant(198)).toInt();
+    foregroundBrightenFactor = settings->value("tweaks/foregroundBrightenFactor", QVariant(32)).toInt();
+    globalBrightenFactor = settings->value("tweaks/globalBrightenFactor", QVariant(32)).toInt();
+    globalDarkenFactor = settings->value("tweaks/globalDarkenFactor", QVariant(32)).toInt();
+    globalDarkenThreshold = settings->value("tweaks/globalDarkenThreshold", QVariant(190)).toInt();
 }
 
 void Settings::writeSettings()
@@ -102,6 +106,10 @@ void Settings::writeSettings()
     settings->setValue("processing/deskew", autoDeskew);
     settings->setValue("processing/preprocess", preprocess);
     settings->setValue("tweaks/darkBackgroundThreshold", darkBackgroundThreshold);
+    settings->setValue("tweaks/foregroundBrightenFactor", foregroundBrightenFactor);
+    settings->setValue("tweaks/globalBrightenFactor", globalBrightenFactor);
+    settings->setValue("tweaks/globalDarkenFactor", globalDarkenFactor);
+    settings->setValue("tweaks/globalDarkenThreshold", globalDarkenThreshold);
     settings->sync();
 }
 
@@ -250,6 +258,26 @@ void Settings::setPreprocessed(const bool value)
 int Settings::getDarkBackgroundThreshold()
 {
     return darkBackgroundThreshold;
+}
+
+int Settings::getForegroundBrightenFactor()
+{
+    return foregroundBrightenFactor;
+}
+
+int Settings::getGlobalBrightenFactor()
+{
+    return globalBrightenFactor;
+}
+
+int Settings::getGlobalDarkenFactor()
+{
+    return globalDarkenFactor;
+}
+
+int Settings::getGlobalDarkenThreshold()
+{
+    return globalDarkenThreshold;
 }
 
 QString Settings::workingDir()

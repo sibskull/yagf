@@ -186,20 +186,23 @@ void ProjectLoader::loadPage()
     Settings::instance()->setCropLoaded(false);
     PageCollection * pc = PageCollection::instance();
     Settings::instance()->setCropLoaded(oldcl);
-    pc->appendPage(fn);
+    //pc->appendPage(fn);
     QString value = stream->attributes().value(URI, "rotation").toString();
+    bool deskewed = false;
+    bool preprocessed =false;
+    qreal rotation = 0;
     if (!value.isEmpty()) {
-        pc->setRotation(value.toDouble());
+        rotation = (value.toDouble());
     }
     value = stream->attributes().value(URI, "deskewed").toString();
     if (!value.isEmpty()) {
-        pc->setDeskewed(value.endsWith("true", Qt::CaseInsensitive) ? true : false);
+        deskewed = value.endsWith("true", Qt::CaseInsensitive) ? true : false;
     }
     value = stream->attributes().value(URI, "preprocessed").toString();
     if (!value.isEmpty()) {
-        pc->setPreprocessed(value.endsWith("true", Qt::CaseInsensitive) ? true : false);
+        preprocessed = (value.endsWith("true", Qt::CaseInsensitive) ? true : false);
     }
-
+    pc->newPage(fn,rotation,preprocessed, deskewed);
 }
 
 bool ProjectLoader::readPages()

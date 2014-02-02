@@ -88,6 +88,26 @@ bool PageCollection::appendPage(const QString &fileName)
     }
 }
 
+void PageCollection::newPage(const QString &fileName, qreal rotation, bool preprocessed, bool deskewed)
+{
+    Page * p = new Page(++pid);
+    connect(p,SIGNAL(refreshView()), this, SIGNAL(loadPage()));
+    p->setDeskewed(deskewed);
+    p->setPreprocessed(preprocessed);
+    if (p->loadFile(fileName, 1)) {
+        pages.append(p);
+        p->rotate(rotation);
+        index = pages.count() - 1;
+        emit addSnippet(index);
+        if (Settings::instance()->getAutoDeskew())
+            deskew();
+
+    }
+
+}
+
+
+
 int PageCollection::count()
 {
     return pages.count();

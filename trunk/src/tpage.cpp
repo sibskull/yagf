@@ -41,6 +41,7 @@ Page::Page(const int pid, QObject *parent) :
     rotation = 0;
     deskewed = false;
     preprocessed = false;
+    cropped = false;
     mFileName.clear();
     this->pid = pid;
 }
@@ -71,15 +72,22 @@ bool Page::loadFile(QString fileName, int tiled, bool loadIntoView)
     crop1.setWidth(0);
     crop1.setHeight(0);
     scale = 0.5;
-    QImageReader ir(fileName);
-    if ((ir.size().width() > 7500)||(ir.size().height() > 7500)) {
-        ir.setScaledSize(QSize(ir.size().width()/4, ir.size().height()/4));
-    } else {
-        if ((ir.size().width() > 3800)||(ir.size().height() > 3800))
-            ir.setScaledSize(QSize(ir.size().width()/2, ir.size().height()/2));
-    }
+    if (!fileName.endsWith(".ygf", Qt::CaseInsensitive)) {
+        QImageReader ir(fileName);
+        if ((ir.size().width() > 7500)||(ir.size().height() > 7500)) {
+            ir.setScaledSize(QSize(ir.size().width()/4, ir.size().height()/4));
+        } else {
+            if ((ir.size().width() > 3800)||(ir.size().height() > 3800))
+             ir.setScaledSize(QSize(ir.size().width()/2, ir.size().height()/2));
+        }
 
-    img = ir.read();
+        img = ir.read();
+    }
+    else
+    {
+        ImageProcessor ipx;
+        img = ipx.loadYGF(fileName);
+    }
     imageLoaded = !img.isNull();
     if (!imageLoaded)
         return false;
@@ -94,6 +102,7 @@ bool Page::loadFile(QString fileName, int tiled, bool loadIntoView)
     ip.loadImage(img);
     settings = Settings::instance();
     if (settings->getCropLoaded()) {
+        if (!cropped)
         ip.crop();
 
     }
@@ -102,12 +111,13 @@ bool Page::loadFile(QString fileName, int tiled, bool loadIntoView)
     //ip.tiledBinarize();
     rotateImageInternal(img, rotation);
     ip.loadImage(img);
-    if (settings->getPreprocessed()) {
+    if (settings->getPreprocessed()&&(!preprocessed)) {
             ip.binarize();
             preprocessed = true;
     }
     img = ip.gsImage();
-    mFileName = fileName;
+
+    mFileName = saveTmpPage("BMP");
     loadedBefore = true;
     return true;
 }
@@ -369,7 +379,7 @@ bool Page::deskew(bool recreateCB)
             rotate(angle);
             //ImageProcessor::polishImage(img);
             ImageProcessor::polishImage2(img);
-            QString fn = saveTmpPage(false, false);
+            QString fn = saveTmpPage("BMP");
             loadFile(fn, 1);
             deskewed = true;
             delete ccbuilder;
@@ -429,7 +439,7 @@ bool Page::splitPage(bool preprocess)
     QList<Rect> blocks;
     prepareCCBuilder();
     if (preprocess) {
-        QString fn = saveTmpPage(!preprocessed, !preprocessed);
+        QString fn = saveTmpPage("BMP");
         loadedBefore = false;
         loadFile(fn, 1);
         blocks = splitInternal();
@@ -573,29 +583,20 @@ QImage Page::currentImage()
 {
     return img.scaled(img.width()*scale, img.height()*scale);
 }
-
-QString Page::saveTmpPage(bool cc, bool binarize)
+#include <QTemporaryFile>
+QString Page::saveTmpPage(const QString &format)
 {
-    QString fileName =Settings::instance()->workingDir() + QString::fromUtf8("tmp-%1.bmp").arg((quint64)img.data_ptr() - (((quint64)&cc)>>1));
-    QImageReader ir(mFileName);
-    QImage image = ir.read().convertToFormat(QImage::Format_ARGB32);
-    if (image.isNull())
-        return fileName;
-    if (binarize) {
-        //ImageProcessor ip;
-        //ip.start(image);
-        //ip.nomalizeBackgroud();
-        //ip.rebinarize(16, 16);
-        //image = ip.finalize();
-    }
-
-    if (cc) {
-        deskewed = false;
-        deskew(false);
-    }
+    QString fileName =Settings::instance()->workingDir() + QString::fromUtf8("tmp-%1").arg((quint64)img.data_ptr() - (((quint64)&fileName)>>1));
     //    booster.flatten(&image);
-    applyTransforms(image, 1);
-    image.save(fileName, "BMP");
+    if (format == "BMP") {
+        fileName = fileName +".bmp";
+        img.save(fileName, "BMP");
+    }
+    else {
+        fileName = fileName +".ygf";
+        ImageProcessor ip;
+        ip.saveYGF(img, fileName);
+    }
     return fileName;
 }
 

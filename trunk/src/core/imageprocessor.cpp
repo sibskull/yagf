@@ -64,6 +64,18 @@ void ImageProcessor::binarize()
     //img->darken(235);
 }
 
+void ImageProcessor::saveYGF(const QImage &image, const QString &fileName)
+{
+    //QIPGrayscaleImage gsi(image, QIPGrayscaleImage::MinValue);
+    QIPGrayscaleImage::saveGrayscale(image, fileName);
+}
+
+QImage ImageProcessor::loadYGF(const QString &fileName)
+{
+    QIPGrayscaleImage gsi(fileName);
+    return gsi.toImage();
+}
+
 void ImageProcessor::polishImage(QImage &image)
 {
     for(int y =1; y < image.height()-1; y++) {

@@ -34,6 +34,8 @@ public:
     void loadImage(const QImage &image);
     QImage gsImage() const;
     void binarize();
+    void saveYGF(const QImage &image, const QString &fileName);
+    QImage loadYGF(const QString &fileName);
     static void polishImage(QImage &image);
     static void polishImage2(QImage &image);
     static bool isTextHorizontal(QImage &image);

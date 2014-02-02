@@ -227,9 +227,9 @@ bool QIPGrayscaleImage::saveGrayscale(const QImage &image, const QString &fileNa
     f.write((char*) &wx, 2);
     quint8 * d = new quint8[wx];
     for (int  y = 0; y < hx; y++) {
-        QRgb * line = (QRgb *) image.scanLine(y);
+        quint8 * line = (quint8 *) image.scanLine(y);
         for (int x = 0; x < wx; x++)
-            d[x] = (quint8)line[x*4];
+            d[x] = line[x*4];
         f.write((char*)d,wx);
     }
     delete[] d;
@@ -336,7 +336,7 @@ void QIPGrayscaleImage::blendImage(const QIPBlackAndWhiteImage &image)
     }
     for (int i = w*(h-1); i < w*h; i++)
         gs[i] = bw[i] == 1 ? qMin(gs[i] + 32, 255) : gs[i]*3/4;
-    int up =32;
+    int up =Settings::instance()->getForegroundBrightenFactor();
     uint d1 = 3;
     uint d2 = 4;
     uint ra = 0;
@@ -356,12 +356,14 @@ void QIPGrayscaleImage::blendImage(const QIPBlackAndWhiteImage &image)
         } else
             gs[i] = gs[i]*d1/d2;
     }
-
+    up = Settings::instance()->getGlobalBrightenFactor();
     if (ra/c < Settings::instance()->getDarkBackgroundThreshold())
         for (int i = w+1; i < w*(h-1)-1; i++)
-            gs[i] = qMin(gs[i]+32, 255);
+            gs[i] = qMin(gs[i]+up, 255);
+    up = Settings::instance()->getGlobalDarkenFactor();
+    int thr = Settings::instance()->getGlobalDarkenThreshold();
     for (int i = w+1; i < w*(h-1)-1; i++)
-        if ((gs[i] < 190)&&(gs[i]>32)) gs[i]-=32;
+        if ((gs[i] < thr)&&(gs[i]>up)) gs[i]-=up;
 }
 
 QIPGrayscaleImage::QIPGrayscaleImage(quint32 width, quint32 height) : data(new quint8[width*height])

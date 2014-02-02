@@ -67,6 +67,10 @@ public:
   void setAutoDeskew(const bool value);
   void setPreprocessed(const bool value);
   int getDarkBackgroundThreshold();
+  int getForegroundBrightenFactor();
+  int getGlobalBrightenFactor();
+  int getGlobalDarkenFactor();
+  int getGlobalDarkenThreshold();
   QString workingDir();
   void startLangPair();
   bool getLangPair(QString &full, QString &abbr);
@@ -102,9 +106,10 @@ private:
   bool RussianLocale;
   bool autoDeskew;
   int darkBackgroundThreshold;
-  int foregroundThreshold;
-  int brightenFactor;
-  int darkenFactor;
+  int globalBrightenFactor;
+  int foregroundBrightenFactor;
+  int globalDarkenFactor;
+  int globalDarkenThreshold;
   QString mPath;
   QSettings * settings;
   static Settings * m_instance;

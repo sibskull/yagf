@@ -113,11 +113,11 @@ QString ProjectSaver::copyFile(const QString &source)
     if (!dir.endsWith("/"))
         dir = dir + "/";
     QString base = fi.baseName();
-    QString fileName = base+".png";
+    QString fileName = base+".ygf";
     if (dir == directory)
         return fileName;
     QString newName = directory + fileName;
-    if (source.endsWith(".png", Qt::CaseInsensitive)) {
+    if (source.endsWith(".ygf", Qt::CaseInsensitive)) {
         if (QFile::copy(source, newName))
             return fileName;
         else

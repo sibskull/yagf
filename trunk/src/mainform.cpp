@@ -503,7 +503,7 @@ void MainForm::delTmpFiles()
     QDir dir(settings->workingDir());
     dir.setFilter(QDir::Files | QDir::NoSymLinks);
     for (uint i = 0; i < dir.count(); i++) {
-        if (dir[i].endsWith("jpg") || dir[i].endsWith("bmp") || dir[i].endsWith("png") || dir[i].endsWith("txt"))
+        if (dir[i].endsWith("jpg") || dir[i].endsWith("bmp") || dir[i].endsWith("png") || dir[i].endsWith("txt") || dir[i].endsWith("ygf"))
             dir.remove(dir[i]);
     }
     delTmpDir();
@@ -662,7 +662,7 @@ void MainForm::delTmpDir()
     dir.setPath(settings->workingDir() + "output_files");
     dir.setFilter(QDir::Files | QDir::NoSymLinks);
     for (uint i = 0; i < dir.count(); i++) {
-        if (dir[i].endsWith("jpg") || dir[i].endsWith("bmp"))
+        if (dir[i].endsWith("jpg") || dir[i].endsWith("bmp") || dir[i].endsWith("ygf"))
             dir.remove(dir[i]);
     }
     dir.rmdir(settings->workingDir() + "output_files");
@@ -673,6 +673,7 @@ void MainForm::delTmpDir()
 void MainForm::clearTmpFiles()
 {
     QFile::remove(settings->workingDir() + "tmp*.bmp");
+    QFile::remove(settings->workingDir() + "tmp*.ygf");
     QFile f(settings->workingDir()+inputFile);
     f.remove();
     f.setFileName(settings->workingDir()+outputFile);

@@ -117,7 +117,7 @@ bool Page::loadFile(QString fileName, int tiled, bool loadIntoView)
     }
     img = ip.gsImage();
 
-    mFileName = saveTmpPage("BMP");
+    mFileName = saveTmpPage("YGF");
     loadedBefore = true;
     return true;
 }
@@ -379,7 +379,7 @@ bool Page::deskew(bool recreateCB)
             rotate(angle);
             //ImageProcessor::polishImage(img);
             ImageProcessor::polishImage2(img);
-            QString fn = saveTmpPage("BMP");
+            QString fn = saveTmpPage("YGF");
             loadFile(fn, 1);
             deskewed = true;
             delete ccbuilder;
@@ -439,7 +439,7 @@ bool Page::splitPage(bool preprocess)
     QList<Rect> blocks;
     prepareCCBuilder();
     if (preprocess) {
-        QString fn = saveTmpPage("BMP");
+        QString fn = saveTmpPage("YGF");
         loadedBefore = false;
         loadFile(fn, 1);
         blocks = splitInternal();

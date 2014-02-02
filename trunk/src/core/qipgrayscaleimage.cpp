@@ -230,7 +230,9 @@ bool QIPGrayscaleImage::saveGrayscale(const QImage &image, const QString &fileNa
         quint8 * line = (quint8 *) image.scanLine(y);
         for (int x = 0; x < wx; x++)
             d[x] = line[x*4];
-        f.write((char*)d,wx);
+        quint64 rl = f.write((char*)d,wx);
+        while (rl != 0)
+            rl = f.write((char*)&d[rl],wx-rl);
     }
     delete[] d;
     f.flush();
@@ -380,8 +382,8 @@ QPoint QIPGrayscaleImage::loadHeader(QFile *file)
     if (QString::fromAscii(header) != fheader)
         return res;
     quint16 wx, hx;
-    file->read((char*) &wx, 2);
     file->read((char*) &hx, 2);
+    file->read((char*) &wx, 2);
     res.setX(wx);
     res.setY(hx);
     return res;

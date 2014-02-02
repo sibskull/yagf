@@ -68,6 +68,7 @@ public:
     int pageID();
     void sortBlocksInternal();
     bool isDeskewed();
+    bool isCropped();
     bool isPreprocessed();
     qreal getRotation();
     void setDeskewed(bool value);
@@ -92,6 +93,7 @@ private:
     QRect crop1;
     QRect crop2;
     bool deskewed;
+    bool cropped;
     QImage img;
     TBlocks blocks;
     bool imageLoaded;

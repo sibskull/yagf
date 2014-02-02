@@ -16,12 +16,15 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "settings.h"
 #include "qipgrayscaleimage.h"
 #include "binarize.h"
 #include <cmath>
 #include "common.h"
 #include <QRect>
+#include <QFile>
 
+const QString fheader = QString::fromUtf8("YGF1");
 
 static const int kSharpen [3][3]= {{0,-1,0}, {-1,5,-1}, {0,-1,0}};
 static const int wkSharpen = 1;
@@ -74,6 +77,27 @@ QIPGrayscaleImage::QIPGrayscaleImage(const QIPGrayscaleImage &I) : data(I.data.d
 {
     w = I.w;
     h = I.h;
+}
+
+QIPGrayscaleImage::QIPGrayscaleImage(const QString &ygfFileName)
+{
+    w = 0;
+    h = 0;
+    QFile f(ygfFileName);
+    if (!f.open(QIODevice::ReadOnly))
+        return;
+    QPoint p = loadHeader(&f);
+    w = p.x();
+    h = p.y();
+    if (w*h == 0) {
+        f.close();
+        return;
+    }
+    quint8 * d = new quint8[w*h];
+    data = QSharedPointer<quint8>(d, deallocator<quint8>);
+    f.read((char*)data.data(), w*h);
+    f.flush();
+    f.close();
 }
 
 QIPGrayscaleImage::~QIPGrayscaleImage()
@@ -166,6 +190,52 @@ void QIPGrayscaleImage::darken(uint threshold)
         for (uint i = 0; i < dataSize; i++) {
             d[i] = qMax(0, d[i]*d[i]/255);
         }
+}
+
+bool QIPGrayscaleImage::save(const QString &fileName, bool overwrite)
+{
+
+    quint16 hx = h;
+    quint16 wx = w;
+    QFile f(fileName);
+    if ((f.exists())&&(!overwrite))
+        return false;
+    bool res = f.open(QIODevice::WriteOnly);
+    if (!res)
+        return false;
+    f.write(fheader.toAscii(), 4);
+    f.write((char*) &hx, 2);
+    f.write((char*) &wx, 2);
+    f.write((char*)data.data(), wx*hx);
+    f.flush();
+    f.close();
+    return true;
+}
+
+
+bool QIPGrayscaleImage::saveGrayscale(const QImage &image, const QString &fileName, bool overwrite)
+{
+    quint16 hx = image.height();
+    quint16 wx = image.width();
+    QFile f(fileName);
+    if ((f.exists())&&(!overwrite))
+        return false;
+    if(!f.open(QIODevice::WriteOnly))
+        return false;
+    f.write(fheader.toAscii(), 4);
+    f.write((char*) &hx, 2);
+    f.write((char*) &wx, 2);
+    quint8 * d = new quint8[wx];
+    for (int  y = 0; y < hx; y++) {
+        QRgb * line = (QRgb *) image.scanLine(y);
+        for (int x = 0; x < wx; x++)
+            d[x] = (quint8)line[x*4];
+        f.write((char*)d,wx);
+    }
+    delete[] d;
+    f.flush();
+    f.close();
+    return true;
 }
 
 quint32 QIPGrayscaleImage::width() const
@@ -286,7 +356,8 @@ void QIPGrayscaleImage::blendImage(const QIPBlackAndWhiteImage &image)
         } else
             gs[i] = gs[i]*d1/d2;
     }
-    if (ra/c < 198)
+
+    if (ra/c < Settings::instance()->getDarkBackgroundThreshold())
         for (int i = w+1; i < w*(h-1)-1; i++)
             gs[i] = qMin(gs[i]+32, 255);
     for (int i = w+1; i < w*(h-1)-1; i++)
@@ -297,6 +368,21 @@ QIPGrayscaleImage::QIPGrayscaleImage(quint32 width, quint32 height) : data(new q
 {
     w = width;
     h = height;
+}
+
+QPoint QIPGrayscaleImage::loadHeader(QFile *file)
+{
+    QPoint res(0,0);
+    char header[5] = {0};
+    file->read(header, 4);
+    if (QString::fromAscii(header) != fheader)
+        return res;
+    quint16 wx, hx;
+    file->read((char*) &wx, 2);
+    file->read((char*) &hx, 2);
+    res.setX(wx);
+    res.setY(hx);
+    return res;
 }
 
 

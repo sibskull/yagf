@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>400</width>
-    <height>115</height>
+    <height>151</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -33,6 +33,13 @@
        </property>
        <property name="checked">
         <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QCheckBox" name="checkBox_3">
+       <property name="text">
+        <string>Preprocess images when loaded</string>
        </property>
       </widget>
      </item>

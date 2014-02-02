@@ -71,11 +71,12 @@ void Settings::readSettings(const QString &path)
         findTessDataPath();
     cropLoaded =  settings->value("processing/crop1", QVariant(true)).toBool();
     autoDeskew =  settings->value("processing/deskew", QVariant(true)).toBool();
+    preprocess = settings->value("processing/preprocess", QVariant(true)).toBool();
     size = settings->value("mainwindow/size", QSize(800, 600)).toSize();
     iconSize = settings->value("mainwindow/iconSize", QSize(48, 48)).toSize();
     position = settings->value("mainwindow/pos", QPoint(0, 0)).toPoint();
     fullScreen = settings->value("mainwindow/fullScreen", QVariant(false)).toBool();
-
+    darkBackgroundThreshold = settings->value("tweaks/darkBackgroundThreshold", QVariant(198)).toInt();
 }
 
 void Settings::writeSettings()
@@ -99,6 +100,8 @@ void Settings::writeSettings()
     settings->setValue("ocr/tessData", tessdataPath);
     settings->setValue("processing/crop1", cropLoaded);
     settings->setValue("processing/deskew", autoDeskew);
+    settings->setValue("processing/preprocess", preprocess);
+    settings->setValue("tweaks/darkBackgroundThreshold", darkBackgroundThreshold);
     settings->sync();
 }
 
@@ -169,6 +172,11 @@ bool Settings::getCropLoaded()
     return cropLoaded;
 }
 
+bool Settings::getPreprocessed()
+{
+    return preprocess;
+}
+
 void Settings::setLanguage(const QString &value)
 {
     language = value;
@@ -232,6 +240,16 @@ void Settings::setCropLoaded(const bool value)
 void Settings::setAutoDeskew(const bool value)
 {
     autoDeskew = value;
+}
+
+void Settings::setPreprocessed(const bool value)
+{
+    preprocess = value;
+}
+
+int Settings::getDarkBackgroundThreshold()
+{
+    return darkBackgroundThreshold;
 }
 
 QString Settings::workingDir()

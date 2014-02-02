@@ -93,14 +93,19 @@ bool Page::loadFile(QString fileName, int tiled, bool loadIntoView)
     ImageProcessor ip;
     ip.loadImage(img);
     settings = Settings::instance();
-    if (settings->getCropLoaded())
+    if (settings->getCropLoaded()) {
         ip.crop();
+
+    }
     img = ip.gsImage();
     //ip.start(img2);
     //ip.tiledBinarize();
     rotateImageInternal(img, rotation);
     ip.loadImage(img);
-    ip.binarize();
+    if (settings->getPreprocessed()) {
+            ip.binarize();
+            preprocessed = true;
+    }
     img = ip.gsImage();
     mFileName = fileName;
     loadedBefore = true;
@@ -487,6 +492,11 @@ void Page::sortBlocksInternal()
 bool Page::isDeskewed()
 {
     return deskewed;
+}
+
+bool Page::isCropped()
+{
+    return cropped;
 }
 
 bool Page::isPreprocessed()

@@ -50,3 +50,13 @@ void AdvancedConfigDialog::setDeskew(const bool value)
 {
     ui->checkBox_2->setCheckState((value == true ? Qt::Checked : Qt::Unchecked)) ;
 }
+
+bool AdvancedConfigDialog::doPreprocess()
+{
+    return ui->checkBox_3->checkState() == Qt::Checked;
+}
+
+void AdvancedConfigDialog::setPreprocess(const bool value)
+{
+    ui->checkBox_3->setCheckState((value == true ? Qt::Checked : Qt::Unchecked)) ;
+}

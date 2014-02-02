@@ -50,6 +50,7 @@ public:
   int getFontSize();
   bool getAutoDeskew();
   bool getCropLoaded();
+  bool getPreprocessed();
   void setLanguage(const QString &value);
   void setOutputFormat(const QString &value);
   void setLastDir(const QString &value);
@@ -64,6 +65,8 @@ public:
   void setFontSize(const int &value);
   void setCropLoaded(const bool value);
   void setAutoDeskew(const bool value);
+  void setPreprocessed(const bool value);
+  int getDarkBackgroundThreshold();
   QString workingDir();
   void startLangPair();
   bool getLangPair(QString &full, QString &abbr);
@@ -91,12 +94,17 @@ private:
   bool fullScreen;
   int fontSize;
   bool cropLoaded;
+  bool preprocess;
   QMap<QString, QString> cuMap;
   QMap<QString, QString> tesMap;
   int lpi;
   bool noLocale;
   bool RussianLocale;
   bool autoDeskew;
+  int darkBackgroundThreshold;
+  int foregroundThreshold;
+  int brightenFactor;
+  int darkenFactor;
   QString mPath;
   QSettings * settings;
   static Settings * m_instance;

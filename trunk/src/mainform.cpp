@@ -981,9 +981,11 @@ void MainForm::showAdvancedSettings()
     AdvancedConfigDialog dlg;
     dlg.setCrop1(settings->getCropLoaded());
     dlg.setDeskew(settings->getAutoDeskew());
+    dlg.setPreprocess(settings->getPreprocessed());
     if (dlg.exec()) {
         settings->setCropLoaded(dlg.doCrop1());
         settings->setAutoDeskew(dlg.doDeskew());
+        settings->setPreprocessed(dlg.doPreprocess());
     }
 }
 

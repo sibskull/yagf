@@ -23,6 +23,7 @@
 #include "common.h"
 #include <QImage>
 #include <QSharedPointer>
+#include <QPoint>
 
 /*!
   \typedef qreal QIPHistogram[256];
@@ -30,6 +31,7 @@
 */
 
 typedef qreal QIPHistogram[256];
+class QFile;
 
 /*!
   \class QIPGrayscaleImage
@@ -83,6 +85,7 @@ public:
     bool isNull() const;
 
     QIPGrayscaleImage(const QIPGrayscaleImage &I);
+    QIPGrayscaleImage(const QString &ygfFileName);
     ~QIPGrayscaleImage();
 
     /*!
@@ -198,6 +201,8 @@ public:
 
     void blendImage(const QIPBlackAndWhiteImage &image);
     void darken(uint threshold);
+    bool save(const QString &fileName, bool overwrite = false);
+    static bool saveGrayscale(const QImage &image, const QString &fileName, bool overwrite = false);
 signals:
     
 public slots:
@@ -212,6 +217,7 @@ private:
         EdgesFilter
     } FilterType;
 private:
+    QPoint loadHeader(QFile * file);
     void toGSRGDBBy3(const QImage &input, int top, int left, int bottom, int right);
     void toImageInternal(uchar *image, const IntRect &rect, int imageWidth) const;
     void toGrayScale(const QImage &input);

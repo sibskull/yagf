@@ -41,6 +41,7 @@ public:
     bool spellCheck();  //Returns false only if the dictionary not found. Otherwise always true.
     void checkWord();
     bool hasHyphen(QTextCursor *cursor);
+    bool hasLongHyphen(QTextCursor *cursor);
     QString checkConcatenation(QTextCursor *cursor);
     void enumerateDicts();
     bool hasDict(const QString &shname);

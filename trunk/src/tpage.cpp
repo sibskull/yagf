@@ -394,16 +394,19 @@ bool Page::deskew(bool recreateCB)
 
 void Page::rotate90CW()
 {
+    deskewed = false;
     rotate(90);
 }
 
 void Page::rotate90CCW()
 {
+    deskewed = false;
     rotate(-90);
 }
 
 void Page::rotate180()
 {
+    deskewed = false;
     rotate(180);
 }
 

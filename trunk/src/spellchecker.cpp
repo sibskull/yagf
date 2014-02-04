@@ -174,6 +174,29 @@ bool SpellChecker::spellCheck()
     }
     QTextCursor cursor(m_textEdit->document());
     while (!cursor.isNull() && !cursor.atEnd()) {
+        if (hasLongHyphen(&cursor)) {
+            cursor.select(QTextCursor::WordUnderCursor);
+            QString word1 = cursor.selectedText();
+            word1.truncate(word1.length()-1);
+            cursor.movePosition(QTextCursor::NextWord);
+            cursor.select(QTextCursor::WordUnderCursor);
+            QString word2 = cursor.selectedText();
+            word1 = word1 +word2;
+            if (checkWordSpelling(word1)) {
+                cursor.movePosition(QTextCursor::PreviousWord);
+                cursor.select(QTextCursor::WordUnderCursor);
+                cursor.removeSelectedText();
+                cursor.select(QTextCursor::WordUnderCursor);
+                cursor.removeSelectedText();
+                cursor.insertText(word1);
+            }
+        }
+        cursor.select(QTextCursor::WordUnderCursor);
+        QString word = cursor.selectedText();
+        if (word == QString::fromUtf8("вЂ”")) {
+            cursor.removeSelectedText();
+            cursor.insertText(QString::fromUtf8("—"));
+        }
         if (hasHyphen(&cursor)) {
             QString cc = checkConcatenation(&cursor);
             if (!cc.isEmpty()) {
@@ -245,7 +268,11 @@ void SpellChecker::_checkWord(QTextCursor *cursor)
 
 bool SpellChecker::checkWordSpelling(const QString &word)
 {
-    QByteArray ba = word.toUtf8();
+    QString tmp = word;
+    tmp = tmp.remove(QString::fromUtf8("»"));
+    tmp = tmp.remove(QString::fromUtf8("«"));
+
+    QByteArray ba = tmp.toUtf8();
     return (aspell_speller_check(spell_checker1, ba.data(), ba.size()) != 0) ||
             (aspell_speller_check(spell_checker2, ba.data(), ba.size()) != 0);
 }
@@ -270,6 +297,13 @@ bool SpellChecker::hasHyphen(QTextCursor * cursor)
     if (selText.endsWith(QString::fromUtf8("-")))
         return true;
     return false;
+}
+
+bool SpellChecker::hasLongHyphen(QTextCursor *cursor)
+{
+    cursor->select(QTextCursor::WordUnderCursor);
+    QString selText = cursor->selectedText();
+    return selText.endsWith(QString::fromUtf8("—"));
 }
 
 QString SpellChecker::checkConcatenation(QTextCursor *cursor)

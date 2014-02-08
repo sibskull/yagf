@@ -352,8 +352,10 @@ void Settings::makeLanguageMaps()
     cuMap.insert(QObject::trUtf8("Swedish"), "swe");
     cuMap.insert(QObject::trUtf8("Ukrainian"), "ukr");
 
+    tesMap.insert(QObject::trUtf8("Ancient Greek"), "grc");
     tesMap.insert(QObject::trUtf8("Bulgarian"), "bul");
     tesMap.insert(QObject::trUtf8("Czech"), "ces");
+    tesMap.insert(QObject::trUtf8("Croatian"), "hrv");
     tesMap.insert(QObject::trUtf8("Danish"), "dan");
     tesMap.insert(QObject::trUtf8("Dutch"), "nld");
     tesMap.insert(QObject::trUtf8("English"), "eng");
@@ -367,6 +369,7 @@ void Settings::makeLanguageMaps()
     tesMap.insert(QObject::trUtf8("Italian"), "ita");
     tesMap.insert(QObject::trUtf8("Latvian"), "lav");
     tesMap.insert(QObject::trUtf8("Lithuanian"), "lit");
+    tesMap.insert(QObject::trUtf8("Macedonian"), "mkd");
     tesMap.insert(QObject::trUtf8("Norwegian"), "nor");
     tesMap.insert(QObject::trUtf8("Polish"), "pol");
     tesMap.insert(QObject::trUtf8("Portuguese"), "por");

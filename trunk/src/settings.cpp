@@ -170,6 +170,16 @@ int Settings::getFontSize()
     return fontSize;
 }
 
+QString Settings::getFullLanguageName(const QString &abbr)
+{
+    QMap<QString, QString> * map;
+    if (selectedEngine == UseCuneiform)
+        map = &cuMap;
+    if (selectedEngine == UseTesseract)
+        map = &tesMap;
+    return map->key(abbr, "");
+}
+
 bool Settings::getAutoDeskew()
 {
     return autoDeskew;
@@ -352,24 +362,31 @@ void Settings::makeLanguageMaps()
     cuMap.insert(QObject::trUtf8("Swedish"), "swe");
     cuMap.insert(QObject::trUtf8("Ukrainian"), "ukr");
 
+    tesMap.insert(QObject::trUtf8("Albanian"), "sqi");
     tesMap.insert(QObject::trUtf8("Ancient Greek"), "grc");
+    tesMap.insert(QObject::trUtf8("Azerbaijani"), "aze");
     tesMap.insert(QObject::trUtf8("Bulgarian"), "bul");
     tesMap.insert(QObject::trUtf8("Czech"), "ces");
     tesMap.insert(QObject::trUtf8("Croatian"), "hrv");
     tesMap.insert(QObject::trUtf8("Danish"), "dan");
+    tesMap.insert(QObject::trUtf8("Danish Gothic"), "dan-frak");
     tesMap.insert(QObject::trUtf8("Dutch"), "nld");
     tesMap.insert(QObject::trUtf8("English"), "eng");
+    tesMap.insert(QObject::trUtf8("Estonian"), "est");
     tesMap.insert(QObject::trUtf8("Finnish"), "fin");
     tesMap.insert(QObject::trUtf8("French"), "fra");
     tesMap.insert(QObject::trUtf8("German"), "deu");
-    tesMap.insert(QObject::trUtf8("German Gothic"), "gerf");
+    tesMap.insert(QObject::trUtf8("German Gothic"), "deu-frak");
     tesMap.insert(QObject::trUtf8("Greek"), "ell");
     tesMap.insert(QObject::trUtf8("Hebrew"), "heb");
     tesMap.insert(QObject::trUtf8("Hungarian"), "hun");
+    tesMap.insert(QObject::trUtf8("Icelandic"), "isl");
     tesMap.insert(QObject::trUtf8("Italian"), "ita");
     tesMap.insert(QObject::trUtf8("Latvian"), "lav");
     tesMap.insert(QObject::trUtf8("Lithuanian"), "lit");
     tesMap.insert(QObject::trUtf8("Macedonian"), "mkd");
+    tesMap.insert(QObject::trUtf8("Middle English"), "enm");
+    tesMap.insert(QObject::trUtf8("Middle French"), "frm");
     tesMap.insert(QObject::trUtf8("Norwegian"), "nor");
     tesMap.insert(QObject::trUtf8("Polish"), "pol");
     tesMap.insert(QObject::trUtf8("Portuguese"), "por");
@@ -377,10 +394,11 @@ void Settings::makeLanguageMaps()
     tesMap.insert(QObject::trUtf8("Russian"), "rus");
     tesMap.insert(QObject::trUtf8("Serbian"), "srp");
     tesMap.insert(QObject::trUtf8("Slovenian"), "slv");
-    tesMap.insert(QObject::trUtf8("Slovak"), "slk");
+    tesMap.insert(QObject::trUtf8("Slovakian"), "slk");
+    tesMap.insert(QObject::trUtf8("Slovakian Gothic"), "slk-frak");
     tesMap.insert(QObject::trUtf8("Spanish"), "spa");
     tesMap.insert(QObject::trUtf8("Swedish"), "swe");
-    tesMap.insert(QObject::trUtf8("Swedish Gothic"), "swef");
+    tesMap.insert(QObject::trUtf8("Swedish Gothic"), "swe-frak");
     tesMap.insert(QObject::trUtf8("Turkish"), "tur");
     tesMap.insert(QObject::trUtf8("Ukrainian"), "ukr");
 

@@ -52,10 +52,11 @@ SpellChecker::SpellChecker(QTextEdit *textEdit): m_textEdit(textEdit)
     m_map->insert("fra", "fr");
     m_map->insert("ger", "de");
     m_map->insert("deu", "de");
-    m_map->insert("gerf", "de-alt");
+    m_map->insert("deu-frak", "de-alt");
     m_map->insert("heb", "he");
     m_map->insert("hrv", "hr");
     m_map->insert("hun", "hu");
+    m_map->insert("isl", "is");
     m_map->insert("ita", "it");
     m_map->insert("lav", "lv");
     m_map->insert("lit", "lt");

@@ -48,6 +48,7 @@ public:
   QPoint getPosition();
   bool getFullScreen();
   int getFontSize();
+  QString getFullLanguageName(const QString &abbr);
   bool getAutoDeskew();
   bool getCropLoaded();
   bool getPreprocessed();

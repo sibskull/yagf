@@ -530,6 +530,18 @@ bool MainForm::useTesseract(const QString &inputFile)
     sl.append(settings->getLanguage());
     QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
     env.insert("TESSDATA_PREFIX", settings->getTessdataPath());
+    QDir dir(settings->getTessdataPath()+"tessdata/");
+    QStringList sl1;
+    sl1 << QString::fromUtf8("*%1.*").arg(settings->getLanguage());
+    if (dir.entryList(sl1, QDir::Files).count() == 0) {
+        QMessageBox mb(this);
+        mb.setIconPixmap(QPixmap(":/warning.png"));
+        mb.setWindowTitle("tesseract");
+        mb.setText(trUtf8("You have selected recognising %1 language using tesseract OCR. Currently the data for this language is not installed in your system. Please install the tesseract data files for \"%2\" from your system repository.").arg(settings->getFullLanguageName(settings->getLanguage())).arg(settings->getLanguage()));
+        mb.addButton(QMessageBox::Ok);
+        mb.exec();
+        return false;
+    }
     proc.setProcessEnvironment(env);
     proc.start("tesseract", sl);
     proc.waitForFinished(-1);

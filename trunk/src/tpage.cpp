@@ -298,10 +298,7 @@ void Page::clearBlocks()
 
 void Page::savePageForRecognition(const QString &fileName)
 {
-    QImageReader ir(mFileName);
-    QImage image = ir.read();
-    applyTransforms(image, 1);
-    image.save(fileName, "BMP");
+    img.save(fileName, "BMP");
 }
 
 bool Page::savePageAsImage(const QString &fileName, const QString &format)

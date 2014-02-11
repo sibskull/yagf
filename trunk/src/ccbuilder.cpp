@@ -99,6 +99,7 @@ public:
     }
     bool checkHorzLine(int y)
     {
+        quint32 clWhiteCount = 0;
         darksCount = 0;
         lightsCount = 0;
         minval = 800;
@@ -146,6 +147,7 @@ public:
     }
     bool checkVertLine(int x)
     {
+        quint32 clWhiteCount = 0;
         darksCount = 0;
         lightsCount = 0;
         minval = 800;
@@ -205,7 +207,6 @@ private:
 
     qreal clBrighttoWidth;
     qreal clBrighttoWidthtr;
-    int clWhiteCount;
     int y1, y2, x1, x2;
 };
 

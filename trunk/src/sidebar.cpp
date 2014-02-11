@@ -57,6 +57,7 @@ void SideBar::addItem(QSnippet *item)
     size.setHeight(item->imageHeight() < width() ? item->imageHeight() + 2 : h + 2);
     item->setSizeHint(size);
     QListWidget::addItem(item);
+    setCurrentItem(item);
 }
 
 

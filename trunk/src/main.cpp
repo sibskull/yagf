@@ -23,6 +23,7 @@
 #include <QLibraryInfo>
 #include "mainform.h"
 #include "settings.h"
+#include "langselectdialog.h"
 
 void parseCmdLine(const QStringList &args)
 {
@@ -69,6 +70,8 @@ int main(int argc, char *argv[])
         translator2.load("qt_" + QLocale::system().name(), QLibraryInfo::location(QLibraryInfo::TranslationsPath));
     if (!settings->useNoLocale())
         app.installTranslator(&translator2);
+    LangSelectDialog lsd;
+    lsd.exec();
     MainForm window;
     window.show();
     return app.exec();

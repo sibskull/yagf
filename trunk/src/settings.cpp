@@ -290,6 +290,13 @@ int Settings::getGlobalDarkenThreshold()
     return globalDarkenThreshold;
 }
 
+QStringList Settings::fullLanguageNames()
+{
+    QStringList res = tesMap.keys();
+    res << QObject::trUtf8("Russian-English");
+    return res;
+}
+
 QString Settings::workingDir()
 {
     QString wDir = QDir::homePath();
@@ -525,6 +532,7 @@ QString Settings::selectDefaultLanguageName()
                 name = map->value("Turkish", "eng");
                 break;
             default:
+                name = "eng";
                 break;
         }
     if (name == "")

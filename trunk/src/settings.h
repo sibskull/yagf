@@ -72,6 +72,7 @@ public:
   int getGlobalBrightenFactor();
   int getGlobalDarkenFactor();
   int getGlobalDarkenThreshold();
+  QStringList fullLanguageNames();
   QString workingDir();
   void startLangPair();
   bool getLangPair(QString &full, QString &abbr);

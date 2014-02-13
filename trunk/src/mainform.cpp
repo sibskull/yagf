@@ -1124,6 +1124,6 @@ void MainForm::setUILanguage()
 void MainForm::SelectRecognitionLanguages()
 {
     LangSelectDialog lsd;
-    lsd.exec();
-    fillLangBox();
+    if (lsd.exec() == QDialog::Accepted)
+        fillLangBox();
 }

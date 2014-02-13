@@ -44,6 +44,11 @@ void Settings::readSettings(const QString &path)
     mPath = path;
     mPath = mPath.append("yagf.ini");
     settings = new QSettings(mPath, QSettings::IniFormat);
+    version = settings->value("program/version").toString();
+    if (version.isEmpty())
+        fr = true;
+    else
+        fr = false;
     lastDir = settings->value("mainwindow/lastDir").toString();
     lastOutputDir = settings->value("mainwindow/lastOutputDir").toString();
     QString defEngine;
@@ -69,6 +74,7 @@ void Settings::readSettings(const QString &path)
     tessdataPath = settings->value("ocr/tessData", QVariant(tessdataPath)).toString();
     if (tessdataPath.isEmpty())
         findTessDataPath();
+    languages = settings->value("ocr/selectedLanguages").toStringList();
     cropLoaded =  settings->value("processing/crop1", QVariant(true)).toBool();
     autoDeskew =  settings->value("processing/deskew", QVariant(true)).toBool();
     preprocess = settings->value("processing/preprocess", QVariant(true)).toBool();
@@ -83,8 +89,14 @@ void Settings::readSettings(const QString &path)
     globalDarkenThreshold = settings->value("tweaks/globalDarkenThreshold", QVariant(190)).toInt();
 }
 
+bool Settings::firstRun()
+{
+    return fr;
+}
+
 void Settings::writeSettings()
 {
+    settings->setValue("program/version", QString::fromUtf8("0.9.3"));
     settings->setValue("mainwindow/size", size);
     settings->setValue("mainwindow/iconSize", iconSize);
     settings->setValue("mainwindow/pos", position);
@@ -96,6 +108,7 @@ void Settings::writeSettings()
     settings->setValue("mainwindow/nolocale", noLocale);
     settings->setValue("mainwindow/rulocale", RussianLocale);
     settings->setValue("ocr/language", language);
+    settings->setValue("ocr/selectedLanguages", languages);
 
     //settings->setValue("ocr/singleColumn", singleColumn);
     settings->setValue("ocr/outputFormat", outputFormat);
@@ -297,6 +310,16 @@ QStringList Settings::fullLanguageNames()
     return res;
 }
 
+QStringList Settings::getSelectedLanguages()
+{
+    return languages;
+}
+
+void Settings::setSelectedLanguages(const QStringList &value)
+{
+    languages = value;
+}
+
 QString Settings::workingDir()
 {
     QString wDir = QDir::homePath();
@@ -310,8 +333,11 @@ QString Settings::workingDir()
         wDir += '/';
     wDir += "yagf/";
     QDir dir(wDir);
-    if (!dir.exists())
+    if (!dir.exists()) {
         dir.mkdir(wDir);
+        fr = true;
+    }
+    else fr= false;
     return wDir;
 }
 

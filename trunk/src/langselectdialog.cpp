@@ -11,6 +11,7 @@ LangSelectDialog::LangSelectDialog(QWidget *parent) :
 {
     ui->setupUi(this);
     fillLangs();
+    setRecognitionLanguages(Settings::instance()->getSelectedLanguages());
 }
 
 LangSelectDialog::~LangSelectDialog()
@@ -50,6 +51,13 @@ void LangSelectDialog::setRecognitionLanguages(const QStringList &sl)
         else
             cb->setChecked(false);
     }
+}
+
+void LangSelectDialog::accept()
+{
+    QStringList sl = getRecognitionLanguages();
+    Settings::instance()->setSelectedLanguages(sl);
+    QDialog::accept();
 }
 
 void LangSelectDialog::fillLangs()

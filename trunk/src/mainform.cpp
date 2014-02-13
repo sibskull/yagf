@@ -30,6 +30,7 @@
 #include "scanner.h"
 #include "projectmanager.h"
 #include "forcelocaledialog.h"
+#include "langselectdialog.h"
 #include <signal.h>
 #include <QComboBox>
 #include <QLabel>
@@ -95,7 +96,7 @@ MainForm::MainForm(QWidget *parent): QMainWindow(parent)
     graphicsInput->addToolBarAction(actionRotate_90_CCW);
     graphicsInput->addToolBarAction(actionRotate_180);
     graphicsInput->addToolBarAction(actionRotate_90_CW);
-    graphicsInput->addToolBarAction(actionPrepare_Page);
+    //graphicsInput->addToolBarAction(actionPrepare_Page);
     graphicsInput->addToolBarAction(actionDeskew);
     graphicsInput->addToolBarSeparator();
     graphicsInput->addToolBarAction(actionSelect_Text_Area);
@@ -694,12 +695,15 @@ void MainForm::clearTmpFiles()
 
 void MainForm::fillLangBox()
 {
+    QStringList sl = Settings::instance()->getSelectedLanguages();
     settings->startLangPair();
     QString full;
     QString abbr;
     selectLangsBox->clear();
-    while(settings->getLangPair(full, abbr))
-        selectLangsBox->addItem(full, QVariant(abbr));
+    while(settings->getLangPair(full, abbr)) {
+        if (sl.contains(full))
+            selectLangsBox->addItem(full, QVariant(abbr));
+    }
 
 }
 
@@ -1072,13 +1076,13 @@ void MainForm::selectBlocks()
 void MainForm::setSmallIcons()
 {
     QSize s = toolBar->iconSize();
-    if (s.height() > 32) {
-         s.setHeight(32);
-         s.setWidth(32);
+    if (s.height() > 24) {
+         s.setHeight(24);
+         s.setWidth(24);
     }
     else {
-        s.setHeight(48);
-        s.setWidth(48);
+        s.setHeight(32);
+        s.setWidth(32);
     }
     toolBar->setIconSize(s);
     settings->setIconSize(s);
@@ -1115,4 +1119,11 @@ void MainForm::setUILanguage()
                 settings->setRussianLocale(true);
         }
     }
+}
+
+void MainForm::SelectRecognitionLanguages()
+{
+    LangSelectDialog lsd;
+    lsd.exec();
+    fillLangBox();
 }

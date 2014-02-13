@@ -19,6 +19,7 @@
 #include <QPoint>
 #include <QMap>
 #include <QLocale>
+#include <QStringList>
 
 
 enum SelectedEngine {
@@ -31,6 +32,7 @@ class Settings
 public:
   static Settings * instance();
   void readSettings(const QString &path);
+  bool firstRun();
   void writeSettings();
   QString getLanguage();
   bool useNoLocale();
@@ -73,6 +75,8 @@ public:
   int getGlobalDarkenFactor();
   int getGlobalDarkenThreshold();
   QStringList fullLanguageNames();
+  QStringList getSelectedLanguages();
+  void setSelectedLanguages(const QStringList &value);
   QString workingDir();
   void startLangPair();
   bool getLangPair(QString &full, QString &abbr);
@@ -91,6 +95,7 @@ private:
   QString lastDir;
   QString lastOutputDir;
   QString projectDir;
+  QString version;
   bool checkSpelling;
   QString tessdataPath;
   SelectedEngine selectedEngine;
@@ -101,6 +106,7 @@ private:
   int fontSize;
   bool cropLoaded;
   bool preprocess;
+  bool fr;
   QMap<QString, QString> cuMap;
   QMap<QString, QString> tesMap;
   int lpi;
@@ -112,6 +118,7 @@ private:
   int foregroundBrightenFactor;
   int globalDarkenFactor;
   int globalDarkenThreshold;
+  QStringList languages;
   QString mPath;
   QSettings * settings;
   static Settings * m_instance;

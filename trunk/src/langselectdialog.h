@@ -17,6 +17,8 @@ public:
     ~LangSelectDialog();
     QStringList getRecognitionLanguages() const;
     void setRecognitionLanguages(const QStringList &sl);
+protected:
+    void accept();
 private:
     void fillLangs();
 private:

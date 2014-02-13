@@ -96,6 +96,7 @@ private slots:
     void loadFiles(QStringList files);
     void LangTextChanged(const QString &text);
     void setUILanguage();
+    void SelectRecognitionLanguages();
 private:
     virtual void closeEvent(QCloseEvent *event);
     void initSettings();

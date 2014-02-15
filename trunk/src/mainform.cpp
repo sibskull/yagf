@@ -701,7 +701,7 @@ void MainForm::fillLangBox()
     QString abbr;
     selectLangsBox->clear();
     while(settings->getLangPair(full, abbr)) {
-        if (sl.contains(full))
+        if (sl.contains(full)||(sl.count()== 0))
             selectLangsBox->addItem(full, QVariant(abbr));
     }
 

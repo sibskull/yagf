@@ -88,6 +88,7 @@ bool Page::loadFile(QString fileName, int tiled, bool loadIntoView)
         ImageProcessor ipx;
         img = ipx.loadYGF(fileName);
     }
+
     imageLoaded = !img.isNull();
     if (!imageLoaded)
         return false;
@@ -303,10 +304,7 @@ void Page::savePageForRecognition(const QString &fileName)
 
 bool Page::savePageAsImage(const QString &fileName, const QString &format)
 {
-    QImageReader ir(mFileName);
-    QImage image = ir.read();
-    //applyTransforms(image, 1);
-    return image.save(fileName, format.toAscii().data());
+    return img.save(fileName, format.toAscii().data());
 }
 
 void Page::saveRawBlockForRecognition(QRect r, const QString &fileName)
@@ -374,6 +372,7 @@ bool Page::deskew(bool recreateCB)
                 return false;
             }
             rotate(angle);
+            rotation = angle;
             //ImageProcessor::polishImage(img);
             ImageProcessor::polishImage2(img);
             QString fn = saveTmpPage("YGF");
@@ -581,6 +580,11 @@ QImage Page::tryRotate(QImage image, qreal angle)
 
 QImage Page::currentImage()
 {
+    if (!imageLoaded) {
+        ImageProcessor ip;
+        img = ip.loadYGF(mFileName);
+        applyTransforms(img, 0.5);
+    }
     return img.scaled(img.width()*scale, img.height()*scale);
 }
 #include <QTemporaryFile>
@@ -598,6 +602,12 @@ QString Page::saveTmpPage(const QString &format)
         ip.saveYGF(img, fileName);
     }
     return fileName;
+}
+
+void Page::reSaveTmpPage()
+{
+    ImageProcessor ip;
+    ip.saveYGF(img, mFileName);
 }
 
 

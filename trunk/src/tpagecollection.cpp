@@ -77,12 +77,16 @@ bool PageCollection::appendPage(const QString &fileName)
 {
         Page * p = new Page(++pid);
         connect(p,SIGNAL(refreshView()), this, SIGNAL(loadPage()));
-        if (p->loadFile(fileName, 1)) {
+        if (p->loadFile(fileName, 1, false)) {
+
             pages.append(p);
             index = pages.count() - 1;
-            emit addSnippet(index);
-            if (Settings::instance()->getAutoDeskew())
+            if (Settings::instance()->getAutoDeskew()) {
                 deskew();
+                //p->reSaveTmpPage();
+            }
+            emit addSnippet(index);
+
             return true;
         } else return false;
     }
@@ -113,6 +117,8 @@ int PageCollection::count()
 
 bool PageCollection::makePageCurrent(int index)
 {
+    if (cp())
+        cp()->unload();
     this->index = index;
     return index < pages.count();
 }

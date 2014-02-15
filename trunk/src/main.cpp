@@ -21,9 +21,15 @@
 #include <QLocale>
 #include <stdio.h>
 #include <QLibraryInfo>
+#include <QProcessEnvironment>
 #include "mainform.h"
 #include "settings.h"
 #include "langselectdialog.h"
+
+//#define MEM_DEBUG
+#ifdef MEM_DEBUG
+#include <mcheck.h>
+#endif
 
 void parseCmdLine(const QStringList &args)
 {
@@ -48,6 +54,10 @@ void parseCmdLine(const QStringList &args)
 
 int main(int argc, char *argv[])
 {
+#ifdef MEM_DEBUG
+mtrace();
+#endif
+
     QApplication app(argc, argv);
     parseCmdLine(app.arguments());
     Settings * settings = Settings::instance();
@@ -76,5 +86,9 @@ int main(int argc, char *argv[])
     }
     MainForm window;
     window.show();
-    return app.exec();
+    int res = app.exec();
+#ifdef MEM_DEBUG
+muntrace();
+#endif
+    return res;
 }

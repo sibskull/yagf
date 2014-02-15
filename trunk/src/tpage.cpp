@@ -584,6 +584,7 @@ QImage Page::currentImage()
         ImageProcessor ip;
         img = ip.loadYGF(mFileName);
         applyTransforms(img, 0.5);
+        imageLoaded=true;
     }
     return img.scaled(img.width()*scale, img.height()*scale);
 }

@@ -88,12 +88,18 @@ bool PageCollection::appendPage(const QString &fileName)
             emit addSnippet(index);
 
             return true;
-        } else return false;
+        } else {
+            delete p;
+            pid--;
+            return false;
+        }
     }
 }
 
 void PageCollection::newPage(const QString &fileName, qreal rotation, bool preprocessed, bool deskewed)
 {
+    if (cp())
+        cp()->unload();
     Page * p = new Page(++pid);
     connect(p,SIGNAL(refreshView()), this, SIGNAL(loadPage()));
     p->setDeskewed(deskewed);
@@ -135,6 +141,8 @@ void PageCollection::setBeforeFirst()
 
 bool PageCollection::makeNextPageCurrent()
 {
+    if (cp())
+        cp()->unload();
     index++;
     if (index < count())
         return true;

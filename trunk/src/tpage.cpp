@@ -74,6 +74,8 @@ bool Page::loadFile(QString fileName, int tiled, bool loadIntoView)
     scale = 0.5;
     if (!fileName.endsWith(".ygf", Qt::CaseInsensitive)) {
         QImageReader ir(fileName);
+        if (!ir.canRead())
+            return false;
         if ((ir.size().width() > 7500)||(ir.size().height() > 7500)) {
             ir.setScaledSize(QSize(ir.size().width()/4, ir.size().height()/4));
         } else {

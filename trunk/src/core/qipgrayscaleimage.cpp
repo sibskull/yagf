@@ -93,8 +93,8 @@ QIPGrayscaleImage::QIPGrayscaleImage(const QString &ygfFileName)
         f.close();
         return;
     }
-    quint8 * d = new quint8[w*h];
-    data = QSharedPointer<quint8>(d, deallocator<quint8>);
+    //quint8 * d = ;
+    data = QSharedPointer<quint8>(new quint8[w*h], deallocator<quint8>);
     f.read((char*)data.data(), w*h);
     f.flush();
     f.close();

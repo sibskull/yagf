@@ -453,7 +453,10 @@ void CCBuilder::forwardScan()
 
 int CCBuilder::labelCCs()
 {
-
+    delete labels;
+    delete flags;
+    labels = 0;
+    flags = 0;
     if (w*h == 0)
         return 0;
     labels = new quint32 [image.height()*image.width()];

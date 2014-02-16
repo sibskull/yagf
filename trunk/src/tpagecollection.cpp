@@ -75,6 +75,7 @@ bool PageCollection::appendPage(const QString &fileName)
     } else 
     #endif // TIFF_IO
 {
+        unloadAll();
         Page * p = new Page(++pid);
         connect(p,SIGNAL(refreshView()), this, SIGNAL(loadPage()));
         if (p->loadFile(fileName, 1, false)) {
@@ -284,6 +285,13 @@ void PageCollection::setPreprocessed(const bool value)
 void PageCollection::reloadPage()
 {
     emit loadPage();
+}
+
+void PageCollection::unloadAll()
+{
+    foreach(Page *p, pages) {
+        p->unload();
+    }
 }
 
 void PageCollection::makeLarger()

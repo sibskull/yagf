@@ -61,6 +61,7 @@ public:
     void setDeskewed(const bool value);
     void setPreprocessed(const bool value);
     void reloadPage();
+    void unloadAll();
 public slots:
     void makeLarger();
     void makeSmaller();

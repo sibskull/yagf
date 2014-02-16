@@ -77,10 +77,10 @@ bool Page::loadFile(QString fileName, int tiled, bool loadIntoView)
         if (!ir.canRead())
             return false;
         if ((ir.size().width() > 7500)||(ir.size().height() > 7500)) {
-            ir.setScaledSize(QSize(ir.size().width()/4, ir.size().height()/4));
+            ir.setScaledSize(QSize(ir.size().width()/2, ir.size().height()/2));
         } else {
-            if ((ir.size().width() > 3800)||(ir.size().height() > 3800))
-             ir.setScaledSize(QSize(ir.size().width()/2, ir.size().height()/2));
+           // if ((ir.size().width() > 3800)||(ir.size().height() > 3800))
+           //  ir.setScaledSize(QSize(ir.size().width()/2, ir.size().height()/2));
         }
 
         img = ir.read();
@@ -354,8 +354,8 @@ bool Page::deskew(bool recreateCB)
         CCAnalysis * an = new CCAnalysis(ccbuilder);
         if (an->analize()) {
             QImage timg;
-            if ((img.height() > 3800)||(img.width() > 3800))
-                return false;
+            //if ((img.height() > 3800)||(img.width() > 3800))
+            //    return false;
             timg = tryRotate(img, -atan(an->getK())*360/6.283);
             CCBuilder * cb2 = new CCBuilder(timg);
             cb2->labelCCs();

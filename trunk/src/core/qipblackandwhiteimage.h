@@ -119,7 +119,7 @@ public:
       */
     QIPBlackAndWhiteImage crop() const;
 
-    QPoint cropGrayScaleImage(QIPGrayscaleImage ** image);
+    QRect cropGrayScaleImage(const QIPGrayscaleImage &image);
 
     bool isNull() const;
 private:

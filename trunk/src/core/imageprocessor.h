@@ -19,11 +19,13 @@
 #ifndef IMAGEPROCESSOR_H
 #define IMAGEPROCESSOR_H
 
+#include "qipgrayscaleimage.h"
+#include "qipblackandwhiteimage.h"
 #include <QObject>
 #include <QImage>
 
-class QIPGrayscaleImage;
-class QIPBlackAndWhiteImage;
+
+
 class ImageProcessor : public QObject
 {
     Q_OBJECT
@@ -44,8 +46,7 @@ signals:
 public slots:
 
 private:
-    QIPGrayscaleImage * img;
-    QIPBlackAndWhiteImage * bwimg;
+    QIPGrayscaleImage img;
 private:
     
 };

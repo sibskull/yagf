@@ -28,39 +28,41 @@ ImageProcessor::ImageProcessor(QObject *parent) :
     QObject(parent)
 
 {
-    img = NULL;
-    bwimg = NULL;
+    //img = NULL;
+    //bwimg = NULL;
 }
 
 ImageProcessor::~ImageProcessor()
 {
-    delete img;
-    delete bwimg;
+    //delete img;
+    //delete bwimg;
 }
 
 QRect ImageProcessor::crop()
 {
-    bwimg = new QIPBlackAndWhiteImage(img->binarize(QIPGrayscaleImage::OtsuBinarization));
-    QPoint p = bwimg->cropGrayScaleImage(&img);
-    delete bwimg;
-    bwimg = NULL;
-    return QRect(p.x(),p.y(), img->width(), img->height());
+    QIPBlackAndWhiteImage bwimg1 = QIPBlackAndWhiteImage(img.binarize(QIPGrayscaleImage::OtsuBinarization));
+    //QPoint p = bwimg1.cropGrayScaleImage(&img);
+    //delete bwimg;
+    //bwimg = NULL;
+    QRect r = bwimg1.cropGrayScaleImage(img);
+    img = img.copy(r.x(), r.x()+r.width(), r.y(), r.y()+r.height());
+    return r;
 }
 
 void ImageProcessor::loadImage(const QImage &image)
 {
-    img = new QIPGrayscaleImage(image,QIPGrayscaleImage::MinValue);
+    img = QIPGrayscaleImage(image,QIPGrayscaleImage::MinValue);
 }
 
 QImage ImageProcessor::gsImage() const
 {
-    return img->toImage();
+    return img.toImage();
 }
 
 void ImageProcessor::binarize()
 {
-    bwimg = new QIPBlackAndWhiteImage(img->binarize(QIPGrayscaleImage::GatosBinarization));
-    img->blendImage(*bwimg);
+    QIPBlackAndWhiteImage bwimg = img.binarize(QIPGrayscaleImage::GatosBinarization);
+    img.blendImage(bwimg);
     //img->darken(235);
 }
 

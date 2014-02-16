@@ -332,7 +332,7 @@ IntRect r1, r2;
     return copy(r1.x1, r2.x2, r1.y1, r2.y2);
 }
 
-QPoint QIPBlackAndWhiteImage::cropGrayScaleImage(QIPGrayscaleImage **image)
+QRect QIPBlackAndWhiteImage::cropGrayScaleImage(const QIPGrayscaleImage &image)
 {
     IntRect r1, r2;
     #ifndef IPRIT_MULTITHREADING
@@ -348,11 +348,11 @@ QPoint QIPBlackAndWhiteImage::cropGrayScaleImage(QIPGrayscaleImage **image)
         r2 = future2.result();
     #endif
         if ((r2.x2-r1.x1 < 32)&&(r2.y2-r1.y1 < 32))
-            return QPoint(0,0);
-        QIPGrayscaleImage * tmp = new QIPGrayscaleImage((*image)->copy(r1.x1, r2.x2, r1.y1, r2.y2));
-        delete *image;
-        (*image) = tmp;
-        return QPoint(r1.x1,r2.x2);
+            return QRect(0,0,0,0);
+       // QIPGrayscaleImage tmp = image->copy(r1.x1, r2.x2, r1.y1, r2.y2);
+       // delete *image;
+       // (*image) = tmp;
+        return QRect(r1.x1,r1.y1, r2.x2-r1.x1,r2.y2-r2.y1);
 }
 
 

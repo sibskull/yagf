@@ -235,11 +235,27 @@ void MainForm::loadFromCommandLine()
     }
 }
 
-void MainForm::loadFiles(QStringList files)
+void MainForm::loadFiles(const QStringList &files)
 {
-    for (int i = 0; i < files.count(); i++)
+    if (files.count() == 1) {
+        if (QFile::exists(files.at(0)))
+            loadFile(files.at(0));
+        return;
+    }
+    QProgressDialog pd(this);
+    pd.setWindowTitle("YAGF");
+    pd.setLabelText(trUtf8("Loading files..."));
+    pd.setRange(1, files.count());
+    pd.setValue(1);
+    pd.show();
+    for (int i = 0; i < files.count(); i++) {
         if (QFile::exists(files.at(i)))
             loadFile(files.at(i));
+        pd.setValue(i+1);
+        QApplication::processEvents();
+        if (pd.wasCanceled())
+            break;
+    }
 }
 
 void MainForm::LangTextChanged(const QString &text)
@@ -318,7 +334,7 @@ void MainForm::importPDF()
             else doit = false;
         }
         pdfx->setOutputDir(outputDir);
-        QApplication::processEvents();
+        QApplication::processEvents();        
         pdfPD.setWindowFlags(Qt::Dialog|Qt::WindowStaysOnTopHint);
         pdfPD.show();
         pdfPD.setMinimum(0);
@@ -349,14 +365,7 @@ void MainForm::loadImage()
         fileNames = dialog.selectedFiles();
         settings->setLastDir(dialog.directory().path());
         if (fileNames.count() > 0)
-         loadFile(fileNames.at(0), true);
-        if (!pages->pageValid())
-            return;
-        for (int i = 1; i < fileNames.count(); i++) {
-            loadFile(fileNames.at(i), false);
-        }
-//        if (fileNames.count() > 0)
-//            pages->makePageCurrent(0);
+            loadFiles(fileNames);
     }
 }
 

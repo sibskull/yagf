@@ -93,7 +93,7 @@ private slots:
     void selectBlocks();
     void setSmallIcons();
     void selectHTMLformat();
-    void loadFiles(QStringList files);
+    void loadFiles(const QStringList &files);
     void LangTextChanged(const QString &text);
     void setUILanguage();
     void SelectRecognitionLanguages();
@@ -131,6 +131,7 @@ private:
     Settings * settings;
     PageCollection * pages;
     QLabel * engineLabel;
+
 private slots:
     bool findEngine();
     void readyRead(int sig);

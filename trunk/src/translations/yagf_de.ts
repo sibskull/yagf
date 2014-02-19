@@ -174,10 +174,6 @@ Bitte cuneiform und/oder tesseract installieren</translation>
         <source>No PDF converter installed</source>
         <translation>Kein PDF Konvertierer installiert</translation>
     </message>
-    <message utf8="true">
-        <source>&lt;p align=&quot;center&quot;&gt;&lt;b&gt;YAGF - Yet Another Graphical Front-end for cuneiform and tesseract OCR engines&lt;/b&gt;&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;Version %1&lt;/p&gt; &lt;p align=&quot;center&quot;&gt;Ⓒ 2009-2012 Andrei Borovsky&lt;/p&gt; This is a free software distributed under GPL v3. Visit &lt;a href=&quot;http://symmetrica.net/cuneiform-linux/yagf-en.html&quot;&gt;http://symmetrica.net/cuneiform-linux/yagf-en.html&lt;/a&gt; for more details.</source>
-        <translation>&lt;p align=&quot;center&quot;&gt;&lt;b&gt;YAGF - Yet Another Graphical Front-end (Noch ein weiteres grafisches Frontend) fürr cuneiform und tesseract OCR (Optical Character Recognition = Optische Zeichen Erkennung) engines&lt;/b&gt;&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;Version %1&lt;/p&gt; &lt;p align=&quot;center&quot;&gt;Ⓒ 2009-2012 Andrei Borovsky&lt;/p&gt; Dies ist freie Softwater die unter der GPL v3 verbreitet wird. Besuchen Sie &lt;a href=&quot;http://symmetrica.net/cuneiform-linux/yagf-en.html&quot;&gt;http://symmetrica.net/cuneiform-linux/yagf-en.html&lt;/a&gt; für weitere Informationen. {2009-2012?}</translation>
-    </message>
     <message>
         <source>Using Cuneiform</source>
         <translation type="unfinished"></translation>
@@ -222,6 +218,10 @@ The page possibly lacks contrast. Try to select blocks manually.</source>
     <message>
         <source>You have selected recognising %1 language using tesseract OCR. Currently the data for this language is not installed in your system. Please install the tesseract data files for &quot;%2&quot; from your system repository.</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message utf8="true">
+        <source>&lt;p align=&quot;center&quot;&gt;&lt;b&gt;YAGF - Yet Another Graphical Front-end for cuneiform and tesseract OCR engines&lt;/b&gt;&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;Version %1&lt;/p&gt; &lt;p align=&quot;center&quot;&gt;Ⓒ 2009-2014 Andrei Borovsky&lt;/p&gt; This is a free software distributed under GPL v3. Visit &lt;a href=&quot;http://symmetrica.net/cuneiform-linux/yagf-en.html&quot;&gt;http://symmetrica.net/cuneiform-linux/yagf-en.html&lt;/a&gt; for more details.</source>
+        <translation type="unfinished">&lt;p align=&quot;center&quot;&gt;&lt;b&gt;YAGF - Yet Another Graphical Front-end (Noch ein weiteres grafisches Frontend) fürr cuneiform und tesseract OCR (Optical Character Recognition = Optische Zeichen Erkennung) engines&lt;/b&gt;&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;Version %1&lt;/p&gt; &lt;p align=&quot;center&quot;&gt;Ⓒ 2009-2012 Andrei Borovsky&lt;/p&gt; Dies ist freie Softwater die unter der GPL v3 verbreitet wird. Besuchen Sie &lt;a href=&quot;http://symmetrica.net/cuneiform-linux/yagf-en.html&quot;&gt;http://symmetrica.net/cuneiform-linux/yagf-en.html&lt;/a&gt; für weitere Informationen. {2009-2012?} {1&lt;?} {2009-2014 ?} {3.?}</translation>
     </message>
 </context>
 <context>

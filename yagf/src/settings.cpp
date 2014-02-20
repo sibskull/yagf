@@ -21,7 +21,7 @@ Settings * Settings::m_instance = NULL;
 
 Settings::Settings()
 {
-    makeLanguageMaps();
+    //makeLanguageMaps();
 }
 
 Settings::Settings(const Settings &)
@@ -44,6 +44,11 @@ void Settings::readSettings(const QString &path)
     mPath = path;
     mPath = mPath.append("yagf.ini");
     settings = new QSettings(mPath, QSettings::IniFormat);
+    version = settings->value("program/version").toString();
+    if (version.isEmpty())
+        fr = true;
+    else
+        fr = false;
     lastDir = settings->value("mainwindow/lastDir").toString();
     lastOutputDir = settings->value("mainwindow/lastOutputDir").toString();
     QString defEngine;
@@ -62,21 +67,36 @@ void Settings::readSettings(const QString &path)
     if (outputFormat == "") outputFormat = "text";
     checkSpelling = settings->value("mainWindow/checkSpelling", bool(true)).toBool();
     bool ok;
-    fontSize = settings->value("mainWindow/fontSize", int(12)).toInt(&ok);
+    fontSize = settings->value("mainwindow/fontSize", int(12)).toInt(&ok);
+    noLocale = settings->value("mainwindow/nolocale", QVariant(false)).toBool();
+    RussianLocale = settings->value("mainwindow/rulocale", QVariant(false)).toBool();
     findTessDataPath();
     tessdataPath = settings->value("ocr/tessData", QVariant(tessdataPath)).toString();
     if (tessdataPath.isEmpty())
         findTessDataPath();
+    languages = settings->value("ocr/selectedLanguages").toStringList();
     cropLoaded =  settings->value("processing/crop1", QVariant(true)).toBool();
+    autoDeskew =  settings->value("processing/deskew", QVariant(true)).toBool();
+    preprocess = settings->value("processing/preprocess", QVariant(true)).toBool();
     size = settings->value("mainwindow/size", QSize(800, 600)).toSize();
     iconSize = settings->value("mainwindow/iconSize", QSize(48, 48)).toSize();
     position = settings->value("mainwindow/pos", QPoint(0, 0)).toPoint();
     fullScreen = settings->value("mainwindow/fullScreen", QVariant(false)).toBool();
+    darkBackgroundThreshold = settings->value("tweaks/darkBackgroundThreshold", QVariant(198)).toInt();
+    foregroundBrightenFactor = settings->value("tweaks/foregroundBrightenFactor", QVariant(32)).toInt();
+    globalBrightenFactor = settings->value("tweaks/globalBrightenFactor", QVariant(32)).toInt();
+    globalDarkenFactor = settings->value("tweaks/globalDarkenFactor", QVariant(32)).toInt();
+    globalDarkenThreshold = settings->value("tweaks/globalDarkenThreshold", QVariant(190)).toInt();
+}
 
+bool Settings::firstRun()
+{
+    return fr;
 }
 
 void Settings::writeSettings()
 {
+    settings->setValue("program/version", QString::fromUtf8("0.9.3"));
     settings->setValue("mainwindow/size", size);
     settings->setValue("mainwindow/iconSize", iconSize);
     settings->setValue("mainwindow/pos", position);
@@ -84,14 +104,25 @@ void Settings::writeSettings()
     settings->setValue("mainwindow/lastDir", lastDir);
     settings->setValue("mainWindow/checkSpelling", checkSpelling);
     settings->setValue("mainwindow/lastOutputDir", lastOutputDir);
-    settings->setValue("mainWindow/fontSize", fontSize);
+    settings->setValue("mainwindow/fontSize", fontSize);
+    settings->setValue("mainwindow/nolocale", noLocale);
+    settings->setValue("mainwindow/rulocale", RussianLocale);
     settings->setValue("ocr/language", language);
+    settings->setValue("ocr/selectedLanguages", languages);
+
     //settings->setValue("ocr/singleColumn", singleColumn);
     settings->setValue("ocr/outputFormat", outputFormat);
     QString engine = selectedEngine == UseCuneiform ? QString("cuneiform") : QString("tesseract");
     settings->setValue("ocr/engine", engine);
     settings->setValue("ocr/tessData", tessdataPath);
     settings->setValue("processing/crop1", cropLoaded);
+    settings->setValue("processing/deskew", autoDeskew);
+    settings->setValue("processing/preprocess", preprocess);
+    settings->setValue("tweaks/darkBackgroundThreshold", darkBackgroundThreshold);
+    settings->setValue("tweaks/foregroundBrightenFactor", foregroundBrightenFactor);
+    settings->setValue("tweaks/globalBrightenFactor", globalBrightenFactor);
+    settings->setValue("tweaks/globalDarkenFactor", globalDarkenFactor);
+    settings->setValue("tweaks/globalDarkenThreshold", globalDarkenThreshold);
     settings->sync();
 }
 
@@ -152,9 +183,29 @@ int Settings::getFontSize()
     return fontSize;
 }
 
+QString Settings::getFullLanguageName(const QString &abbr)
+{
+    QMap<QString, QString> * map;
+    if (selectedEngine == UseCuneiform)
+        map = &cuMap;
+    if (selectedEngine == UseTesseract)
+        map = &tesMap;
+    return map->key(abbr, "");
+}
+
+bool Settings::getAutoDeskew()
+{
+    return autoDeskew;
+}
+
 bool Settings::getCropLoaded()
 {
     return cropLoaded;
+}
+
+bool Settings::getPreprocessed()
+{
+    return preprocess;
 }
 
 void Settings::setLanguage(const QString &value)
@@ -217,6 +268,58 @@ void Settings::setCropLoaded(const bool value)
     cropLoaded = value;
 }
 
+void Settings::setAutoDeskew(const bool value)
+{
+    autoDeskew = value;
+}
+
+void Settings::setPreprocessed(const bool value)
+{
+    preprocess = value;
+}
+
+int Settings::getDarkBackgroundThreshold()
+{
+    return darkBackgroundThreshold;
+}
+
+int Settings::getForegroundBrightenFactor()
+{
+    return foregroundBrightenFactor;
+}
+
+int Settings::getGlobalBrightenFactor()
+{
+    return globalBrightenFactor;
+}
+
+int Settings::getGlobalDarkenFactor()
+{
+    return globalDarkenFactor;
+}
+
+int Settings::getGlobalDarkenThreshold()
+{
+    return globalDarkenThreshold;
+}
+
+QStringList Settings::fullLanguageNames()
+{
+    QStringList res = tesMap.keys();
+    res << QObject::trUtf8("Russian-English");
+    return res;
+}
+
+QStringList Settings::getSelectedLanguages()
+{
+    return languages;
+}
+
+void Settings::setSelectedLanguages(const QStringList &value)
+{
+    languages = value;
+}
+
 QString Settings::workingDir()
 {
     QString wDir = QDir::homePath();
@@ -230,8 +333,11 @@ QString Settings::workingDir()
         wDir += '/';
     wDir += "yagf/";
     QDir dir(wDir);
-    if (!dir.exists())
+    if (!dir.exists()) {
         dir.mkdir(wDir);
+        fr = true;
+    }
+    else fr= false;
     return wDir;
 }
 
@@ -289,21 +395,31 @@ void Settings::makeLanguageMaps()
     cuMap.insert(QObject::trUtf8("Swedish"), "swe");
     cuMap.insert(QObject::trUtf8("Ukrainian"), "ukr");
 
+    tesMap.insert(QObject::trUtf8("Albanian"), "sqi");
+    tesMap.insert(QObject::trUtf8("Ancient Greek"), "grc");
+    tesMap.insert(QObject::trUtf8("Azerbaijani"), "aze");
     tesMap.insert(QObject::trUtf8("Bulgarian"), "bul");
     tesMap.insert(QObject::trUtf8("Czech"), "ces");
+    tesMap.insert(QObject::trUtf8("Croatian"), "hrv");
     tesMap.insert(QObject::trUtf8("Danish"), "dan");
+    tesMap.insert(QObject::trUtf8("Danish Gothic"), "dan-frak");
     tesMap.insert(QObject::trUtf8("Dutch"), "nld");
     tesMap.insert(QObject::trUtf8("English"), "eng");
+    tesMap.insert(QObject::trUtf8("Estonian"), "est");
     tesMap.insert(QObject::trUtf8("Finnish"), "fin");
     tesMap.insert(QObject::trUtf8("French"), "fra");
     tesMap.insert(QObject::trUtf8("German"), "deu");
-    tesMap.insert(QObject::trUtf8("German Gothic"), "gerf");
+    tesMap.insert(QObject::trUtf8("German Gothic"), "deu-frak");
     tesMap.insert(QObject::trUtf8("Greek"), "ell");
     tesMap.insert(QObject::trUtf8("Hebrew"), "heb");
     tesMap.insert(QObject::trUtf8("Hungarian"), "hun");
+    tesMap.insert(QObject::trUtf8("Icelandic"), "isl");
     tesMap.insert(QObject::trUtf8("Italian"), "ita");
     tesMap.insert(QObject::trUtf8("Latvian"), "lav");
     tesMap.insert(QObject::trUtf8("Lithuanian"), "lit");
+    tesMap.insert(QObject::trUtf8("Macedonian"), "mkd");
+    tesMap.insert(QObject::trUtf8("Middle English"), "enm");
+    tesMap.insert(QObject::trUtf8("Middle French"), "frm");
     tesMap.insert(QObject::trUtf8("Norwegian"), "nor");
     tesMap.insert(QObject::trUtf8("Polish"), "pol");
     tesMap.insert(QObject::trUtf8("Portuguese"), "por");
@@ -311,10 +427,11 @@ void Settings::makeLanguageMaps()
     tesMap.insert(QObject::trUtf8("Russian"), "rus");
     tesMap.insert(QObject::trUtf8("Serbian"), "srp");
     tesMap.insert(QObject::trUtf8("Slovenian"), "slv");
-    tesMap.insert(QObject::trUtf8("Slovak"), "slk");
+    tesMap.insert(QObject::trUtf8("Slovakian"), "slk");
+    tesMap.insert(QObject::trUtf8("Slovakian Gothic"), "slk-frak");
     tesMap.insert(QObject::trUtf8("Spanish"), "spa");
     tesMap.insert(QObject::trUtf8("Swedish"), "swe");
-    tesMap.insert(QObject::trUtf8("Swedish Gothic"), "swef");
+    tesMap.insert(QObject::trUtf8("Swedish Gothic"), "swe-frak");
     tesMap.insert(QObject::trUtf8("Turkish"), "tur");
     tesMap.insert(QObject::trUtf8("Ukrainian"), "ukr");
 
@@ -441,6 +558,7 @@ QString Settings::selectDefaultLanguageName()
                 name = map->value("Turkish", "eng");
                 break;
             default:
+                name = "eng";
                 break;
         }
     if (name == "")
@@ -456,4 +574,24 @@ QSize Settings::getIconSize()
 void Settings::setIconSize(const QSize &value)
 {
     iconSize = value;
+}
+
+bool Settings::useNoLocale()
+{
+    return noLocale;
+}
+
+bool Settings::useRussianLocale()
+{
+    return RussianLocale;
+}
+
+void Settings::setNoLocale(bool value)
+{
+    noLocale = value;
+}
+
+void Settings::setRussianLocale(bool value)
+{
+    RussianLocale = value;
 }

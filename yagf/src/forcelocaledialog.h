@@ -1,6 +1,6 @@
 /*
-    YAGF - cuneiform OCR graphical front-end
-    Copyright (C) 2009-2012 Andrei Borovsky <anb@symmetrica.net>
+    YAGF - cuneiform and tesseract OCR graphical front-end
+    Copyright (C) 2009-2013 Andrei Borovsky <anb@symmetrica.net>
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -16,31 +16,31 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-
-#ifndef ADVANCEDCONFIGDIALOG_H
-#define ADVANCEDCONFIGDIALOG_H
+#ifndef FORCELOCALEDIALOG_H
+#define FORCELOCALEDIALOG_H
 
 #include <QDialog>
 
 namespace Ui {
-    class AdvancedConfigDialog;
+class ForceLocaleDialog;
 }
 
-class AdvancedConfigDialog : public QDialog
+class ForceLocaleDialog : public QDialog
 {
     Q_OBJECT
-
+    
 public:
-    explicit AdvancedConfigDialog(QWidget *parent = 0);
-    ~AdvancedConfigDialog();
-    bool doCrop1();
-    void setCrop1(const bool value);
-    bool doDeskew();
-    void setDeskew(const bool value);
-    bool doPreprocess();
-    void setPreprocess(const bool value);
+    explicit ForceLocaleDialog(QWidget *parent = 0);
+    ~ForceLocaleDialog();
+    enum Locales {
+        NoLocale,
+        RussianLocale,
+        DefaultLocale
+    } ;
+    void setOption(Locales option);
+    Locales getOption();
 private:
-    Ui::AdvancedConfigDialog *ui;
+    Ui::ForceLocaleDialog *ui;
 };
 
-#endif // ADVANCEDCONFIGDIALOG_H
+#endif // FORCELOCALEDIALOG_H

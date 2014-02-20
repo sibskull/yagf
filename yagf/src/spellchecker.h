@@ -40,11 +40,15 @@ public:
     void setLanguage(const QString &lang);
     bool spellCheck();  //Returns false only if the dictionary not found. Otherwise always true.
     void checkWord();
+    bool hasHyphen(QTextCursor *cursor);
+    bool hasLongHyphen(QTextCursor *cursor);
+    QString checkConcatenation(QTextCursor *cursor);
     void enumerateDicts();
     bool hasDict(const QString &shname);
     QStringList suggestions();
 private:
     void _checkWord(QTextCursor *cursor);
+    bool checkWordSpelling(const QString &word);
     QTextEdit *m_textEdit;
     QRegExp *m_regExp;
     QString m_lang1;

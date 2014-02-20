@@ -1,6 +1,6 @@
 /*
-    YAGF - cuneiform OCR graphical front-end
-    Copyright (C) 2009-2012 Andrei Borovsky <anb@symmetrica.net>
+    YAGF - cuneiform and tesseract OCR graphical front-end
+    Copyright (C) 2009-2014 Andrei Borovsky <anb@symmetrica.net>
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -16,31 +16,25 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#ifndef BUSYFORM_H
+#define BUSYFORM_H
 
-#ifndef ADVANCEDCONFIGDIALOG_H
-#define ADVANCEDCONFIGDIALOG_H
-
-#include <QDialog>
+#include <QSplashScreen>
 
 namespace Ui {
-    class AdvancedConfigDialog;
+class BusyForm;
 }
 
-class AdvancedConfigDialog : public QDialog
+class BusyForm : public QSplashScreen
 {
     Q_OBJECT
-
+    
 public:
-    explicit AdvancedConfigDialog(QWidget *parent = 0);
-    ~AdvancedConfigDialog();
-    bool doCrop1();
-    void setCrop1(const bool value);
-    bool doDeskew();
-    void setDeskew(const bool value);
-    bool doPreprocess();
-    void setPreprocess(const bool value);
+    explicit BusyForm(QWidget *parent = 0);
+    ~BusyForm();
+    
 private:
-    Ui::AdvancedConfigDialog *ui;
+    Ui::BusyForm *ui;
 };
 
-#endif // ADVANCEDCONFIGDIALOG_H
+#endif // BUSYFORM_H

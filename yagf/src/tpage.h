@@ -36,7 +36,7 @@ class Page : public QObject
 public:
     explicit Page(const int pid, QObject *parent = 0);
     ~Page();
-    bool loadFile(QString fileName, bool loadIntoView = true);
+    bool loadFile(QString fileName, int tiled, bool loadIntoView = true);
     QPixmap displayPixmap();
     QImage thumbnail();
     bool makeLarger();
@@ -57,20 +57,24 @@ public:
     void saveBlockForRecognition(int index, const QString &fileName);
     void selectBlock(const QRect &r);
     Block getSelectedBlock();
-    void deskew(bool recreateCB = true);
+    bool deskew(bool recreateCB = true);
     void rotate90CW();
     void rotate90CCW();
     void rotate180();
     void blockAllText();
     bool splitPage(bool preprocess);
+    bool textHorizontal();
     QString fileName();
     int pageID();
     void sortBlocksInternal();
     bool isDeskewed();
+    bool isCropped();
     bool isPreprocessed();
     qreal getRotation();
     void setDeskewed(bool value);
     void setPreprocessed(bool value);
+    void reSaveTmpPage();
+
 signals:
     void refreshView();
 public slots:
@@ -78,27 +82,21 @@ private:
     void renumberBlocks();
     void applyTransforms(QImage &image, qreal scale);
     void rotateImageInternal(QImage &image, qreal angle);
-    void scaleImages();
-    void normalizeRect(QRect &rect);
-    void scaleRect(QRect &rect);
+    QRect scaleRect(QRect &rect);
+    QRect scaleRectToScale(QRect &rect);
     QImage tryRotate(QImage image, qreal angle);
     QImage currentImage();
-    void saveTmpPage(const QString &fileName, bool cc,bool boost, bool brighten, int p = 1, int q =1);
+    QString saveTmpPage(const QString &format);
     QList<Rect> splitInternal();
     void prepareCCBuilder();
 private:
     qreal scale;
     qreal rotation;
-    int mGeneralBrightness;
     QRect crop1;
     QRect crop2;
     bool deskewed;
+    bool cropped;
     QImage img;
-    QImage img2;
-    QImage img4;
-    QImage img6;
-    QImage img8;
-    QImage img16;
     TBlocks blocks;
     bool imageLoaded;
     bool loadedBefore;

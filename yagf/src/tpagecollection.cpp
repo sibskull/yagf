@@ -75,16 +75,47 @@ bool PageCollection::appendPage(const QString &fileName)
     } else 
     #endif // TIFF_IO
 {
+        unloadAll();
         Page * p = new Page(++pid);
         connect(p,SIGNAL(refreshView()), this, SIGNAL(loadPage()));
-        if (p->loadFile(fileName)) {
+        if (p->loadFile(fileName, 1, false)) {
+
             pages.append(p);
             index = pages.count() - 1;
+            if (Settings::instance()->getAutoDeskew()) {
+                deskew();
+                //p->reSaveTmpPage();
+            }
             emit addSnippet(index);
+
             return true;
-        } else return false;
+        } else {
+            delete p;
+            pid--;
+            return false;
+        }
     }
 }
+
+void PageCollection::newPage(const QString &fileName, qreal rotation, bool preprocessed, bool deskewed)
+{
+    if (cp())
+        cp()->unload();
+    Page * p = new Page(++pid);
+    connect(p,SIGNAL(refreshView()), this, SIGNAL(loadPage()));
+    p->setDeskewed(deskewed);
+    p->setPreprocessed(preprocessed);
+    if (p->loadFile(fileName, 1)) {
+        pages.append(p);
+        p->rotate(rotation);
+        index = pages.count() - 1;
+        emit addSnippet(index);
+        makePageCurrent(index);
+    }
+
+}
+
+
 
 int PageCollection::count()
 {
@@ -93,6 +124,8 @@ int PageCollection::count()
 
 bool PageCollection::makePageCurrent(int index)
 {
+    if (cp())
+        cp()->unload();
     this->index = index;
     return index < pages.count();
 }
@@ -109,6 +142,8 @@ void PageCollection::setBeforeFirst()
 
 bool PageCollection::makeNextPageCurrent()
 {
+    if (cp())
+        cp()->unload();
     index++;
     if (index < count())
         return true;
@@ -252,6 +287,13 @@ void PageCollection::reloadPage()
     emit loadPage();
 }
 
+void PageCollection::unloadAll()
+{
+    foreach(Page *p, pages) {
+        p->unload();
+    }
+}
+
 void PageCollection::makeLarger()
 {
     if (!cp()) return;
@@ -290,7 +332,8 @@ void PageCollection::rotate180()
 void PageCollection::deskew()
 {
     if (!cp()) return;
-    cp()->deskew();
+    if (cp()->textHorizontal())
+        cp()->deskew();
     emit loadPage();
 }
 

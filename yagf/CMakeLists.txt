@@ -7,16 +7,28 @@ set(MPTIFF_SUPPORT false)
 if(MPTIFF_SUPPORT)
 set(TIFFIO_SRC src/qxttiffiohandler.cpp)
 endif(MPTIFF_SUPPORT)
+if (NOT DEFINED  ${CMAKE_INSTALL_PREFIX})
+set(CPACK_INSTALL_PREFIX /usr/)
+set (CMAKE_INSTALL_PREFIX /usr/)
+endif()
+# following 2 lines define where interface translations will be installed
+set(QML_DESTINATION share/yagf/translations/)
+set(QML_INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX})
+add_definitions( -DQML_INSTALL_PATH="${QML_INSTALL_PREFIX}${QML_DESTINATION}")
 set(SOURCES src/main.cpp src/mainform.cpp src/qgraphicsinput.cpp src/utils.cpp src/qxtunixsignalcatcher.cpp src/spellchecker.cpp src/BlockAnalysis.cpp src/PageAnalysis.cpp
     src/SkewAnalysis.cpp src/CCAnalysis.cpp src/qxtgraphicsproxywidget.cpp src/popplerdialog.cpp src/pdfextractor.cpp src/pdf2ppt.cpp src/ghostscr.cpp 
     src/configdialog.cpp src/advancedconfigdialog.cpp src/ccbuilder.cpp src/analysis.cpp src/qsnippet.cpp src/sidebar.cpp src/droplabel.cpp src/projectmanager.cpp src/settings.cpp
-    src/texteditor.cpp src/tblock.cpp src/tpage.cpp src/tpagecollection.cpp ${TIFFIO_SRC} src/scanner.cpp src/imagebooster.cpp)
+    src/texteditor.cpp src/tblock.cpp src/tpage.cpp src/tpagecollection.cpp ${TIFFIO_SRC} src/scanner.cpp src/core/imageprocessor.cpp
+    src/forcelocaledialog.cpp src/langselectdialog.cpp src/busyform.cpp
+    src/core/binarize.cpp src/core/util.cpp src/core/qipblackandwhiteimage.cpp src/core/qipgrayscaleimage.cpp)
 set(HEADERS src/settings.h)
 set(INT_SOURCES src/preload.c)
-set(UIS src/mainform.ui src/popplerdialog.ui src/configdialog.ui src/advancedconfigdialog.ui)
+set(UIS src/mainform.ui src/popplerdialog.ui src/configdialog.ui src/advancedconfigdialog.ui src/forcelocaledialog.ui src/langselectdialog.ui src/busyform.ui)
 set(MOC_HEADERS src/mainform.h src/qxtunixsignalcatcher.h src/qxtunixscinternal.h src/qgraphicsinput.h src/qxtgraphicsproxywidget.h src/qxtgraphicsview.h
     src/popplerdialog.h src/pdfextractor.h src/pdf2ppt.h src/configdialog.h src/advancedconfigdialog.h src/ccbuilder.h src/qsnippet.h src/sidebar.h
-    src/droplabel.h src/projectmanager.h src/texteditor.h src/tblock.h src/tpage.h src/tpagecollection.h src/scanner.h src/imagebooster.h)
+    src/droplabel.h src/projectmanager.h src/texteditor.h src/tblock.h src/tpage.h src/tpagecollection.h src/scanner.h src/core/imageprocessor.h
+    src/forcelocaledialog.h src/langselectdialog.h src/busyform.h
+    src/core/binarize.h src/core/common.h src/core/util.h src/core/qipblackandwhiteimage.h src/core/qipgrayscaleimage.h)
 set (yagf_RCCS src/yagf.qrc)
 set(QM_FILES ${CMAKE_BINARY_DIR}/yagf_ru.qm ${CMAKE_BINARY_DIR}/yagf_lt.qm ${CMAKE_BINARY_DIR}/yagf_de.qm ${CMAKE_BINARY_DIR}/yagf_pl.qm ${CMAKE_BINARY_DIR}/yagf_uk.qm)
 set (LIB_PATH_SUFFIX )
@@ -44,17 +56,13 @@ qt4_add_translation(${CMAKE_BINARY_DIR}/yagf_pl.qm ${PROJECT_SOURCE_DIR}/src/mai
 qt4_add_translation(${CMAKE_BINARY_DIR}/yagf_uk.qm ${PROJECT_SOURCE_DIR}/src/mainform.cpp ${PROJECT_SOURCE_DIR}/src/popplerdialog.cpp ${MOC_SRCS} ${UI_HEADERS} ${PROJECT_SOURCE_DIR}/src/translations/yagf_uk.ts)
 #QT4_CREATE_TRANSLATION(yagf_ru.qm src/mainform.cpp ${MOC_SRCS} ${UI_HEADERS} src/yagf_ru.ts)
 #set(CMAKE_INSTALL_PREFIX /usr/)
-if (NOT DEFINED  ${CMAKE_INSTALL_PREFIX})
-set(CPACK_INSTALL_PREFIX /usr/)
-set (CMAKE_INSTALL_PREFIX /usr/)
-endif()
 install_targets(/bin/ yagf)
 if (CMAKE_SIZEOF_VOID_P EQUAL 8)
         set (LIB_PATH_SUFFIX 64)
         set_property (GLOBAL PROPERTY FIND_LIBRARY_USE_LIB64_PATHS TRUE)
 endif(CMAKE_SIZEOF_VOID_P EQUAL 8)
 install_targets(/lib${LIB_PATH_SUFFIX}/yagf xspreload)
-install(FILES ${QM_FILES} DESTINATION share/yagf/translations/)
+install(FILES ${QM_FILES} DESTINATION ${QML_DESTINATION})
 #install(FILES COPYING DESCRIPTION README AUTHORS ChangeLog DESTINATION share/yagf/)
 install(FILES yagf.png DESTINATION share/pixmaps/)
 install(FILES yagf.png DESTINATION share/icons/hicolor/96x96/apps/)

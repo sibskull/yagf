@@ -41,7 +41,7 @@ class PDFExtractor;
 class ccbuilder;
 class QLabel;
 
-const QString version = "0.9.2";
+const QString version = "0.9.3";
 
 class PageCollection;
 class ScannerBase;
@@ -93,8 +93,10 @@ private slots:
     void selectBlocks();
     void setSmallIcons();
     void selectHTMLformat();
-    void loadFiles(QStringList files);
+    void loadFiles(const QStringList &files);
     void LangTextChanged(const QString &text);
+    void setUILanguage();
+    void SelectRecognitionLanguages();
 private:
     virtual void closeEvent(QCloseEvent *event);
     void initSettings();
@@ -129,6 +131,7 @@ private:
     Settings * settings;
     PageCollection * pages;
     QLabel * engineLabel;
+
 private slots:
     bool findEngine();
     void readyRead(int sig);

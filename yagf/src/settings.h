@@ -19,6 +19,7 @@
 #include <QPoint>
 #include <QMap>
 #include <QLocale>
+#include <QStringList>
 
 
 enum SelectedEngine {
@@ -31,8 +32,13 @@ class Settings
 public:
   static Settings * instance();
   void readSettings(const QString &path);
+  bool firstRun();
   void writeSettings();
   QString getLanguage();
+  bool useNoLocale();
+  bool useRussianLocale();
+  void setNoLocale(bool value);
+  void setRussianLocale(bool value);
   QString getOutputFormat();
   QString getLastDir();
   QString getLastOutputDir();
@@ -44,7 +50,10 @@ public:
   QPoint getPosition();
   bool getFullScreen();
   int getFontSize();
+  QString getFullLanguageName(const QString &abbr);
+  bool getAutoDeskew();
   bool getCropLoaded();
+  bool getPreprocessed();
   void setLanguage(const QString &value);
   void setOutputFormat(const QString &value);
   void setLastDir(const QString &value);
@@ -58,13 +67,23 @@ public:
   void setFullScreen(const bool value);
   void setFontSize(const int &value);
   void setCropLoaded(const bool value);
+  void setAutoDeskew(const bool value);
+  void setPreprocessed(const bool value);
+  int getDarkBackgroundThreshold();
+  int getForegroundBrightenFactor();
+  int getGlobalBrightenFactor();
+  int getGlobalDarkenFactor();
+  int getGlobalDarkenThreshold();
+  QStringList fullLanguageNames();
+  QStringList getSelectedLanguages();
+  void setSelectedLanguages(const QStringList &value);
   QString workingDir();
   void startLangPair();
   bool getLangPair(QString &full, QString &abbr);
   void setProjectDir(const QString &dir);
   QString getProjectDir();
-private:
   void makeLanguageMaps();
+private:
   void findTessDataPath();
   QString selectDefaultLanguageName();
   Settings();
@@ -76,6 +95,7 @@ private:
   QString lastDir;
   QString lastOutputDir;
   QString projectDir;
+  QString version;
   bool checkSpelling;
   QString tessdataPath;
   SelectedEngine selectedEngine;
@@ -85,10 +105,20 @@ private:
   bool fullScreen;
   int fontSize;
   bool cropLoaded;
+  bool preprocess;
+  bool fr;
   QMap<QString, QString> cuMap;
   QMap<QString, QString> tesMap;
   int lpi;
-
+  bool noLocale;
+  bool RussianLocale;
+  bool autoDeskew;
+  int darkBackgroundThreshold;
+  int globalBrightenFactor;
+  int foregroundBrightenFactor;
+  int globalDarkenFactor;
+  int globalDarkenThreshold;
+  QStringList languages;
   QString mPath;
   QSettings * settings;
   static Settings * m_instance;

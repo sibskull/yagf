@@ -21,15 +21,14 @@
 #include <QImage>
 #include <QColor>
 
-RotationCropper::RotationCropper(QImage * image, QRgb color, int dtr)
+RotationCropper::RotationCropper(QImage * image, QRgb color)
 {
     this->image = image;
     darksCount = 0;
     lightsCount = 0;
     minval = 0;
     maxval = 0;
-    //clAltCount = 0;
-    darktr = dtr;
+    //clAltCount =
     whitetr = 650;
     clBrighttoWidthtr = 0.1;
     //QRgb * line = (QRgb *) image->scanLine(0);
@@ -136,7 +135,7 @@ bool RotationCropper::checkHorzLine(int y)
             continue;
         }
         int pixel = qRed(line[i]) + qGreen(line[i]) + qBlue(line[i]);
-        if (pixel <= darktr) {
+        if (pixel <= 382) {
             darksCount++;
 //             if (currentlstripe > maxlstripe) maxlstripe = currentlstripe;
 //             currentlstripe = 0;
@@ -190,7 +189,7 @@ bool RotationCropper::checkVertLine(int x)
             continue;
         }
         int pixel = qRed(line[x]) + qGreen(line[x]) + qBlue(line[x]);
-        if (pixel <= darktr) {
+        if (pixel <= 382) {
             darksCount++;
 //                if (curline) {
 //                    clAltCount++;

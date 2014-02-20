@@ -1,6 +1,6 @@
 /*
-    YAGF - cuneiform and tesseract OCR graphical front-ends
-    Copyright (C) 2009-2012 Andrei Borovsky <anb@symmetrica.net>
+    YAGF - cuneiform OCR graphical front-end
+    Copyright (C) 2009 Andrei Borovsky <anb@symmetrica.net>
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -14,34 +14,41 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
 */
 
-#ifndef IMAGEBOOSTER_H
-#define IMAGEBOOSTER_H
+#ifndef IMAGEPROCESSOR_H
+#define IMAGEPROCESSOR_H
 
+#include "qipgrayscaleimage.h"
+#include "qipblackandwhiteimage.h"
 #include <QObject>
 #include <QImage>
 
-class ImageBooster : public QObject
+
+
+class ImageProcessor : public QObject
 {
     Q_OBJECT
 public:
-    explicit ImageBooster(QObject *parent = 0);
-    ~ImageBooster();
-    void boost(QImage * image);
-    void brighten(QImage * image, int p, int q);
-    void flatten(QImage * image);
-    void sharpen(QImage * image);
+    explicit ImageProcessor(QObject *parent = 0);
+    ~ImageProcessor();
+    QRect crop();
+    void loadImage(const QImage &image);
+    QImage gsImage() const;
+    void binarize();
+    void saveYGF(const QImage &image, const QString &fileName);
+    QImage loadYGF(const QString &fileName);
+    static void polishImage(QImage &image);
+    static void polishImage2(QImage &image);
+    static bool isTextHorizontal(QImage &image);
 signals:
-
+    
 public slots:
+
 private:
-    void buildProfile(QImage *image);
-    void sharpenEdges(quint32 * r, quint32 * g, quint32 * b, quint32 * br, int w);
-    void analyseStripe(QRgb *line, int i, int w, qreal &med, qreal &med1, int &start);
+    QIPGrayscaleImage img;
 private:
-    quint32 * profile;
+    
 };
 
-#endif // IMAGEBOOSTER_H
+#endif // IMAGEPROCESSOR_H

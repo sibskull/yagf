@@ -34,6 +34,7 @@ public:
     static PageCollection * instance();
     static void clearCollection();
     bool appendPage(const QString &fileName);
+    void newPage(const QString &fileName, qreal rotation, bool preprocessed, bool deskewed);
     int count();
     bool makePageCurrent(int index);
     bool makePageCurrentByID(int id);
@@ -60,6 +61,7 @@ public:
     void setDeskewed(const bool value);
     void setPreprocessed(const bool value);
     void reloadPage();
+    void unloadAll();
 public slots:
     void makeLarger();
     void makeSmaller();

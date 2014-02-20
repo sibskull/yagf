@@ -37,7 +37,6 @@ public:
         minval = 0;
         maxval = 0;
         //clAltCount = 0;
-        darktr = builder->generalBrightness;
         whitetr = 650;
         clBrighttoWidthtr = 0.1;
     }
@@ -100,6 +99,7 @@ public:
     }
     bool checkHorzLine(int y)
     {
+        quint32 clWhiteCount = 0;
         darksCount = 0;
         lightsCount = 0;
         minval = 800;
@@ -113,7 +113,7 @@ public:
         //int curline =0;
         for (int i = 0; i < builder->w; i++) {
             int pixel = qRed(line[i]) + qGreen(line[i]) + qBlue(line[i]);
-            if (pixel <= darktr) {
+            if (pixel <= 382) {
                 darksCount++;
    //             if (currentlstripe > maxlstripe) maxlstripe = currentlstripe;
    //             currentlstripe = 0;
@@ -147,6 +147,7 @@ public:
     }
     bool checkVertLine(int x)
     {
+        quint32 clWhiteCount = 0;
         darksCount = 0;
         lightsCount = 0;
         minval = 800;
@@ -158,7 +159,7 @@ public:
         for (int y = 0; y < builder->h; y++) {
             QRgb * line = (QRgb *) builder->image.scanLine(y);
             int pixel = qRed(line[x]) + qGreen(line[x]) + qBlue(line[x]);
-            if (pixel <= darktr) {
+            if (pixel <= 382) {
                 darksCount++;
 //                if (curline) {
 //                    clAltCount++;
@@ -201,13 +202,11 @@ private:
     int maxval;
     //int clAltCount;
     int whitesCount;
-    int darktr;
     int whitetr;
     int whiteAlt;
 
     qreal clBrighttoWidth;
     qreal clBrighttoWidthtr;
-    int clWhiteCount;
     int y1, y2, x1, x2;
 };
 
@@ -258,11 +257,6 @@ void CCBuilder::compactLabels()
     for( int i = 0; i < w; i++)
         for( int j = 0; j < h; j++)
             setLabel(i, j, l.indexOf(label(i,j)));
-}
-
-void CCBuilder::setGeneralBrightness(int value)
-{
-    generalBrightness =  value;
 }
 
 quint32 CCBuilder::label(int x, int y)
@@ -382,19 +376,9 @@ void CCBuilder::relabelLineRL(int y)
 bool CCBuilder::isForeground(QRgb value)
 {
     int b = qRed(value) + qGreen(value) + qBlue(value);
-    int maxc = qRed(value) > qGreen(value) ? qRed(value) : qGreen(value);
-    if (maxc < qBlue(value))
-	maxc = qBlue(value);
-    //generalBrightness = (generalBrightness+b)/2;
-    if ((b >= generalBrightness))// || (maxc >= maximumComponentBrightness))
+    if (b > 382)
         return false;
-
     return true;
-}
-
-void CCBuilder::setMaximumColorComponent(int value)
-{
-	maximumComponentBrightness = value;
 }
 
 void CCBuilder::initialScan()
@@ -469,44 +453,21 @@ void CCBuilder::forwardScan()
 
 int CCBuilder::labelCCs()
 {
-
-    if (w*h == 0)
-        return 0;
-    Cropper cr(this);
-    cropRect = cr.crop();
-    QImage tmp = image.copy(cropRect);
-    image = tmp;
-    w = image.width();
-    h = image.height();
+    delete labels;
+    delete flags;
+    labels = 0;
+    flags = 0;
     if (w*h == 0)
         return 0;
     labels = new quint32 [image.height()*image.width()];
     flags = new bool[image.height()];
     memset(flags, 0, sizeof(bool)*image.height());
 
-    quint64 acc =0;
-    for (int y =0; y < h; y++) {
-        QRgb * line = (QRgb *) image.scanLine(y);
-        for (int x = 0; x < w; x++) {
-            int b = qRed(line[x]) + qGreen(line[x]) + qBlue(line[x]);
-            acc += b;
-        }
-    }
-    acc =acc/(h*w);
-
-    /* ADHOC
-
-      */
-  //  if (acc < 200)
-  //      acc +=80;
-
-
 #ifdef DEBUG_CC
     dcounter = 0;
     gcounter = 0;
 #endif
 
-    setGeneralBrightness(acc);
     int count = 0;
     initialScan();
     didRecolor = true;
@@ -640,7 +601,3 @@ QRect CCBuilder::crop()
     return cropper.crop();
 }
 
-int CCBuilder::getGB()
-{
-    return generalBrightness;
-}

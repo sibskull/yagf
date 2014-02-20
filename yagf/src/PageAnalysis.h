@@ -50,7 +50,6 @@ private:
     QImage img;
     qreal m_rotate;
     qreal m_scale;
-    int generalBr;
     Bars bars;
     Lines lines;
     QList<Rect> blocks;

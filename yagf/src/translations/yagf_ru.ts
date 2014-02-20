@@ -11,6 +11,14 @@
         <source>Crop Image When Loaded</source>
         <translation>Обрезать изображение при загрузке</translation>
     </message>
+    <message>
+        <source>Deskew Loaded Images</source>
+        <translation>Автоматически корректировать наклон</translation>
+    </message>
+    <message>
+        <source>Preprocess images when loaded</source>
+        <translation>Обработка загружаемых изображений</translation>
+    </message>
 </context>
 <context>
     <name>ConfigDialog</name>
@@ -37,6 +45,21 @@
     <message>
         <source>Location of the  tessdata directory:</source>
         <translation>Расположение директории tessdata:</translation>
+    </message>
+</context>
+<context>
+    <name>LangSelectDialog</name>
+    <message>
+        <source>YAGF Languages Setup</source>
+        <translation>Выбор языков для распознавания</translation>
+    </message>
+    <message>
+        <source>Select the languages you are going to work with (you can change these settings later)</source>
+        <translation>Выберите языки, с которыми вы собираетесь работать (вы сможете изменить этот выбор позже)</translation>
+    </message>
+    <message>
+        <source>CheckBox</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -151,10 +174,6 @@ Please install either cuneiform or tesseract</source>
         <source>No PDF converter installed</source>
         <translation>Конвертер PDF не установлен</translation>
     </message>
-    <message utf8="true">
-        <source>&lt;p align=&quot;center&quot;&gt;&lt;b&gt;YAGF - Yet Another Graphical Front-end for cuneiform and tesseract OCR engines&lt;/b&gt;&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;Version %1&lt;/p&gt; &lt;p align=&quot;center&quot;&gt;Ⓒ 2009-2012 Andrei Borovsky&lt;/p&gt; This is a free software distributed under GPL v3. Visit &lt;a href=&quot;http://symmetrica.net/cuneiform-linux/yagf-en.html&quot;&gt;http://symmetrica.net/cuneiform-linux/yagf-en.html&lt;/a&gt; for more details.</source>
-        <translation>&lt;p align=&quot;center&quot;&gt;&lt;b&gt;YAGF - Графическая оболочка для программ распознавания текста cuneiform и tesseract&lt;/b&gt;&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;Версия %1&lt;/p&gt; &lt;p align=&quot;center&quot;&gt;Ⓒ 2009-2012 Андрей Боровский&lt;/p&gt; YAGF - открытое программное обеспечение, которое распространяется на условиях лицензии GPL v3. Вы найдете подробности на странице &lt;a href=&quot;http://symmetrica.net/cuneiform-linux/yagf-en.html&quot;&gt;http://symmetrica.net/cuneiform-linux/yagf-ru.html&lt;/a&gt;.</translation>
-    </message>
     <message>
         <source>Using Cuneiform</source>
         <translation>Используется Cuneiform</translation>
@@ -191,6 +210,19 @@ The page possibly lacks contrast. Try to select blocks manually.</source>
     <message>
         <source>Failed to load project.</source>
         <translation>Невозможно открыть проект.</translation>
+    </message>
+    <message>
+        <source>Loading files...</source>
+        <translatorcomment>Загрузка файлов...</translatorcomment>
+        <translation></translation>
+    </message>
+    <message>
+        <source>You have selected recognising %1 language using tesseract OCR. Currently the data for this language is not installed in your system. Please install the tesseract data files for &quot;%2&quot; from your system repository.</source>
+        <translation>Вы выбрали %1 язык для распознавания, используя программу tesseract. Данные для распознавания этого языка в настоящее время не установлены. Пожалуйста установите языковой пакет %2 из репозитория вашей системы.</translation>
+    </message>
+    <message utf8="true">
+        <source>&lt;p align=&quot;center&quot;&gt;&lt;b&gt;YAGF - Yet Another Graphical Front-end for cuneiform and tesseract OCR engines&lt;/b&gt;&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;Version %1&lt;/p&gt; &lt;p align=&quot;center&quot;&gt;Ⓒ 2009-2014 Andrei Borovsky&lt;/p&gt; This is a free software distributed under GPL v3. Visit &lt;a href=&quot;http://symmetrica.net/cuneiform-linux/yagf-en.html&quot;&gt;http://symmetrica.net/cuneiform-linux/yagf-en.html&lt;/a&gt; for more details.</source>
+        <translation>&lt;p align=&quot;center&quot;&gt;&lt;b&gt;YAGF - Графическая оболочка для программ распознавания текста cuneiform и tesseract&lt;/b&gt;&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;Версия %1&lt;/p&gt; &lt;p align=&quot;center&quot;&gt;Ⓒ 2009-2014 Андрей Боровский&lt;/p&gt; YAGF - открытое программное обеспечение, которое распространяется на условиях лицензии GPL v3. Вы найдете подробности на странице &lt;a href=&quot;http://symmetrica.net/cuneiform-linux/yagf-en.html&quot;&gt;http://symmetrica.net/cuneiform-linux/yagf-ru.html&lt;/a&gt;.</translation>
     </message>
 </context>
 <context>
@@ -468,10 +500,6 @@ The page possibly lacks contrast. Try to select blocks manually.</source>
         <translation>Выбор языка распознавания</translation>
     </message>
     <message>
-        <source>Prepare Page</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Save Project...</source>
         <translation>Сохранить проект...</translation>
     </message>
@@ -480,8 +508,16 @@ The page possibly lacks contrast. Try to select blocks manually.</source>
         <translation>Загрузить проект...</translation>
     </message>
     <message>
-        <source>Prepare the page for recognition</source>
-        <translation type="unfinished">Подготовить страницу для распознавания</translation>
+        <source>toolBar_3</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select Recognition Languages...</source>
+        <translation>Выбрать языки для распознавания...</translation>
+    </message>
+    <message>
+        <source>Select Recognition Languages</source>
+        <translation>Выбрать языки для распознавания</translation>
     </message>
 </context>
 <context>
@@ -650,16 +686,60 @@ Try to install an appropriate aspell dictionary.</source>
         <translation>Норевежский</translation>
     </message>
     <message>
-        <source>Slovak</source>
-        <translation>Словацкий</translation>
-    </message>
-    <message>
         <source>Swedish Gothic</source>
         <translation>Шведский готический</translation>
     </message>
     <message>
         <source>Turkish</source>
         <translation>Турецкий</translation>
+    </message>
+    <message>
+        <source>Albanian</source>
+        <translation>Албанский</translation>
+    </message>
+    <message>
+        <source>Ancient Greek</source>
+        <translation>Древнегреческий</translation>
+    </message>
+    <message>
+        <source>Azerbaijani</source>
+        <translation>Азербайджанский</translation>
+    </message>
+    <message>
+        <source>Croatian</source>
+        <translation>Хорватский</translation>
+    </message>
+    <message>
+        <source>Danish Gothic</source>
+        <translation>Датский готический</translation>
+    </message>
+    <message>
+        <source>Estonian</source>
+        <translation>Эстонский</translation>
+    </message>
+    <message>
+        <source>Icelandic</source>
+        <translation>Исландский</translation>
+    </message>
+    <message>
+        <source>Macedonian</source>
+        <translation>Македонский</translation>
+    </message>
+    <message>
+        <source>Middle English</source>
+        <translation>Старо-английский</translation>
+    </message>
+    <message>
+        <source>Middle French</source>
+        <translation>Старо-французский</translation>
+    </message>
+    <message>
+        <source>Slovakian</source>
+        <translation>Словацкий</translation>
+    </message>
+    <message>
+        <source>Slovakian Gothic</source>
+        <translation>Словацкий готический</translation>
     </message>
 </context>
 <context>

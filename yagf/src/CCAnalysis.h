@@ -29,7 +29,7 @@ class QImage;
 class RotationCropper
 {
 public:
-    RotationCropper(QImage * image, QRgb color, int dtr);
+    RotationCropper(QImage * image, QRgb color);
     ~RotationCropper();
     QRect crop();
 private:
@@ -47,7 +47,6 @@ private:
     int maxval;
     //int clAltCount;
     int whitesCount;
-    int darktr;
     int whitetr;
     int whiteAlt;
 

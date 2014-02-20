@@ -11,6 +11,14 @@
         <source>Crop Image When Loaded</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Deskew Loaded Images</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Preprocess images when loaded</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>ConfigDialog</name>
@@ -36,6 +44,21 @@
     </message>
     <message>
         <source>Location of the  tessdata directory:</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>LangSelectDialog</name>
+    <message>
+        <source>YAGF Languages Setup</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select the languages you are going to work with (you can change these settings later)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>CheckBox</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -189,6 +212,14 @@ The page possibly lacks contrast. Try to select blocks manually.</source>
     </message>
     <message>
         <source>Failed to load project.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Loading files...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>You have selected recognising %1 language using tesseract OCR. Currently the data for this language is not installed in your system. Please install the tesseract data files for &quot;%2&quot; from your system repository.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -467,10 +498,6 @@ The page possibly lacks contrast. Try to select blocks manually.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Prepare Page</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Save Project...</source>
         <translation type="unfinished"></translation>
     </message>
@@ -479,7 +506,15 @@ The page possibly lacks contrast. Try to select blocks manually.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Prepare the page for recognition</source>
+        <source>toolBar_3</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select Recognition Languages...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select Recognition Languages</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -647,15 +682,59 @@ Try to install an appropriate aspell dictionary.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Slovak</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Swedish Gothic</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Turkish</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Albanian</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ancient Greek</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Azerbaijani</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Croatian</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Danish Gothic</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Estonian</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Icelandic</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Macedonian</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Middle English</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Middle French</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Slovakian</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Slovakian Gothic</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

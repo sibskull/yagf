@@ -19,7 +19,6 @@
 #include "qgraphicsinput.h"
 #include "qxtgraphicsview.h"
 #include "qxtgraphicsproxywidget.h"
-#include "ccbuilder.h"
 #include "analysis.h"
 #include "PageAnalysis.h"
 #include "math.h"

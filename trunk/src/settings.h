@@ -79,7 +79,7 @@ public:
   void setSelectedLanguages(const QStringList &value);
   QString workingDir();
   void startLangPair();
-  bool getLangPair(QString &full, QString &abbr);
+  bool getLangPair(QString &full, QString &abbr, bool forceTesseract = false);
   void setProjectDir(const QString &dir);
   QString getProjectDir();
   void makeLanguageMaps();

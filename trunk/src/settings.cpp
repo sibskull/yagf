@@ -346,18 +346,21 @@ void Settings::startLangPair()
     lpi = 0;
 }
 
-bool Settings::getLangPair(QString &full, QString &abbr)
+bool Settings::getLangPair(QString &full, QString &abbr, bool forceTesseract)
 {
     QMap<QString, QString> * map;
     if (selectedEngine == UseCuneiform)
         map = &cuMap;
     if (selectedEngine == UseTesseract)
         map = &tesMap;
-    full = map->keys().at(lpi);
-    abbr = map->value(full);
-    lpi++;
-    if (lpi < map->count())
+    if (forceTesseract)
+        map = &tesMap;
+    if (lpi < map->count()) {
+        full = map->keys().at(lpi);
+        abbr = map->value(full);
+        lpi++;
         return true;
+    }
     return false;
 }
 

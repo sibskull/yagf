@@ -460,6 +460,7 @@ void MainForm::initSettings()
 
 void MainForm::newLanguageSelected(int index)
 {
+    if (index < 0) return;
     settings->setLanguage(selectLangsBox->itemData(index).toString());
     actionCheck_spelling->setEnabled(textEdit->hasDict(settings->getLanguage()));
     if (settings->getCheckSpelling()) {
@@ -704,6 +705,7 @@ void MainForm::clearTmpFiles()
 
 void MainForm::fillLangBox()
 {
+    disconnect(selectLangsBox, SIGNAL(currentIndexChanged(int)), this, SLOT(newLanguageSelected(int)));
     QStringList sl = Settings::instance()->getSelectedLanguages();
     settings->startLangPair();
     QString full;
@@ -713,7 +715,8 @@ void MainForm::fillLangBox()
         if (sl.contains(full)||(sl.count()== 0))
             selectLangsBox->addItem(full, QVariant(abbr));
     }
-
+    selectLangsBox->setCurrentIndex(-1);
+    connect(selectLangsBox, SIGNAL(currentIndexChanged(int)), this, SLOT(newLanguageSelected(int)));
 }
 
 void MainForm::preparePageForRecognition()

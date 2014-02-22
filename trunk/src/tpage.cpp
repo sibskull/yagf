@@ -593,7 +593,7 @@ QImage Page::currentImage()
 #include <QTemporaryFile>
 QString Page::saveTmpPage(const QString &format)
 {
-    QString fileName =Settings::instance()->workingDir() + QString::fromUtf8("tmp-%1").arg((quint64)img.data_ptr() - (((quint64)&fileName)>>1));
+    QString fileName =Settings::instance()->workingDir() + QString::fromUtf8("tmp-%1").arg(Settings::instance()->uniqueSeed());
     //    booster.flatten(&image);
     if (format == "BMP") {
         fileName = fileName +".bmp";

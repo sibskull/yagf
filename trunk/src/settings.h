@@ -69,6 +69,7 @@ public:
   void setCropLoaded(const bool value);
   void setAutoDeskew(const bool value);
   void setPreprocessed(const bool value);
+  QString uniqueSeed();
   int getDarkBackgroundThreshold();
   int getForegroundBrightenFactor();
   int getGlobalBrightenFactor();
@@ -118,6 +119,7 @@ private:
   int foregroundBrightenFactor;
   int globalDarkenFactor;
   int globalDarkenThreshold;
+  int uSeed;
   QStringList languages;
   QString mPath;
   QSettings * settings;

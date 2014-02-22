@@ -31,6 +31,7 @@
 #include "projectmanager.h"
 #include "forcelocaledialog.h"
 #include "langselectdialog.h"
+#include "tiffimporter.h"
 #include <signal.h>
 #include <QComboBox>
 #include <QLabel>
@@ -238,8 +239,12 @@ void MainForm::loadFromCommandLine()
 void MainForm::loadFiles(const QStringList &files)
 {
     if (files.count() == 1) {
-        if (QFile::exists(files.at(0)))
-            loadFile(files.at(0));
+        if (QFile::exists(files.at(0))) {
+            if (files.at(0).endsWith(".tiff", Qt::CaseInsensitive)||files.at(0).endsWith(".tif", Qt::CaseInsensitive))
+                loadTIFF(files.at(0));
+            else
+                loadFile(files.at(0));
+        }
         return;
     }
     QProgressDialog pd(this);
@@ -249,8 +254,12 @@ void MainForm::loadFiles(const QStringList &files)
     pd.setValue(1);
     pd.show();
     for (int i = 0; i < files.count(); i++) {
-        if (QFile::exists(files.at(i)))
-            loadFile(files.at(i));
+        if (QFile::exists(files.at(i))) {
+            if (files.at(i).endsWith(".tiff", Qt::CaseInsensitive)||files.at(i).endsWith(".tif", Qt::CaseInsensitive))
+                loadTIFF(files.at(i));
+            else
+                loadFile(files.at(i));
+        }
         pd.setValue(i+1);
         QApplication::processEvents();
         if (pd.wasCanceled())
@@ -506,6 +515,23 @@ void MainForm::loadFile(const QString &fn, bool loadIntoView)
         QMessageBox::warning(this, trUtf8("Failed to Load Image"), fn);
     }
     setCursor(oldCursor);
+}
+
+void MainForm::loadTIFF(const QString &fn, bool loadIntoView)
+{
+    TiffImporter ti(fn);
+    ti.exec();
+    QStringList files = ti.extractedFiles();
+    if (!files.count()) {
+        QMessageBox mb;
+        mb.setWindowTitle("YAGF");
+        mb.setIconPixmap(QPixmap(":/critical.png"));
+        mb.setText(trUtf8("Cannot open file %1. Make sure imagemagick is installed.").arg(fn));
+        mb.addButton(QMessageBox::Close);
+        mb.exec();
+        return;
+    }
+    loadFiles(files);
 }
 
 void MainForm::delTmpFiles()

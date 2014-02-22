@@ -101,6 +101,7 @@ private:
     virtual void closeEvent(QCloseEvent *event);
     void initSettings();
     void loadFile(const QString &fn, bool loadIntoView = true);
+    void loadTIFF(const QString &fn, bool loadIntoView = true);
     //void loadFileWithPixmap(const QString &fn, const QPixmap &pixmap);
     void delTmpFiles();
     void delTmpDir();

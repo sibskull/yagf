@@ -88,6 +88,8 @@ void Settings::readSettings(const QString &path)
     globalDarkenFactor = settings->value("tweaks/globalDarkenFactor", QVariant(32)).toInt();
     globalDarkenThreshold = settings->value("tweaks/globalDarkenThreshold", QVariant(190)).toInt();
     uSeed = settings->value("tweaks/seed", QVariant(1)).toInt();
+    tiffPS = settings->value("tweaks/tiffPageSize", QVariant(4000)).toString();
+    tiffD = settings->value("tweaks/tiffDensity", QVariant(300)).toString();
 }
 
 bool Settings::firstRun()
@@ -124,6 +126,8 @@ void Settings::writeSettings()
     settings->setValue("tweaks/globalBrightenFactor", globalBrightenFactor);
     settings->setValue("tweaks/globalDarkenFactor", globalDarkenFactor);
     settings->setValue("tweaks/globalDarkenThreshold", globalDarkenThreshold);
+    settings->setValue("tweaks/tiffPageSize", tiffPS);
+    settings->setValue("tweaks/tiffDensity", tiffD);
     settings->setValue("tweaks/seed", uSeed);
     settings->sync();
 }
@@ -283,6 +287,16 @@ void Settings::setPreprocessed(const bool value)
 QString Settings::uniqueSeed()
 {
     return QString::number(uSeed++);
+}
+
+QString Settings::tiffPageSize()
+{
+    return tiffPS;
+}
+
+QString Settings::tiffDensity()
+{
+    return tiffD;
 }
 
 int Settings::getDarkBackgroundThreshold()

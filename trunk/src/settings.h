@@ -70,6 +70,8 @@ public:
   void setAutoDeskew(const bool value);
   void setPreprocessed(const bool value);
   QString uniqueSeed();
+  QString tiffPageSize();
+  QString tiffDensity();
   int getDarkBackgroundThreshold();
   int getForegroundBrightenFactor();
   int getGlobalBrightenFactor();
@@ -124,6 +126,8 @@ private:
   QString mPath;
   QSettings * settings;
   static Settings * m_instance;
+  QString tiffPS;
+  QString tiffD;
 };
 
 #endif

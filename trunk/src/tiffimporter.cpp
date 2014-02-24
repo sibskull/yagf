@@ -38,7 +38,9 @@ void TiffImporter::exec()
     QProcess proc;
     proc.setEnvironment(QProcess::systemEnvironment());
     proc.setWorkingDirectory(wd);
-    QString cmd = QString("convert %1  -units PixelsPerInch -resize 4000x4000 -units PixelsPerInch -density 300  t%2_out.jpg").arg(tiffName).arg(Settings::instance()->uniqueSeed());
+    QString size = Settings::instance()->tiffPageSize();
+    QString density = Settings::instance()->tiffDensity();
+    QString cmd = QString("convert %1  -units PixelsPerInch -resize %2x%3 -units PixelsPerInch -density %4  t%5_out.jpg").arg(tiffName).arg(size).arg(size).arg(density).arg(Settings::instance()->uniqueSeed());
     proc.start(cmd);
     proc.waitForFinished();
     if (proc.exitStatus() != QProcess::NormalExit) {

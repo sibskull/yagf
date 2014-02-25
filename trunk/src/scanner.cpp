@@ -104,19 +104,8 @@ void ScannerBase::setPreloadLibrary(const QString &s)
 
 QString ScannerFactory::findPreloadLibrary()
 {
-    QFileInfo lib;
-    lib.setFile("/usr/local/lib/yagf/libxspreload.so");
-    if (!lib.exists()) {
-            lib.setFile("/usr/lib/yagf/libxspreload.so");
-            if (!lib.exists()) {
-                lib.setFile("/usr/lib64/yagf/libxspreload.so");
-                if (!lib.exists())
-                    lib.setFile("/usr/local/lib64/yagf/libxspreload.so");
-            }
-    }
-    if (lib.exists())
-        return lib.filePath();
-    else return "";
+    QString path = QString(PRILIBRARY_PATH);
+    return  path + QString("libxspreload.so");
 }
 
 void ScannerFactory::findFEs()

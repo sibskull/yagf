@@ -583,9 +583,9 @@ bool MainForm::useTesseract(const QString &inputFile)
     proc.start("tesseract", sl);
     proc.waitForFinished(-1);
     if (proc.exitCode()) {
-        QByteArray stdout = proc.readAllStandardOutput();
-        QByteArray stderr = proc.readAllStandardError();
-        QString output = QString(stdout) + QString(stderr);
+        QByteArray stdoutBytes = proc.readAllStandardOutput();
+        QByteArray stderrBytes = proc.readAllStandardError();
+        QString output = QString(stdoutBytes) + QString(stderrBytes);
         QMessageBox::critical(this, trUtf8("Starting tesseract failed"), trUtf8("The system said: ") + (output != "" ? output : trUtf8("program not found")));
         return false;
     }
@@ -610,9 +610,9 @@ bool MainForm::useCuneiform(const QString &inputFile, const QString &outputFile)
     proc.start("cuneiform", sl);
     proc.waitForFinished(-1);
     if (proc.exitCode()) {
-        QByteArray stdout = proc.readAllStandardOutput();
-        QByteArray stderr = proc.readAllStandardError();
-        QString output = QString(stdout) + QString(stderr);
+        QByteArray stdoutBytes = proc.readAllStandardOutput();
+        QByteArray stderrBytes = proc.readAllStandardError();
+        QString output = QString(stdoutBytes) + QString(stderrBytes);
         QMessageBox::critical(this, trUtf8("Starting cuneiform failed"), trUtf8("The system said: ") + (output != "" ? output : trUtf8("program not found")));
         return false;
     }

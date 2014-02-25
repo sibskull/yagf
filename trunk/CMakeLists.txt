@@ -4,10 +4,11 @@ if (NOT DEFINED  ${CMAKE_INSTALL_PREFIX})
 set(CPACK_INSTALL_PREFIX /usr/)
 set (CMAKE_INSTALL_PREFIX /usr/)
 endif()
+set (LIB_PATH_SUFFIX )
 if (CMAKE_SIZEOF_VOID_P EQUAL 8)
-    if (EXISTS "${CMAKE_INSTALL_PREFIX}/lib64")
+    if (EXISTS "${CMAKE_INSTALL_PREFIX}lib64")
         set(LIB_PATH_SUFFIX 64)
-    endif (EXISTS "${CMAKE_INSTALL_PREFIX}/lib64")
+    endif (EXISTS "${CMAKE_INSTALL_PREFIX}lib64")
     set_property (GLOBAL PROPERTY FIND_LIBRARY_USE_LIB64_PATHS TRUE)
 endif(CMAKE_SIZEOF_VOID_P EQUAL 8)
 add_definitions( -DPRILIBRARY_PATH="${CMAKE_INSTALL_PREFIX}lib${LIB_PATH_SUFFIX}/yagf/")
@@ -39,12 +40,13 @@ set(MOC_HEADERS src/mainform.h src/qxtunixsignalcatcher.h src/qxtunixscinternal.
 set(yagf_RCCS src/yagf.qrc)
 
 set(QM_FILES ${CMAKE_BINARY_DIR}/yagf_ru.qm ${CMAKE_BINARY_DIR}/yagf_lt.qm ${CMAKE_BINARY_DIR}/yagf_de.qm ${CMAKE_BINARY_DIR}/yagf_pl.qm ${CMAKE_BINARY_DIR}/yagf_uk.qm)
-set (LIB_PATH_SUFFIX )
+
 
 add_definitions(-Wall -g)
 
 find_package(Qt4 4.6 REQUIRED)
 find_package(ASPELL REQUIRED)
+include_directories(${ASPELL_INCLUDE_DIR})
 
 include(${QT_USE_FILE})
 qt4_wrap_ui(UI_HEADERS ${UIS})
@@ -55,7 +57,7 @@ include_directories( ${CMAKE_BINARY_DIR} ${PROJECT_SOURCE_DIR}/src)
 add_executable(yagf ${SOURCES} ${UI_HEADERS} ${MOC_SRCS} ${yagf_RCC_SRCS} ${QM_FILES})
 add_library(xspreload SHARED ${INT_SOURCES})
 
-target_link_libraries(xspreload dl)
+target_link_libraries(xspreload ${CMAKE_DL_LIBS})
 target_link_libraries(yagf ${QT_LIBRARIES} ${ASPELL_LIBRARIES})
 
 add_custom_target(translations DEPENDS ${QM_FILES})
@@ -67,8 +69,7 @@ qt4_add_translation(${CMAKE_BINARY_DIR}/yagf_uk.qm ${PROJECT_SOURCE_DIR}/src/mai
 #QT4_CREATE_TRANSLATION(yagf_ru.qm src/mainform.cpp ${MOC_SRCS} ${UI_HEADERS} src/yagf_ru.ts)
 #set(CMAKE_INSTALL_PREFIX /usr/)
 
-install_targets(/bin/ yagf)
-install_targets(/lib${LIB_PATH_SUFFIX}/yagf xspreload)
+install(TARGETS yagf xspreload RUNTIME DESTINATION bin LIBRARY DESTINATION lib${LIB_PATH_SUFFIX}/yagf)
 install(FILES ${QM_FILES} DESTINATION ${QML_DESTINATION})
 #install(FILES COPYING DESCRIPTION README AUTHORS ChangeLog DESTINATION share/yagf/)
 install(FILES yagf.png DESTINATION share/pixmaps/)

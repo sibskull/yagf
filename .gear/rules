@@ -1,3 +1,1 @@
-copy: *.desktop
-copy: *.watch
 tar:  upstream-latest:trunk/ name=@name@-@version@ base=@name@-@version@

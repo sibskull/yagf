@@ -5,13 +5,12 @@ Version: 0.9.3
 Release: alt2.git%snapshot
 
 Summary: YAGF is a graphical front-end for cuneiform and tesseract OCR tools
-Summary(ru_RU.UTF-8): Оболочка YAGF предоставляет графический интерфейс для консольных программ распознавания тектов cuneiform и tesseract
+Summary(ru_RU.UTF-8): Оболочка YAGF предоставляет графический интерфейс для систем распознавания текста Cuneiform и Tesseract
 License: GPLv3+
 Group:   Office
 URL:     http://symmetrica.net/cuneiform-linux/yagf-ru.html
 
 Source:  %{name}-%{version}.tar
-Source1: YAGF.desktop
 
 BuildRequires: gcc-c++ libqt4-devel
 BuildRequires: cmake libaspell-devel aspell
@@ -40,7 +39,6 @@ the online help for more details).
 
 %prep
 %setup -q
-cp -f %SOURCE1 .
 subst "s,/usr/local,%buildroot/usr/,g" ./CMakeLists.txt
 
 %build
@@ -53,8 +51,8 @@ subst "s,/usr/local,%buildroot/usr/,g" ./CMakeLists.txt
 %files 
 %doc README COPYING DESCRIPTION AUTHORS ChangeLog
 %_bindir/%name
-%dir %_libdir/%name
-%_libdir/%name/*.so*
+%dir %_libexecdir/%name
+%_libexecdir/%name/*.so*
 %_datadir/%name
 %_pixmapsdir/yagf.png
 %_iconsdir/hicolor/96x96/apps/%name.png

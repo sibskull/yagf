@@ -11,6 +11,7 @@ Group:   Office
 URL:     http://symmetrica.net/cuneiform-linux/yagf-ru.html
 
 Source:  %{name}-%{version}.tar
+Patch:   %{name}-%{version}.patch
 
 BuildRequires: gcc-c++ libqt4-devel
 BuildRequires: cmake libaspell-devel aspell
@@ -39,6 +40,7 @@ the online help for more details).
 
 %prep
 %setup -q
+%patch -p1
 subst "s,/usr/local,%buildroot/usr/,g" ./CMakeLists.txt
 
 %build

@@ -1,1 +1,2 @@
 tar:  upstream-latest:trunk/ name=@name@-@version@ base=@name@-@version@
+diff: upstream-latest:trunk/ changes-latest:trunk/ name=@name@-@version@.patch

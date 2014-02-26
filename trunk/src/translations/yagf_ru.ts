@@ -21,6 +21,13 @@
     </message>
 </context>
 <context>
+    <name>BusyForm</name>
+    <message>
+        <source>Form</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>ConfigDialog</name>
     <message>
         <source>OCR Settings</source>
@@ -44,7 +51,26 @@
     </message>
     <message>
         <source>Location of the  tessdata directory:</source>
-        <translation>Расположение директории tessdata:</translation>
+        <translation>Путь к каталогу tessdata:</translation>
+    </message>
+</context>
+<context>
+    <name>ForceLocaleDialog</name>
+    <message>
+        <source>Dialog</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>GroupBox</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>RadioButton</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>TextLabel</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -78,7 +104,7 @@
     </message>
     <message>
         <source>There is an unsaved text in the editor window. Do you want to save it?</source>
-        <translation>В окне редактора несохраненный текст. Сохранить?</translation>
+        <translation>В окне редактора несохранённый текст. Сохранить?</translation>
     </message>
     <message>
         <source>Warning</source>
@@ -134,7 +160,7 @@
     </message>
     <message>
         <source>No compatible PDF converter software could be found. Please install either the pdftoppm utility or the GhostScript package (from this the gs command will be required).</source>
-        <translation>Не найдены подходящие конверторы PDF. Установите, пожалуйста, утилиту pdftoppm или пакет GhostScript (из которого требуется программа gs).</translation>
+        <translation>Не найдены подходящие конвертeры PDF. Установите, пожалуйста, утилиту pdftoppm или пакет GhostScript (из которого требуется программа gs).</translation>
     </message>
     <message>
         <source>PDF file name may not be empty</source>
@@ -142,15 +168,15 @@
     </message>
     <message>
         <source>Select an existing directory for output or create some new one</source>
-        <translation>Выберите существующую директорию для вывода или создайте новую</translation>
+        <translation>Выберите существующый каталог для вывода или создайте новый</translation>
     </message>
     <message>
         <source>Selecting Directory</source>
-        <translation>Выбор директории</translation>
+        <translation>Выбор каталога</translation>
     </message>
     <message>
         <source>The selected directory is not empty</source>
-        <translation>Выбранная директория - не пустая</translation>
+        <translation>Выбранный каталог не пуст</translation>
     </message>
     <message>
         <source>Starting tesseract failed</source>
@@ -192,12 +218,12 @@ Please install either cuneiform or tesseract</source>
     </message>
     <message>
         <source>Failed to Load Image</source>
-        <translation>Невозможно загруить выбранное изобажение</translation>
+        <translation>Невозможно загрузить выбранное изображение</translation>
     </message>
     <message>
         <source>Failed to detect text areas on this page.
 The page possibly lacks contrast. Try to select blocks manually.</source>
-        <translation>Не удалось найти ткстовые области на странице. Возможно, изображение отсканировано со слишком низким контрастом. Попробуйт выделить блоки вручную.</translation>
+        <translation>Не удалось найти текстовые области на странице. Возможно, изображение было сканировано со слишком низким контрастом. Попробуйте выделить блоки вручную.</translation>
     </message>
     <message>
         <source>The selected directoy is not empty. Please select or create another one.</source>
@@ -222,7 +248,11 @@ The page possibly lacks contrast. Try to select blocks manually.</source>
     </message>
     <message utf8="true">
         <source>&lt;p align=&quot;center&quot;&gt;&lt;b&gt;YAGF - Yet Another Graphical Front-end for cuneiform and tesseract OCR engines&lt;/b&gt;&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;Version %1&lt;/p&gt; &lt;p align=&quot;center&quot;&gt;Ⓒ 2009-2014 Andrei Borovsky&lt;/p&gt; This is a free software distributed under GPL v3. Visit &lt;a href=&quot;http://symmetrica.net/cuneiform-linux/yagf-en.html&quot;&gt;http://symmetrica.net/cuneiform-linux/yagf-en.html&lt;/a&gt; for more details.</source>
-        <translation>&lt;p align=&quot;center&quot;&gt;&lt;b&gt;YAGF - Графическая оболочка для программ распознавания текста cuneiform и tesseract&lt;/b&gt;&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;Версия %1&lt;/p&gt; &lt;p align=&quot;center&quot;&gt;Ⓒ 2009-2014 Андрей Боровский&lt;/p&gt; YAGF - открытое программное обеспечение, которое распространяется на условиях лицензии GPL v3. Вы найдете подробности на странице &lt;a href=&quot;http://symmetrica.net/cuneiform-linux/yagf-en.html&quot;&gt;http://symmetrica.net/cuneiform-linux/yagf-ru.html&lt;/a&gt;.</translation>
+        <translation>&lt;p align=&quot;center&quot;&gt;&lt;b&gt;YAGF — графическая оболочка для программ распознавания текста cuneiform и tesseract&lt;/b&gt;&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;Версия %1&lt;/p&gt; &lt;p align=&quot;center&quot;&gt;Ⓒ 2009-2014 Андрей Боровский&lt;/p&gt; YAGF — открытое программное обеспечение, которое распространяется на условиях лицензии GPL v3. Вы найдёте подробности на странице &lt;a href=&quot;http://symmetrica.net/cuneiform-linux/yagf-en.html&quot;&gt;http://symmetrica.net/cuneiform-linux/yagf-ru.html&lt;/a&gt;.</translation>
+    </message>
+    <message>
+        <source>Cannot open file %1. Make sure imagemagick is installed.</source>
+        <translation>Невозможно открыть файл %1. Проверьте установку ImageMagick.</translation>
     </message>
 </context>
 <context>
@@ -285,7 +315,7 @@ The page possibly lacks contrast. Try to select blocks manually.</source>
     </message>
     <message>
         <source>About...</source>
-        <translation>О програме...</translation>
+        <translation>О программе...</translation>
     </message>
     <message>
         <source>Clear all blocks</source>
@@ -305,11 +335,11 @@ The page possibly lacks contrast. Try to select blocks manually.</source>
     </message>
     <message>
         <source>Clear numbers</source>
-        <translation type="unfinished"></translation>
+        <translation>Очистить нумерацию</translation>
     </message>
     <message>
         <source>Crear block numbering</source>
-        <translation type="unfinished"></translation>
+        <translation>Очистить нумерацию блоков</translation>
     </message>
     <message>
         <source>Check spelling</source>
@@ -385,23 +415,23 @@ The page possibly lacks contrast. Try to select blocks manually.</source>
     </message>
     <message>
         <source>Ctrl+N</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+N</translation>
     </message>
     <message>
         <source>Ctrl+S</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+S</translation>
     </message>
     <message>
         <source>Ctrl+O</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+O</translation>
     </message>
     <message>
         <source>Ctrl+R</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+R</translation>
     </message>
     <message>
         <source>Ctrl+Q</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Q</translation>
     </message>
     <message>
         <source>Recognize &amp;All Pages</source>
@@ -413,7 +443,7 @@ The page possibly lacks contrast. Try to select blocks manually.</source>
     </message>
     <message>
         <source>Ctrl+A</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+A</translation>
     </message>
     <message>
         <source>&amp;Settings</source>
@@ -421,7 +451,7 @@ The page possibly lacks contrast. Try to select blocks manually.</source>
     </message>
     <message>
         <source>&lt;&lt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;&lt;</translation>
     </message>
     <message>
         <source>Hide/Show Toolbar</source>
@@ -489,7 +519,7 @@ The page possibly lacks contrast. Try to select blocks manually.</source>
     </message>
     <message>
         <source>Toggle Large/Small Icons</source>
-        <translation>Большие/маленькие иконки</translation>
+        <translation>Большие/маленькие значки</translation>
     </message>
     <message>
         <source>toolBar_2</source>
@@ -550,6 +580,14 @@ The page possibly lacks contrast. Try to select blocks manually.</source>
         <source>Entire Document</source>
         <translation>Весь документ</translation>
     </message>
+    <message>
+        <source>Open PDF File</source>
+        <translation>Открытие файла PDF</translation>
+    </message>
+    <message>
+        <source>PDF Files (*.pdf)</source>
+        <translation>Файлы PDF (*.pdf)</translation>
+    </message>
 </context>
 <context>
     <name>QObject</name>
@@ -579,7 +617,7 @@ Try to install an appropriate aspell dictionary.</source>
     </message>
     <message>
         <source>Select Project Directory</source>
-        <translation>Выбор директории проекта</translation>
+        <translation>Выбор каталога проекта</translation>
     </message>
     <message>
         <source>Bulgarian</source>
@@ -683,7 +721,7 @@ Try to install an appropriate aspell dictionary.</source>
     </message>
     <message>
         <source>Norwegian</source>
-        <translation>Норевежский</translation>
+        <translation>Норвежский</translation>
     </message>
     <message>
         <source>Swedish Gothic</source>
@@ -747,6 +785,53 @@ Try to install an appropriate aspell dictionary.</source>
     <message>
         <source>Drop files here</source>
         <translation>Перетащите файлы сюда</translation>
+    </message>
+</context>
+<context>
+    <name>TextEditor</name>
+    <message>
+        <source>Text Files (*.txt)</source>
+        <translation>Текстовые файлы (*.txt)</translation>
+    </message>
+    <message>
+        <source>HTML Files (*.html)</source>
+        <translation>Файлы HTML (*.html)</translation>
+    </message>
+    <message>
+        <source>Save Text</source>
+        <translation>Сохранить текст</translation>
+    </message>
+    <message>
+        <source>Undo	Ctrl+Z</source>
+        <translation>Отменить	Ctrl+Z</translation>
+    </message>
+    <message>
+        <source>Redo	Ctrl+Shift+Z</source>
+        <translation>Вернуть	Ctrl+Shift+Z</translation>
+    </message>
+    <message>
+        <source>Select All	Ctrl+A</source>
+        <translation>Выбрать всё	Ctrl+A</translation>
+    </message>
+    <message>
+        <source>Cut	Ctrl+X</source>
+        <translation>Вырезать	Ctrl+X</translation>
+    </message>
+    <message>
+        <source>Copy	Ctrl+C</source>
+        <translation>Копировать	Ctrl+C</translation>
+    </message>
+    <message>
+        <source>Paste	Ctrl+V</source>
+        <translation>Вставить	Ctrl+V</translation>
+    </message>
+    <message>
+        <source>Larger Font	Ctrl++</source>
+        <translation>Увеличить шрифт	Ctrl++</translation>
+    </message>
+    <message>
+        <source>Smaller Font	Ctrl+-</source>
+        <translation>Уменьшить шрифт	Ctrl+-</translation>
     </message>
 </context>
 </TS>

@@ -51,7 +51,7 @@
     </message>
     <message>
         <source>Location of the  tessdata directory:</source>
-        <translation>Расположение директории tessdata:</translation>
+        <translation>Путь к каталогу tessdata:</translation>
     </message>
 </context>
 <context>
@@ -168,15 +168,15 @@
     </message>
     <message>
         <source>Select an existing directory for output or create some new one</source>
-        <translation>Выберите существующую директорию для вывода или создайте новую</translation>
+        <translation>Выберите существующый каталог для вывода или создайте новый</translation>
     </message>
     <message>
         <source>Selecting Directory</source>
-        <translation>Выбор директории</translation>
+        <translation>Выбор каталога</translation>
     </message>
     <message>
         <source>The selected directory is not empty</source>
-        <translation>Выбранная директория - не пустая</translation>
+        <translation>Выбранный каталог не пуст</translation>
     </message>
     <message>
         <source>Starting tesseract failed</source>
@@ -519,7 +519,7 @@ The page possibly lacks contrast. Try to select blocks manually.</source>
     </message>
     <message>
         <source>Toggle Large/Small Icons</source>
-        <translation>Большие/маленькие иконки</translation>
+        <translation>Большие/маленькие значки</translation>
     </message>
     <message>
         <source>toolBar_2</source>
@@ -617,7 +617,7 @@ Try to install an appropriate aspell dictionary.</source>
     </message>
     <message>
         <source>Select Project Directory</source>
-        <translation>Выбор директории проекта</translation>
+        <translation>Выбор каталога проекта</translation>
     </message>
     <message>
         <source>Bulgarian</source>

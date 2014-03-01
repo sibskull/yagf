@@ -24,12 +24,10 @@
 #include "pdf2ppt.h"
 #include "ghostscr.h"
 #include "configdialog.h"
-#include "advancedconfigdialog.h"
 #include "mainform.h"
 #include "tpagecollection.h"
 #include "scanner.h"
 #include "projectmanager.h"
-#include "forcelocaledialog.h"
 #include "langselectdialog.h"
 #include "tiffimporter.h"
 #include <signal.h>
@@ -295,6 +293,7 @@ void MainForm::showConfigDlg()
                 engineLabel->setText(trUtf8("Using Tesseract"));
             }
             fillLangBox();
+            toolBar->setIconSize(settings->getIconSize());
             int newIndex = selectLangsBox->findText(oldLang);
             if (newIndex >= 0) {
                 selectLangsBox->setCurrentIndex(newIndex);
@@ -1030,19 +1029,6 @@ void MainForm::selectTextArea()
     pages->blockAllText();
 }
 
-void MainForm::showAdvancedSettings()
-{
-    AdvancedConfigDialog dlg;
-    dlg.setCrop1(settings->getCropLoaded());
-    dlg.setDeskew(settings->getAutoDeskew());
-    dlg.setPreprocess(settings->getPreprocessed());
-    if (dlg.exec()) {
-        settings->setCropLoaded(dlg.doCrop1());
-        settings->setAutoDeskew(dlg.doDeskew());
-        settings->setPreprocessed(dlg.doPreprocess());
-    }
-}
-
 void MainForm::addSnippet(int index)
 {
     sideBar->addItem(pages->snippet());
@@ -1108,21 +1094,6 @@ void MainForm::selectBlocks()
     if (!pages->splitPage(false))
         QMessageBox::warning(this, trUtf8("Warning"), trUtf8("Failed to detect text areas on this page.\nThe page possibly lacks contrast. Try to select blocks manually."));
     setCursor(oldCursor);
-}
-
-void MainForm::setSmallIcons()
-{
-    QSize s = toolBar->iconSize();
-    if (s.height() > 24) {
-         s.setHeight(24);
-         s.setWidth(24);
-    }
-    else {
-        s.setHeight(32);
-        s.setWidth(32);
-    }
-    toolBar->setIconSize(s);
-    settings->setIconSize(s);
 }
 
 void MainForm::selectHTMLformat()

@@ -91,7 +91,6 @@ private slots:
     void deskewByBlock();
     void selectTextArea();
     void selectBlocks();
-    void setSmallIcons();
     void selectHTMLformat();
     void loadFiles(const QStringList &files);
     void LangTextChanged(const QString &text);
@@ -140,7 +139,6 @@ private slots:
     void loadPage();
     void rightMouseClicked(int x, int y, bool inTheBlock);
     void onShowWindow();
-    void showAdvancedSettings();
     void addSnippet(int index);
     void preprocessPage();
     void saveProject();

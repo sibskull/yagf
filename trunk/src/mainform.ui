@@ -943,14 +943,6 @@
     <string>Deskew the current block</string>
    </property>
   </action>
-  <action name="actionAdvanced_Settings">
-   <property name="text">
-    <string>Advanced Settings</string>
-   </property>
-   <property name="toolTip">
-    <string>The settings you should probably never change</string>
-   </property>
-  </action>
   <action name="actionSelect_multiple_blocks">
    <property name="icon">
     <iconset resource="yagf.qrc">
@@ -1210,42 +1202,10 @@
    </hints>
   </connection>
   <connection>
-   <sender>actionAdvanced_Settings</sender>
-   <signal>triggered()</signal>
-   <receiver>MainWindow</receiver>
-   <slot>showAdvancedSettings()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>-1</x>
-     <y>-1</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>959</x>
-     <y>568</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
    <sender>actionSelect_multiple_blocks</sender>
    <signal>triggered()</signal>
    <receiver>MainWindow</receiver>
    <slot>selectBlocks()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>-1</x>
-     <y>-1</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>959</x>
-     <y>568</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>actionToggle_Large_Small_Icons</sender>
-   <signal>triggered()</signal>
-   <receiver>MainWindow</receiver>
-   <slot>setSmallIcons()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>-1</x>

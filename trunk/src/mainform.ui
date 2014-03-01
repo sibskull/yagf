@@ -500,12 +500,14 @@
    </widget>
    <widget class="QMenu" name="menu_Settings">
     <property name="title">
-     <string>&amp;Settings</string>
+     <string>&amp;Edit</string>
     </property>
+    <addaction name="actionSelect_Text_Area"/>
+    <addaction name="separator"/>
+    <addaction name="actionSelect_All_Text"/>
+    <addaction name="actionCopyToClipboard"/>
+    <addaction name="separator"/>
     <addaction name="actionOCR_Settings"/>
-    <addaction name="actionSelect_Recognition_Languages"/>
-    <addaction name="actionToggle_Large_Small_Icons"/>
-    <addaction name="actionAdvanced_Settings"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menu_Settings"/>
@@ -692,7 +694,7 @@
      <normaloff>:/images/editcopy.png</normaloff>:/images/editcopy.png</iconset>
    </property>
    <property name="text">
-    <string>Copy To Clipboard</string>
+    <string>Copy Text to Clipboard</string>
    </property>
    <property name="toolTip">
     <string>Copy recognized text to clipboard</string>
@@ -901,11 +903,12 @@
    </property>
   </action>
   <action name="actionOCR_Settings">
-   <property name="text">
-    <string>OCR Settings</string>
+   <property name="icon">
+    <iconset resource="yagf.qrc">
+     <normaloff>:/images/advanced.png</normaloff>:/images/advanced.png</iconset>
    </property>
-   <property name="toolTip">
-    <string>Set up the OCR parameters</string>
+   <property name="text">
+    <string>Settings</string>
    </property>
   </action>
   <action name="actionPaste_Image">
@@ -993,6 +996,14 @@
    </property>
    <property name="toolTip">
     <string>Select Recognition Languages</string>
+   </property>
+  </action>
+  <action name="actionSelect_All_Text">
+   <property name="text">
+    <string>Select All Text</string>
+   </property>
+   <property name="toolTip">
+    <string>Select all the recognized text</string>
    </property>
   </action>
  </widget>

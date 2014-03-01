@@ -81,8 +81,8 @@ mtrace();
     if (!settings->useNoLocale())
         app.installTranslator(&translator2);
     if (settings->getSelectedLanguages().count() == 0) {
-        LangSelectDialog lsd;
-        lsd.exec();
+        //LangSelectDialog lsd;
+        //lsd.exec();
     }
     MainForm window;
     window.show();

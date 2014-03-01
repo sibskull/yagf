@@ -127,6 +127,7 @@ MainForm::MainForm(QWidget *parent): QMainWindow(parent)
     connect(actionAbout, SIGNAL(triggered()), this, SLOT(showAboutDlg()));
     connect(actionOnlineHelp, SIGNAL(triggered()), this, SLOT(showHelp()));
     connect(actionCopyToClipboard, SIGNAL(triggered()),textEdit, SLOT(copyClipboard()));
+    connect(actionSelect_All_Text, SIGNAL(triggered()),textEdit, SLOT(selectAll()));
     connect(graphicsInput, SIGNAL(rightMouseClicked(int, int, bool)), this, SLOT(rightMouseClicked(int, int, bool)));
     connect(actionSelect_HTML_format, SIGNAL(triggered()), this, SLOT(selectHTMLformat()));
 
@@ -141,7 +142,7 @@ MainForm::MainForm(QWidget *parent): QMainWindow(parent)
 
     selectLangsBox = new QComboBox();
     selectLangsBox->setToolTip(trUtf8("Recognition language"));
-    toolBar->insertWidget(actionRecognize, selectLangsBox);
+
    // connect(selectLangsBox->lineEdit(), SIGNAL(textChanged(QString)), this, SLOT(LangTextChanged(QString)));
 
     initSettings();
@@ -155,6 +156,13 @@ MainForm::MainForm(QWidget *parent): QMainWindow(parent)
     if (settings->getSelectedEngine() == UseTesseract) {
         //fillLanguagesBoxTesseract();
         engineLabel->setText(trUtf8("Using Tesseract"));
+    }
+    if (settings->getSelectedLanguages().count() > 1)
+        toolBar->insertWidget(actionRecognize, selectLangsBox);
+    else {
+        QLabel * langLabel = new QLabel(this);
+        statusBar()->addPermanentWidget(langLabel);
+        langLabel->setText(trUtf8("Recognition Language") + ": " + settings->getFullLanguageName(settings->getLanguage()));
     }
     fillLangBox();
     delTmpFiles();
@@ -171,7 +179,6 @@ MainForm::MainForm(QWidget *parent): QMainWindow(parent)
    // textEdit->setContextMenuPolicy(Qt::ActionsContextMenu);
 
     this->sideBar->show();
-    //connect(sideBar, SIGNAL(fileSelected(const QString &)), this, SLOT(fileSelected(const QString &)));
 
     connect(actionRecognize_All_Pages, SIGNAL(triggered()), this, SLOT(recognizeAll()));
 
@@ -208,7 +215,6 @@ MainForm::MainForm(QWidget *parent): QMainWindow(parent)
     if (pdfx)
         connect(&pdfPD, SIGNAL(canceled()), pdfx, SLOT(cancel()));
 
-    menu_Settings->addAction("UI Language", this, SLOT(setUILanguage()));
 
 }
 
@@ -278,14 +284,7 @@ void MainForm::showConfigDlg()
 {
     ConfigDialog dialog(this);
     SelectedEngine ose = settings->getSelectedEngine();
-    if (settings->getSelectedEngine() == UseCuneiform)
-        dialog.setSelectedEngine(0);
-    else
-        dialog.setSelectedEngine(1);
-    dialog.setTessDataPath(settings->getTessdataPath());
     if (dialog.exec()) {
-        settings->setSelectedEngine(dialog.selectedEngine() == 0 ? UseCuneiform : UseTesseract);
-        settings->setTessdataPath(dialog.tessdataPath());
         if (settings->getSelectedEngine() != ose) {
             QString oldLang = selectLangsBox->currentText();
             selectLangsBox->clear();
@@ -1135,29 +1134,6 @@ void MainForm::selectHTMLformat()
 
 }
 
-void MainForm::setUILanguage()
-{
-    ForceLocaleDialog fld(this);
-    if (settings->useNoLocale())
-        fld.setOption(ForceLocaleDialog::NoLocale);
-    else {
-        if (settings->useRussianLocale())
-            fld.setOption(ForceLocaleDialog::RussianLocale);
-        else {
-            fld.setOption(ForceLocaleDialog::DefaultLocale);
-        }
-    }
-    if (fld.exec() == QDialog::Accepted) {
-        settings->setNoLocale(false);
-        settings->setRussianLocale(false);
-        if (fld.getOption() == ForceLocaleDialog::NoLocale)
-            settings->setNoLocale(true);
-        else {
-            if (fld.getOption() == ForceLocaleDialog::RussianLocale)
-                settings->setRussianLocale(true);
-        }
-    }
-}
 
 void MainForm::SelectRecognitionLanguages()
 {

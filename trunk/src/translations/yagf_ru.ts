@@ -168,7 +168,7 @@
     </message>
     <message>
         <source>Select an existing directory for output or create some new one</source>
-        <translation>Выберите существующый каталог для вывода или создайте новый</translation>
+        <translation>Выберите существующий каталог для вывода или создайте новый</translation>
     </message>
     <message>
         <source>Selecting Directory</source>

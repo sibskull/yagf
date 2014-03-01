@@ -95,7 +95,6 @@ private slots:
     void selectHTMLformat();
     void loadFiles(const QStringList &files);
     void LangTextChanged(const QString &text);
-    void setUILanguage();
     void SelectRecognitionLanguages();
 private:
     virtual void closeEvent(QCloseEvent *event);

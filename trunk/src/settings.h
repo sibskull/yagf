@@ -51,6 +51,7 @@ public:
   bool getFullScreen();
   int getFontSize();
   QString getFullLanguageName(const QString &abbr);
+  QString getShortLanguageName(const QString &lang);
   bool getAutoDeskew();
   bool getCropLoaded();
   bool getPreprocessed();

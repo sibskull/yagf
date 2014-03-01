@@ -52,7 +52,7 @@ void Settings::readSettings(const QString &path)
     lastDir = settings->value("mainwindow/lastDir").toString();
     lastOutputDir = settings->value("mainwindow/lastOutputDir").toString();
     QString defEngine;
-    if (findProgram("tesseract")&&(!findProgram("cuneiform")))
+    if (findProgram("tesseract"))
         defEngine = "tesseract";
     else
         defEngine = "cuneiform";
@@ -197,6 +197,16 @@ QString Settings::getFullLanguageName(const QString &abbr)
     if (selectedEngine == UseTesseract)
         map = &tesMap;
     return map->key(abbr, "");
+}
+
+QString Settings::getShortLanguageName(const QString &lang)
+{
+    QMap<QString, QString> * map;
+    if (selectedEngine == UseCuneiform)
+        map = &cuMap;
+    if (selectedEngine == UseTesseract)
+        map = &tesMap;
+    return map->value(lang, "");
 }
 
 bool Settings::getAutoDeskew()

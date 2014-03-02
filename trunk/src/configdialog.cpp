@@ -12,6 +12,10 @@ ConfigDialog::ConfigDialog(QWidget *parent) :
 {
     ui->setupUi(this);
     ui->stackedWidget->setCurrentIndex(0);
+    ui->listWidget->setCurrentRow(0);
+    //ui->listWidget->setMinimumWidth(ui->listWidget->sizeHintForColumn(0));
+    for (int i = 0; i < ui->listWidget->count(); i++)
+        ui->listWidget->item(i)->setToolTip(ui->listWidget->item(i)->text());
     init();
 }
 

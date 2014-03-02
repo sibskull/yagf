@@ -155,11 +155,12 @@ MainForm::MainForm(QWidget *parent): QMainWindow(parent)
         //fillLanguagesBoxTesseract();
         engineLabel->setText(trUtf8("Using Tesseract"));
     }
-    if (settings->getSelectedLanguages().count() > 1)
-        toolBar->insertWidget(actionRecognize, selectLangsBox);
-    else {
-        QLabel * langLabel = new QLabel(this);
-        statusBar()->addPermanentWidget(langLabel);
+
+    slAction = toolBar->insertWidget(actionRecognize, selectLangsBox);
+    langLabel = new QLabel();
+    statusBar()->addPermanentWidget(langLabel);
+    if (settings->getSelectedLanguages().count() == 1) {
+        slAction->setVisible(false);
         langLabel->setText(trUtf8("Recognition Language") + ": " + settings->getFullLanguageName(settings->getLanguage()));
     }
     fillLangBox();
@@ -283,7 +284,8 @@ void MainForm::showConfigDlg()
     ConfigDialog dialog(this);
     SelectedEngine ose = settings->getSelectedEngine();
     if (dialog.exec()) {
-        if (settings->getSelectedEngine() != ose) {
+
+        //if (settings->getSelectedEngine() != ose) {
             QString oldLang = selectLangsBox->currentText();
             selectLangsBox->clear();
             if (settings->getSelectedEngine() == UseCuneiform) {
@@ -293,7 +295,6 @@ void MainForm::showConfigDlg()
                 engineLabel->setText(trUtf8("Using Tesseract"));
             }
             fillLangBox();
-            toolBar->setIconSize(settings->getIconSize());
             int newIndex = selectLangsBox->findText(oldLang);
             if (newIndex >= 0) {
                 selectLangsBox->setCurrentIndex(newIndex);
@@ -310,6 +311,18 @@ void MainForm::showConfigDlg()
                 }
             }
 
+        //} else         fillLangBox();
+
+
+        toolBar->setIconSize(settings->getIconSize());
+        if (selectLangsBox->count() > 1) {
+            slAction->setVisible(true);
+            langLabel->setText("");
+        }
+         else
+        {
+            slAction->setVisible(false);
+            langLabel->setText(trUtf8("Recognition Language") + ": " + settings->getFullLanguageName(settings->getLanguage()));
         }
     }
 }

@@ -13,6 +13,9 @@
   <property name="windowTitle">
    <string>YAGF Languages Setup</string>
   </property>
+  <property name="windowOpacity">
+   <double>0.900000000000000</double>
+  </property>
   <property name="styleSheet">
    <string notr="true">background-image: url(:/images/earth.png);</string>
   </property>

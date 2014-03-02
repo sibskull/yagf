@@ -21,7 +21,7 @@
     </message>
     <message>
         <source>Program Appearance</source>
-        <translation>Внешний вид</translation>
+        <translation>Внешний вид программы</translation>
     </message>
     <message>
         <source>Cuneiform</source>
@@ -53,7 +53,7 @@
     </message>
     <message>
         <source>Languages to Use...</source>
-        <translation>Использовать язык…</translation>
+        <translation>Языки...</translation>
     </message>
     <message>
         <source>Enhance Image Quality</source>

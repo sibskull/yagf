@@ -40,6 +40,7 @@ class QMenu;
 class PDFExtractor;
 class ccbuilder;
 class QLabel;
+class QAction;
 
 const QString version = "0.9.3";
 
@@ -130,7 +131,8 @@ private:
     Settings * settings;
     PageCollection * pages;
     QLabel * engineLabel;
-
+    QLabel * langLabel;
+    QAction * slAction;
 private slots:
     bool findEngine();
     void readyRead(int sig);

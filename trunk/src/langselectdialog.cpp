@@ -74,6 +74,8 @@ void LangSelectDialog::setRecognitionLanguages(const QStringList &sl)
 void LangSelectDialog::accept()
 {
     QStringList sl = getRecognitionLanguages();
+    if (sl.count() == 0)
+        return;
     Settings::instance()->setSelectedLanguages(sl);
     QDialog::accept();
 }

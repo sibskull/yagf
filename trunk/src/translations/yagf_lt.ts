@@ -2,49 +2,98 @@
 <!DOCTYPE TS>
 <TS version="2.0">
 <context>
-    <name>AdvancedConfigDialog</name>
+    <name>ConfigDialog</name>
     <message>
-        <source>Advanced Settings</source>
-        <translation>Sudėtingesni nustatymai</translation>
+        <source>OCR Engine</source>
+        <translation>OCR variklis</translation>
+    </message>
+    <message>
+        <source>YAGF Settings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>OCR and Languages</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Image Processing</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Program Appearance</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cuneiform</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Tesseract</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Path to Tesseract Data Files</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Recognize Languages</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Use Single Language:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Choose Among Several Languages </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Languages to Use...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Enhance Image Quality</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Crop Image When Loaded</source>
-        <translation>Apkarpyti įkeltą paveikslėlį</translation>
+        <translation type="unfinished">Apkarpyti įkeltą paveikslėlį</translation>
     </message>
     <message>
         <source>Deskew Loaded Images</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Preprocess images when loaded</source>
+        <source>Preprocess Images When Loaded</source>
         <translation type="unfinished"></translation>
     </message>
-</context>
-<context>
-    <name>ConfigDialog</name>
     <message>
-        <source>OCR Settings</source>
-        <translation>OCR nustatymai</translation>
+        <source>Interface Language</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>OCR Engine</source>
-        <translation>OCR variklis</translation>
+        <source>Select Language of the Interface:</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>cuneiform</source>
-        <translation>cuneiform</translation>
+        <source>Toolbar Icon Size</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>tesseract</source>
-        <translation>tesseract</translation>
+        <source>Normal</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Tesseract Setup</source>
-        <translation>Tesseract nustatymai</translation>
+        <source>Large</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Location of the  tessdata directory:</source>
-        <translation>Tesseract direktorijos vieta:</translation>
+        <source>Tesseract Data Directory</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -223,6 +272,14 @@ The page possibly lacks contrast. Try to select blocks manually.</source>
         <source>&lt;p align=&quot;center&quot;&gt;&lt;b&gt;YAGF - Yet Another Graphical Front-end for cuneiform and tesseract OCR engines&lt;/b&gt;&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;Version %1&lt;/p&gt; &lt;p align=&quot;center&quot;&gt;Ⓒ 2009-2014 Andrei Borovsky&lt;/p&gt; This is a free software distributed under GPL v3. Visit &lt;a href=&quot;http://symmetrica.net/cuneiform-linux/yagf-en.html&quot;&gt;http://symmetrica.net/cuneiform-linux/yagf-en.html&lt;/a&gt; for more details.</source>
         <translation type="unfinished">GPL v3. Jei norite sužinoti plačiau, aplankykite &lt;a href=&quot;http://symmetrica.net/cuneiform-linux/yagf-en.html&quot;&gt;http://symmetrica.net/cuneiform-linux/yagf-en.html&lt;/a&gt; svetainę. {1&lt;?} {2009-2014 ?} {3.?}</translation>
     </message>
+    <message>
+        <source>Recognition Language</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot open file %1. Make sure imagemagick is installed.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>MainWindow</name>
@@ -379,10 +436,6 @@ The page possibly lacks contrast. Try to select blocks manually.</source>
         <translation>&amp;Pagalba</translation>
     </message>
     <message>
-        <source>Copy To Clipboard</source>
-        <translation>Kopijuoti į atmintinę</translation>
-    </message>
-    <message>
         <source>Copy recognized text to clipboard</source>
         <translation>Kopijuoti tekstą į atmintinę</translation>
     </message>
@@ -415,10 +468,6 @@ The page possibly lacks contrast. Try to select blocks manually.</source>
         <translation>Vald+Q</translation>
     </message>
     <message>
-        <source>&amp;Settings</source>
-        <translation>&amp;Nustatymai</translation>
-    </message>
-    <message>
         <source>&lt;&lt;</source>
         <translation>&lt;&lt;</translation>
     </message>
@@ -433,14 +482,6 @@ The page possibly lacks contrast. Try to select blocks manually.</source>
     <message>
         <source>Import pages from PDF documents</source>
         <translation>Importuoti puslapius iš PDF dokumento</translation>
-    </message>
-    <message>
-        <source>OCR Settings</source>
-        <translation>OCR nustatymai</translation>
-    </message>
-    <message>
-        <source>Set up the OCR parameters</source>
-        <translation>Nustatykite OCR parametrus</translation>
     </message>
     <message>
         <source>Paste Image</source>
@@ -469,14 +510,6 @@ The page possibly lacks contrast. Try to select blocks manually.</source>
     <message>
         <source>Correct the page skew </source>
         <translation>Pataisyti puslapio kreivumą </translation>
-    </message>
-    <message>
-        <source>Advanced Settings</source>
-        <translation>Sudėtingesni nustatymai</translation>
-    </message>
-    <message>
-        <source>The settings you should probably never change</source>
-        <translation>Nustatymai, kurių ko gero geriau niekada nekeisti</translation>
     </message>
     <message>
         <source>select multiple blocks</source>
@@ -516,6 +549,26 @@ The page possibly lacks contrast. Try to select blocks manually.</source>
     </message>
     <message>
         <source>Select Recognition Languages</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Edit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Copy Text to Clipboard</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Settings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select All Text</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select all the recognized text</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

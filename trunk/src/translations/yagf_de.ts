@@ -2,49 +2,98 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="de_DE">
 <context>
-    <name>AdvancedConfigDialog</name>
+    <name>ConfigDialog</name>
     <message>
-        <source>Advanced Settings</source>
-        <translation>Erweiterte Einstellungen</translation>
+        <source>OCR Engine</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>YAGF Settings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>OCR and Languages</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Image Processing</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Program Appearance</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cuneiform</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Tesseract</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Path to Tesseract Data Files</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Recognize Languages</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Use Single Language:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Choose Among Several Languages </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Languages to Use...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Enhance Image Quality</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Crop Image When Loaded</source>
-        <translation>Bild nach dem Laden beschneiden</translation>
+        <translation type="unfinished">Bild nach dem Laden beschneiden</translation>
     </message>
     <message>
         <source>Deskew Loaded Images</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Preprocess images when loaded</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>ConfigDialog</name>
-    <message>
-        <source>OCR Settings</source>
-        <translation>OCR Einstellungen</translation>
-    </message>
-    <message>
-        <source>OCR Engine</source>
+        <source>Preprocess Images When Loaded</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>cuneiform</source>
-        <translation></translation>
+        <source>Interface Language</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>tesseract</source>
-        <translation></translation>
+        <source>Select Language of the Interface:</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Tesseract Setup</source>
-        <translation>Tesseract Einstellungen</translation>
+        <source>Toolbar Icon Size</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Location of the  tessdata directory:</source>
-        <translation>Ort des tessdata Verzeichnisses:</translation>
+        <source>Normal</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Large</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Tesseract Data Directory</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -223,6 +272,14 @@ The page possibly lacks contrast. Try to select blocks manually.</source>
         <source>&lt;p align=&quot;center&quot;&gt;&lt;b&gt;YAGF - Yet Another Graphical Front-end for cuneiform and tesseract OCR engines&lt;/b&gt;&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;Version %1&lt;/p&gt; &lt;p align=&quot;center&quot;&gt;Ⓒ 2009-2014 Andrei Borovsky&lt;/p&gt; This is a free software distributed under GPL v3. Visit &lt;a href=&quot;http://symmetrica.net/cuneiform-linux/yagf-en.html&quot;&gt;http://symmetrica.net/cuneiform-linux/yagf-en.html&lt;/a&gt; for more details.</source>
         <translation type="unfinished">&lt;p align=&quot;center&quot;&gt;&lt;b&gt;YAGF - Yet Another Graphical Front-end (Noch ein weiteres grafisches Frontend) fürr cuneiform und tesseract OCR (Optical Character Recognition = Optische Zeichen Erkennung) engines&lt;/b&gt;&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;Version %1&lt;/p&gt; &lt;p align=&quot;center&quot;&gt;Ⓒ 2009-2012 Andrei Borovsky&lt;/p&gt; Dies ist freie Softwater die unter der GPL v3 verbreitet wird. Besuchen Sie &lt;a href=&quot;http://symmetrica.net/cuneiform-linux/yagf-en.html&quot;&gt;http://symmetrica.net/cuneiform-linux/yagf-en.html&lt;/a&gt; für weitere Informationen. {2009-2012?} {1&lt;?} {2009-2014 ?} {3.?}</translation>
     </message>
+    <message>
+        <source>Recognition Language</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot open file %1. Make sure imagemagick is installed.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>MainWindow</name>
@@ -343,10 +400,6 @@ The page possibly lacks contrast. Try to select blocks manually.</source>
         <translation>Ü&amp;ber...</translation>
     </message>
     <message>
-        <source>Copy To Clipboard</source>
-        <translation>In die Zwischenablage kopieren</translation>
-    </message>
-    <message>
         <source>Copy recognized text to clipboard</source>
         <translation>Text in die Zwischenablage kopieren</translation>
     </message>
@@ -415,10 +468,6 @@ The page possibly lacks contrast. Try to select blocks manually.</source>
         <translation>HTML Format als Ausgabe der Erkennung wählen</translation>
     </message>
     <message>
-        <source>&amp;Settings</source>
-        <translation>Ein&amp;stellungen</translation>
-    </message>
-    <message>
         <source>&lt;&lt;</source>
         <translation></translation>
     </message>
@@ -433,14 +482,6 @@ The page possibly lacks contrast. Try to select blocks manually.</source>
     <message>
         <source>Import pages from PDF documents</source>
         <translation>Seiten aus PDF Dokumenten importieren</translation>
-    </message>
-    <message>
-        <source>OCR Settings</source>
-        <translation>OCR Einstellungen</translation>
-    </message>
-    <message>
-        <source>Set up the OCR parameters</source>
-        <translation>OCR Parameter einstellen</translation>
     </message>
     <message>
         <source>Paste Image</source>
@@ -469,14 +510,6 @@ The page possibly lacks contrast. Try to select blocks manually.</source>
     <message>
         <source>Correct the page skew </source>
         <translation>Seitenverzerrung korrigieren</translation>
-    </message>
-    <message>
-        <source>Advanced Settings</source>
-        <translation>Erweiterte Einstellungen</translation>
-    </message>
-    <message>
-        <source>The settings you should probably never change</source>
-        <translation>Einstellungen die sie wahrscheinlich nie ändern sollten</translation>
     </message>
     <message>
         <source>select multiple blocks</source>
@@ -516,6 +549,26 @@ The page possibly lacks contrast. Try to select blocks manually.</source>
     </message>
     <message>
         <source>Select Recognition Languages</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Edit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Copy Text to Clipboard</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Settings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select All Text</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select all the recognized text</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

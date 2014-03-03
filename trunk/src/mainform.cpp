@@ -57,6 +57,7 @@
 #include <QClipboard>
 #include <QMap>
 #include <QWidgetAction>
+#include <QPushButton>
 #include "qgraphicsinput.h"
 #include "utils.h"
 #include "qxtunixsignalcatcher.h"
@@ -207,13 +208,15 @@ MainForm::MainForm(QWidget *parent): QMainWindow(parent)
 
     pdfPD.setWindowTitle("YAGF");
     pdfPD.setLabelText(trUtf8("Importing pages from the PDF document..."));
+    pdfPD.setCancelButton(new QPushButton());
     pdfPD.setCancelButtonText(trUtf8("Cancel"));
     pdfPD.setMinimum(-1);
     pdfPD.setMaximum(-1);
     pdfPD.setWindowIcon(QIcon(":/yagf.png"));
-    if (pdfx)
+    if (pdfx) {
         connect(&pdfPD, SIGNAL(canceled()), pdfx, SLOT(cancel()));
-
+        connect(&pdfPD, SIGNAL(canceled()), this, SLOT(cancelPDF()));
+    }
 
 }
 
@@ -1124,4 +1127,10 @@ void MainForm::SelectRecognitionLanguages()
     LangSelectDialog lsd;
     if (lsd.exec() == QDialog::Accepted)
         fillLangBox();
+}
+
+void MainForm::cancelPDF()
+{
+    pdfPD.setLabelText(trUtf8("Opening already imported pages..."));
+    pdfPD.setCancelButton(0);
 }

@@ -74,7 +74,7 @@ public:
     void setDeskewed(bool value);
     void setPreprocessed(bool value);
     void reSaveTmpPage();
-
+    void cropYGF();
 signals:
     void refreshView();
 public slots:

@@ -613,6 +613,14 @@ void Page::reSaveTmpPage()
     ip.saveYGF(img, mFileName);
 }
 
+void Page::cropYGF()
+{
+    ImageProcessor ip;
+    ip.loadYGF(fileName());
+    ip.crop();
+    saveTmpPage("YGF");
+}
+
 
 
 void Page::renumberBlocks()

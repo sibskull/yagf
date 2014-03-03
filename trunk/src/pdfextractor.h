@@ -66,7 +66,6 @@ private:
     QString resolution;
     QString outputPrefix;
     QString outputExtension;
-    int lastPage;
     QStringList filters;
     bool canceled;
 };

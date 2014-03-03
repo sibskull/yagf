@@ -84,6 +84,7 @@ bool PageCollection::appendPage(const QString &fileName)
             index = pages.count() - 1;
             if (Settings::instance()->getAutoDeskew()) {
                 deskew();
+                //p->cropYGF();
                 //p->reSaveTmpPage();
             }
             emit addSnippet(index);

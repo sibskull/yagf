@@ -17,7 +17,9 @@
 
 */
 
+#include "pdfthread.h"
 #include "pdfextractor.h"
+#include <unistd.h>
 #include <QThread>
 #include <QProcess>
 #include  <QStringList>
@@ -26,35 +28,6 @@
 #include <QFileInfo>
 #include <QFileInfoList>
 
-class PDFThread : public QThread
-{
-public:
-    explicit PDFThread(PDFExtractor * parent) : QThread()
-    {
-        mparent = parent;
-    }
-    virtual void run()
-    {
-        QProcess process;
-       // connect(this, SIGNAL(finished()), mparent, SIGNAL(finished()), Qt::QueuedConnection);
-       // connect(this, SIGNAL(terminated()), mparent, SIGNAL(finished()), Qt::QueuedConnection);
-        connect(mparent, SIGNAL(terminate()), this, SLOT(terminate()));
-        connect (mparent, SIGNAL(killProcess()), &process, SLOT(kill()), Qt::QueuedConnection);
-        connect (mparent, SIGNAL(terminateProcess()), &process, SLOT(terminate()), Qt::QueuedConnection);
-        process.start(command, arguments);
-        process.waitForFinished(1600000);
-    }
-    void setProcess(const QString &cmd, const QStringList &args)
-    {
-        command = cmd;
-        arguments.clear();
-        arguments.append(args);
-    }
-private:
-    QString command;
-    QStringList arguments;
-    PDFExtractor * mparent;
-};
 
 PDFExtractor::PDFExtractor(QObject *parent) :
     QObject(parent)
@@ -143,8 +116,8 @@ QString PDFExtractor::getStopPage()
 
 void PDFExtractor::cancel()
 {
-    emit killProcess();
-    emit terminateProcess();
+    //emit killProcess();
+    //emit terminateProcess();
     emit terminate();
 }
 
@@ -156,33 +129,29 @@ void PDFExtractor::execInternal(const QString &command, const QStringList &argum
     PDFThread thread(this);
     thread.setProcess(command, arguments);
     thread.start();
-    lastPage = 0;
-    while (!thread.isFinished()) {
+    sleep(1);
+    QFileInfoList oldFil;
+    bool cont = true;
+    while (cont) {
+        //usleep(500000);
         QDir dir;
         dir.setFilter(QDir::Files | QDir::Hidden | QDir::NoSymLinks);
         dir.setSorting(QDir::Size | QDir::Reversed);
         dir.setSorting(QDir::Name);
-        dir.setPath(outputDir);
+        dir.setPath(outputDir);        
         QFileInfoList fil;
-        fil = dir.entryInfoList(filters, QDir::Files, QDir::Name);
-        int lastI = 0;
-        for (int i =lastPage; i < fil.count() - 1; i++) {
-            emit addPage(fil.at(i).absoluteFilePath());
-            lastI = i;
-            QApplication::processEvents();
-        }
-        lastPage = lastI;
-    }
-    QDir dir;
-    dir.setFilter(QDir::Files | QDir::Hidden | QDir::NoSymLinks);
-    dir.setSorting(QDir::Size | QDir::Reversed);
-    dir.setSorting(QDir::Name);
-    dir.cd(outputDir);
-    QFileInfoList fil;
-    fil = dir.entryInfoList(filters, QDir::Files, QDir::Name);
-    for (int i = 0; i < fil.count(); i++) {
-        emit addPage(fil.at(i).absoluteFilePath());
         QApplication::processEvents();
+        fil = dir.entryInfoList(filters, QDir::Files, QDir::Name);
+        cont = false;
+        foreach (QFileInfo fi, fil) {
+            if (!oldFil.contains(fi)) {
+                    usleep(250000);
+                    oldFil.append(fi);
+                    emit addPage(fi.absoluteFilePath());
+                    QApplication::processEvents();
+                    cont = true;
+            }
+        }
     }
     emit finished();
 }

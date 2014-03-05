@@ -36,6 +36,7 @@ public:
     QString getPDFFile();
     QString getStartPage();
     QString getStopPage();
+    bool getDeskew();
 private slots:
     void on_checkBox_toggled(bool checked);
 

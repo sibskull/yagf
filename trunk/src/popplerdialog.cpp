@@ -63,3 +63,8 @@ QString PopplerDialog::getStopPage()
         return "-1";
     return QString::number(ui->spinBox_2->value());
 }
+
+bool PopplerDialog::getDeskew()
+{
+    return !(ui->checkBox_2->isChecked());
+}

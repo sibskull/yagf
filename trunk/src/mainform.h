@@ -134,6 +134,7 @@ private:
     QLabel * engineLabel;
     QLabel * langLabel;
     QAction * slAction;
+    bool globalDeskew;
 private slots:
     bool findEngine();
     void readyRead(int sig);

@@ -362,6 +362,8 @@ void MainForm::importPDF()
         pdfPD.show();
         pdfPD.setMinimum(0);
         pdfPD.setMaximum(100);
+        globalDeskew = settings->getAutoDeskew();
+        settings->setAutoDeskew(dialog.getDeskew());
         QApplication::processEvents();
         pdfx->exec();
     }
@@ -370,12 +372,14 @@ void MainForm::importPDF()
 void MainForm::addPDFPage(QString pageName)
 {
     pages->appendPage(pageName);
+
     pdfPD.setValue(pdfPD.value()+1);
 }
 
 void MainForm::finishedPDF()
 {
     pdfPD.hide();
+    settings->setAutoDeskew(globalDeskew);
 }
 
 void MainForm::loadImage()

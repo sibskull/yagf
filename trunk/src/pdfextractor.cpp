@@ -25,6 +25,7 @@
 #include  <QStringList>
 #include <QApplication>
 #include <QDir>
+#include <QStringList>
 #include <QFileInfo>
 #include <QFileInfoList>
 
@@ -135,10 +136,7 @@ void PDFExtractor::execInternal(const QString &command, const QStringList &argum
     while (cont) {
         //usleep(500000);
         QDir dir;
-        dir.setFilter(QDir::Files | QDir::Hidden | QDir::NoSymLinks);
-        dir.setSorting(QDir::Size | QDir::Reversed);
-        dir.setSorting(QDir::Name);
-        dir.setPath(outputDir);        
+        prepareDir(dir);
         QFileInfoList fil;
         QApplication::processEvents();
         fil = dir.entryInfoList(filters, QDir::Files, QDir::Name);
@@ -154,4 +152,56 @@ void PDFExtractor::execInternal(const QString &command, const QStringList &argum
         }
     }
     emit finished();
+}
+
+void PDFExtractor::prepareDir(QDir &dir)
+{
+    dir.setFilter(QDir::Files | QDir::Hidden | QDir::NoSymLinks);
+    dir.setSorting(QDir::Size | QDir::Reversed);
+    dir.setSorting(QDir::Name);
+    dir.setPath(outputDir);
+}
+
+int PDFExtractor::filesRemaining(const QString &fileName)
+{
+    lastFile = fileName;
+    QDir dir;
+    prepareDir(dir);
+    QStringList sl =  dir.entryList();
+    sl.sort();
+    for (int i = 0; i < sl.count(); i++) {
+        if (fileName.endsWith(sl.at(i)))
+        return sl.count() - i - 1;
+    }
+    return -1;
+}
+
+int PDFExtractor::removeRemaining()
+{
+    if (lastFile != "") {
+        QDir dir;
+        prepareDir(dir);
+        QStringList sl =  dir.entryList();
+        sl.sort();
+        bool doDelete = false;
+        for (int i = 0; i < sl.count(); i++) {
+            if (doDelete) {
+                QFile f(outputDir+sl.at(i));
+                f.remove();
+            }
+            if (lastFile.endsWith(sl.at(i)))
+                doDelete = true;
+
+        }
+
+    }
+    lastFile = "";
+}
+
+int PDFExtractor::filesTotal()
+{
+    QDir dir;
+    prepareDir(dir);
+    QStringList sl =  dir.entryList();
+    return sl.count();
 }

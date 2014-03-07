@@ -23,6 +23,7 @@
 #include <QObject>
 #include <QStringList>
 
+class QDir;
 class PDFExtractor : public QObject
 {
     Q_OBJECT
@@ -46,6 +47,9 @@ public:
     QString getOutputExtension();
     void virtual exec() = 0;
     static bool findProgram();
+    int filesRemaining(const QString &fileName);
+    int removeRemaining();
+    int filesTotal();
 signals:
     void terminate();
     void killProcess();
@@ -56,6 +60,7 @@ public slots:
     void cancel();
 protected:
     void execInternal(const QString &command, const QStringList &arguments);
+    void prepareDir(QDir &dir);
 private:
     QString commandStringPaged;
     QString commandStringEntire;
@@ -67,6 +72,7 @@ private:
     QString outputPrefix;
     QString outputExtension;
     QStringList filters;
+    QString lastFile;
     bool canceled;
 };
 

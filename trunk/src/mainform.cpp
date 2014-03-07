@@ -285,7 +285,6 @@ void MainForm::LangTextChanged(const QString &text)
 void MainForm::showConfigDlg()
 {
     ConfigDialog dialog(this);
-    SelectedEngine ose = settings->getSelectedEngine();
     if (dialog.exec()) {
 
         //if (settings->getSelectedEngine() != ose) {
@@ -372,7 +371,15 @@ void MainForm::importPDF()
 void MainForm::addPDFPage(QString pageName)
 {
     pages->appendPage(pageName);
-
+    int fr = pdfx->filesRemaining(pageName);
+    if (fr > 0) {
+        int ft = pdfx->filesTotal();
+        if (ft != 0) {
+            int ratio = ((ft-fr)*100)/ft;
+            //if (ratio > pdfPD.value())
+                pdfPD.setValue(ratio);
+        }
+    } else
     pdfPD.setValue(pdfPD.value()+1);
 }
 
@@ -1135,6 +1142,7 @@ void MainForm::SelectRecognitionLanguages()
 
 void MainForm::cancelPDF()
 {
+    pdfx->removeRemaining();
     pdfPD.setLabelText(trUtf8("Opening already imported pages..."));
     pdfPD.setCancelButton(0);
 }

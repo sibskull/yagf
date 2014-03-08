@@ -104,6 +104,7 @@ MainForm::MainForm(QWidget *parent): QMainWindow(parent)
     graphicsInput->addToolBarAction(ActionClearAllBlocks);
 
     label->setListWidget(sideBar);
+    pdfx = NULL;
 
     connect(sideBar, SIGNAL(pageSelected(int)), pages, SLOT(pageSelected(int)));
     connect(label, SIGNAL(pageRemoved(int)), pages, SLOT(pageRemoved(int)));
@@ -193,7 +194,6 @@ MainForm::MainForm(QWidget *parent): QMainWindow(parent)
     loadFromCommandLine();
     emit windowShown();
 
-    pdfx = NULL;
     if (findProgram("pdftoppm")) {
         pdfx = new PDF2PPT();
     } else
@@ -205,19 +205,7 @@ MainForm::MainForm(QWidget *parent): QMainWindow(parent)
         connect(pdfx, SIGNAL(addPage(QString)), this, SLOT(addPDFPage(QString)), Qt::QueuedConnection);
         connect (pdfx, SIGNAL(finished()), this, SLOT(finishedPDF()));
     }
-
-    pdfPD.setWindowTitle("YAGF");
-    pdfPD.setLabelText(trUtf8("Importing pages from the PDF document..."));
-    pdfPD.setCancelButton(new QPushButton());
-    pdfPD.setCancelButtonText(trUtf8("Cancel"));
-    pdfPD.setMinimum(-1);
-    pdfPD.setMaximum(-1);
-    pdfPD.setWindowIcon(QIcon(":/yagf.png"));
-    if (pdfx) {
-        connect(&pdfPD, SIGNAL(canceled()), pdfx, SLOT(cancel()));
-        connect(&pdfPD, SIGNAL(canceled()), this, SLOT(cancelPDF()));
-    }
-
+    setupPDFPD();
 }
 
 void MainForm::onShowWindow()
@@ -343,19 +331,8 @@ void MainForm::importPDF()
             return;
         }
         pdfx->setStartPage(dialog.getStartPage());
-        pdfx->setStopPage(dialog.getStopPage());
-        bool doit = true;
-        QString outputDir;
-        while (doit) {
-            outputDir = QFileDialog::getExistingDirectory(this, trUtf8("Select an existing directory for output or create some new one")); //, QString(""), QString(), (QString*) NULL, QFileDialog::ShowDirsOnly);
-            if (outputDir.isEmpty())
-                return;
-            QDir dir(outputDir);
-            if (dir.count() > 2)
-                QMessageBox::warning(this, trUtf8("Selecting Directory"), trUtf8("The selected directory is not empty"));
-            else doit = false;
-        }
-        pdfx->setOutputDir(outputDir);
+        pdfx->setStopPage(dialog.getStopPage());        
+        pdfx->setOutputDir();
         QApplication::processEvents();        
         pdfPD.setWindowFlags(Qt::Dialog|Qt::WindowStaysOnTopHint);
         pdfPD.show();
@@ -386,6 +363,7 @@ void MainForm::addPDFPage(QString pageName)
 void MainForm::finishedPDF()
 {
     pdfPD.hide();
+    //setupPDFPD();
     settings->setAutoDeskew(globalDeskew);
 }
 
@@ -568,6 +546,8 @@ void MainForm::delTmpFiles()
         if (dir[i].endsWith("jpg") || dir[i].endsWith("bmp") || dir[i].endsWith("png") || dir[i].endsWith("txt") || dir[i].endsWith("ygf"))
             dir.remove(dir[i]);
     }
+    if (pdfx)
+        pdfx->setOutputDir();
     delTmpDir();
 }
 
@@ -867,6 +847,21 @@ void MainForm::rightMouseClicked(int x, int y, bool inTheBlock)
     m_menu->show();
 }
 
+void MainForm::setupPDFPD()
+{
+    pdfPD.setWindowTitle("YAGF");
+    pdfPD.setLabelText(trUtf8("Importing pages from the PDF document..."));
+    pdfPD.setCancelButton(new QPushButton());
+    pdfPD.setCancelButtonText(trUtf8("Cancel"));
+    pdfPD.setMinimum(-1);
+    pdfPD.setMaximum(-1);
+    pdfPD.setWindowIcon(QIcon(":/yagf.png"));
+    if (pdfx) {
+        connect(&pdfPD, SIGNAL(canceled()), pdfx, SLOT(cancel()));
+        connect(&pdfPD, SIGNAL(canceled()), this, SLOT(cancelPDF()));
+    }
+}
+
 void MainForm::on_ActionDeleteBlock_activated()
 {
     QRect r = graphicsInput->getCurrentBlock();
@@ -1143,6 +1138,6 @@ void MainForm::SelectRecognitionLanguages()
 void MainForm::cancelPDF()
 {
     pdfx->removeRemaining();
-    pdfPD.setLabelText(trUtf8("Opening already imported pages..."));
-    pdfPD.setCancelButton(0);
+   //pdfPD.setLabelText(trUtf8("Opening already imported pages..."));
+   // pdfPD.setCancelButton(0);
 }

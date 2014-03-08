@@ -36,8 +36,6 @@ void PDF2PPT::exec()
         args << "-f" << getStartPage() << "-l" << getStopPage();
     }
     args << "-rx" << "600" << "-ry" << "600" << this->getSourcePDF();
-    if (!getOutputDir().endsWith("/"))
-        setOutputDir(getOutputDir().append('/'));
     setOutputPrefix(getOutputDir().append("page"));
     args << getOutputPrefix();
     setOutputExtension("jpg");

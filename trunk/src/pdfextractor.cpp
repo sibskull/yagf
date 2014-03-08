@@ -19,6 +19,7 @@
 
 #include "pdfthread.h"
 #include "pdfextractor.h"
+#include "settings.h"
 #include <unistd.h>
 #include <QThread>
 #include <QProcess>
@@ -45,9 +46,19 @@ void PDFExtractor::setCommandStringEntire(const QString &cmdStr)
     commandStringEntire = cmdStr;
 }
 
-void PDFExtractor::setOutputDir(const QString &value)
+void PDFExtractor::setOutputDir()
 {
-    outputDir = value;
+    QString pdfout = Settings::instance()->workingDir()+ QString("pdfout/");
+    outputDir = pdfout;
+    QDir dir(pdfout);
+    if (!dir.exists())
+        dir.mkdir(pdfout);
+    else {
+        dir.setFilter(QDir::Files);
+        QStringList sl = dir.entryList();
+        foreach (QString s, sl)
+            dir.remove(pdfout+s);
+    }
 }
 
 QString PDFExtractor::getOutputDir()
@@ -124,7 +135,6 @@ void PDFExtractor::cancel()
 
 void PDFExtractor::execInternal(const QString &command, const QStringList &arguments)
 {
-    canceled = false;
     filters.clear();
     filters << QString("page*.%1").arg(getOutputExtension());
     PDFThread thread(this);

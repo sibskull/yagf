@@ -33,7 +33,7 @@ public:
     void setCommandStringEntire(const QString &cmdStr);
     void setSourcePDF(const QString &value);
     QString getSourcePDF();
-    void setOutputDir(const QString &value);
+    void setOutputDir();
     QString getOutputDir();
     void setStartPage(const QString &value);
     QString getStartPage();
@@ -73,7 +73,6 @@ private:
     QString outputExtension;
     QStringList filters;
     QString lastFile;
-    bool canceled;
 };
 
 #endif // PDFEXTRACTOR_H

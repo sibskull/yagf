@@ -35,8 +35,6 @@ void GhostScr::exec()
               this->setStartPage("1");
         args << QString("-dFirstPage=").append(getStartPage()) << QString("-dLastPage=").append(getStopPage());
     }
-    if (!getOutputDir().endsWith("/"))
-        setOutputDir(getOutputDir().append('/'));
     setOutputPrefix(getOutputDir().append("page"));
     args << QString("-sOutputFile=").append(getOutputPrefix()).append("_%04d.jpg");
     args << "--" << this->getSourcePDF();

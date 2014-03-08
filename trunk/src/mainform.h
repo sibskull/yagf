@@ -142,6 +142,7 @@ private slots:
     void setUnresizingCusor();
     void loadPage();
     void rightMouseClicked(int x, int y, bool inTheBlock);
+    void setupPDFPD();
     void onShowWindow();
     void addSnippet(int index);
     void preprocessPage();

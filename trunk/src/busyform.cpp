@@ -24,9 +24,14 @@ BusyForm::BusyForm(QWidget *parent) :
     ui(new Ui::BusyForm)
 {
     ui->setupUi(this);
+    //setAttribute(Qt::WA_DeleteOnClose, true);
 }
 
 BusyForm::~BusyForm()
 {
     delete ui;
+}
+
+void BusyForm::textOut(const QString &text)
+{
 }

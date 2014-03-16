@@ -77,6 +77,7 @@ public:
     void cropYGF();
 signals:
     void refreshView();
+    void textOut(const QString &msg);
 public slots:
 private:
     void renumberBlocks();

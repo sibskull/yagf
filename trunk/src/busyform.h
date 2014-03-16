@@ -32,7 +32,9 @@ class BusyForm : public QSplashScreen
 public:
     explicit BusyForm(QWidget *parent = 0);
     ~BusyForm();
-    
+public slots:
+    void textOut(const QString &text);
+
 private:
     Ui::BusyForm *ui;
 };

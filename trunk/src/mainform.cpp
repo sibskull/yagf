@@ -30,6 +30,7 @@
 #include "projectmanager.h"
 #include "langselectdialog.h"
 #include "tiffimporter.h"
+#include "busyform.h"
 #include <signal.h>
 #include <QComboBox>
 #include <QLabel>
@@ -376,8 +377,9 @@ void MainForm::loadImage()
         QStringList fileNames;
         fileNames = dialog.selectedFiles();
         settings->setLastDir(dialog.directory().path());
-        if (fileNames.count() > 0)
+        if (fileNames.count() > 0) {
             loadFiles(fileNames);
+        }
     }
 }
 
@@ -529,7 +531,7 @@ void MainForm::loadTIFF(const QString &fn, bool loadIntoView)
         QMessageBox mb;
         mb.setWindowTitle("YAGF");
         mb.setIconPixmap(QPixmap(":/critical.png"));
-        mb.setText(trUtf8("Cannot open file %1. Make sure imagemagick is installed.").arg(fn));
+        mb.setText(trUtf8("Cannot open file %1. Make sure imagemagick and tifftopnm are installed.").arg(fn));
         mb.addButton(QMessageBox::Close);
         mb.exec();
         return;

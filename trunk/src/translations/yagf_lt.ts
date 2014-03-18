@@ -190,18 +190,6 @@
         <translation>PDF failo vardas negali būti tuščias</translation>
     </message>
     <message>
-        <source>Select an existing directory for output or create some new one</source>
-        <translation>Pasirinkite egzistuojantį aplanką sukuriamiems failams arba sukurkite naują</translation>
-    </message>
-    <message>
-        <source>Selecting Directory</source>
-        <translation>Pasirenkamas aplankas</translation>
-    </message>
-    <message>
-        <source>The selected directory is not empty</source>
-        <translation>Pasirinktas aplankas netuščias</translation>
-    </message>
-    <message>
         <source>Starting tesseract failed</source>
         <translation>Nepavyko paleisti tesseract</translation>
     </message>
@@ -277,7 +265,7 @@ The page possibly lacks contrast. Try to select blocks manually.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Cannot open file %1. Make sure imagemagick is installed.</source>
+        <source>Cannot open file %1. Make sure imagemagick and tifftopnm are installed.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -601,6 +589,10 @@ The page possibly lacks contrast. Try to select blocks manually.</source>
     <message>
         <source>Entire Document</source>
         <translation>Visą dokumentą</translation>
+    </message>
+    <message>
+        <source>Don&apos;t Deskew Pages</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

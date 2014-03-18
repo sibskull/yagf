@@ -375,8 +375,7 @@ bool Page::deskew(bool recreateCB)
             }
             rotate(angle);
             rotation = angle;
-            //ImageProcessor::polishImage(img);
-            ImageProcessor::polishImage2(img);
+            ImageProcessor::cropAngles(img);
             QString fn = saveTmpPage("YGF");
             loadFile(fn, 1);
             deskewed = true;

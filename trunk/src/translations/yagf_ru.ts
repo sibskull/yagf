@@ -190,18 +190,6 @@
         <translation>Необходимо указать имя файла PDF</translation>
     </message>
     <message>
-        <source>Select an existing directory for output or create some new one</source>
-        <translation>Выберите существующий каталог для вывода или создайте новый</translation>
-    </message>
-    <message>
-        <source>Selecting Directory</source>
-        <translation>Выбор каталога</translation>
-    </message>
-    <message>
-        <source>The selected directory is not empty</source>
-        <translation>Выбранный каталог не пуст</translation>
-    </message>
-    <message>
         <source>Starting tesseract failed</source>
         <translation>Не удалось запустить tesseract</translation>
     </message>
@@ -274,12 +262,12 @@ The page possibly lacks contrast. Try to select blocks manually.</source>
         <translation>&lt;p align=&quot;center&quot;&gt;&lt;b&gt;YAGF — графическая оболочка для программ распознавания текста cuneiform и tesseract&lt;/b&gt;&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;Версия %1&lt;/p&gt; &lt;p align=&quot;center&quot;&gt;Ⓒ 2009-2014 Андрей Боровский&lt;/p&gt; YAGF — открытое программное обеспечение, которое распространяется на условиях лицензии GPL v3. Вы найдёте подробности на странице &lt;a href=&quot;http://symmetrica.net/cuneiform-linux/yagf-en.html&quot;&gt;http://symmetrica.net/cuneiform-linux/yagf-ru.html&lt;/a&gt;.</translation>
     </message>
     <message>
-        <source>Cannot open file %1. Make sure imagemagick is installed.</source>
-        <translation>Невозможно открыть файл %1. Проверьте установку ImageMagick.</translation>
-    </message>
-    <message>
         <source>Recognition Language</source>
         <translation>Язык распознавания</translation>
+    </message>
+    <message>
+        <source>Cannot open file %1. Make sure imagemagick and tifftopnm are installed.</source>
+        <translation>Невозможно открыть файл %1. Проверьте, установлен ли imagemagick.</translation>
     </message>
 </context>
 <context>
@@ -602,6 +590,10 @@ The page possibly lacks contrast. Try to select blocks manually.</source>
     <message>
         <source>Entire Document</source>
         <translation>Весь документ</translation>
+    </message>
+    <message>
+        <source>Don&apos;t Deskew Pages</source>
+        <translation>Отключить исправление наклона страниц</translation>
     </message>
 </context>
 <context>

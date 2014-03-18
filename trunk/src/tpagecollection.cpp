@@ -18,10 +18,8 @@
 */
 
 #include "tpagecollection.h"
+#include "core/imageprocessor.h"
 #include "qsnippet.h"
-#ifdef TIFF_IO
-#include "qxttiffiohandler.h"
-#endif
 #include "settings.h"
 #include <QApplication>
 #include <QFile>
@@ -58,6 +56,7 @@ bool PageCollection::appendPage(const QString &fileName)
             index = pages.count() - 1;
             if (Settings::instance()->getAutoDeskew()) {
                 deskew();
+
                 //p->cropYGF();
                 //p->reSaveTmpPage();
             }

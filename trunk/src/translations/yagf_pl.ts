@@ -190,18 +190,6 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Select an existing directory for output or create some new one</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Selecting Directory</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>The selected directory is not empty</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Starting tesseract failed</source>
         <translation type="unfinished"></translation>
     </message>
@@ -276,7 +264,7 @@ The page possibly lacks contrast. Try to select blocks manually.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Cannot open file %1. Make sure imagemagick is installed.</source>
+        <source>Cannot open file %1. Make sure imagemagick and tifftopnm are installed.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -599,6 +587,10 @@ The page possibly lacks contrast. Try to select blocks manually.</source>
     </message>
     <message>
         <source>Entire Document</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Don&apos;t Deskew Pages</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

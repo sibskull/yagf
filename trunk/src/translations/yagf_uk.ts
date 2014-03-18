@@ -190,18 +190,6 @@
         <translation>Назва PDF-файла не може бути порожньою</translation>
     </message>
     <message>
-        <source>Select an existing directory for output or create some new one</source>
-        <translation>Виберіть існуючу теку для виводу результату або створіть нову</translation>
-    </message>
-    <message>
-        <source>Selecting Directory</source>
-        <translation>Вибрати теку</translation>
-    </message>
-    <message>
-        <source>The selected directory is not empty</source>
-        <translation>Вибрана тека непорожня</translation>
-    </message>
-    <message>
         <source>Starting tesseract failed</source>
         <translation>Невдалий запуск tesseract</translation>
     </message>
@@ -277,7 +265,7 @@ The page possibly lacks contrast. Try to select blocks manually.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Cannot open file %1. Make sure imagemagick is installed.</source>
+        <source>Cannot open file %1. Make sure imagemagick and tifftopnm are installed.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -601,6 +589,10 @@ The page possibly lacks contrast. Try to select blocks manually.</source>
     <message>
         <source>Entire Document</source>
         <translation>Документ повністю</translation>
+    </message>
+    <message>
+        <source>Don&apos;t Deskew Pages</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

@@ -41,6 +41,7 @@ public:
     static void polishImage(QImage &image);
     static void polishImage2(QImage &image);
     static bool isTextHorizontal(QImage &image);
+    static void cropAngles(QImage &image);
 signals:
     
 public slots:

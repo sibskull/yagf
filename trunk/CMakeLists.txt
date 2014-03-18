@@ -22,7 +22,7 @@ set(SOURCES src/main.cpp src/mainform.cpp src/qgraphicsinput.cpp src/utils.cpp s
     src/SkewAnalysis.cpp src/CCAnalysis.cpp src/qxtgraphicsproxywidget.cpp src/popplerdialog.cpp src/pdfextractor.cpp src/pdf2ppt.cpp src/ghostscr.cpp 
     src/configdialog.cpp src/ccbuilder.cpp src/analysis.cpp src/qsnippet.cpp src/sidebar.cpp src/droplabel.cpp src/projectmanager.cpp src/settings.cpp
     src/texteditor.cpp src/tblock.cpp src/tpage.cpp src/tpagecollection.cpp src/scanner.cpp src/core/imageprocessor.cpp
-    src/langselectdialog.cpp src/busyform.cpp src/tiffimporter.cpp src/pdfthread.cpp
+    src/langselectdialog.cpp src/busyform.cpp src/tiffimporter.cpp src/pdfthread.cpp src/QBusyIndicator.cpp
     src/core/binarize.cpp src/core/util.cpp src/core/qipblackandwhiteimage.cpp src/core/qipgrayscaleimage.cpp)
 
 set(HEADERS src/settings.h)
@@ -34,7 +34,7 @@ set(UIS src/mainform.ui src/popplerdialog.ui src/configdialog.ui src/langselectd
 set(MOC_HEADERS src/mainform.h src/qxtunixsignalcatcher.h src/qxtunixscinternal.h src/qgraphicsinput.h src/qxtgraphicsproxywidget.h src/qxtgraphicsview.h
     src/popplerdialog.h src/pdfextractor.h src/pdf2ppt.h src/configdialog.h src/ccbuilder.h src/qsnippet.h src/sidebar.h
     src/droplabel.h src/projectmanager.h src/texteditor.h src/tblock.h src/tpage.h src/tpagecollection.h src/scanner.h src/core/imageprocessor.h
-    src/langselectdialog.h src/busyform.h src/tiffimporter.h src/pdfthread.h
+    src/langselectdialog.h src/busyform.h src/tiffimporter.h src/pdfthread.h src/QBusyIndicator.h
     src/core/binarize.h src/core/common.h src/core/util.h src/core/qipblackandwhiteimage.h src/core/qipgrayscaleimage.h)
 
 set(yagf_RCCS src/yagf.qrc)

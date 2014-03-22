@@ -186,7 +186,7 @@ int PDFExtractor::filesRemaining(const QString &fileName)
     return -1;
 }
 
-int PDFExtractor::removeRemaining()
+void PDFExtractor::removeRemaining()
 {
     if (lastFile != "") {
         QDir dir;

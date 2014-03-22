@@ -48,7 +48,7 @@ public:
     void virtual exec() = 0;
     static bool findProgram();
     int filesRemaining(const QString &fileName);
-    int removeRemaining();
+    void removeRemaining();
     int filesTotal();
 signals:
     void terminate();

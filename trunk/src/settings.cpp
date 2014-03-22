@@ -199,6 +199,16 @@ QString Settings::getFullLanguageName(const QString &abbr)
     return map->key(abbr, "");
 }
 
+QString Settings::getFullLanguageName(const QString &abbr, const QString &engine)
+{
+    QMap<QString, QString> * map;
+    if (engine == "cuneiform")
+        map = &cuMap;
+    if (engine == "tesseract")
+        map = &tesMap;
+    return map->key(abbr, "");
+}
+
 QString Settings::getShortLanguageName(const QString &lang)
 {
     QMap<QString, QString> * map;
@@ -206,6 +216,16 @@ QString Settings::getShortLanguageName(const QString &lang)
         map = &cuMap;
     if (selectedEngine == UseTesseract)
         map = &tesMap;
+    return map->value(lang, "");
+}
+
+QString Settings::getShortLanguageName(const QString &lang, const QString &engine)
+{
+    QMap<QString, QString> * map;
+    if (engine == "tesseract")
+        map = &tesMap;
+    if (engine == "cuneiform")
+        map = &cuMap;
     return map->value(lang, "");
 }
 
@@ -343,12 +363,29 @@ QStringList Settings::fullLanguageNames()
 
 QStringList Settings::getSelectedLanguages()
 {
-    return languages;
+    QStringList res;
+    foreach (QString s, languages) {
+        QString l = getFullLanguageName(s, "tesseract");
+        if (l!="")
+            res.append(l);
+        l = getFullLanguageName(s, "cuneiform");
+        if (l!="")
+             res.append(l);
+    }
+    res.removeDuplicates();
+    return res;
 }
 
 void Settings::setSelectedLanguages(const QStringList &value)
 {
-    languages = value;
+    languages.clear();
+    foreach (QString s, value) {
+        QString l = getShortLanguageName(s, "tesseract");
+        if (l!="") languages.append(l);
+        l =getShortLanguageName(s, "cuneiform");
+        if (l!="") languages.append(l);
+    }
+    languages.removeDuplicates();
 }
 
 QString Settings::workingDir()

@@ -312,8 +312,10 @@ void MainForm::showConfigDlg()
         }
          else
         {
-            slAction->setVisible(false);
-            langLabel->setText(trUtf8("Recognition Language") + ": " + settings->getFullLanguageName(settings->getLanguage()));
+            if(settings->getSelectedLanguages().count() == 1) {
+                    slAction->setVisible(false);
+                    langLabel->setText(trUtf8("Recognition Language") + ": " + settings->getFullLanguageName(settings->getLanguage()));
+            }
         }
     }
 }

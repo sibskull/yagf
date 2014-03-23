@@ -82,6 +82,8 @@ public:
   int getGlobalDarkenThreshold();
   QStringList fullLanguageNames();
   QStringList getSelectedLanguages();
+  QStringList selectedLanguagesAvailableTo(const QString &engine);
+  QStringList installedTesseractLanguages();
   void setSelectedLanguages(const QStringList &value);
   QString workingDir();
   void startLangPair();

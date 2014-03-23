@@ -281,9 +281,19 @@ void MainForm::showConfigDlg()
             selectLangsBox->clear();
             if (settings->getSelectedEngine() == UseCuneiform) {
                 engineLabel->setText(trUtf8("Using Cuneiform"));
+                if (settings->selectedLanguagesAvailableTo("cuneiform").count() == 0) {
+                    QMessageBox::warning(this, trUtf8("Warning"), trUtf8("Cuneiform doesn't support any of selected recognition langualges.\nFalling back to tesseract. Please install tesseract."));
+                    settings->setSelectedEngine(UseTesseract);
+                    engineLabel->setText(trUtf8("Using Tesseract"));
+                }
             }
             if (settings->getSelectedEngine() == UseTesseract) {
                 engineLabel->setText(trUtf8("Using Tesseract"));
+                if (settings->selectedLanguagesAvailableTo("tesseract").count() == 0) {
+                    QMessageBox::warning(this, trUtf8("Warning"), trUtf8("Tesseract doesn't support any of selected recognition langualges.\nFalling back to cueniform. Please install cuneiform."));
+                    settings->setSelectedEngine(UseCuneiform);
+                    engineLabel->setText(trUtf8("Using Cuneiform"));
+                }
             }
             fillLangBox();
             int newIndex = selectLangsBox->findText(oldLang);
@@ -883,7 +893,7 @@ bool MainForm::findEngine() {
         	        QMessageBox::warning(this, trUtf8("Warning"), trUtf8("No recognition engine found.\nPlease install either cuneiform or tesseract"));
         	        return false;
         	    }
-       		}
+            }
      	}
     	if (settings->getSelectedEngine() == UseTesseract) {
         	if (!findProgram("tesseract")) {

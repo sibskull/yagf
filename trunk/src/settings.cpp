@@ -376,6 +376,40 @@ QStringList Settings::getSelectedLanguages()
     return res;
 }
 
+QStringList Settings::selectedLanguagesAvailableTo(const QString &engine)
+{
+    QStringList res;
+    if (engine == "cuneiform") {
+        foreach(QString s, languages) {
+            if (cuMap.values().contains(s))
+                res.append(cuMap.key(s, ""));
+        }
+    }
+    if (engine == "tesseract") {
+        foreach(QString s, languages) {
+            if (tesMap.values().contains(s))
+                res.append(tesMap.key(s, ""));
+        }
+    }
+    return res;
+}
+
+QStringList Settings::installedTesseractLanguages()
+{
+    QString tessPath = tessdataPath + "/tessdata/";
+    QDir d(tessPath);
+    QStringList res;
+    QStringList sl = d.entryList(QStringList("*.traineddata"));
+    foreach (QString s, tesMap.values()) {
+        foreach(QString s1, sl) {
+            if (s1.startsWith(s))
+                res.append(tesMap.key(s, ""));
+        }
+    }
+    res.removeDuplicates();
+    return res;
+}
+
 void Settings::setSelectedLanguages(const QStringList &value)
 {
     languages.clear();

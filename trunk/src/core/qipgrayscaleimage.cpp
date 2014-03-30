@@ -267,6 +267,9 @@ QIPBlackAndWhiteImage QIPGrayscaleImage::binarize(QIPGrayscaleImage::Binarizatio
     case OtsuBinarization :
         return otsuBinarize();
         break;
+    case OtsuMABinarization:
+        return otsuBinarizeMA();
+        break;
     case NiblackBinarization :
         return niblackSauvolaBinarize(false);
         break;
@@ -804,6 +807,30 @@ QIPBlackAndWhiteImage QIPGrayscaleImage::otsuBinarize() const
         quint8 * lineOut = result.scanLine(y);
         for (uint x = 0; x < w; x++) {
             if (line[x] > threshold) lineOut[x] = 1;
+            else lineOut[x] = 0;
+        }
+    }
+    return result;
+}
+
+QIPBlackAndWhiteImage QIPGrayscaleImage::otsuBinarizeMA() const
+{
+    quint8 stack[3];
+    quint32 sum;
+    QIPBlackAndWhiteImage result(w, h);
+    if (w*h < 4) return result;
+    quint8 threshold = otsuThreshold();
+    memcpy((void*)result.data.data(), (void*)data.data(), w*h);
+    quint8 * d = result.data.data();
+    sum = d[0] + d[1] + d[2]+ d[3] + d[4] + d[5] + d[6];
+    for (int i = 3; i < w*h-4; i++) {
+        d[i] = sum/8;
+        sum = sum - d[i-3] + d[i+4];
+    }
+    for (uint y = 0; y < h; y ++) {
+        quint8 * lineOut = result.scanLine(y);
+        for (uint x = 0; x < w; x++) {
+            if (lineOut[x] > threshold) lineOut[x] = 1;
             else lineOut[x] = 0;
         }
     }

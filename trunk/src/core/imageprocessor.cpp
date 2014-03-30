@@ -41,7 +41,7 @@ ImageProcessor::~ImageProcessor()
 
 QRect ImageProcessor::crop()
 {
-    QIPBlackAndWhiteImage bwimg1 = QIPBlackAndWhiteImage(img.binarize(QIPGrayscaleImage::OtsuBinarization));
+    QIPBlackAndWhiteImage bwimg1 = QIPBlackAndWhiteImage(img.binarize(QIPGrayscaleImage::OtsuMABinarization));
     //QPoint p = bwimg1.cropGrayScaleImage(&img);
     //delete bwimg;
     //bwimg = NULL;

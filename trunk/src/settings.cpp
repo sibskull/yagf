@@ -394,6 +394,15 @@ QStringList Settings::selectedLanguagesAvailableTo(const QString &engine)
     return res;
 }
 
+QStringList Settings::languagesAvailableTo(const QString &engine)
+{
+    if (engine == "cuneiform")
+        return cuMap.keys();
+    if (engine == "tesseract")
+        return tesMap.keys();
+    return QStringList();
+}
+
 QStringList Settings::installedTesseractLanguages()
 {
     QString tessPath = tessdataPath + "/tessdata/";

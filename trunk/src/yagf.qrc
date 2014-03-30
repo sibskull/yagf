@@ -51,5 +51,10 @@
         <file>images/recognition.png</file>
         <file>images/earth.png</file>
         <file>images/advanced.png</file>
+        <file>images/cform.png</file>
+        <file>images/tess.png</file>
+        <file>images/installed.png</file>
+        <file>images/box.png</file>
+        <file>images/notinst.png</file>
     </qresource>
 </RCC>

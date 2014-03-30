@@ -83,6 +83,7 @@ public:
   QStringList fullLanguageNames();
   QStringList getSelectedLanguages();
   QStringList selectedLanguagesAvailableTo(const QString &engine);
+  QStringList languagesAvailableTo(const QString &engine);
   QStringList installedTesseractLanguages();
   void setSelectedLanguages(const QStringList &value);
   QString workingDir();

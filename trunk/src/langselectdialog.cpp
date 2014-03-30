@@ -20,6 +20,8 @@
 #include "ui_langselectdialog.h"
 #include "settings.h"
 #include <QCheckBox>
+#include <QIcon>
+#include <QPixmap>
 
 const int max_lang = 48;
 
@@ -29,7 +31,6 @@ LangSelectDialog::LangSelectDialog(QWidget *parent) :
 {
     ui->setupUi(this);
     fillLangs();
-    setRecognitionLanguages(Settings::instance()->getSelectedLanguages());
 }
 
 LangSelectDialog::~LangSelectDialog()
@@ -39,37 +40,15 @@ LangSelectDialog::~LangSelectDialog()
 
 QStringList LangSelectDialog::getRecognitionLanguages() const
 {
-    QStringList sl;
-    QString wName = "checkBox";
-    QCheckBox * cb = findChild<QCheckBox*>(wName);
-    if (cb->isChecked())
-        sl.append(cb->text());
-    for (int i = 1; i < max_lang; i++) {
-        wName = QString("checkBox_%1").arg(i+1);
-        cb = findChild<QCheckBox*>(wName);
-        if (cb->isChecked())
-            sl.append(cb->text());
+    QStringList res;
+    foreach(QListWidgetItem * item, items) {
+        if (item->checkState() == Qt::Checked)
+            res.append(item->text());
     }
-    return sl;
+    res.removeDuplicates();
+    return res;
 }
 
-void LangSelectDialog::setRecognitionLanguages(const QStringList &sl)
-{
-    QString wName = "checkBox";
-    QCheckBox * cb = findChild<QCheckBox*>(wName);
-    if (sl.contains(cb->text()))
-            cb->setChecked(true);
-    else
-        cb->setChecked(false);
-    for (int i = 1; i < max_lang; i++) {
-        wName = QString("checkBox_%1").arg(i+1);
-        cb = findChild<QCheckBox*>(wName);
-        if (sl.contains(cb->text()))
-            cb->setChecked(true);
-        else
-            cb->setChecked(false);
-    }
-}
 
 void LangSelectDialog::accept()
 {
@@ -82,19 +61,39 @@ void LangSelectDialog::accept()
 
 void LangSelectDialog::fillLangs()
 {
-    QStringList sl = Settings::instance()->fullLanguageNames();
+    QStringList sl = Settings::instance()->languagesAvailableTo("cuneiform");
     sl.sort();
-    QString wName = "checkBox";
-    QCheckBox * cb = findChild<QCheckBox*>(wName);
-    cb->setText(sl[0]);
-    for (int i = 1; i < sl.count(); i++) {
-        wName = QString("checkBox_%1").arg(i+1);
-        cb = findChild<QCheckBox*>(wName);
-        cb->setText(sl[i]);
+    foreach (QString s, sl) {
+        QListWidgetItem * item = new QListWidgetItem(ui->listWidgetCuneiform);
+        item->setFlags(Qt::ItemIsUserCheckable|Qt::ItemIsEnabled);
+        item->setText(s);
+        items.append(item);
+        item->setCheckState(Qt::Unchecked);
+        if (Settings::instance()->selectedLanguagesAvailableTo("cuneiform").contains(s))
+            item->setCheckState(Qt::Checked);
     }
-    for (int i = sl.count(); i < max_lang; i++) {
-        wName = QString("checkBox_%1").arg(i+1);
-        cb = findChild<QCheckBox*>(wName);
-        cb->hide();
-    }
+    sl.clear();
+    sl = Settings::instance()->languagesAvailableTo("tesseract");
+        foreach (QString s, sl) {
+            QListWidgetItem * item = new QListWidgetItem(ui->listWidgetTesseract);
+            item->setFlags(Qt::ItemIsUserCheckable|Qt::ItemIsEnabled);
+            item->setText(s);
+            items.append(item);
+            item->setCheckState(Qt::Unchecked);
+            if (Settings::instance()->selectedLanguagesAvailableTo("tesseract").contains(s))
+                item->setCheckState(Qt::Checked);
+            if (Settings::instance()->installedTesseractLanguages().contains(s)) {
+                item->setIcon(QIcon(QPixmap(":/images/box.png")));
+                item->setToolTip(trUtf8("Installed"));
+            }
+            else
+            {
+                item->setIcon(QIcon(QPixmap(":/images/notinst.png")));
+                item->setToolTip(trUtf8("Not installed"));
+            }
+        }
+
+
+
 }
+

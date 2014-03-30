@@ -1,2 +1,2 @@
 #!/bin/sh
-lupdate -noobsolete ../mainform.cpp ../mainform.ui ../popplerdialog.ui ../configdialog.ui ../langselectdialog.ui ../main.cpp ../spellchecker.cpp ../sidebar.cpp ../settings.cpp ../configdialog.cpp -ts yagf_ru.ts yagf_lt.ts yagf_de.ts yagf_pl.ts yagf_uk.ts
+lupdate -noobsolete ../mainform.cpp ../mainform.ui ../popplerdialog.ui ../configdialog.ui ../langselectdialog.ui ../main.cpp ../spellchecker.cpp ../sidebar.cpp ../settings.cpp ../configdialog.cpp ../langselectdialog.cpp -ts yagf_ru.ts yagf_lt.ts yagf_de.ts yagf_pl.ts yagf_uk.ts

@@ -103,12 +103,24 @@
         <translation>Выбор языков для распознавания</translation>
     </message>
     <message>
-        <source>Select the languages you are going to work with (you can change these settings later)</source>
-        <translation>Выберите языки, с которыми вы собираетесь работать (вы сможете изменить этот выбор позже)</translation>
+        <source>Select the recognition languages </source>
+        <translation>Выбрать языки для распознавания</translation>
     </message>
     <message>
-        <source>CheckBox</source>
-        <translation type="unfinished"></translation>
+        <source>Cuneiform</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>Tesseract</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>Installed</source>
+        <translation>Установлен</translation>
+    </message>
+    <message>
+        <source>Not installed</source>
+        <translation>Не установлен</translation>
     </message>
 </context>
 <context>
@@ -268,6 +280,16 @@ The page possibly lacks contrast. Try to select blocks manually.</source>
     <message>
         <source>Cannot open file %1. Make sure imagemagick and tifftopnm are installed.</source>
         <translation>Невозможно открыть файл %1. Проверьте, установлен ли imagemagick.</translation>
+    </message>
+    <message>
+        <source>Cuneiform doesn&apos;t support any of selected recognition langualges.
+Falling back to tesseract. Please install tesseract.</source>
+        <translation>Cuneiform не поддерживает ни один из выбранных языков. Используйте Tesseract.</translation>
+    </message>
+    <message>
+        <source>Tesseract doesn&apos;t support any of selected recognition langualges.
+Falling back to cueniform. Please install cuneiform.</source>
+        <translation>Tesseract не поддерживает ни один из выбранных языков. Используйте Cuneiform.</translation>
     </message>
 </context>
 <context>

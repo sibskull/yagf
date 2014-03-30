@@ -31,6 +31,7 @@ LangSelectDialog::LangSelectDialog(QWidget *parent) :
 {
     ui->setupUi(this);
     fillLangs();
+
 }
 
 LangSelectDialog::~LangSelectDialog()
@@ -73,6 +74,7 @@ void LangSelectDialog::fillLangs()
             item->setCheckState(Qt::Checked);
     }
     sl.clear();
+    ui->listWidgetTesseract->setIconSize(QSize(18, 18));
     sl = Settings::instance()->languagesAvailableTo("tesseract");
         foreach (QString s, sl) {
             QListWidgetItem * item = new QListWidgetItem(ui->listWidgetTesseract);

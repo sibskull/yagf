@@ -42,7 +42,7 @@ class ccbuilder;
 class QLabel;
 class QAction;
 
-const QString version = "0.9.3.1";
+const QString version = "0.9.3.2";
 
 class PageCollection;
 class ScannerBase;

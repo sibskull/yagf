@@ -128,60 +128,28 @@
     </message>
     <message>
         <location filename="../langselectdialog.ui" line="39"/>
-        <source>Select the languages you are going to work with (you can change these settings later)</source>
-        <translation>Choisissez les langues dont vous voulez vous servir (vous pourrez chaanger votre choix plus tard)</translation>
+        <source>Select the recognition languages </source>
+        <translation>Choisir les langues pour la reconnaissance</translation>
     </message>
     <message>
-        <location filename="../langselectdialog.ui" line="57"/>
-        <location filename="../langselectdialog.ui" line="64"/>
-        <location filename="../langselectdialog.ui" line="71"/>
-        <location filename="../langselectdialog.ui" line="78"/>
-        <location filename="../langselectdialog.ui" line="85"/>
-        <location filename="../langselectdialog.ui" line="92"/>
+        <location filename="../langselectdialog.ui" line="69"/>
+        <source>Cuneiform</source>
+        <translation>Cuneiform</translation>
+    </message>
+    <message>
         <location filename="../langselectdialog.ui" line="99"/>
-        <location filename="../langselectdialog.ui" line="106"/>
-        <location filename="../langselectdialog.ui" line="119"/>
-        <location filename="../langselectdialog.ui" line="126"/>
-        <location filename="../langselectdialog.ui" line="133"/>
-        <location filename="../langselectdialog.ui" line="140"/>
-        <location filename="../langselectdialog.ui" line="147"/>
-        <location filename="../langselectdialog.ui" line="160"/>
-        <location filename="../langselectdialog.ui" line="167"/>
-        <location filename="../langselectdialog.ui" line="174"/>
-        <location filename="../langselectdialog.ui" line="181"/>
-        <location filename="../langselectdialog.ui" line="188"/>
-        <location filename="../langselectdialog.ui" line="195"/>
-        <location filename="../langselectdialog.ui" line="202"/>
-        <location filename="../langselectdialog.ui" line="209"/>
-        <location filename="../langselectdialog.ui" line="216"/>
-        <location filename="../langselectdialog.ui" line="223"/>
-        <location filename="../langselectdialog.ui" line="230"/>
-        <location filename="../langselectdialog.ui" line="243"/>
-        <location filename="../langselectdialog.ui" line="256"/>
-        <location filename="../langselectdialog.ui" line="269"/>
-        <location filename="../langselectdialog.ui" line="282"/>
-        <location filename="../langselectdialog.ui" line="289"/>
-        <location filename="../langselectdialog.ui" line="296"/>
-        <location filename="../langselectdialog.ui" line="303"/>
-        <location filename="../langselectdialog.ui" line="310"/>
-        <location filename="../langselectdialog.ui" line="317"/>
-        <location filename="../langselectdialog.ui" line="324"/>
-        <location filename="../langselectdialog.ui" line="331"/>
-        <location filename="../langselectdialog.ui" line="338"/>
-        <location filename="../langselectdialog.ui" line="351"/>
-        <location filename="../langselectdialog.ui" line="358"/>
-        <location filename="../langselectdialog.ui" line="365"/>
-        <location filename="../langselectdialog.ui" line="372"/>
-        <location filename="../langselectdialog.ui" line="379"/>
-        <location filename="../langselectdialog.ui" line="386"/>
-        <location filename="../langselectdialog.ui" line="393"/>
-        <location filename="../langselectdialog.ui" line="400"/>
-        <location filename="../langselectdialog.ui" line="407"/>
-        <location filename="../langselectdialog.ui" line="414"/>
-        <location filename="../langselectdialog.ui" line="421"/>
-        <location filename="../langselectdialog.ui" line="428"/>
-        <source>CheckBox</source>
-        <translation></translation>
+        <source>Tesseract</source>
+        <translation>Tesseract</translation>
+    </message>
+    <message>
+        <location filename="../langselectdialog.cpp" line="89"/>
+        <source>Installed</source>
+        <translation>installé</translation>
+    </message>
+    <message>
+        <location filename="../langselectdialog.cpp" line="94"/>
+        <source>Not installed</source>
+        <translation>Non installé</translation>
     </message>
 </context>
 <context>
@@ -194,18 +162,20 @@
     <message>
         <location filename="../mainform.cpp" line="154"/>
         <location filename="../mainform.cpp" line="283"/>
+        <location filename="../mainform.cpp" line="295"/>
         <source>Using Cuneiform</source>
         <translation>Utilisation de Cuneiform</translation>
     </message>
     <message>
         <location filename="../mainform.cpp" line="159"/>
-        <location filename="../mainform.cpp" line="286"/>
+        <location filename="../mainform.cpp" line="287"/>
+        <location filename="../mainform.cpp" line="291"/>
         <source>Using Tesseract</source>
         <translation>Utilisation de Tesseract</translation>
     </message>
     <message>
         <location filename="../mainform.cpp" line="167"/>
-        <location filename="../mainform.cpp" line="316"/>
+        <location filename="../mainform.cpp" line="327"/>
         <source>Recognition Language</source>
         <translation>La langue pour la reconnaissance</translation>
     </message>
@@ -215,184 +185,198 @@
         <translation>Chargement des fichiers...</translation>
     </message>
     <message>
-        <location filename="../mainform.cpp" line="324"/>
+        <location filename="../mainform.cpp" line="285"/>
+        <source>Cuneiform doesn&apos;t support any of selected recognition langualges.
+Falling back to tesseract. Please install tesseract.</source>
+        <translation>Cuneiform ne fonctionne pas avec les langualges de reconnaissance sélectionnés.Mise à tesseract.</translation>
+    </message>
+    <message>
+        <location filename="../mainform.cpp" line="293"/>
+        <source>Tesseract doesn&apos;t support any of selected recognition langualges.
+Falling back to cueniform. Please install cuneiform.</source>
+        <translation>Tesseract ne fonctionne pas avec les langualges de reconnaissance sélectionnés.Mise à cuneiform.</translation>
+    </message>
+    <message>
+        <location filename="../mainform.cpp" line="336"/>
         <source>No PDF converter installed</source>
         <translation>Pas de convertisseur de PDF est installé</translation>
     </message>
     <message>
-        <location filename="../mainform.cpp" line="324"/>
+        <location filename="../mainform.cpp" line="336"/>
         <source>No compatible PDF converter software could be found. Please install either the pdftoppm utility or the GhostScript package (from this the gs command will be required).</source>
         <translation>Pas de convertisseur de PDF est installé.Installez soit pdftoppm ou GhostScript s&apos;il vous plaît.</translation>
     </message>
     <message>
-        <location filename="../mainform.cpp" line="331"/>
-        <location filename="../mainform.cpp" line="665"/>
+        <location filename="../mainform.cpp" line="343"/>
+        <location filename="../mainform.cpp" line="677"/>
         <source>Error</source>
         <translation>Erreur</translation>
     </message>
     <message>
-        <location filename="../mainform.cpp" line="331"/>
+        <location filename="../mainform.cpp" line="343"/>
         <source>PDF file name may not be empty</source>
         <translation>Nom du fichier PDF ne peut pas être vide</translation>
     </message>
     <message>
-        <location filename="../mainform.cpp" line="374"/>
+        <location filename="../mainform.cpp" line="386"/>
         <source>Open Image</source>
         <translation>Charger un fichier image</translation>
     </message>
     <message>
-        <location filename="../mainform.cpp" line="374"/>
+        <location filename="../mainform.cpp" line="386"/>
         <source>Image Files (*.png *.jpg *.jpeg *.bmp *.tiff *.tif *.gif *.pnm *.pgm *.pbm *.ppm)</source>
         <translation>Fichiers image (*.png *.jpg *.jpeg *bmp *.tiff *.tif *.pnm *.ppm)</translation>
     </message>
     <message>
-        <location filename="../mainform.cpp" line="397"/>
+        <location filename="../mainform.cpp" line="409"/>
         <source>There is an unsaved text in the editor window. Do you want to save it?</source>
         <translation>Il est un texte non enregistré dans l&apos;éditeur Voulez-vous l&apos;enregistrer?</translation>
     </message>
     <message>
-        <location filename="../mainform.cpp" line="498"/>
+        <location filename="../mainform.cpp" line="510"/>
         <source>Scanning is impossible</source>
         <translation>La numérisation est impossible</translation>
     </message>
     <message>
-        <location filename="../mainform.cpp" line="498"/>
+        <location filename="../mainform.cpp" line="510"/>
         <source>No scanning front-end is found. Please install XSane in order to perform scanning.</source>
         <translation>Aucun numérisation frontal est disponible. Installez XSane s&apos;il vous plaît.</translation>
     </message>
     <message>
-        <location filename="../mainform.cpp" line="520"/>
+        <location filename="../mainform.cpp" line="532"/>
         <source>Failed to Load Image</source>
         <translation>Impossible de charger le fichier</translation>
     </message>
     <message>
-        <location filename="../mainform.cpp" line="534"/>
+        <location filename="../mainform.cpp" line="546"/>
         <source>Cannot open file %1. Make sure imagemagick and tifftopnm are installed.</source>
         <translation>Impossible de charger le fichier %1. Assurez-vous que tifftoppm et imagemagick sont installés.</translation>
     </message>
     <message>
-        <location filename="../mainform.cpp" line="584"/>
+        <location filename="../mainform.cpp" line="596"/>
         <source>You have selected recognising %1 language using tesseract OCR. Currently the data for this language is not installed in your system. Please install the tesseract data files for &quot;%2&quot; from your system repository.</source>
         <translation>Vous avez choisi reconnaissant %1 langue à l&apos;aide tesseract OCR. Actuellement, les données pour cette langue n&apos;est pas installé sur votre système. S&apos;il vous plaît installer les fichiers de données de tesseract pour \ &quot;%2 \&quot; de votre référentiel de système.</translation>
     </message>
     <message>
-        <location filename="../mainform.cpp" line="596"/>
+        <location filename="../mainform.cpp" line="608"/>
         <source>Starting tesseract failed</source>
         <translation>Impossible to activate tesseract</translation>
     </message>
     <message>
-        <location filename="../mainform.cpp" line="596"/>
-        <location filename="../mainform.cpp" line="623"/>
+        <location filename="../mainform.cpp" line="608"/>
+        <location filename="../mainform.cpp" line="635"/>
         <source>The system said: </source>
         <translation>Le système dit:</translation>
     </message>
     <message>
-        <location filename="../mainform.cpp" line="596"/>
-        <location filename="../mainform.cpp" line="623"/>
+        <location filename="../mainform.cpp" line="608"/>
+        <location filename="../mainform.cpp" line="635"/>
         <source>program not found</source>
         <translation>Programme introuvable</translation>
     </message>
     <message>
-        <location filename="../mainform.cpp" line="623"/>
+        <location filename="../mainform.cpp" line="635"/>
         <source>Starting cuneiform failed</source>
         <translation>Impossible to activate cuneiform</translation>
     </message>
     <message>
-        <location filename="../mainform.cpp" line="665"/>
+        <location filename="../mainform.cpp" line="677"/>
         <source>No image loaded</source>
         <translation>Aucun fichier d&apos;image est chargé</translation>
     </message>
     <message>
-        <location filename="../mainform.cpp" line="684"/>
+        <location filename="../mainform.cpp" line="696"/>
         <source>About YAGF</source>
         <translation type="unfinished"></translation>
     </message>
     <message utf8="true">
-        <location filename="../mainform.cpp" line="684"/>
+        <location filename="../mainform.cpp" line="696"/>
         <source>&lt;p align=&quot;center&quot;&gt;&lt;b&gt;YAGF - Yet Another Graphical Front-end for cuneiform and tesseract OCR engines&lt;/b&gt;&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;Version %1&lt;/p&gt; &lt;p align=&quot;center&quot;&gt;Ⓒ 2009-2014 Andrei Borovsky&lt;/p&gt; This is a free software distributed under GPL v3. Visit &lt;a href=&quot;http://symmetrica.net/cuneiform-linux/yagf-en.html&quot;&gt;http://symmetrica.net/cuneiform-linux/yagf-en.html&lt;/a&gt; for more details.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainform.cpp" line="697"/>
+        <location filename="../mainform.cpp" line="709"/>
         <source>http://symmetrica.net/cuneiform-linux/yagf-en.html</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainform.cpp" line="798"/>
+        <location filename="../mainform.cpp" line="810"/>
         <source>Recognizing pages...</source>
         <translation>Reconnaissant les pages ...</translation>
     </message>
     <message>
-        <location filename="../mainform.cpp" line="798"/>
+        <location filename="../mainform.cpp" line="810"/>
         <source>Abort</source>
         <translation>Abandonner</translation>
     </message>
     <message>
-        <location filename="../mainform.cpp" line="855"/>
+        <location filename="../mainform.cpp" line="867"/>
         <source>Importing pages from the PDF document...</source>
         <translation>Importation de pages du document PDF...</translation>
     </message>
     <message>
-        <location filename="../mainform.cpp" line="857"/>
+        <location filename="../mainform.cpp" line="869"/>
         <source>Cancel</source>
         <translation>Annuller</translation>
     </message>
     <message>
-        <location filename="../mainform.cpp" line="878"/>
-        <location filename="../mainform.cpp" line="881"/>
-        <location filename="../mainform.cpp" line="889"/>
-        <location filename="../mainform.cpp" line="892"/>
-        <location filename="../mainform.cpp" line="1066"/>
-        <location filename="../mainform.cpp" line="1079"/>
-        <location filename="../mainform.cpp" line="1083"/>
-        <location filename="../mainform.cpp" line="1092"/>
-        <location filename="../mainform.cpp" line="1107"/>
+        <location filename="../mainform.cpp" line="285"/>
+        <location filename="../mainform.cpp" line="293"/>
+        <location filename="../mainform.cpp" line="890"/>
+        <location filename="../mainform.cpp" line="893"/>
+        <location filename="../mainform.cpp" line="901"/>
+        <location filename="../mainform.cpp" line="904"/>
+        <location filename="../mainform.cpp" line="1078"/>
+        <location filename="../mainform.cpp" line="1091"/>
+        <location filename="../mainform.cpp" line="1095"/>
+        <location filename="../mainform.cpp" line="1104"/>
         <location filename="../mainform.cpp" line="1119"/>
+        <location filename="../mainform.cpp" line="1131"/>
         <source>Warning</source>
         <translation>Avertissement</translation>
     </message>
     <message>
-        <location filename="../mainform.cpp" line="878"/>
+        <location filename="../mainform.cpp" line="890"/>
         <source>cuneiform not found, switching to tesseract</source>
         <translation>pas de cunéiforme, utilisant tesseract</translation>
     </message>
     <message>
-        <location filename="../mainform.cpp" line="881"/>
-        <location filename="../mainform.cpp" line="892"/>
+        <location filename="../mainform.cpp" line="893"/>
+        <location filename="../mainform.cpp" line="904"/>
         <source>No recognition engine found.
 Please install either cuneiform or tesseract</source>
         <translation>Aucun programme de reconnaissance est disponible. Installez cunéiforme ou tesseract s&apos;il vous plaît</translation>
     </message>
     <message>
-        <location filename="../mainform.cpp" line="889"/>
+        <location filename="../mainform.cpp" line="901"/>
         <source>tesseract not found, switching to cuneiform</source>
         <translation>pas de tesseract, utilisant cuneiform</translation>
     </message>
     <message>
-        <location filename="../mainform.cpp" line="942"/>
+        <location filename="../mainform.cpp" line="954"/>
         <source>Save Image</source>
         <translation>Enregistrer le fichier</translation>
     </message>
     <message>
-        <location filename="../mainform.cpp" line="1066"/>
-        <location filename="../mainform.cpp" line="1119"/>
+        <location filename="../mainform.cpp" line="1078"/>
+        <location filename="../mainform.cpp" line="1131"/>
         <source>Failed to detect text areas on this page.
 The page possibly lacks contrast. Try to select blocks manually.</source>
         <translation>Impossible de détecter les modules de texte.</translation>
     </message>
     <message>
-        <location filename="../mainform.cpp" line="1079"/>
+        <location filename="../mainform.cpp" line="1091"/>
         <source>The selected directoy is not empty. Please select or create another one.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainform.cpp" line="1083"/>
-        <location filename="../mainform.cpp" line="1092"/>
+        <location filename="../mainform.cpp" line="1095"/>
+        <location filename="../mainform.cpp" line="1104"/>
         <source>Failed to save the project.</source>
         <translation>Impossible d&apos;enregistrer leprojet.</translation>
     </message>
     <message>
-        <location filename="../mainform.cpp" line="1107"/>
+        <location filename="../mainform.cpp" line="1119"/>
         <source>Failed to load project.</source>
         <translation>Impossible de charger le projet.</translation>
     </message>
@@ -816,28 +800,28 @@ The page possibly lacks contrast. Try to select blocks manually.</source>
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../mainform.cpp" line="929"/>
+        <location filename="../mainform.cpp" line="941"/>
         <source>Warning</source>
         <translation>Avertissement</translation>
     </message>
     <message>
-        <location filename="../mainform.cpp" line="929"/>
+        <location filename="../mainform.cpp" line="941"/>
         <source>Failed to save the image</source>
         <translation>Impossible d&apos;enregistrer le fichier</translation>
     </message>
     <message>
-        <location filename="../mainform.cpp" line="936"/>
+        <location filename="../mainform.cpp" line="948"/>
         <source>JPEG Files (*.jpg)</source>
         <translation>Fichiers JPEG</translation>
     </message>
     <message>
-        <location filename="../mainform.cpp" line="937"/>
+        <location filename="../mainform.cpp" line="949"/>
         <source>PNG Files (*.png)</source>
         <translation>Fichiers PNG</translation>
     </message>
     <message>
-        <location filename="../mainform.cpp" line="1073"/>
-        <location filename="../mainform.cpp" line="1101"/>
+        <location filename="../mainform.cpp" line="1085"/>
+        <location filename="../mainform.cpp" line="1113"/>
         <source>Select Project Directory</source>
         <translation>Choisissez le catalogue du projet</translation>
     </message>
@@ -849,223 +833,223 @@ Try to install an appropriate aspell dictionary.</source>
         <translation>Le dictionnaire d&apos;orthographe (%1) n&apos;est pas trouvé. Essayez de télécharger le dictionnaire convenable.</translation>
     </message>
     <message>
-        <location filename="../settings.cpp" line="340"/>
-        <location filename="../settings.cpp" line="425"/>
+        <location filename="../settings.cpp" line="360"/>
+        <location filename="../settings.cpp" line="505"/>
         <source>Russian-English</source>
         <translation>Russe-Englaise</translation>
     </message>
     <message>
-        <location filename="../settings.cpp" line="410"/>
-        <location filename="../settings.cpp" line="435"/>
+        <location filename="../settings.cpp" line="490"/>
+        <location filename="../settings.cpp" line="515"/>
         <source>Bulgarian</source>
         <translation>Bulgare</translation>
     </message>
     <message>
-        <location filename="../settings.cpp" line="411"/>
-        <location filename="../settings.cpp" line="436"/>
+        <location filename="../settings.cpp" line="491"/>
+        <location filename="../settings.cpp" line="516"/>
         <source>Czech</source>
         <translation>Tchèque</translation>
     </message>
     <message>
-        <location filename="../settings.cpp" line="412"/>
-        <location filename="../settings.cpp" line="438"/>
+        <location filename="../settings.cpp" line="492"/>
+        <location filename="../settings.cpp" line="518"/>
         <source>Danish</source>
         <translation>Danoise</translation>
     </message>
     <message>
-        <location filename="../settings.cpp" line="413"/>
-        <location filename="../settings.cpp" line="440"/>
+        <location filename="../settings.cpp" line="493"/>
+        <location filename="../settings.cpp" line="520"/>
         <source>Dutch</source>
         <translation>Hollandaise</translation>
     </message>
     <message>
-        <location filename="../settings.cpp" line="414"/>
-        <location filename="../settings.cpp" line="441"/>
+        <location filename="../settings.cpp" line="494"/>
+        <location filename="../settings.cpp" line="521"/>
         <source>English</source>
         <translation>Anglaise</translation>
     </message>
     <message>
-        <location filename="../settings.cpp" line="415"/>
-        <location filename="../settings.cpp" line="444"/>
+        <location filename="../settings.cpp" line="495"/>
+        <location filename="../settings.cpp" line="524"/>
         <source>French</source>
         <translation>Française</translation>
     </message>
     <message>
-        <location filename="../settings.cpp" line="416"/>
-        <location filename="../settings.cpp" line="445"/>
+        <location filename="../settings.cpp" line="496"/>
+        <location filename="../settings.cpp" line="525"/>
         <source>German</source>
         <translation>Allemande</translation>
     </message>
     <message>
-        <location filename="../settings.cpp" line="417"/>
-        <location filename="../settings.cpp" line="449"/>
+        <location filename="../settings.cpp" line="497"/>
+        <location filename="../settings.cpp" line="529"/>
         <source>Hungarian</source>
         <translation>Hongroise</translation>
     </message>
     <message>
-        <location filename="../settings.cpp" line="418"/>
-        <location filename="../settings.cpp" line="451"/>
+        <location filename="../settings.cpp" line="498"/>
+        <location filename="../settings.cpp" line="531"/>
         <source>Italian</source>
         <translation>Italienne</translation>
     </message>
     <message>
-        <location filename="../settings.cpp" line="419"/>
-        <location filename="../settings.cpp" line="452"/>
+        <location filename="../settings.cpp" line="499"/>
+        <location filename="../settings.cpp" line="532"/>
         <source>Latvian</source>
         <translation>Lettonne</translation>
     </message>
     <message>
-        <location filename="../settings.cpp" line="420"/>
-        <location filename="../settings.cpp" line="453"/>
+        <location filename="../settings.cpp" line="500"/>
+        <location filename="../settings.cpp" line="533"/>
         <source>Lithuanian</source>
         <translation>Lituanienne</translation>
     </message>
     <message>
-        <location filename="../settings.cpp" line="421"/>
-        <location filename="../settings.cpp" line="458"/>
+        <location filename="../settings.cpp" line="501"/>
+        <location filename="../settings.cpp" line="538"/>
         <source>Polish</source>
         <translation>Polonaise</translation>
     </message>
     <message>
-        <location filename="../settings.cpp" line="422"/>
-        <location filename="../settings.cpp" line="459"/>
+        <location filename="../settings.cpp" line="502"/>
+        <location filename="../settings.cpp" line="539"/>
         <source>Portuguese</source>
         <translation>Portugaise</translation>
     </message>
     <message>
-        <location filename="../settings.cpp" line="423"/>
-        <location filename="../settings.cpp" line="460"/>
+        <location filename="../settings.cpp" line="503"/>
+        <location filename="../settings.cpp" line="540"/>
         <source>Romanian</source>
         <translation>Roumaine</translation>
     </message>
     <message>
-        <location filename="../settings.cpp" line="424"/>
-        <location filename="../settings.cpp" line="461"/>
+        <location filename="../settings.cpp" line="504"/>
+        <location filename="../settings.cpp" line="541"/>
         <source>Russian</source>
         <translation>Russe</translation>
     </message>
     <message>
-        <location filename="../settings.cpp" line="426"/>
-        <location filename="../settings.cpp" line="466"/>
+        <location filename="../settings.cpp" line="506"/>
+        <location filename="../settings.cpp" line="546"/>
         <source>Spanish</source>
         <translation>Espagnole</translation>
     </message>
     <message>
-        <location filename="../settings.cpp" line="427"/>
-        <location filename="../settings.cpp" line="462"/>
+        <location filename="../settings.cpp" line="507"/>
+        <location filename="../settings.cpp" line="542"/>
         <source>Serbian</source>
         <translation>Serbe</translation>
     </message>
     <message>
-        <location filename="../settings.cpp" line="428"/>
-        <location filename="../settings.cpp" line="463"/>
+        <location filename="../settings.cpp" line="508"/>
+        <location filename="../settings.cpp" line="543"/>
         <source>Slovenian</source>
         <translation>Slovène</translation>
     </message>
     <message>
-        <location filename="../settings.cpp" line="429"/>
-        <location filename="../settings.cpp" line="467"/>
+        <location filename="../settings.cpp" line="509"/>
+        <location filename="../settings.cpp" line="547"/>
         <source>Swedish</source>
         <translation>Suédoise</translation>
     </message>
     <message>
-        <location filename="../settings.cpp" line="430"/>
-        <location filename="../settings.cpp" line="470"/>
+        <location filename="../settings.cpp" line="510"/>
+        <location filename="../settings.cpp" line="550"/>
         <source>Ukrainian</source>
         <translation>Ukrainienne</translation>
     </message>
     <message>
-        <location filename="../settings.cpp" line="432"/>
+        <location filename="../settings.cpp" line="512"/>
         <source>Albanian</source>
         <translation>Albanaise</translation>
     </message>
     <message>
-        <location filename="../settings.cpp" line="433"/>
+        <location filename="../settings.cpp" line="513"/>
         <source>Ancient Greek</source>
         <translation>Grec ancien</translation>
     </message>
     <message>
-        <location filename="../settings.cpp" line="434"/>
+        <location filename="../settings.cpp" line="514"/>
         <source>Azerbaijani</source>
         <translation>Azerbaïdjanaise</translation>
     </message>
     <message>
-        <location filename="../settings.cpp" line="437"/>
+        <location filename="../settings.cpp" line="517"/>
         <source>Croatian</source>
         <translation>Croate</translation>
     </message>
     <message>
-        <location filename="../settings.cpp" line="439"/>
+        <location filename="../settings.cpp" line="519"/>
         <source>Danish Gothic</source>
         <translation>Danoise gothique</translation>
     </message>
     <message>
-        <location filename="../settings.cpp" line="442"/>
+        <location filename="../settings.cpp" line="522"/>
         <source>Estonian</source>
         <translation>Estonienne</translation>
     </message>
     <message>
-        <location filename="../settings.cpp" line="443"/>
+        <location filename="../settings.cpp" line="523"/>
         <source>Finnish</source>
         <translation>Finnoise</translation>
     </message>
     <message>
-        <location filename="../settings.cpp" line="446"/>
+        <location filename="../settings.cpp" line="526"/>
         <source>German Gothic</source>
         <translation>Allemande gothique</translation>
     </message>
     <message>
-        <location filename="../settings.cpp" line="447"/>
+        <location filename="../settings.cpp" line="527"/>
         <source>Greek</source>
         <translation>Grecque</translation>
     </message>
     <message>
-        <location filename="../settings.cpp" line="448"/>
+        <location filename="../settings.cpp" line="528"/>
         <source>Hebrew</source>
         <translation>Hébreu</translation>
     </message>
     <message>
-        <location filename="../settings.cpp" line="450"/>
+        <location filename="../settings.cpp" line="530"/>
         <source>Icelandic</source>
         <translation>Islandaise</translation>
     </message>
     <message>
-        <location filename="../settings.cpp" line="454"/>
+        <location filename="../settings.cpp" line="534"/>
         <source>Macedonian</source>
         <translation>Macédonienne</translation>
     </message>
     <message>
-        <location filename="../settings.cpp" line="455"/>
+        <location filename="../settings.cpp" line="535"/>
         <source>Middle English</source>
         <translation>Anglaise du moyen-âge</translation>
     </message>
     <message>
-        <location filename="../settings.cpp" line="456"/>
+        <location filename="../settings.cpp" line="536"/>
         <source>Middle French</source>
         <translation>Française du moyen-âge</translation>
     </message>
     <message>
-        <location filename="../settings.cpp" line="457"/>
+        <location filename="../settings.cpp" line="537"/>
         <source>Norwegian</source>
         <translation>Norvégienne</translation>
     </message>
     <message>
-        <location filename="../settings.cpp" line="464"/>
+        <location filename="../settings.cpp" line="544"/>
         <source>Slovakian</source>
         <translation>Slovaque</translation>
     </message>
     <message>
-        <location filename="../settings.cpp" line="465"/>
+        <location filename="../settings.cpp" line="545"/>
         <source>Slovakian Gothic</source>
         <translation>Slovaque gothique</translation>
     </message>
     <message>
-        <location filename="../settings.cpp" line="468"/>
+        <location filename="../settings.cpp" line="548"/>
         <source>Swedish Gothic</source>
         <translation>Suédoise gothique</translation>
     </message>
     <message>
-        <location filename="../settings.cpp" line="469"/>
+        <location filename="../settings.cpp" line="549"/>
         <source>Turkish</source>
         <translation>Turque</translation>
     </message>

@@ -37,6 +37,8 @@ public:
     ~LangSelectDialog();
 protected:
     void accept();
+private slots:
+    void onItemClicked(QListWidgetItem * item);
 private:
     QStringList getRecognitionLanguages() const;
     void fillLangs();

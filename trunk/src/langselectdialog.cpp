@@ -31,7 +31,8 @@ LangSelectDialog::LangSelectDialog(QWidget *parent) :
 {
     ui->setupUi(this);
     fillLangs();
-
+    connect (ui->listWidgetCuneiform, SIGNAL(itemClicked(QListWidgetItem*)), this, SLOT(onItemClicked(QListWidgetItem*)));
+    connect (ui->listWidgetTesseract, SIGNAL(itemClicked(QListWidgetItem*)), this, SLOT(onItemClicked(QListWidgetItem*)));
 }
 
 LangSelectDialog::~LangSelectDialog()
@@ -58,6 +59,14 @@ void LangSelectDialog::accept()
         return;
     Settings::instance()->setSelectedLanguages(sl);
     QDialog::accept();
+}
+
+void LangSelectDialog::onItemClicked(QListWidgetItem *item)
+{
+    foreach(QListWidgetItem *it, items) {
+        if (it->text() == item->text())
+            it->setCheckState(item->checkState());
+    }
 }
 
 void LangSelectDialog::fillLangs()

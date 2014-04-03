@@ -763,6 +763,8 @@ void MainForm::fillLangBox()
     }
     selectLangsBox->setCurrentIndex(-1);
     connect(selectLangsBox, SIGNAL(currentIndexChanged(int)), this, SLOT(newLanguageSelected(int)));
+    if (selectLangsBox->model()->rowCount())
+        selectLangsBox->setCurrentIndex(0);
 }
 
 void MainForm::preparePageForRecognition()
@@ -1161,4 +1163,5 @@ void MainForm::selectLanguages()
 {
     LangSelectDialog lsd(this); // ;)
     lsd.exec();
+    fillLangBox();
 }

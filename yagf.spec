@@ -1,7 +1,7 @@
-%define  snapshot c12786e
+%define  snapshot a131416
 
 Name:    yagf
-Version: 0.9.3
+Version: 0.9.3.2
 Release: alt2.git%snapshot
 
 Summary: YAGF is a graphical front-end for cuneiform and tesseract OCR tools
@@ -15,7 +15,11 @@ Patch:   %{name}-%{version}.patch
 
 BuildRequires: gcc-c++ libqt4-devel
 BuildRequires: cmake libaspell-devel aspell
-Requires:      cuneiform libaspell aspell-en
+
+Requires: cuneiform
+Requires: libaspell
+Requires: aspell-en
+Requires: ImageMagick-tools
 
 Packager: Andrey Cherepanov <cas@altlinux.org>
 
@@ -61,6 +65,12 @@ subst "s,/usr/local,%buildroot/usr/,g" ./CMakeLists.txt
 %_desktopdir/YAGF.desktop
 
 %changelog
+* Thu Apr 03 2014 Andrey Cherepanov <cas@altlinux.org> 0.9.3.2-alt1.gita131416
+- New version
+- Multipage TIFF support
+- Fix Russian translation
+- Move settings to single dialog
+
 * Wed Feb 26 2014 Andrey Cherepanov <cas@altlinux.org> 0.9.3-alt2.gitc12786e
 - Build from upstream git
 - Fix recognize TIFF images

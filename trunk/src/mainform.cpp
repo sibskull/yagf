@@ -24,14 +24,13 @@
 #include "pdf2ppt.h"
 #include "ghostscr.h"
 #include "configdialog.h"
-#include "advancedconfigdialog.h"
 #include "mainform.h"
 #include "tpagecollection.h"
 #include "scanner.h"
 #include "projectmanager.h"
-#include "forcelocaledialog.h"
 #include "langselectdialog.h"
 #include "tiffimporter.h"
+#include "busyform.h"
 #include <signal.h>
 #include <QComboBox>
 #include <QLabel>
@@ -59,6 +58,7 @@
 #include <QClipboard>
 #include <QMap>
 #include <QWidgetAction>
+#include <QPushButton>
 #include "qgraphicsinput.h"
 #include "utils.h"
 #include "qxtunixsignalcatcher.h"
@@ -105,6 +105,7 @@ MainForm::MainForm(QWidget *parent): QMainWindow(parent)
     graphicsInput->addToolBarAction(ActionClearAllBlocks);
 
     label->setListWidget(sideBar);
+    pdfx = NULL;
 
     connect(sideBar, SIGNAL(pageSelected(int)), pages, SLOT(pageSelected(int)));
     connect(label, SIGNAL(pageRemoved(int)), pages, SLOT(pageRemoved(int)));
@@ -127,6 +128,7 @@ MainForm::MainForm(QWidget *parent): QMainWindow(parent)
     connect(actionAbout, SIGNAL(triggered()), this, SLOT(showAboutDlg()));
     connect(actionOnlineHelp, SIGNAL(triggered()), this, SLOT(showHelp()));
     connect(actionCopyToClipboard, SIGNAL(triggered()),textEdit, SLOT(copyClipboard()));
+    connect(actionSelect_All_Text, SIGNAL(triggered()),textEdit, SLOT(selectAll()));
     connect(graphicsInput, SIGNAL(rightMouseClicked(int, int, bool)), this, SLOT(rightMouseClicked(int, int, bool)));
     connect(actionSelect_HTML_format, SIGNAL(triggered()), this, SLOT(selectHTMLformat()));
 
@@ -138,10 +140,11 @@ MainForm::MainForm(QWidget *parent): QMainWindow(parent)
     connect(graphicsInput, SIGNAL(deleteBlock(QRect)), pages, SLOT(deleteBlock(QRect)));
     connect(sideBar, SIGNAL(fileRemoved(int)), pages, SLOT(pageRemoved(int)));
     connect (pages, SIGNAL(addSnippet(int)), this, SLOT(addSnippet(int)));
+    connect(actionSelect_languages, SIGNAL(triggered()), this, SLOT(selectLanguages()));
 
     selectLangsBox = new QComboBox();
     selectLangsBox->setToolTip(trUtf8("Recognition language"));
-    toolBar->insertWidget(actionRecognize, selectLangsBox);
+
    // connect(selectLangsBox->lineEdit(), SIGNAL(textChanged(QString)), this, SLOT(LangTextChanged(QString)));
 
     initSettings();
@@ -155,6 +158,14 @@ MainForm::MainForm(QWidget *parent): QMainWindow(parent)
     if (settings->getSelectedEngine() == UseTesseract) {
         //fillLanguagesBoxTesseract();
         engineLabel->setText(trUtf8("Using Tesseract"));
+    }
+
+    slAction = toolBar->insertWidget(actionRecognize, selectLangsBox);
+    langLabel = new QLabel();
+    statusBar()->addPermanentWidget(langLabel);
+    if (settings->getSelectedLanguages().count() == 1) {
+        slAction->setVisible(false);
+        langLabel->setText(trUtf8("Recognition Language") + ": " + settings->getFullLanguageName(settings->getLanguage()));
     }
     fillLangBox();
     delTmpFiles();
@@ -171,7 +182,6 @@ MainForm::MainForm(QWidget *parent): QMainWindow(parent)
    // textEdit->setContextMenuPolicy(Qt::ActionsContextMenu);
 
     this->sideBar->show();
-    //connect(sideBar, SIGNAL(fileSelected(const QString &)), this, SLOT(fileSelected(const QString &)));
 
     connect(actionRecognize_All_Pages, SIGNAL(triggered()), this, SLOT(recognizeAll()));
 
@@ -186,7 +196,6 @@ MainForm::MainForm(QWidget *parent): QMainWindow(parent)
     loadFromCommandLine();
     emit windowShown();
 
-    pdfx = NULL;
     if (findProgram("pdftoppm")) {
         pdfx = new PDF2PPT();
     } else
@@ -198,18 +207,7 @@ MainForm::MainForm(QWidget *parent): QMainWindow(parent)
         connect(pdfx, SIGNAL(addPage(QString)), this, SLOT(addPDFPage(QString)), Qt::QueuedConnection);
         connect (pdfx, SIGNAL(finished()), this, SLOT(finishedPDF()));
     }
-
-    pdfPD.setWindowTitle("YAGF");
-    pdfPD.setLabelText(trUtf8("Importing pages from the PDF document..."));
-    pdfPD.setCancelButtonText(trUtf8("Cancel"));
-    pdfPD.setMinimum(-1);
-    pdfPD.setMaximum(-1);
-    pdfPD.setWindowIcon(QIcon(":/yagf.png"));
-    if (pdfx)
-        connect(&pdfPD, SIGNAL(canceled()), pdfx, SLOT(cancel()));
-
-    menu_Settings->addAction("UI Language", this, SLOT(setUILanguage()));
-
+    setupPDFPD();
 }
 
 void MainForm::onShowWindow()
@@ -277,23 +275,26 @@ void MainForm::LangTextChanged(const QString &text)
 void MainForm::showConfigDlg()
 {
     ConfigDialog dialog(this);
-    SelectedEngine ose = settings->getSelectedEngine();
-    if (settings->getSelectedEngine() == UseCuneiform)
-        dialog.setSelectedEngine(0);
-    else
-        dialog.setSelectedEngine(1);
-    dialog.setTessDataPath(settings->getTessdataPath());
     if (dialog.exec()) {
-        settings->setSelectedEngine(dialog.selectedEngine() == 0 ? UseCuneiform : UseTesseract);
-        settings->setTessdataPath(dialog.tessdataPath());
-        if (settings->getSelectedEngine() != ose) {
+
+        //if (settings->getSelectedEngine() != ose) {
             QString oldLang = selectLangsBox->currentText();
             selectLangsBox->clear();
             if (settings->getSelectedEngine() == UseCuneiform) {
                 engineLabel->setText(trUtf8("Using Cuneiform"));
+                if (settings->selectedLanguagesAvailableTo("cuneiform").count() == 0) {
+                    QMessageBox::warning(this, trUtf8("Warning"), trUtf8("Cuneiform doesn't support any of selected recognition langualges.\nFalling back to tesseract. Please install tesseract."));
+                    settings->setSelectedEngine(UseTesseract);
+                    engineLabel->setText(trUtf8("Using Tesseract"));
+                }
             }
             if (settings->getSelectedEngine() == UseTesseract) {
                 engineLabel->setText(trUtf8("Using Tesseract"));
+                if (settings->selectedLanguagesAvailableTo("tesseract").count() == 0) {
+                    QMessageBox::warning(this, trUtf8("Warning"), trUtf8("Tesseract doesn't support any of selected recognition langualges.\nFalling back to cueniform. Please install cuneiform."));
+                    settings->setSelectedEngine(UseCuneiform);
+                    engineLabel->setText(trUtf8("Using Cuneiform"));
+                }
             }
             fillLangBox();
             int newIndex = selectLangsBox->findText(oldLang);
@@ -312,6 +313,20 @@ void MainForm::showConfigDlg()
                 }
             }
 
+        //} else         fillLangBox();
+
+
+        toolBar->setIconSize(settings->getIconSize());
+        if (selectLangsBox->count() > 1) {
+            slAction->setVisible(true);
+            langLabel->setText("");
+        }
+         else
+        {
+            if(settings->getSelectedLanguages().count() == 1) {
+                    slAction->setVisible(false);
+                    langLabel->setText(trUtf8("Recognition Language") + ": " + settings->getFullLanguageName(settings->getLanguage()));
+            }
         }
     }
 }
@@ -330,24 +345,15 @@ void MainForm::importPDF()
             return;
         }
         pdfx->setStartPage(dialog.getStartPage());
-        pdfx->setStopPage(dialog.getStopPage());
-        bool doit = true;
-        QString outputDir;
-        while (doit) {
-            outputDir = QFileDialog::getExistingDirectory(this, trUtf8("Select an existing directory for output or create some new one")); //, QString(""), QString(), (QString*) NULL, QFileDialog::ShowDirsOnly);
-            if (outputDir.isEmpty())
-                return;
-            QDir dir(outputDir);
-            if (dir.count() > 2)
-                QMessageBox::warning(this, trUtf8("Selecting Directory"), trUtf8("The selected directory is not empty"));
-            else doit = false;
-        }
-        pdfx->setOutputDir(outputDir);
+        pdfx->setStopPage(dialog.getStopPage());        
+        pdfx->setOutputDir();
         QApplication::processEvents();        
         pdfPD.setWindowFlags(Qt::Dialog|Qt::WindowStaysOnTopHint);
         pdfPD.show();
         pdfPD.setMinimum(0);
         pdfPD.setMaximum(100);
+        globalDeskew = settings->getAutoDeskew();
+        settings->setAutoDeskew(dialog.getDeskew());
         QApplication::processEvents();
         pdfx->exec();
     }
@@ -356,12 +362,23 @@ void MainForm::importPDF()
 void MainForm::addPDFPage(QString pageName)
 {
     pages->appendPage(pageName);
+    int fr = pdfx->filesRemaining(pageName);
+    if (fr > 0) {
+        int ft = pdfx->filesTotal();
+        if (ft != 0) {
+            int ratio = ((ft-fr)*100)/ft;
+            //if (ratio > pdfPD.value())
+                pdfPD.setValue(ratio);
+        }
+    } else
     pdfPD.setValue(pdfPD.value()+1);
 }
 
 void MainForm::finishedPDF()
 {
     pdfPD.hide();
+    //setupPDFPD();
+    settings->setAutoDeskew(globalDeskew);
 }
 
 void MainForm::loadImage()
@@ -373,8 +390,9 @@ void MainForm::loadImage()
         QStringList fileNames;
         fileNames = dialog.selectedFiles();
         settings->setLastDir(dialog.directory().path());
-        if (fileNames.count() > 0)
+        if (fileNames.count() > 0) {
             loadFiles(fileNames);
+        }
     }
 }
 
@@ -526,7 +544,7 @@ void MainForm::loadTIFF(const QString &fn, bool loadIntoView)
         QMessageBox mb;
         mb.setWindowTitle("YAGF");
         mb.setIconPixmap(QPixmap(":/critical.png"));
-        mb.setText(trUtf8("Cannot open file %1. Make sure imagemagick is installed.").arg(fn));
+        mb.setText(trUtf8("Cannot open file %1. Make sure imagemagick and tifftopnm are installed.").arg(fn));
         mb.addButton(QMessageBox::Close);
         mb.exec();
         return;
@@ -543,6 +561,8 @@ void MainForm::delTmpFiles()
         if (dir[i].endsWith("jpg") || dir[i].endsWith("bmp") || dir[i].endsWith("png") || dir[i].endsWith("txt") || dir[i].endsWith("ygf"))
             dir.remove(dir[i]);
     }
+    if (pdfx)
+        pdfx->setOutputDir();
     delTmpDir();
 }
 
@@ -842,6 +862,21 @@ void MainForm::rightMouseClicked(int x, int y, bool inTheBlock)
     m_menu->show();
 }
 
+void MainForm::setupPDFPD()
+{
+    pdfPD.setWindowTitle("YAGF");
+    pdfPD.setLabelText(trUtf8("Importing pages from the PDF document..."));
+    pdfPD.setCancelButton(new QPushButton());
+    pdfPD.setCancelButtonText(trUtf8("Cancel"));
+    pdfPD.setMinimum(-1);
+    pdfPD.setMaximum(-1);
+    pdfPD.setWindowIcon(QIcon(":/yagf.png"));
+    if (pdfx) {
+        connect(&pdfPD, SIGNAL(canceled()), pdfx, SLOT(cancel()));
+        connect(&pdfPD, SIGNAL(canceled()), this, SLOT(cancelPDF()));
+    }
+}
+
 void MainForm::on_ActionDeleteBlock_activated()
 {
     QRect r = graphicsInput->getCurrentBlock();
@@ -859,7 +894,7 @@ bool MainForm::findEngine() {
         	        QMessageBox::warning(this, trUtf8("Warning"), trUtf8("No recognition engine found.\nPlease install either cuneiform or tesseract"));
         	        return false;
         	    }
-       		}
+            }
      	}
     	if (settings->getSelectedEngine() == UseTesseract) {
         	if (!findProgram("tesseract")) {
@@ -1031,19 +1066,6 @@ void MainForm::selectTextArea()
     pages->blockAllText();
 }
 
-void MainForm::showAdvancedSettings()
-{
-    AdvancedConfigDialog dlg;
-    dlg.setCrop1(settings->getCropLoaded());
-    dlg.setDeskew(settings->getAutoDeskew());
-    dlg.setPreprocess(settings->getPreprocessed());
-    if (dlg.exec()) {
-        settings->setCropLoaded(dlg.doCrop1());
-        settings->setAutoDeskew(dlg.doDeskew());
-        settings->setPreprocessed(dlg.doPreprocess());
-    }
-}
-
 void MainForm::addSnippet(int index)
 {
     sideBar->addItem(pages->snippet());
@@ -1111,21 +1133,6 @@ void MainForm::selectBlocks()
     setCursor(oldCursor);
 }
 
-void MainForm::setSmallIcons()
-{
-    QSize s = toolBar->iconSize();
-    if (s.height() > 24) {
-         s.setHeight(24);
-         s.setWidth(24);
-    }
-    else {
-        s.setHeight(32);
-        s.setWidth(32);
-    }
-    toolBar->setIconSize(s);
-    settings->setIconSize(s);
-}
-
 void MainForm::selectHTMLformat()
 {
     if (actionSelect_HTML_format->isChecked())
@@ -1135,33 +1142,23 @@ void MainForm::selectHTMLformat()
 
 }
 
-void MainForm::setUILanguage()
-{
-    ForceLocaleDialog fld(this);
-    if (settings->useNoLocale())
-        fld.setOption(ForceLocaleDialog::NoLocale);
-    else {
-        if (settings->useRussianLocale())
-            fld.setOption(ForceLocaleDialog::RussianLocale);
-        else {
-            fld.setOption(ForceLocaleDialog::DefaultLocale);
-        }
-    }
-    if (fld.exec() == QDialog::Accepted) {
-        settings->setNoLocale(false);
-        settings->setRussianLocale(false);
-        if (fld.getOption() == ForceLocaleDialog::NoLocale)
-            settings->setNoLocale(true);
-        else {
-            if (fld.getOption() == ForceLocaleDialog::RussianLocale)
-                settings->setRussianLocale(true);
-        }
-    }
-}
 
 void MainForm::SelectRecognitionLanguages()
 {
     LangSelectDialog lsd;
     if (lsd.exec() == QDialog::Accepted)
         fillLangBox();
+}
+
+void MainForm::cancelPDF()
+{
+    pdfx->removeRemaining();
+   //pdfPD.setLabelText(trUtf8("Opening already imported pages..."));
+    // pdfPD.setCancelButton(0);
+}
+
+void MainForm::selectLanguages()
+{
+    LangSelectDialog lsd(this); // ;)
+    lsd.exec();
 }

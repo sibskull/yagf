@@ -1,32 +1,22 @@
-/*
-    YAGF - cuneiform and tesseract OCR graphical front-ends
-    Copyright (C) 2009-2011 Andrei Borovsky <anb@symmetrica.net>
-
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
-*/
-
 #include "configdialog.h"
 #include "ui_configdialog.h"
-#include <QDir>
-#include <QProcessEnvironment>
+#include "settings.h"
+#include "langselectdialog.h"
+#include <QFileDialog>
+#include <QStringList>
+#include <QLocale>
 
 ConfigDialog::ConfigDialog(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::ConfigDialog)
 {
     ui->setupUi(this);
+    ui->stackedWidget->setCurrentIndex(0);
+    ui->listWidget->setCurrentRow(0);
+    //ui->listWidget->setMinimumWidth(ui->listWidget->sizeHintForColumn(0));
+    for (int i = 0; i < ui->listWidget->count(); i++)
+        ui->listWidget->item(i)->setToolTip(ui->listWidget->item(i)->text());
+    init();
 }
 
 ConfigDialog::~ConfigDialog()
@@ -34,27 +24,103 @@ ConfigDialog::~ConfigDialog()
     delete ui;
 }
 
-void ConfigDialog::setSelectedEngine(int value)
+void ConfigDialog::accept()
 {
-    if (!value)
-        ui->radioButton->setChecked(true);
+    Settings * settings = Settings::instance();
+    if (ui->radioButtonCuneiform->isChecked())
+        settings->setSelectedEngine(UseCuneiform);
     else
-        ui->radioButton_2->setChecked(true);
+        settings->setSelectedEngine(UseTesseract);
+    settings->setTessdataPath(ui->lineEditTessData->text());
+    if (ui->checkBoxSingleLang->isChecked()) {
+        QStringList sl;
+        sl << ui->comboBoxSingleLang->currentText();
+        settings->setSelectedLanguages(sl);
+        settings->setLanguage(settings->getShortLanguageName(sl[0]));
+    }
+    settings->setCropLoaded(ui->checkBoxCrop->isChecked());
+    settings->setAutoDeskew(ui->checkBoxDeskew->isChecked());
+    settings->setPreprocessed(ui->checkBoxPreprocess->isChecked());
+    settings->setNoLocale(false);
+    if (ui->comboBoxInterfaceLang->currentText() == "Russian") {
+        settings->setRussianLocale(true);
+        settings->setNoLocale(false);
+    } else
+    if (ui->comboBoxInterfaceLang->currentText() == "English") {
+        settings->setRussianLocale(false);
+        settings->setNoLocale(true);
+    } else
+    {
+        settings->setRussianLocale(false);
+        settings->setNoLocale(false);
+    }
+    if (ui->radioButtonNormIcons->isChecked())
+        settings->setIconSize(QSize(24,24));
+    else
+        settings->setIconSize(QSize(32,32));
+    QDialog::accept();
 }
 
-int ConfigDialog::selectedEngine()
+void ConfigDialog::init()
 {
-    if (ui->radioButton->isChecked())
-        return 0;
-    return 1;
+    Settings * settings = Settings::instance();
+    ui->radioButtonCuneiform->setChecked(settings->getSelectedEngine() == UseCuneiform);
+    ui->radioButtonTesseract->setChecked(settings->getSelectedEngine() == UseTesseract);
+    ui->lineEditTessData->setText(settings->getTessdataPath());
+    QStringList sl = settings->getSelectedLanguages();
+    ui->checkBoxSingleLang->setChecked(sl.count() == 1);
+
+    QStringList sl2 = settings->fullLanguageNames();
+    sl2.prepend(settings->getFullLanguageName(settings->getLanguage()));
+    sl2.removeDuplicates();
+    ui->comboBoxSingleLang->clear();
+    ui->comboBoxSingleLang->addItems(sl2);
+    ui->checkBoxCrop->setChecked(settings->getCropLoaded());
+    ui->checkBoxDeskew->setChecked(settings->getAutoDeskew());
+    ui->checkBoxPreprocess->setChecked(settings->getPreprocessed());
+    QStringList sl3;
+    if (settings->useNoLocale())
+        sl3 << "English";
+    if (settings->useRussianLocale())
+        sl3 << "Russian";
+    sl3 << QLocale::languageToString(QLocale::system().language()) << "English" << "Russian";
+    sl3.removeDuplicates();
+    ui->comboBoxInterfaceLang->clear();
+    ui->comboBoxInterfaceLang->addItems(sl3);
+
+    if (settings->getIconSize().width() > 24) {
+        ui->radioButtonNormIcons->setChecked(false);
+        ui->radioButtonLargeIcons->setChecked(true);
+    } else {
+        ui->radioButtonNormIcons->setChecked(true);
+        ui->radioButtonLargeIcons->setChecked(false);
+    }
 }
 
-void ConfigDialog::setTessDataPath(const QString &value)
+
+
+void ConfigDialog::on_pushButtonTessData_clicked()
 {
-    ui->lineEdit->setText(value);
+     QString dir = QFileDialog::getExistingDirectory(this, trUtf8("Tesseract Data Directory"), "/");
+     if (dir != "") {
+         if (dir.endsWith("tessdata/"))
+             dir.truncate(dir.length()-9);
+         if (dir.endsWith("tessdata"))
+             dir.truncate(dir.length()-8);
+         if (!dir.endsWith("/"))
+             dir = dir + "/";
+         ui->lineEditTessData->setText(dir);
+     }
 }
 
-QString ConfigDialog::tessdataPath()
+void ConfigDialog::on_pushButtonLangs_clicked()
 {
-    return ui->lineEdit->text();
+    ui->checkBoxSingleLang->setChecked(false);
+    LangSelectDialog lsd;
+    lsd.exec();
+}
+
+void ConfigDialog::itemClicked(QListWidgetItem *item)
+{
+   ui->stackedWidget->setCurrentIndex(ui->listWidget->row(item));
 }

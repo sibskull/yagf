@@ -2,10 +2,62 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="ru_RU">
 <context>
-    <name>AdvancedConfigDialog</name>
+    <name>ConfigDialog</name>
     <message>
-        <source>Advanced Settings</source>
-        <translation>Дополнительные настройки</translation>
+        <source>OCR Engine</source>
+        <translation>Программа распознавания</translation>
+    </message>
+    <message>
+        <source>YAGF Settings</source>
+        <translation>Настройки YAGF</translation>
+    </message>
+    <message>
+        <source>OCR and Languages</source>
+        <translation>Распознавание</translation>
+    </message>
+    <message>
+        <source>Image Processing</source>
+        <translation>Обработка изображений</translation>
+    </message>
+    <message>
+        <source>Program Appearance</source>
+        <translation>Внешний вид программы</translation>
+    </message>
+    <message>
+        <source>Cuneiform</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>Tesseract</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>Path to Tesseract Data Files</source>
+        <translation>Расположение данных Tesseract</translation>
+    </message>
+    <message>
+        <source>...</source>
+        <translation>...</translation>
+    </message>
+    <message>
+        <source>Recognize Languages</source>
+        <translation>Распознавать языки</translation>
+    </message>
+    <message>
+        <source>Use Single Language:</source>
+        <translation>Только один язык:</translation>
+    </message>
+    <message>
+        <source>Choose Among Several Languages </source>
+        <translation>Несколько языков</translation>
+    </message>
+    <message>
+        <source>Languages to Use...</source>
+        <translation>Языки...</translation>
+    </message>
+    <message>
+        <source>Enhance Image Quality</source>
+        <translation>Улучшить качество изображения</translation>
     </message>
     <message>
         <source>Crop Image When Loaded</source>
@@ -16,61 +68,32 @@
         <translation>Автоматически корректировать наклон</translation>
     </message>
     <message>
-        <source>Preprocess images when loaded</source>
-        <translation>Обработка загружаемых изображений</translation>
-    </message>
-</context>
-<context>
-    <name>BusyForm</name>
-    <message>
-        <source>Form</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>ConfigDialog</name>
-    <message>
-        <source>OCR Settings</source>
-        <translation>Настройки программ распознавания</translation>
+        <source>Preprocess Images When Loaded</source>
+        <translation>Корректировать изображения при загрузке</translation>
     </message>
     <message>
-        <source>OCR Engine</source>
-        <translation>Программа распознавания</translation>
+        <source>Interface Language</source>
+        <translation>Язык интерфейса</translation>
     </message>
     <message>
-        <source>cuneiform</source>
-        <translation>cuneiform</translation>
+        <source>Select Language of the Interface:</source>
+        <translation>Выбрать язык интерфейса:</translation>
     </message>
     <message>
-        <source>tesseract</source>
-        <translation>tesseract</translation>
+        <source>Toolbar Icon Size</source>
+        <translation>Размер иконок</translation>
     </message>
     <message>
-        <source>Tesseract Setup</source>
-        <translation>Настройка tesseract</translation>
+        <source>Normal</source>
+        <translation>Обычный</translation>
     </message>
     <message>
-        <source>Location of the  tessdata directory:</source>
-        <translation>Путь к каталогу tessdata:</translation>
-    </message>
-</context>
-<context>
-    <name>ForceLocaleDialog</name>
-    <message>
-        <source>Dialog</source>
-        <translation type="unfinished"></translation>
+        <source>Large</source>
+        <translation>Крупный</translation>
     </message>
     <message>
-        <source>GroupBox</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>RadioButton</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>TextLabel</source>
-        <translation type="unfinished"></translation>
+        <source>Tesseract Data Directory</source>
+        <translation>Расположение данных Tesseract</translation>
     </message>
 </context>
 <context>
@@ -80,12 +103,24 @@
         <translation>Выбор языков для распознавания</translation>
     </message>
     <message>
-        <source>Select the languages you are going to work with (you can change these settings later)</source>
-        <translation>Выберите языки, с которыми вы собираетесь работать (вы сможете изменить этот выбор позже)</translation>
+        <source>Select the recognition languages </source>
+        <translation>Выбрать языки для распознавания</translation>
     </message>
     <message>
-        <source>CheckBox</source>
-        <translation type="unfinished"></translation>
+        <source>Cuneiform</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>Tesseract</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>Installed</source>
+        <translation>Установлен</translation>
+    </message>
+    <message>
+        <source>Not installed</source>
+        <translation>Не установлен</translation>
     </message>
 </context>
 <context>
@@ -167,18 +202,6 @@
         <translation>Необходимо указать имя файла PDF</translation>
     </message>
     <message>
-        <source>Select an existing directory for output or create some new one</source>
-        <translation>Выберите существующый каталог для вывода или создайте новый</translation>
-    </message>
-    <message>
-        <source>Selecting Directory</source>
-        <translation>Выбор каталога</translation>
-    </message>
-    <message>
-        <source>The selected directory is not empty</source>
-        <translation>Выбранный каталог не пуст</translation>
-    </message>
-    <message>
         <source>Starting tesseract failed</source>
         <translation>Не удалось запустить tesseract</translation>
     </message>
@@ -251,8 +274,22 @@ The page possibly lacks contrast. Try to select blocks manually.</source>
         <translation>&lt;p align=&quot;center&quot;&gt;&lt;b&gt;YAGF — графическая оболочка для программ распознавания текста cuneiform и tesseract&lt;/b&gt;&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;Версия %1&lt;/p&gt; &lt;p align=&quot;center&quot;&gt;Ⓒ 2009-2014 Андрей Боровский&lt;/p&gt; YAGF — открытое программное обеспечение, которое распространяется на условиях лицензии GPL v3. Вы найдёте подробности на странице &lt;a href=&quot;http://symmetrica.net/cuneiform-linux/yagf-en.html&quot;&gt;http://symmetrica.net/cuneiform-linux/yagf-ru.html&lt;/a&gt;.</translation>
     </message>
     <message>
-        <source>Cannot open file %1. Make sure imagemagick is installed.</source>
-        <translation>Невозможно открыть файл %1. Проверьте установку ImageMagick.</translation>
+        <source>Recognition Language</source>
+        <translation>Язык распознавания</translation>
+    </message>
+    <message>
+        <source>Cannot open file %1. Make sure imagemagick and tifftopnm are installed.</source>
+        <translation>Невозможно открыть файл %1. Проверьте, установлен ли imagemagick.</translation>
+    </message>
+    <message>
+        <source>Cuneiform doesn&apos;t support any of selected recognition langualges.
+Falling back to tesseract. Please install tesseract.</source>
+        <translation>Cuneiform не поддерживает ни один из выбранных языков. Используйте Tesseract.</translation>
+    </message>
+    <message>
+        <source>Tesseract doesn&apos;t support any of selected recognition langualges.
+Falling back to cueniform. Please install cuneiform.</source>
+        <translation>Tesseract не поддерживает ни один из выбранных языков. Используйте Cuneiform.</translation>
     </message>
 </context>
 <context>
@@ -398,10 +435,6 @@ The page possibly lacks contrast. Try to select blocks manually.</source>
         <translation>&amp;Справка</translation>
     </message>
     <message>
-        <source>Copy To Clipboard</source>
-        <translation>Копировать текст в буфер обмена</translation>
-    </message>
-    <message>
         <source>Copy recognized text to clipboard</source>
         <translation>Копировать текст в буфер обмена</translation>
     </message>
@@ -446,10 +479,6 @@ The page possibly lacks contrast. Try to select blocks manually.</source>
         <translation>Ctrl+A</translation>
     </message>
     <message>
-        <source>&amp;Settings</source>
-        <translation>&amp;Настройки</translation>
-    </message>
-    <message>
         <source>&lt;&lt;</source>
         <translation>&lt;&lt;</translation>
     </message>
@@ -464,14 +493,6 @@ The page possibly lacks contrast. Try to select blocks manually.</source>
     <message>
         <source>Import pages from PDF documents</source>
         <translation>Импорт страниц из документа PDF</translation>
-    </message>
-    <message>
-        <source>OCR Settings</source>
-        <translation>Настройки программ распознавания</translation>
-    </message>
-    <message>
-        <source>Set up the OCR parameters</source>
-        <translation>Установить параметры программ распознавания</translation>
     </message>
     <message>
         <source>Paste Image</source>
@@ -500,14 +521,6 @@ The page possibly lacks contrast. Try to select blocks manually.</source>
     <message>
         <source>Correct the page skew </source>
         <translation>Исправить наклон страницы</translation>
-    </message>
-    <message>
-        <source>Advanced Settings</source>
-        <translation>Дополнительные настройки</translation>
-    </message>
-    <message>
-        <source>The settings you should probably never change</source>
-        <translation>Настройки, которые вам, скорее всего, менять не нужно</translation>
     </message>
     <message>
         <source>select multiple blocks</source>
@@ -549,6 +562,30 @@ The page possibly lacks contrast. Try to select blocks manually.</source>
         <source>Select Recognition Languages</source>
         <translation>Выбрать языки для распознавания</translation>
     </message>
+    <message>
+        <source>&amp;Edit</source>
+        <translation>&amp;Правка</translation>
+    </message>
+    <message>
+        <source>Copy Text to Clipboard</source>
+        <translation>Скопировать текст в буфер обмена</translation>
+    </message>
+    <message>
+        <source>Settings</source>
+        <translation>Настройки</translation>
+    </message>
+    <message>
+        <source>Select All Text</source>
+        <translation>Выделить весь текст</translation>
+    </message>
+    <message>
+        <source>Select all the recognized text</source>
+        <translation>Выделить весь распознанный текст</translation>
+    </message>
+    <message>
+        <source>Select languages for recognition</source>
+        <translation>Выбрать языки для распознавания</translation>
+    </message>
 </context>
 <context>
     <name>PopplerDialog</name>
@@ -581,12 +618,8 @@ The page possibly lacks contrast. Try to select blocks manually.</source>
         <translation>Весь документ</translation>
     </message>
     <message>
-        <source>Open PDF File</source>
-        <translation>Открытие файла PDF</translation>
-    </message>
-    <message>
-        <source>PDF Files (*.pdf)</source>
-        <translation>Файлы PDF (*.pdf)</translation>
+        <source>Don&apos;t Deskew Pages</source>
+        <translation>Отключить исправление наклона страниц</translation>
     </message>
 </context>
 <context>

@@ -52,7 +52,7 @@ void Settings::readSettings(const QString &path)
     lastDir = settings->value("mainwindow/lastDir").toString();
     lastOutputDir = settings->value("mainwindow/lastOutputDir").toString();
     QString defEngine;
-    if (findProgram("tesseract")&&(!findProgram("cuneiform")))
+    if (findProgram("tesseract"))
         defEngine = "tesseract";
     else
         defEngine = "cuneiform";
@@ -74,12 +74,12 @@ void Settings::readSettings(const QString &path)
     tessdataPath = settings->value("ocr/tessData", QVariant(tessdataPath)).toString();
     if (tessdataPath.isEmpty())
         findTessDataPath();
-    languages = settings->value("ocr/selectedLanguages").toStringList();
+    languages = settings->value("ocr/selectedLanguages", QStringList(language)).toStringList();
     cropLoaded =  settings->value("processing/crop1", QVariant(true)).toBool();
     autoDeskew =  settings->value("processing/deskew", QVariant(true)).toBool();
     preprocess = settings->value("processing/preprocess", QVariant(true)).toBool();
     size = settings->value("mainwindow/size", QSize(800, 600)).toSize();
-    iconSize = settings->value("mainwindow/iconSize", QSize(48, 48)).toSize();
+    iconSize = settings->value("mainwindow/iconSize", QSize(24, 24)).toSize();
     position = settings->value("mainwindow/pos", QPoint(0, 0)).toPoint();
     fullScreen = settings->value("mainwindow/fullScreen", QVariant(false)).toBool();
     darkBackgroundThreshold = settings->value("tweaks/darkBackgroundThreshold", QVariant(198)).toInt();
@@ -197,6 +197,36 @@ QString Settings::getFullLanguageName(const QString &abbr)
     if (selectedEngine == UseTesseract)
         map = &tesMap;
     return map->key(abbr, "");
+}
+
+QString Settings::getFullLanguageName(const QString &abbr, const QString &engine)
+{
+    QMap<QString, QString> * map;
+    if (engine == "cuneiform")
+        map = &cuMap;
+    if (engine == "tesseract")
+        map = &tesMap;
+    return map->key(abbr, "");
+}
+
+QString Settings::getShortLanguageName(const QString &lang)
+{
+    QMap<QString, QString> * map;
+    if (selectedEngine == UseCuneiform)
+        map = &cuMap;
+    if (selectedEngine == UseTesseract)
+        map = &tesMap;
+    return map->value(lang, "");
+}
+
+QString Settings::getShortLanguageName(const QString &lang, const QString &engine)
+{
+    QMap<QString, QString> * map;
+    if (engine == "tesseract")
+        map = &tesMap;
+    if (engine == "cuneiform")
+        map = &cuMap;
+    return map->value(lang, "");
 }
 
 bool Settings::getAutoDeskew()
@@ -333,12 +363,72 @@ QStringList Settings::fullLanguageNames()
 
 QStringList Settings::getSelectedLanguages()
 {
-    return languages;
+    QStringList res;
+    foreach (QString s, languages) {
+        QString l = getFullLanguageName(s, "tesseract");
+        if (l!="")
+            res.append(l);
+        l = getFullLanguageName(s, "cuneiform");
+        if (l!="")
+             res.append(l);
+    }
+    res.removeDuplicates();
+    return res;
+}
+
+QStringList Settings::selectedLanguagesAvailableTo(const QString &engine)
+{
+    QStringList res;
+    if (engine == "cuneiform") {
+        foreach(QString s, languages) {
+            if (cuMap.values().contains(s))
+                res.append(cuMap.key(s, ""));
+        }
+    }
+    if (engine == "tesseract") {
+        foreach(QString s, languages) {
+            if (tesMap.values().contains(s))
+                res.append(tesMap.key(s, ""));
+        }
+    }
+    return res;
+}
+
+QStringList Settings::languagesAvailableTo(const QString &engine)
+{
+    if (engine == "cuneiform")
+        return cuMap.keys();
+    if (engine == "tesseract")
+        return tesMap.keys();
+    return QStringList();
+}
+
+QStringList Settings::installedTesseractLanguages()
+{
+    QString tessPath = tessdataPath + "/tessdata/";
+    QDir d(tessPath);
+    QStringList res;
+    QStringList sl = d.entryList(QStringList("*.traineddata"));
+    foreach (QString s, tesMap.values()) {
+        foreach(QString s1, sl) {
+            if (s1.startsWith(s))
+                res.append(tesMap.key(s, ""));
+        }
+    }
+    res.removeDuplicates();
+    return res;
 }
 
 void Settings::setSelectedLanguages(const QStringList &value)
 {
-    languages = value;
+    languages.clear();
+    foreach (QString s, value) {
+        QString l = getShortLanguageName(s, "tesseract");
+        if (l!="") languages.append(l);
+        l =getShortLanguageName(s, "cuneiform");
+        if (l!="") languages.append(l);
+    }
+    languages.removeDuplicates();
 }
 
 QString Settings::workingDir()

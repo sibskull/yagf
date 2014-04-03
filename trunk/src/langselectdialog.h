@@ -21,6 +21,8 @@
 
 #include <QDialog>
 #include <QStringList>
+#include <QList>
+#include <QListWidgetItem>
 
 namespace Ui {
 class LangSelectDialog;
@@ -33,14 +35,15 @@ class LangSelectDialog : public QDialog
 public:
     explicit LangSelectDialog(QWidget *parent = 0);
     ~LangSelectDialog();
-    QStringList getRecognitionLanguages() const;
-    void setRecognitionLanguages(const QStringList &sl);
 protected:
     void accept();
 private:
+    QStringList getRecognitionLanguages() const;
     void fillLangs();
 private:
+
     Ui::LangSelectDialog *ui;
+    QList<QListWidgetItem *> items;
 };
 
 #endif // LANGSELECTDIALOG_H

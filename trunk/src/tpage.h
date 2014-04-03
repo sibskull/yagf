@@ -74,9 +74,10 @@ public:
     void setDeskewed(bool value);
     void setPreprocessed(bool value);
     void reSaveTmpPage();
-
+    void cropYGF();
 signals:
     void refreshView();
+    void textOut(const QString &msg);
 public slots:
 private:
     void renumberBlocks();

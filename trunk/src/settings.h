@@ -51,6 +51,9 @@ public:
   bool getFullScreen();
   int getFontSize();
   QString getFullLanguageName(const QString &abbr);
+  QString getFullLanguageName(const QString &abbr, const QString &engine);
+  QString getShortLanguageName(const QString &lang);
+  QString getShortLanguageName(const QString &lang, const QString &engine);
   bool getAutoDeskew();
   bool getCropLoaded();
   bool getPreprocessed();
@@ -79,6 +82,9 @@ public:
   int getGlobalDarkenThreshold();
   QStringList fullLanguageNames();
   QStringList getSelectedLanguages();
+  QStringList selectedLanguagesAvailableTo(const QString &engine);
+  QStringList languagesAvailableTo(const QString &engine);
+  QStringList installedTesseractLanguages();
   void setSelectedLanguages(const QStringList &value);
   QString workingDir();
   void startLangPair();

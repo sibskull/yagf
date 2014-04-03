@@ -21,6 +21,7 @@
 #include "settings.h"
 #include <QProcess>
 #include <QDir>
+#include <QImageReader>
 
 TiffImporter::TiffImporter(const QString &fileName, QObject *parent) :
     QObject(parent), tiffName(fileName)
@@ -52,6 +53,27 @@ void TiffImporter::exec()
     foreach(QString s, nf) {
         if (!pf.contains(s))
             files.append(wd+s);
+    }
+    if (files.count())
+        emit finished(files);
+    else {
+        QImageReader ir(tiffName);
+        if (!ir.read().isNull())
+            files.append(tiffName);
+        else {
+            const QString ppmFile = QString::fromAscii("input.ppm");
+            if (dir.exists(ppmFile)) {
+                dir.remove(ppmFile);
+                QProcess proc;
+                proc.setEnvironment(QProcess::systemEnvironment());
+                proc.setWorkingDirectory(wd);
+                proc.start("tifftopnm > " + ppmFile);
+                proc.waitForFinished();
+                QImageReader ir(wd+ppmFile);
+                if (!ir.read().isNull())
+                    files.append(wd + ppmFile);
+            }
+        }
     }
     if (files.count())
         emit finished(files);

@@ -79,9 +79,11 @@ signals:
     void loadPage(); // The page is already current
     void addSnippet(int index);
     void cleared();
+    void messagePosted(const QString &msg);
 private slots:
     void pageSelected(int id);
     void pageRemoved(int id);
+    void textOut(const QString &msg);
 private:
     PageCollection(QObject *parent = 0);
     PageCollection(const PageCollection &);

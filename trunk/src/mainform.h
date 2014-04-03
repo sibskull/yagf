@@ -40,8 +40,9 @@ class QMenu;
 class PDFExtractor;
 class ccbuilder;
 class QLabel;
+class QAction;
 
-const QString version = "0.9.3";
+const QString version = "0.9.3.2";
 
 class PageCollection;
 class ScannerBase;
@@ -91,12 +92,12 @@ private slots:
     void deskewByBlock();
     void selectTextArea();
     void selectBlocks();
-    void setSmallIcons();
     void selectHTMLformat();
     void loadFiles(const QStringList &files);
     void LangTextChanged(const QString &text);
-    void setUILanguage();
     void SelectRecognitionLanguages();
+    void cancelPDF();
+    void selectLanguages();
 private:
     virtual void closeEvent(QCloseEvent *event);
     void initSettings();
@@ -132,7 +133,9 @@ private:
     Settings * settings;
     PageCollection * pages;
     QLabel * engineLabel;
-
+    QLabel * langLabel;
+    QAction * slAction;
+    bool globalDeskew;
 private slots:
     bool findEngine();
     void readyRead(int sig);
@@ -140,8 +143,8 @@ private slots:
     void setUnresizingCusor();
     void loadPage();
     void rightMouseClicked(int x, int y, bool inTheBlock);
+    void setupPDFPD();
     void onShowWindow();
-    void showAdvancedSettings();
     void addSnippet(int index);
     void preprocessPage();
     void saveProject();

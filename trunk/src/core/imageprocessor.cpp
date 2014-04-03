@@ -21,6 +21,7 @@
 #include "qipblackandwhiteimage.h"
 #include <QImage>
 #include <QMap>
+#include <QVector>
 
 const uint m_treshold = 0;
 
@@ -40,7 +41,7 @@ ImageProcessor::~ImageProcessor()
 
 QRect ImageProcessor::crop()
 {
-    QIPBlackAndWhiteImage bwimg1 = QIPBlackAndWhiteImage(img.binarize(QIPGrayscaleImage::OtsuBinarization));
+    QIPBlackAndWhiteImage bwimg1 = QIPBlackAndWhiteImage(img.binarize(QIPGrayscaleImage::OtsuMABinarization));
     //QPoint p = bwimg1.cropGrayScaleImage(&img);
     //delete bwimg;
     //bwimg = NULL;
@@ -197,6 +198,43 @@ bool ImageProcessor::isTextHorizontal(QImage &image)
     if (longCount*3 > shortCount)
         return true;
     return true;
+}
+
+void ImageProcessor::cropAngles(QImage &image)
+{
+//    int prevLen = 0;
+    for (int y = 0; y < image.height(); y++) {
+        QRgb * line = (QRgb *) image.scanLine(y);
+        for (int x = 0; x < image.width(); x++) {
+            if ((line[x]&0x00FFFFFF) == 0)
+                line[x] =0xFFFFFFFF;
+            else
+                break;
+        }
+        for (int x = image.width()-1; x > 0; x--) {
+            if ((line[x]&0x00FFFFFF) == 0)
+                line[x] =0xFFFFFFFF;
+            else
+                break;
+        }
+
+    }
+    for (int x = 0; x < image.width(); x++) {
+        for (int y = 0; y < image.height(); y++) {
+            QRgb * line = (QRgb *) image.scanLine(y);
+            if ((line[x]&0x00FFFFFF) == 0)
+                line[x] =0xFFFFFFFF;
+            else
+                break;
+        }
+        for (int y = image.height()-1; y > 0 ; y--) {
+            QRgb * line = (QRgb *) image.scanLine(y);
+            if ((line[x]&0x00FFFFFF) == 0)
+                line[x] =0xFFFFFFFF;
+            else
+                break;
+        }
+    }
 }
 
 

@@ -18,10 +18,8 @@
 */
 
 #include "tpagecollection.h"
+#include "core/imageprocessor.h"
 #include "qsnippet.h"
-#ifdef TIFF_IO
-#include "qxttiffiohandler.h"
-#endif
 #include "settings.h"
 #include <QApplication>
 #include <QFile>
@@ -47,34 +45,8 @@ PageCollection::~PageCollection()
 
 bool PageCollection::appendPage(const QString &fileName)
 {
-    #ifdef TIFF_IO
-    if (fileName.endsWith(".tif", Qt::CaseInsensitive) || fileName.endsWith(".tiff", Qt::CaseInsensitive)) {
-        QXtTiffIOHandler * toh = new QXtTiffIOHandler();
-        QFile f(fileName);
-        f.open(QIODevice::ReadOnly);
-        toh->setDevice(&f);
-        if (toh->canRead()) {
-            if (toh->imageCount() == 1) {
-                delete toh;
-                appendPage(fileName);
-                return true;
-            } else {
-                for (int i = 0; i < toh->imageCount(); i++) {
-                    QImage img;
-                    toh->jumpToImage(i);
-                    toh->read(&img);
-                    QString nfn = Settings::instance()->workingDir() + QString("tiff-page-%1.jpg").arg(i+1);
-                    img.save(nfn, "JPEG");
-                    appendPage(nfn);
-                    QApplication::processEvents();
-                }
-                delete toh;
-                return true;
-            }
-        } else return false;
-    } else 
-    #endif // TIFF_IO
-{
+
+
         unloadAll();
         Page * p = new Page(++pid);
         connect(p,SIGNAL(refreshView()), this, SIGNAL(loadPage()));
@@ -84,17 +56,19 @@ bool PageCollection::appendPage(const QString &fileName)
             index = pages.count() - 1;
             if (Settings::instance()->getAutoDeskew()) {
                 deskew();
+
+                //p->cropYGF();
                 //p->reSaveTmpPage();
             }
             emit addSnippet(index);
-
+            connect(p, SIGNAL(textOut(QString)), SLOT(textOut(QString)));
             return true;
         } else {
             delete p;
             pid--;
             return false;
         }
-    }
+
 }
 
 void PageCollection::newPage(const QString &fileName, qreal rotation, bool preprocessed, bool deskewed)
@@ -416,6 +390,11 @@ void PageCollection::pageRemoved(int id)
         index = pages.count() - 1;
     makePageCurrent(index);
     emit loadPage();
+}
+
+void PageCollection::textOut(const QString &msg)
+{
+    emit messagePosted(msg);
 }
 
 PageCollection *PageCollection::instance()

@@ -99,6 +99,7 @@ public:
     */
     enum BinarizationMethod {
         OtsuBinarization, /*!< Otsu global binarization */
+        OtsuMABinarization,
         NiblackBinarization, /*!< Niblack adaptive binarization */
         SauvolaBinarization, /*!< Sauvola adaptive binarization */
         MaxEntropyBinarization, /*!< Maximum entropy global binarization */
@@ -113,7 +114,7 @@ public:
         \sa equalize
         \sa entropy
     */
-    void histogram(QIPHistogram &result, quint32 x1 = 0, quint32 x2 = 0, quint32 y1 = 0, quint32 y2 = 0) const;
+    void histogram(QIPHistogram &result, quint32 x1=0, quint32 x2 = 0, quint32 y1 = 0, quint32 y2 = 0) const;
 
     /*!
      *  Finds foreground/background threshold using Otsu method for the rectangle specified by (x1,y1) (x2,y2). the reault is returned in result variable. If x1, y1, x2, y2 are set to zero the result for the whole image is calculated.
@@ -231,6 +232,7 @@ private:
     QIPGrayscaleImage applyFilter(int type) const;
     QIPBlackAndWhiteImage niblackSauvolaBinarize(bool sauvola) const;
     QIPBlackAndWhiteImage otsuBinarize() const;
+    QIPBlackAndWhiteImage otsuBinarizeMA() const;
     QIPBlackAndWhiteImage gatosBinarize() const;
     QIPBlackAndWhiteImage maxEntropyBinarize() const;
     QIPBlackAndWhiteImage bradleyBinarize() const;

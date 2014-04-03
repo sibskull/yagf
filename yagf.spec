@@ -2,7 +2,7 @@
 
 Name:    yagf
 Version: 0.9.3.2
-Release: alt2.git%snapshot
+Release: alt1.git%snapshot
 
 Summary: YAGF is a graphical front-end for cuneiform and tesseract OCR tools
 Summary(ru_RU.UTF-8): Оболочка YAGF предоставляет графический интерфейс для систем распознавания текста Cuneiform и Tesseract

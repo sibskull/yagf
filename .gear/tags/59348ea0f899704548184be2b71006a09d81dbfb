@@ -1,0 +1,13 @@
+object 2e62c3bb5d124a324402341b6039aaf7bfa1f287
+type commit
+tag upstream-latest
+tagger Andrey Cherepanov <cas@altlinux.org> 1396521299 +0400
+
+upstream-latest
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEABECAAYFAlM9OVMACgkQSGPA9Knr8TFYIgCeLPWPOor6gHVvikmQGGs4BGrv
+08wAnRdrDOwEibvwzCwU8w1RBMQYl7XK
+=NrRw
+-----END PGP SIGNATURE-----

@@ -155,228 +155,228 @@
 <context>
     <name>MainForm</name>
     <message>
-        <location filename="../mainform.cpp" line="145"/>
+        <location filename="../mainform.cpp" line="146"/>
         <source>Recognition language</source>
         <translation>La langue pour la reconnaissance</translation>
     </message>
     <message>
-        <location filename="../mainform.cpp" line="154"/>
-        <location filename="../mainform.cpp" line="283"/>
-        <location filename="../mainform.cpp" line="295"/>
+        <location filename="../mainform.cpp" line="155"/>
+        <location filename="../mainform.cpp" line="284"/>
+        <location filename="../mainform.cpp" line="296"/>
         <source>Using Cuneiform</source>
         <translation>Utilisation de Cuneiform</translation>
     </message>
     <message>
-        <location filename="../mainform.cpp" line="159"/>
-        <location filename="../mainform.cpp" line="287"/>
-        <location filename="../mainform.cpp" line="291"/>
+        <location filename="../mainform.cpp" line="160"/>
+        <location filename="../mainform.cpp" line="288"/>
+        <location filename="../mainform.cpp" line="292"/>
         <source>Using Tesseract</source>
         <translation>Utilisation de Tesseract</translation>
     </message>
     <message>
-        <location filename="../mainform.cpp" line="167"/>
-        <location filename="../mainform.cpp" line="327"/>
+        <location filename="../mainform.cpp" line="168"/>
+        <location filename="../mainform.cpp" line="328"/>
         <source>Recognition Language</source>
         <translation>La langue pour la reconnaissance</translation>
     </message>
     <message>
-        <location filename="../mainform.cpp" line="249"/>
+        <location filename="../mainform.cpp" line="250"/>
         <source>Loading files...</source>
         <translation>Chargement des fichiers...</translation>
     </message>
     <message>
-        <location filename="../mainform.cpp" line="285"/>
+        <location filename="../mainform.cpp" line="286"/>
         <source>Cuneiform doesn&apos;t support any of selected recognition langualges.
 Falling back to tesseract. Please install tesseract.</source>
         <translation>Cuneiform ne fonctionne pas avec les langualges de reconnaissance sélectionnés.Mise à tesseract.</translation>
     </message>
     <message>
-        <location filename="../mainform.cpp" line="293"/>
+        <location filename="../mainform.cpp" line="294"/>
         <source>Tesseract doesn&apos;t support any of selected recognition langualges.
 Falling back to cueniform. Please install cuneiform.</source>
         <translation>Tesseract ne fonctionne pas avec les langualges de reconnaissance sélectionnés.Mise à cuneiform.</translation>
     </message>
     <message>
-        <location filename="../mainform.cpp" line="336"/>
+        <location filename="../mainform.cpp" line="337"/>
         <source>No PDF converter installed</source>
         <translation>Pas de convertisseur de PDF est installé</translation>
     </message>
     <message>
-        <location filename="../mainform.cpp" line="336"/>
+        <location filename="../mainform.cpp" line="337"/>
         <source>No compatible PDF converter software could be found. Please install either the pdftoppm utility or the GhostScript package (from this the gs command will be required).</source>
         <translation>Pas de convertisseur de PDF est installé.Installez soit pdftoppm ou GhostScript s&apos;il vous plaît.</translation>
     </message>
     <message>
-        <location filename="../mainform.cpp" line="343"/>
-        <location filename="../mainform.cpp" line="677"/>
+        <location filename="../mainform.cpp" line="344"/>
+        <location filename="../mainform.cpp" line="678"/>
         <source>Error</source>
         <translation>Erreur</translation>
     </message>
     <message>
-        <location filename="../mainform.cpp" line="343"/>
+        <location filename="../mainform.cpp" line="344"/>
         <source>PDF file name may not be empty</source>
         <translation>Nom du fichier PDF ne peut pas être vide</translation>
     </message>
     <message>
-        <location filename="../mainform.cpp" line="386"/>
+        <location filename="../mainform.cpp" line="387"/>
         <source>Open Image</source>
         <translation>Charger un fichier image</translation>
     </message>
     <message>
-        <location filename="../mainform.cpp" line="386"/>
+        <location filename="../mainform.cpp" line="387"/>
         <source>Image Files (*.png *.jpg *.jpeg *.bmp *.tiff *.tif *.gif *.pnm *.pgm *.pbm *.ppm)</source>
         <translation>Fichiers image (*.png *.jpg *.jpeg *bmp *.tiff *.tif *.pnm *.ppm)</translation>
     </message>
     <message>
-        <location filename="../mainform.cpp" line="409"/>
+        <location filename="../mainform.cpp" line="410"/>
         <source>There is an unsaved text in the editor window. Do you want to save it?</source>
         <translation>Il est un texte non enregistré dans l&apos;éditeur Voulez-vous l&apos;enregistrer?</translation>
     </message>
     <message>
-        <location filename="../mainform.cpp" line="510"/>
+        <location filename="../mainform.cpp" line="511"/>
         <source>Scanning is impossible</source>
         <translation>La numérisation est impossible</translation>
     </message>
     <message>
-        <location filename="../mainform.cpp" line="510"/>
+        <location filename="../mainform.cpp" line="511"/>
         <source>No scanning front-end is found. Please install XSane in order to perform scanning.</source>
         <translation>Aucun numérisation frontal est disponible. Installez XSane s&apos;il vous plaît.</translation>
     </message>
     <message>
-        <location filename="../mainform.cpp" line="532"/>
+        <location filename="../mainform.cpp" line="533"/>
         <source>Failed to Load Image</source>
         <translation>Impossible de charger le fichier</translation>
     </message>
     <message>
-        <location filename="../mainform.cpp" line="546"/>
+        <location filename="../mainform.cpp" line="547"/>
         <source>Cannot open file %1. Make sure imagemagick and tifftopnm are installed.</source>
         <translation>Impossible de charger le fichier %1. Assurez-vous que tifftoppm et imagemagick sont installés.</translation>
     </message>
     <message>
-        <location filename="../mainform.cpp" line="596"/>
+        <location filename="../mainform.cpp" line="597"/>
         <source>You have selected recognising %1 language using tesseract OCR. Currently the data for this language is not installed in your system. Please install the tesseract data files for &quot;%2&quot; from your system repository.</source>
         <translation>Vous avez choisi reconnaissant %1 langue à l&apos;aide tesseract OCR. Actuellement, les données pour cette langue n&apos;est pas installé sur votre système. S&apos;il vous plaît installer les fichiers de données de tesseract pour \ &quot;%2 \&quot; de votre référentiel de système.</translation>
     </message>
     <message>
-        <location filename="../mainform.cpp" line="608"/>
+        <location filename="../mainform.cpp" line="609"/>
         <source>Starting tesseract failed</source>
         <translation>Impossible to activate tesseract</translation>
     </message>
     <message>
-        <location filename="../mainform.cpp" line="608"/>
-        <location filename="../mainform.cpp" line="635"/>
+        <location filename="../mainform.cpp" line="609"/>
+        <location filename="../mainform.cpp" line="636"/>
         <source>The system said: </source>
         <translation>Le système dit:</translation>
     </message>
     <message>
-        <location filename="../mainform.cpp" line="608"/>
-        <location filename="../mainform.cpp" line="635"/>
+        <location filename="../mainform.cpp" line="609"/>
+        <location filename="../mainform.cpp" line="636"/>
         <source>program not found</source>
         <translation>Programme introuvable</translation>
     </message>
     <message>
-        <location filename="../mainform.cpp" line="635"/>
+        <location filename="../mainform.cpp" line="636"/>
         <source>Starting cuneiform failed</source>
         <translation>Impossible to activate cuneiform</translation>
     </message>
     <message>
-        <location filename="../mainform.cpp" line="677"/>
+        <location filename="../mainform.cpp" line="678"/>
         <source>No image loaded</source>
         <translation>Aucun fichier d&apos;image est chargé</translation>
     </message>
     <message>
-        <location filename="../mainform.cpp" line="696"/>
+        <location filename="../mainform.cpp" line="697"/>
         <source>About YAGF</source>
         <translation type="unfinished"></translation>
     </message>
     <message utf8="true">
-        <location filename="../mainform.cpp" line="696"/>
+        <location filename="../mainform.cpp" line="697"/>
         <source>&lt;p align=&quot;center&quot;&gt;&lt;b&gt;YAGF - Yet Another Graphical Front-end for cuneiform and tesseract OCR engines&lt;/b&gt;&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;Version %1&lt;/p&gt; &lt;p align=&quot;center&quot;&gt;Ⓒ 2009-2014 Andrei Borovsky&lt;/p&gt; This is a free software distributed under GPL v3. Visit &lt;a href=&quot;http://symmetrica.net/cuneiform-linux/yagf-en.html&quot;&gt;http://symmetrica.net/cuneiform-linux/yagf-en.html&lt;/a&gt; for more details.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainform.cpp" line="709"/>
+        <location filename="../mainform.cpp" line="710"/>
         <source>http://symmetrica.net/cuneiform-linux/yagf-en.html</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainform.cpp" line="810"/>
+        <location filename="../mainform.cpp" line="811"/>
         <source>Recognizing pages...</source>
         <translation>Reconnaissant les pages ...</translation>
     </message>
     <message>
-        <location filename="../mainform.cpp" line="810"/>
+        <location filename="../mainform.cpp" line="811"/>
         <source>Abort</source>
         <translation>Abandonner</translation>
     </message>
     <message>
-        <location filename="../mainform.cpp" line="867"/>
+        <location filename="../mainform.cpp" line="868"/>
         <source>Importing pages from the PDF document...</source>
         <translation>Importation de pages du document PDF...</translation>
     </message>
     <message>
-        <location filename="../mainform.cpp" line="869"/>
+        <location filename="../mainform.cpp" line="870"/>
         <source>Cancel</source>
         <translation>Annuller</translation>
     </message>
     <message>
-        <location filename="../mainform.cpp" line="285"/>
-        <location filename="../mainform.cpp" line="293"/>
-        <location filename="../mainform.cpp" line="890"/>
-        <location filename="../mainform.cpp" line="893"/>
-        <location filename="../mainform.cpp" line="901"/>
-        <location filename="../mainform.cpp" line="904"/>
-        <location filename="../mainform.cpp" line="1078"/>
-        <location filename="../mainform.cpp" line="1091"/>
-        <location filename="../mainform.cpp" line="1095"/>
-        <location filename="../mainform.cpp" line="1104"/>
-        <location filename="../mainform.cpp" line="1119"/>
-        <location filename="../mainform.cpp" line="1131"/>
+        <location filename="../mainform.cpp" line="286"/>
+        <location filename="../mainform.cpp" line="294"/>
+        <location filename="../mainform.cpp" line="891"/>
+        <location filename="../mainform.cpp" line="894"/>
+        <location filename="../mainform.cpp" line="902"/>
+        <location filename="../mainform.cpp" line="905"/>
+        <location filename="../mainform.cpp" line="1079"/>
+        <location filename="../mainform.cpp" line="1092"/>
+        <location filename="../mainform.cpp" line="1096"/>
+        <location filename="../mainform.cpp" line="1105"/>
+        <location filename="../mainform.cpp" line="1120"/>
+        <location filename="../mainform.cpp" line="1132"/>
         <source>Warning</source>
         <translation>Avertissement</translation>
     </message>
     <message>
-        <location filename="../mainform.cpp" line="890"/>
+        <location filename="../mainform.cpp" line="891"/>
         <source>cuneiform not found, switching to tesseract</source>
         <translation>pas de cunéiforme, utilisant tesseract</translation>
     </message>
     <message>
-        <location filename="../mainform.cpp" line="893"/>
-        <location filename="../mainform.cpp" line="904"/>
+        <location filename="../mainform.cpp" line="894"/>
+        <location filename="../mainform.cpp" line="905"/>
         <source>No recognition engine found.
 Please install either cuneiform or tesseract</source>
         <translation>Aucun programme de reconnaissance est disponible. Installez cunéiforme ou tesseract s&apos;il vous plaît</translation>
     </message>
     <message>
-        <location filename="../mainform.cpp" line="901"/>
+        <location filename="../mainform.cpp" line="902"/>
         <source>tesseract not found, switching to cuneiform</source>
         <translation>pas de tesseract, utilisant cuneiform</translation>
     </message>
     <message>
-        <location filename="../mainform.cpp" line="954"/>
+        <location filename="../mainform.cpp" line="955"/>
         <source>Save Image</source>
         <translation>Enregistrer le fichier</translation>
     </message>
     <message>
-        <location filename="../mainform.cpp" line="1078"/>
-        <location filename="../mainform.cpp" line="1131"/>
+        <location filename="../mainform.cpp" line="1079"/>
+        <location filename="../mainform.cpp" line="1132"/>
         <source>Failed to detect text areas on this page.
 The page possibly lacks contrast. Try to select blocks manually.</source>
         <translation>Impossible de détecter les modules de texte.</translation>
     </message>
     <message>
-        <location filename="../mainform.cpp" line="1091"/>
+        <location filename="../mainform.cpp" line="1092"/>
         <source>The selected directoy is not empty. Please select or create another one.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainform.cpp" line="1095"/>
-        <location filename="../mainform.cpp" line="1104"/>
+        <location filename="../mainform.cpp" line="1096"/>
+        <location filename="../mainform.cpp" line="1105"/>
         <source>Failed to save the project.</source>
         <translation>Impossible d&apos;enregistrer leprojet.</translation>
     </message>
     <message>
-        <location filename="../mainform.cpp" line="1119"/>
+        <location filename="../mainform.cpp" line="1120"/>
         <source>Failed to load project.</source>
         <translation>Impossible de charger le projet.</translation>
     </message>
@@ -389,369 +389,375 @@ The page possibly lacks contrast. Try to select blocks manually.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainform.ui" line="477"/>
+        <location filename="../mainform.ui" line="486"/>
         <source>&amp;File</source>
         <translation>&amp;Fichier</translation>
     </message>
     <message>
-        <location filename="../mainform.ui" line="496"/>
+        <location filename="../mainform.ui" line="505"/>
         <source>&amp;Help</source>
         <translation>A&amp;ide</translation>
     </message>
     <message>
-        <location filename="../mainform.ui" line="503"/>
+        <location filename="../mainform.ui" line="512"/>
         <source>&amp;Edit</source>
         <translation>&amp;Edition</translation>
     </message>
     <message>
-        <location filename="../mainform.ui" line="530"/>
+        <location filename="../mainform.ui" line="539"/>
         <source>toolBar</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainform.ui" line="562"/>
+        <location filename="../mainform.ui" line="571"/>
         <source>toolBar_2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainform.ui" line="573"/>
+        <location filename="../mainform.ui" line="583"/>
         <source>toolBar_3</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainform.ui" line="588"/>
+        <location filename="../mainform.ui" line="598"/>
         <source>S&amp;can...</source>
         <translation>S&amp;canner...</translation>
     </message>
     <message>
-        <location filename="../mainform.ui" line="591"/>
+        <location filename="../mainform.ui" line="601"/>
         <source>Scanning images using XSane...</source>
         <translation>Numériser des images avec XSane...</translation>
     </message>
     <message>
-        <location filename="../mainform.ui" line="594"/>
+        <location filename="../mainform.ui" line="604"/>
         <source>Ctrl+N</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainform.ui" line="603"/>
+        <location filename="../mainform.ui" line="613"/>
         <source>&amp;Save text...</source>
         <translation>&amp;Enregistrer le text...</translation>
     </message>
     <message>
-        <location filename="../mainform.ui" line="606"/>
+        <location filename="../mainform.ui" line="616"/>
         <source>Ctrl+S</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainform.ui" line="615"/>
+        <location filename="../mainform.ui" line="625"/>
         <source>&amp;Open Image...</source>
         <translation>&amp;Charger un fichier image...</translation>
     </message>
     <message>
-        <location filename="../mainform.ui" line="618"/>
+        <location filename="../mainform.ui" line="628"/>
         <source>Open Image</source>
         <translation>Charger un fichier image</translation>
     </message>
     <message>
-        <location filename="../mainform.ui" line="621"/>
+        <location filename="../mainform.ui" line="631"/>
         <source>Ctrl+O</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainform.ui" line="630"/>
+        <location filename="../mainform.ui" line="640"/>
         <source>&amp;Recognize</source>
         <translation>&amp;Reconnaître</translation>
     </message>
     <message>
-        <location filename="../mainform.ui" line="633"/>
+        <location filename="../mainform.ui" line="643"/>
         <source>Recognizing text...</source>
         <translation>reconnaissance...</translation>
     </message>
     <message>
-        <location filename="../mainform.ui" line="636"/>
+        <location filename="../mainform.ui" line="646"/>
         <source>Ctrl+R</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainform.ui" line="641"/>
+        <location filename="../mainform.ui" line="651"/>
         <source>Choose &amp;Language</source>
         <translation>Choisir la &amp;langue</translation>
     </message>
     <message>
-        <location filename="../mainform.ui" line="646"/>
+        <location filename="../mainform.ui" line="656"/>
         <source>Quit</source>
         <translation>Quitter</translation>
     </message>
     <message>
-        <location filename="../mainform.ui" line="649"/>
+        <location filename="../mainform.ui" line="659"/>
         <source>Ctrl+Q</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainform.ui" line="658"/>
+        <location filename="../mainform.ui" line="668"/>
         <source>Previous page</source>
         <translation>Page précédente</translation>
     </message>
     <message>
-        <location filename="../mainform.ui" line="661"/>
+        <location filename="../mainform.ui" line="671"/>
         <source>Move to previous image</source>
         <translation>Déplacer à l&apos;image précédente</translation>
     </message>
     <message>
-        <location filename="../mainform.ui" line="670"/>
+        <location filename="../mainform.ui" line="680"/>
         <source>Next page</source>
         <translation>Page suivante</translation>
     </message>
     <message>
-        <location filename="../mainform.ui" line="673"/>
+        <location filename="../mainform.ui" line="683"/>
         <source>Move to next image</source>
         <translation>Déplacer à l&apos;image suivante</translation>
     </message>
     <message>
-        <location filename="../mainform.ui" line="678"/>
         <location filename="../mainform.ui" line="688"/>
+        <location filename="../mainform.ui" line="698"/>
         <source>Online Help</source>
         <translation>Aide en ligne</translation>
     </message>
     <message>
-        <location filename="../mainform.ui" line="683"/>
+        <location filename="../mainform.ui" line="693"/>
         <source>About...</source>
         <translation>Sur le programme...</translation>
     </message>
     <message>
-        <location filename="../mainform.ui" line="697"/>
+        <location filename="../mainform.ui" line="707"/>
         <source>Copy Text to Clipboard</source>
         <translation>Copier le texte dans le presse-papier</translation>
     </message>
     <message>
-        <location filename="../mainform.ui" line="700"/>
+        <location filename="../mainform.ui" line="710"/>
         <source>Copy recognized text to clipboard</source>
         <translation>Copier le texte dans le presse-papier</translation>
     </message>
     <message>
-        <location filename="../mainform.ui" line="709"/>
+        <location filename="../mainform.ui" line="719"/>
         <source>Recognize &amp;All Pages</source>
         <translation>Reconnaître &amp;toutes les pages</translation>
     </message>
     <message>
-        <location filename="../mainform.ui" line="712"/>
+        <location filename="../mainform.ui" line="722"/>
         <source>Recognize All Pages</source>
         <translation>Reconnaître toutes les pages</translation>
     </message>
     <message>
-        <location filename="../mainform.ui" line="715"/>
+        <location filename="../mainform.ui" line="725"/>
         <source>Ctrl+A</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainform.ui" line="724"/>
-        <location filename="../mainform.ui" line="727"/>
+        <location filename="../mainform.ui" line="734"/>
+        <location filename="../mainform.ui" line="737"/>
         <source>Clear all blocks</source>
         <translation>Enlever tous les modules</translation>
     </message>
     <message>
-        <location filename="../mainform.ui" line="736"/>
-        <location filename="../mainform.ui" line="739"/>
+        <location filename="../mainform.ui" line="746"/>
+        <location filename="../mainform.ui" line="749"/>
         <source>Delete the current block</source>
         <translation>Enlever le module actif</translation>
     </message>
     <message>
-        <location filename="../mainform.ui" line="748"/>
+        <location filename="../mainform.ui" line="758"/>
         <source>Recognize block</source>
         <translation>Reconnaître le module</translation>
     </message>
     <message>
-        <location filename="../mainform.ui" line="751"/>
+        <location filename="../mainform.ui" line="761"/>
         <source>Recognize this block</source>
         <translation>Reconnaître cet module</translation>
     </message>
     <message>
-        <location filename="../mainform.ui" line="756"/>
+        <location filename="../mainform.ui" line="766"/>
         <source>Clear numbers</source>
         <translation>Enlever numération</translation>
     </message>
     <message>
-        <location filename="../mainform.ui" line="759"/>
+        <location filename="../mainform.ui" line="769"/>
         <source>Crear block numbering</source>
         <translation>Enlever numération des modules</translation>
     </message>
     <message>
-        <location filename="../mainform.ui" line="771"/>
+        <location filename="../mainform.ui" line="781"/>
         <source>Check spelling</source>
         <translation>Vérifier l&apos;orthographe</translation>
     </message>
     <message>
-        <location filename="../mainform.ui" line="780"/>
+        <location filename="../mainform.ui" line="790"/>
         <source>Save current image...</source>
         <translation>Enregistrer l&apos;image active...</translation>
     </message>
     <message>
-        <location filename="../mainform.ui" line="783"/>
+        <location filename="../mainform.ui" line="793"/>
         <source>Save currently opened image in its real size</source>
         <translation>Enregistrer l&apos;image active dans sa taille réelle</translation>
     </message>
     <message>
-        <location filename="../mainform.ui" line="792"/>
+        <location filename="../mainform.ui" line="802"/>
         <source>Save block</source>
         <translation>Enregistrer le module</translation>
     </message>
     <message>
-        <location filename="../mainform.ui" line="795"/>
+        <location filename="../mainform.ui" line="805"/>
         <source>Save the current block to the image file</source>
         <translation>Enregistrer le module actif comme l&apos;image</translation>
     </message>
     <message>
-        <location filename="../mainform.ui" line="804"/>
+        <location filename="../mainform.ui" line="814"/>
         <source>Deskew</source>
         <translation>Corriger inclinaison</translation>
     </message>
     <message>
-        <location filename="../mainform.ui" line="807"/>
+        <location filename="../mainform.ui" line="817"/>
         <source>Correct the page skew </source>
         <translation>Corriger la page inclinaison</translation>
     </message>
     <message>
-        <location filename="../mainform.ui" line="819"/>
+        <location filename="../mainform.ui" line="829"/>
         <source>Select HTML format</source>
         <translation>Choisir le format HTML</translation>
     </message>
     <message>
-        <location filename="../mainform.ui" line="822"/>
+        <location filename="../mainform.ui" line="832"/>
         <source>Select HTML format as recognition output</source>
         <translation>Choisir le format HTML</translation>
     </message>
     <message>
-        <location filename="../mainform.ui" line="831"/>
-        <location filename="../mainform.ui" line="834"/>
+        <location filename="../mainform.ui" line="841"/>
+        <location filename="../mainform.ui" line="844"/>
         <source>Larger view</source>
         <translation>Pllus large</translation>
     </message>
     <message>
-        <location filename="../mainform.ui" line="843"/>
-        <location filename="../mainform.ui" line="846"/>
+        <location filename="../mainform.ui" line="853"/>
+        <location filename="../mainform.ui" line="856"/>
         <source>Smaller view</source>
         <translation>Plus petit</translation>
     </message>
     <message>
-        <location filename="../mainform.ui" line="855"/>
-        <location filename="../mainform.ui" line="858"/>
+        <location filename="../mainform.ui" line="865"/>
+        <location filename="../mainform.ui" line="868"/>
         <source>Rotate 90 CCW</source>
         <translation>Tourner 90 CCW</translation>
     </message>
     <message>
-        <location filename="../mainform.ui" line="867"/>
-        <location filename="../mainform.ui" line="870"/>
+        <location filename="../mainform.ui" line="877"/>
+        <location filename="../mainform.ui" line="880"/>
         <source>Rotate 180</source>
         <translation>Tourner 180</translation>
     </message>
     <message>
-        <location filename="../mainform.ui" line="879"/>
-        <location filename="../mainform.ui" line="882"/>
+        <location filename="../mainform.ui" line="889"/>
+        <location filename="../mainform.ui" line="892"/>
         <source>Rotate 90 CW</source>
         <translation>Tourner 90 CW</translation>
     </message>
     <message>
-        <location filename="../mainform.ui" line="887"/>
+        <location filename="../mainform.ui" line="897"/>
         <source>&lt;&lt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainform.ui" line="890"/>
+        <location filename="../mainform.ui" line="900"/>
         <source>Hide/Show Toolbar</source>
         <translation>Cacher/montrer la barre d&apos; instruments</translation>
     </message>
     <message>
-        <location filename="../mainform.ui" line="899"/>
+        <location filename="../mainform.ui" line="909"/>
         <source>Import from PDF...</source>
         <translation>Importater de PDF...</translation>
     </message>
     <message>
-        <location filename="../mainform.ui" line="902"/>
+        <location filename="../mainform.ui" line="912"/>
         <source>Import pages from PDF documents</source>
         <translation>Importer des pages des documents PDF</translation>
     </message>
     <message>
-        <location filename="../mainform.ui" line="911"/>
+        <location filename="../mainform.ui" line="921"/>
         <source>Settings</source>
         <translation>Réglages</translation>
     </message>
     <message>
-        <location filename="../mainform.ui" line="920"/>
+        <location filename="../mainform.ui" line="930"/>
         <source>Paste Image</source>
         <translation>Coller une image</translation>
     </message>
     <message>
-        <location filename="../mainform.ui" line="923"/>
+        <location filename="../mainform.ui" line="933"/>
         <source>Paste image from clipboard</source>
         <translation>Coller une image du presse-papiers</translation>
     </message>
     <message>
-        <location filename="../mainform.ui" line="932"/>
-        <location filename="../mainform.ui" line="935"/>
+        <location filename="../mainform.ui" line="942"/>
+        <location filename="../mainform.ui" line="945"/>
         <source>Select Text Area</source>
         <translation>Sélectionner le texte module</translation>
     </message>
     <message>
-        <location filename="../mainform.ui" line="940"/>
+        <location filename="../mainform.ui" line="950"/>
         <source>Deskew  Block</source>
         <translation>Corriger l&apos;inclinaison du module</translation>
     </message>
     <message>
-        <location filename="../mainform.ui" line="943"/>
+        <location filename="../mainform.ui" line="953"/>
         <source>Deskew the current block</source>
         <translation>Corriger l&apos;inclinaison du module actif</translation>
     </message>
     <message>
-        <location filename="../mainform.ui" line="952"/>
+        <location filename="../mainform.ui" line="962"/>
         <source>select multiple blocks</source>
         <translation>Sélectionner plusieurs modules</translation>
     </message>
     <message>
-        <location filename="../mainform.ui" line="955"/>
+        <location filename="../mainform.ui" line="965"/>
         <source>Splits text into several blocks</source>
         <translation>Diviser la page en plusieurs modules</translation>
     </message>
     <message>
-        <location filename="../mainform.ui" line="960"/>
+        <location filename="../mainform.ui" line="970"/>
         <source>Toggle Large/Small Icons</source>
         <translation>Changer la taille de boutons</translation>
     </message>
     <message>
-        <location filename="../mainform.ui" line="969"/>
-        <location filename="../mainform.ui" line="972"/>
+        <location filename="../mainform.ui" line="979"/>
+        <location filename="../mainform.ui" line="982"/>
         <source>Select Recognition Language</source>
         <translation>Choisir la langue pour la reconnaissance</translation>
     </message>
     <message>
-        <location filename="../mainform.ui" line="977"/>
+        <location filename="../mainform.ui" line="987"/>
         <source>Save Project...</source>
         <translation>Enregistrer le projet...</translation>
     </message>
     <message>
-        <location filename="../mainform.ui" line="982"/>
+        <location filename="../mainform.ui" line="992"/>
         <source>Load Project...</source>
         <translation>Charger le projet...</translation>
     </message>
     <message>
-        <location filename="../mainform.ui" line="987"/>
+        <location filename="../mainform.ui" line="997"/>
         <source>Select Recognition Languages...</source>
         <translation>Choisir les langues pour la reconnaissance...</translation>
     </message>
     <message>
-        <location filename="../mainform.ui" line="990"/>
+        <location filename="../mainform.ui" line="1000"/>
         <source>Select Recognition Languages</source>
         <translation>Choisir les langues pour la reconnaissance</translation>
     </message>
     <message>
-        <location filename="../mainform.ui" line="995"/>
+        <location filename="../mainform.ui" line="1005"/>
         <source>Select All Text</source>
         <translation>Sélectionner tout le texte</translation>
     </message>
     <message>
-        <location filename="../mainform.ui" line="998"/>
+        <location filename="../mainform.ui" line="1008"/>
         <source>Select all the recognized text</source>
         <translation>Sélectionner tout le texte reconnu</translation>
+    </message>
+    <message>
+        <location filename="../mainform.ui" line="1017"/>
+        <location filename="../mainform.ui" line="1020"/>
+        <source>Select languages for recognition</source>
+        <translation>Choisir les langues pour la reconnaissance</translation>
     </message>
 </context>
 <context>
@@ -800,28 +806,28 @@ The page possibly lacks contrast. Try to select blocks manually.</source>
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../mainform.cpp" line="941"/>
+        <location filename="../mainform.cpp" line="942"/>
         <source>Warning</source>
         <translation>Avertissement</translation>
     </message>
     <message>
-        <location filename="../mainform.cpp" line="941"/>
+        <location filename="../mainform.cpp" line="942"/>
         <source>Failed to save the image</source>
         <translation>Impossible d&apos;enregistrer le fichier</translation>
     </message>
     <message>
-        <location filename="../mainform.cpp" line="948"/>
+        <location filename="../mainform.cpp" line="949"/>
         <source>JPEG Files (*.jpg)</source>
         <translation>Fichiers JPEG</translation>
     </message>
     <message>
-        <location filename="../mainform.cpp" line="949"/>
+        <location filename="../mainform.cpp" line="950"/>
         <source>PNG Files (*.png)</source>
         <translation>Fichiers PNG</translation>
     </message>
     <message>
-        <location filename="../mainform.cpp" line="1085"/>
-        <location filename="../mainform.cpp" line="1113"/>
+        <location filename="../mainform.cpp" line="1086"/>
+        <location filename="../mainform.cpp" line="1114"/>
         <source>Select Project Directory</source>
         <translation>Choisissez le catalogue du projet</translation>
     </message>

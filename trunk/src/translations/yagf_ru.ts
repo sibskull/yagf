@@ -582,6 +582,10 @@ Falling back to cueniform. Please install cuneiform.</source>
         <source>Select all the recognized text</source>
         <translation>Выделить весь распознанный текст</translation>
     </message>
+    <message>
+        <source>Select languages for recognition</source>
+        <translation>Выбрать языки для распознавания</translation>
+    </message>
 </context>
 <context>
     <name>PopplerDialog</name>

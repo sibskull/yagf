@@ -751,6 +751,15 @@ void MainForm::clearTmpFiles()
 
 void MainForm::fillLangBox()
 {
+    if (!slAction->isVisible()) {
+        if (settings->getSelectedLanguages().count() > 1) {
+            slAction->setVisible(true);
+        }
+    } else {
+        if (settings->getSelectedLanguages().count() == 1) {
+            slAction->setVisible(false);
+        }
+    }
     disconnect(selectLangsBox, SIGNAL(currentIndexChanged(int)), this, SLOT(newLanguageSelected(int)));
     QStringList sl = Settings::instance()->getSelectedLanguages();
     settings->startLangPair();

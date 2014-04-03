@@ -75,6 +75,8 @@ void Settings::readSettings(const QString &path)
     if (tessdataPath.isEmpty())
         findTessDataPath();
     languages = settings->value("ocr/selectedLanguages", QStringList(language)).toStringList();
+    if (version == "0.9.3")
+        languages = QStringList(language);
     cropLoaded =  settings->value("processing/crop1", QVariant(true)).toBool();
     autoDeskew =  settings->value("processing/deskew", QVariant(true)).toBool();
     preprocess = settings->value("processing/preprocess", QVariant(true)).toBool();
@@ -99,7 +101,7 @@ bool Settings::firstRun()
 
 void Settings::writeSettings()
 {
-    settings->setValue("program/version", QString::fromUtf8("0.9.3"));
+    settings->setValue("program/version", QString::fromUtf8("0.9.3.2"));
     settings->setValue("mainwindow/size", size);
     settings->setValue("mainwindow/iconSize", iconSize);
     settings->setValue("mainwindow/pos", position);

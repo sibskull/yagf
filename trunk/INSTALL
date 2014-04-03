@@ -1,6 +1,11 @@
 These are generic installation instructions.
 
 YAGF requires Qt 4.6 or later and Aspell libraries.
+Note about Qt 5: YAGF cannot be built with Qt 5 yet.
+If your system uses Qt 5 by default you should install Qt 4 as well.
+You should then find where qmake for Qt 4 is and uncomment the following line in CMakeLists.txt:
+set(QT_QMAKE_EXECUTABLE /usr/bin/qmake-qt4)
+If qmake for QT 4 is called differently in you system you should edit the path portion of this line.
 
 You will need CMake to build YAGF from sources.
 There are two modes for building YAGF with CMake: in-source and out-source.

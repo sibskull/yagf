@@ -1,5 +1,6 @@
 project(yagf C CXX)
 cmake_minimum_required(VERSION 2.6.0)
+#set(QT_QMAKE_EXECUTABLE /usr/bin/qmake-qt4)
 if (NOT DEFINED  ${CMAKE_INSTALL_PREFIX})
 set(CPACK_INSTALL_PREFIX /usr/)
 set (CMAKE_INSTALL_PREFIX /usr/)

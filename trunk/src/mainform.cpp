@@ -140,6 +140,7 @@ MainForm::MainForm(QWidget *parent): QMainWindow(parent)
     connect(graphicsInput, SIGNAL(deleteBlock(QRect)), pages, SLOT(deleteBlock(QRect)));
     connect(sideBar, SIGNAL(fileRemoved(int)), pages, SLOT(pageRemoved(int)));
     connect (pages, SIGNAL(addSnippet(int)), this, SLOT(addSnippet(int)));
+    connect(actionSelect_languages, SIGNAL(triggered()), this, SLOT(selectLanguages()));
 
     selectLangsBox = new QComboBox();
     selectLangsBox->setToolTip(trUtf8("Recognition language"));
@@ -1153,5 +1154,11 @@ void MainForm::cancelPDF()
 {
     pdfx->removeRemaining();
    //pdfPD.setLabelText(trUtf8("Opening already imported pages..."));
-   // pdfPD.setCancelButton(0);
+    // pdfPD.setCancelButton(0);
+}
+
+void MainForm::selectLanguages()
+{
+    LangSelectDialog lsd(this); // ;)
+    lsd.exec();
 }

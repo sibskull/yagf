@@ -97,6 +97,7 @@ private slots:
     void LangTextChanged(const QString &text);
     void SelectRecognitionLanguages();
     void cancelPDF();
+    void selectLanguages();
 private:
     virtual void closeEvent(QCloseEvent *event);
     void initSettings();

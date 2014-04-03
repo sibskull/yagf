@@ -74,12 +74,12 @@ void Settings::readSettings(const QString &path)
     tessdataPath = settings->value("ocr/tessData", QVariant(tessdataPath)).toString();
     if (tessdataPath.isEmpty())
         findTessDataPath();
-    languages = settings->value("ocr/selectedLanguages").toStringList();
+    languages = settings->value("ocr/selectedLanguages", QStringList(language)).toStringList();
     cropLoaded =  settings->value("processing/crop1", QVariant(true)).toBool();
     autoDeskew =  settings->value("processing/deskew", QVariant(true)).toBool();
     preprocess = settings->value("processing/preprocess", QVariant(true)).toBool();
     size = settings->value("mainwindow/size", QSize(800, 600)).toSize();
-    iconSize = settings->value("mainwindow/iconSize", QSize(48, 48)).toSize();
+    iconSize = settings->value("mainwindow/iconSize", QSize(24, 24)).toSize();
     position = settings->value("mainwindow/pos", QPoint(0, 0)).toPoint();
     fullScreen = settings->value("mainwindow/fullScreen", QVariant(false)).toBool();
     darkBackgroundThreshold = settings->value("tweaks/darkBackgroundThreshold", QVariant(198)).toInt();

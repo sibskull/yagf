@@ -56,5 +56,6 @@
         <file>images/installed.png</file>
         <file>images/box.png</file>
         <file>images/notinst.png</file>
+        <file>images/langs.png</file>
     </qresource>
 </RCC>

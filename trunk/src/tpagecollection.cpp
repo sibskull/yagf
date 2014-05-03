@@ -18,6 +18,7 @@
 */
 
 #include "tpagecollection.h"
+#include "tiffimporter.h"
 #include "core/imageprocessor.h"
 #include "qsnippet.h"
 #include "settings.h"
@@ -43,32 +44,41 @@ PageCollection::~PageCollection()
     clear();
 }
 
-bool PageCollection::appendPage(const QString &fileName)
+void PageCollection::appendPages(const QStringList &files)
 {
-
-
-        unloadAll();
-        Page * p = new Page(++pid);
-        connect(p,SIGNAL(refreshView()), this, SIGNAL(loadPage()));
-        if (p->loadFile(fileName, 1, false)) {
-
-            pages.append(p);
-            index = pages.count() - 1;
-            if (Settings::instance()->getAutoDeskew()) {
-                deskew();
-
-                //p->cropYGF();
-                //p->reSaveTmpPage();
-            }
-            emit addSnippet(index);
-            connect(p, SIGNAL(textOut(QString)), SLOT(textOut(QString)));
-            return true;
-        } else {
-            delete p;
-            pid--;
-            return false;
+    QStringList localFiles = files;
+    if (files.count() == 0)
+        return;
+    if (files.count() == 1) {
+        if (files.at(0).endsWith(".tiff", Qt::CaseInsensitive)||files.at(0).endsWith(".tif", Qt::CaseInsensitive)) {
+            localFiles = loadTIFF(localFiles.at(0));
+            appendPages(localFiles);
         }
-
+        else
+        {
+            emit fileBeginLoad(files.at(0));
+            if (!appendPage(files.at(0)))  //todo tiff
+                emit fileFinishLoad(files.at(0), false);
+            else
+                emit fileFinishLoad(files.at(0), true);
+        }
+        return;
+    } else {
+        for (int i = 0; i < localFiles.count(); i++) {
+            emit fileProgress(localFiles.at(i), i, localFiles.count());
+            if (files.at(0).endsWith(".tiff", Qt::CaseInsensitive)||files.at(0).endsWith(".tif", Qt::CaseInsensitive)) {
+                QStringList tiffFiles = loadTIFF(localFiles.at(i));
+                localFiles.removeAll(localFiles.at(i));
+                for (int j = tiffFiles.count()-1; j>-1; j--)
+                    localFiles.insert(i, tiffFiles.at(j)); // check if i is > count
+            }
+            if (!appendPage(files.at(0))) {
+                emit fileEndProgress();
+                return;
+            }
+        }
+        emit fileEndProgress();
+    }
 }
 
 void PageCollection::newPage(const QString &fileName, qreal rotation, bool preprocessed, bool deskewed)
@@ -371,6 +381,38 @@ int PageCollection::id2Index(int id)
             return pages.indexOf(p);
     }
     return -1;
+}
+
+bool PageCollection::appendPage(const QString &file)
+{
+    unloadAll();
+    Page * p = new Page(++pid);
+    connect(p,SIGNAL(refreshView()), this, SIGNAL(loadPage()));
+    if (p->loadFile(file, 1, false)) {
+               pages.append(p);
+               index = pages.count() - 1;
+               if (Settings::instance()->getAutoDeskew()) {
+                   deskew();
+               }
+               emit addSnippet(index);
+               connect(p, SIGNAL(textOut(QString)), SLOT(textOut(QString)));
+               return true;
+    } else {
+        delete p;
+        pid--;
+        return false;
+    }
+}
+
+QStringList PageCollection::loadTIFF(const QString &fn)
+{
+    TiffImporter ti(fn);
+    ti.exec();
+    QStringList files = ti.extractedFiles();
+    if (!files.count()) {
+        emit messagePosted("Critical#Cannot open file %1. Make sure imagemagick and tifftopnm are installed.");
+    }
+    return files;
 }
 
 void PageCollection::pageSelected(int id)

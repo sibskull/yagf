@@ -9,7 +9,7 @@
     </message>
     <message>
         <source>YAGF Settings</source>
-        <translation>Настройки YAGF</translation>
+        <translation>Параметры YAGF</translation>
     </message>
     <message>
         <source>OCR and Languages</source>
@@ -21,15 +21,15 @@
     </message>
     <message>
         <source>Program Appearance</source>
-        <translation>Внешний вид программы</translation>
+        <translation>Внешний вид</translation>
     </message>
     <message>
         <source>Cuneiform</source>
-        <translation></translation>
+        <translation>Cuneiform</translation>
     </message>
     <message>
         <source>Tesseract</source>
-        <translation></translation>
+        <translation>Tesseract</translation>
     </message>
     <message>
         <source>Path to Tesseract Data Files</source>
@@ -81,7 +81,7 @@
     </message>
     <message>
         <source>Toolbar Icon Size</source>
-        <translation>Размер иконок</translation>
+        <translation>Размер значков на панели инструментов</translation>
     </message>
     <message>
         <source>Normal</source>
@@ -108,11 +108,11 @@
     </message>
     <message>
         <source>Cuneiform</source>
-        <translation></translation>
+        <translation>Cuneiform</translation>
     </message>
     <message>
         <source>Tesseract</source>
-        <translation></translation>
+        <translation>Tesseract</translation>
     </message>
     <message>
         <source>Installed</source>
@@ -135,7 +135,7 @@
     </message>
     <message>
         <source>Image Files (*.png *.jpg *.jpeg *.bmp *.tiff *.tif *.gif *.pnm *.pgm *.pbm *.ppm)</source>
-        <translation>Графические файлы  (*.png *.jpg *.jpeg *.bmp *.tiff *.tif *.gif *.pnm *.pgm *.pbm *.ppm)</translation>
+        <translation>Графические файлы (*.png *.jpg *.jpeg *.bmp *.tiff *.tif *.gif *.pnm *.pgm *.pbm *.ppm)</translation>
     </message>
     <message>
         <source>There is an unsaved text in the editor window. Do you want to save it?</source>
@@ -179,7 +179,7 @@
     </message>
     <message>
         <source>Recognizing pages...</source>
-        <translation>Распознаем страницы...</translation>
+        <translation>Распознаётся текст...</translation>
     </message>
     <message>
         <source>Abort</source>
@@ -195,7 +195,7 @@
     </message>
     <message>
         <source>No compatible PDF converter software could be found. Please install either the pdftoppm utility or the GhostScript package (from this the gs command will be required).</source>
-        <translation>Не найдены подходящие конвертeры PDF. Установите, пожалуйста, утилиту pdftoppm или пакет GhostScript (из которого требуется программа gs).</translation>
+        <translation>Не найдены подходящие конвертeры PDF. Установите утилиту pdftoppm или пакет GhostScript (из которого требуется программа gs).</translation>
     </message>
     <message>
         <source>PDF file name may not be empty</source>
@@ -263,11 +263,11 @@ The page possibly lacks contrast. Try to select blocks manually.</source>
     <message>
         <source>Loading files...</source>
         <translatorcomment>Загрузка файлов...</translatorcomment>
-        <translation></translation>
+        <translation>Загрузка файлов...</translation>
     </message>
     <message>
         <source>You have selected recognising %1 language using tesseract OCR. Currently the data for this language is not installed in your system. Please install the tesseract data files for &quot;%2&quot; from your system repository.</source>
-        <translation>Вы выбрали %1 язык для распознавания, используя программу tesseract. Данные для распознавания этого языка в настоящее время не установлены. Пожалуйста установите языковой пакет %2 из репозитория вашей системы.</translation>
+        <translation>Вы выбрали %1 язык для распознавания, используя программу tesseract. Данные для распознавания этого языка в настоящее время не установлены. Установите языковой пакет %2 из репозитория вашей системы.</translation>
     </message>
     <message utf8="true">
         <source>&lt;p align=&quot;center&quot;&gt;&lt;b&gt;YAGF - Yet Another Graphical Front-end for cuneiform and tesseract OCR engines&lt;/b&gt;&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;Version %1&lt;/p&gt; &lt;p align=&quot;center&quot;&gt;Ⓒ 2009-2014 Andrei Borovsky&lt;/p&gt; This is a free software distributed under GPL v3. Visit &lt;a href=&quot;http://symmetrica.net/cuneiform-linux/yagf-en.html&quot;&gt;http://symmetrica.net/cuneiform-linux/yagf-en.html&lt;/a&gt; for more details.</source>
@@ -300,7 +300,7 @@ Falling back to cueniform. Please install cuneiform.</source>
     </message>
     <message>
         <source>Scanning images using XSane...</source>
-        <translation>Сканируем страницу с помощью XSane...</translation>
+        <translation>Сканирование страниц с помощью XSane...</translation>
     </message>
     <message>
         <source>&amp;Save text...</source>
@@ -320,7 +320,7 @@ Falling back to cueniform. Please install cuneiform.</source>
     </message>
     <message>
         <source>Recognizing text...</source>
-        <translation>Распознать текст...</translation>
+        <translation>Распознавание текста...</translation>
     </message>
     <message>
         <source>Choose &amp;Language</source>
@@ -348,7 +348,7 @@ Falling back to cueniform. Please install cuneiform.</source>
     </message>
     <message>
         <source>Online Help</source>
-        <translation>Справка онлайн</translation>
+        <translation>Онлайновая справка</translation>
     </message>
     <message>
         <source>About...</source>
@@ -468,7 +468,7 @@ Falling back to cueniform. Please install cuneiform.</source>
     </message>
     <message>
         <source>Recognize &amp;All Pages</source>
-        <translation>Распознать &amp;всё </translation>
+        <translation>Распознать &amp;всё</translation>
     </message>
     <message>
         <source>Recognize All Pages</source>
@@ -572,7 +572,7 @@ Falling back to cueniform. Please install cuneiform.</source>
     </message>
     <message>
         <source>Settings</source>
-        <translation>Настройки</translation>
+        <translation>Настроить...</translation>
     </message>
     <message>
         <source>Select All Text</source>
@@ -714,7 +714,7 @@ Try to install an appropriate aspell dictionary.</source>
     </message>
     <message>
         <source>Russian-English</source>
-        <translation>Русский-английский</translation>
+        <translation>Русский и английский</translation>
     </message>
     <message>
         <source>Spanish</source>
@@ -818,6 +818,53 @@ Try to install an appropriate aspell dictionary.</source>
     <message>
         <source>Drop files here</source>
         <translation>Перетащите файлы сюда</translation>
+    </message>
+</context>
+<context>
+    <name>TextEditor</name>
+    <message>
+        <source>Text Files (*.txt)</source>
+        <translation>Текстовые файлы (*.txt)</translation>
+    </message>
+    <message>
+        <source>HTML Files (*.html)</source>
+        <translation>Файлы HTML (*.html)</translation>
+    </message>
+    <message>
+        <source>Save Text</source>
+        <translation>Сохранить текст</translation>
+    </message>
+    <message>
+        <source>Undo	Ctrl+Z</source>
+        <translation>Отменить	Ctrl+Z</translation>
+    </message>
+    <message>
+        <source>Redo	Ctrl+Shift+Z</source>
+        <translation>Вернуть	Ctrl+Shift+Z</translation>
+    </message>
+    <message>
+        <source>Select All	Ctrl+A</source>
+        <translation>Выбрать всё	Ctrl+A</translation>
+    </message>
+    <message>
+        <source>Cut	Ctrl+X</source>
+        <translation>Вырезать	Ctrl+X</translation>
+    </message>
+    <message>
+        <source>Copy	Ctrl+C</source>
+        <translation>Копировать	Ctrl+C</translation>
+    </message>
+    <message>
+        <source>Paste	Ctrl+V</source>
+        <translation>Вставить	Ctrl+V</translation>
+    </message>
+    <message>
+        <source>Larger Font	Ctrl++</source>
+        <translation>Увеличить шрифт	Ctrl++</translation>
+    </message>
+    <message>
+        <source>Smaller Font	Ctrl+-</source>
+        <translation>Уменьшить шрифт	Ctrl+-</translation>
     </message>
 </context>
 </TS>

@@ -33,7 +33,6 @@ class PageCollection : public QObject
 public:
     static PageCollection * instance();
     static void clearCollection();
-    bool appendPage(const QString &fileName);
     void newPage(const QString &fileName, qreal rotation, bool preprocessed, bool deskewed);
     int count();
     bool makePageCurrent(int index);
@@ -63,6 +62,7 @@ public:
     void reloadPage();
     void unloadAll();
 public slots:
+    void appendPages(const QStringList &files);
     void makeLarger();
     void makeSmaller();
     void rotate90CW();
@@ -80,6 +80,10 @@ signals:
     void addSnippet(int index);
     void cleared();
     void messagePosted(const QString &msg);
+    void fileProgress(const QString &fn, int current, int total);
+    void fileEndProgress();
+    void fileBeginLoad(const QString &fn);
+    void fileFinishLoad(const QString &fn, bool result);
 private slots:
     void pageSelected(int id);
     void pageRemoved(int id);
@@ -90,6 +94,8 @@ private:
     ~PageCollection();
      Page * cp();
      int id2Index(int id);
+      bool appendPage(const QString &file);
+     QStringList loadTIFF(const QString &fn);
 private:
     QVector<Page *> pages;
     int index;

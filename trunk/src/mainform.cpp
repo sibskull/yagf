@@ -29,7 +29,6 @@
 #include "scanner.h"
 #include "projectmanager.h"
 #include "langselectdialog.h"
-#include "tiffimporter.h"
 #include "busyform.h"
 #include <signal.h>
 #include <QComboBox>
@@ -236,33 +235,7 @@ void MainForm::loadFromCommandLine()
 
 void MainForm::loadFiles(const QStringList &files)
 {
-    if (files.count() == 1) {
-        if (QFile::exists(files.at(0))) {
-            if (files.at(0).endsWith(".tiff", Qt::CaseInsensitive)||files.at(0).endsWith(".tif", Qt::CaseInsensitive))
-                loadTIFF(files.at(0));
-            else
-                loadFile(files.at(0));
-        }
-        return;
-    }
-    QProgressDialog pd(this);
-    pd.setWindowTitle("YAGF");
-    pd.setLabelText(trUtf8("Loading files..."));
-    pd.setRange(1, files.count());
-    pd.setValue(1);
-    pd.show();
-    for (int i = 0; i < files.count(); i++) {
-        if (QFile::exists(files.at(i))) {
-            if (files.at(i).endsWith(".tiff", Qt::CaseInsensitive)||files.at(i).endsWith(".tif", Qt::CaseInsensitive))
-                loadTIFF(files.at(i));
-            else
-                loadFile(files.at(i));
-        }
-        pd.setValue(i+1);
-        QApplication::processEvents();
-        if (pd.wasCanceled())
-            break;
-    }
+    pages->appendPages(files);
 }
 
 void MainForm::LangTextChanged(const QString &text)
@@ -361,7 +334,7 @@ void MainForm::importPDF()
 
 void MainForm::addPDFPage(QString pageName)
 {
-    pages->appendPage(pageName);
+    pages->appendPages(QStringList(pageName));
     int fr = pdfx->filesRemaining(pageName);
     if (fr > 0) {
         int ft = pdfx->filesTotal();
@@ -523,33 +496,14 @@ void MainForm::loadFile(const QString &fn, bool loadIntoView)
     QCursor oldCursor = cursor();
     setCursor(Qt::WaitCursor);
 
-    if (pages->appendPage(fn)) {
+    pages->appendPages(QStringList(fn));
+
         if (loadIntoView) {
             pages->makePageCurrent(pages->count()-1);
             loadPage();
             sideBar->item(sideBar->count()-1)->setSelected(true);
         }
-    } else {
-        QMessageBox::warning(this, trUtf8("Failed to Load Image"), fn);
-    }
     setCursor(oldCursor);
-}
-
-void MainForm::loadTIFF(const QString &fn, bool loadIntoView)
-{
-    TiffImporter ti(fn);
-    ti.exec();
-    QStringList files = ti.extractedFiles();
-    if (!files.count()) {
-        QMessageBox mb;
-        mb.setWindowTitle("YAGF");
-        mb.setIconPixmap(QPixmap(":/critical.png"));
-        mb.setText(trUtf8("Cannot open file %1. Make sure imagemagick and tifftopnm are installed.").arg(fn));
-        mb.addButton(QMessageBox::Close);
-        mb.exec();
-        return;
-    }
-    loadFiles(files);
 }
 
 void MainForm::delTmpFiles()

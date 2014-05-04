@@ -61,6 +61,7 @@ public:
     void setPreprocessed(const bool value);
     void reloadPage();
     void unloadAll();
+    int currentPageIndex();
 public slots:
     void appendPages(const QStringList &files);
     void makeLarger();
@@ -76,12 +77,12 @@ public slots:
     void clearBlocks();
     void clear();
 signals:
-    void loadPage(); // The page is already current
+    void loadPage(int index);
     void addSnippet(int index);
     void cleared();
     void messagePosted(const QString &msg);
     void fileProgress(const QString &fn, int current, int total);
-    void fileEndProgress();
+    void fileEndProgress(bool result);
     void fileBeginLoad(const QString &fn);
     void fileFinishLoad(const QString &fn, bool result);
 private slots:

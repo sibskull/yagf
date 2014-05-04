@@ -73,11 +73,11 @@ void PageCollection::appendPages(const QStringList &files)
                     localFiles.insert(i, tiffFiles.at(j)); // check if i is > count
             }
             if (!appendPage(files.at(0))) {
-                emit fileEndProgress();
+                emit fileEndProgress(false);
                 return;
             }
         }
-        emit fileEndProgress();
+        emit fileEndProgress(true);
     }
 }
 
@@ -108,9 +108,11 @@ int PageCollection::count()
 
 bool PageCollection::makePageCurrent(int index)
 {
-    if (cp())
-        cp()->unload();
-    this->index = index;
+    if (index < pages.count()) {
+        if (cp())
+            cp()->unload();
+        this->index = index;
+    }
     return index < pages.count();
 }
 
@@ -268,7 +270,7 @@ void PageCollection::setPreprocessed(const bool value)
 
 void PageCollection::reloadPage()
 {
-    emit loadPage();
+    emit loadPage(index);
 }
 
 void PageCollection::unloadAll()
@@ -278,39 +280,44 @@ void PageCollection::unloadAll()
     }
 }
 
+int PageCollection::currentPageIndex()
+{
+    return index;
+}
+
 void PageCollection::makeLarger()
 {
     if (!cp()) return;
     cp()->makeLarger();
-    emit loadPage();
+    emit loadPage(index);
 }
 
 void PageCollection::makeSmaller()
 {
     if (!cp()) return;
     cp()->makeSmaller();
-    emit loadPage();
+    emit loadPage(index);
 }
 
 void PageCollection::rotate90CW()
 {
     if (!cp()) return;
     cp()->rotate90CW();
-    emit loadPage();
+    emit loadPage(index);
 }
 
 void PageCollection::rotate90CCW()
 {
     if (!cp()) return;
     cp()->rotate90CCW();
-    emit loadPage();
+    emit loadPage(index);
 }
 
 void PageCollection::rotate180()
 {
     if (!cp()) return;
     cp()->rotate180();
-    emit loadPage();
+    emit loadPage(index);
 }
 
 void PageCollection::deskew()
@@ -318,21 +325,21 @@ void PageCollection::deskew()
     if (!cp()) return;
     if (cp()->textHorizontal())
         cp()->deskew();
-    emit loadPage();
+    emit loadPage(index);
 }
 
 void PageCollection::blockAllText()
 {
     if (!cp()) return;
     cp()->blockAllText();
-    emit loadPage();
+    emit loadPage(index);
 }
 
 bool PageCollection::splitPage(bool preprocess)
 {
     if (!cp()) return false;
     bool res = cp()->splitPage(preprocess);
-    emit loadPage();
+    emit loadPage(index);
     return res;
 }
 
@@ -387,7 +394,7 @@ bool PageCollection::appendPage(const QString &file)
 {
     unloadAll();
     Page * p = new Page(++pid);
-    connect(p,SIGNAL(refreshView()), this, SIGNAL(loadPage()));
+    //connect(p,SIGNAL(refreshView(int)), this, SIGNAL(loadPage(int)));
     if (p->loadFile(file, 1, false)) {
                pages.append(p);
                index = pages.count() - 1;
@@ -418,7 +425,7 @@ QStringList PageCollection::loadTIFF(const QString &fn)
 void PageCollection::pageSelected(int id)
 {
     makePageCurrent(id2Index(id));
-    emit loadPage();
+    emit loadPage(index);
 }
 
 void PageCollection::pageRemoved(int id)
@@ -431,7 +438,7 @@ void PageCollection::pageRemoved(int id)
     if (index >= pages.count())
         index = pages.count() - 1;
     makePageCurrent(index);
-    emit loadPage();
+    emit loadPage(index);
 }
 
 void PageCollection::textOut(const QString &msg)

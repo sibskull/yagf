@@ -76,7 +76,7 @@ public:
     void reSaveTmpPage();
     void cropYGF();
 signals:
-    void refreshView();
+    //void refreshView(int index);
     void textOut(const QString &msg);
 public slots:
 private:

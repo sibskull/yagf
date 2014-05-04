@@ -30,6 +30,7 @@
 #include "projectmanager.h"
 #include "langselectdialog.h"
 #include "busyform.h"
+#include "dispatcher.h"
 #include <signal.h>
 #include <QComboBox>
 #include <QLabel>
@@ -134,7 +135,7 @@ MainForm::MainForm(QWidget *parent): QMainWindow(parent)
     connect(graphicsInput, SIGNAL(increaseMe()), this, SLOT(enlargeButtonClicked()));
     connect(graphicsInput, SIGNAL(decreaseMe()), this, SLOT(decreaseButtonClicked()));
     connect(sideBar, SIGNAL(filesDropped(QStringList)), SLOT(loadFiles(QStringList)));
-    connect(pages, SIGNAL(loadPage()), this, SLOT(loadPage()));
+
     connect(graphicsInput, SIGNAL(blockCreated(QRect)), pages, SLOT(addBlock(QRect)));
     connect(graphicsInput, SIGNAL(deleteBlock(QRect)), pages, SLOT(deleteBlock(QRect)));
     connect(sideBar, SIGNAL(fileRemoved(int)), pages, SLOT(pageRemoved(int)));
@@ -235,7 +236,7 @@ void MainForm::loadFromCommandLine()
 
 void MainForm::loadFiles(const QStringList &files)
 {
-    pages->appendPages(files);
+    dispatcher->loadFiles(files);
 }
 
 void MainForm::LangTextChanged(const QString &text)
@@ -496,11 +497,11 @@ void MainForm::loadFile(const QString &fn, bool loadIntoView)
     QCursor oldCursor = cursor();
     setCursor(Qt::WaitCursor);
 
-    pages->appendPages(QStringList(fn));
+    dispatcher->loadFiles(QStringList(fn));
 
         if (loadIntoView) {
             pages->makePageCurrent(pages->count()-1);
-            loadPage();
+            loadPage(pages->currentPageIndex());
             sideBar->item(sideBar->count()-1)->setSelected(true);
         }
     setCursor(oldCursor);
@@ -758,9 +759,10 @@ void MainForm::setUnresizingCusor()
     //scrollArea->widget()->setCursor(QCursor(Qt::ArrowCursor));
 }
 
-void MainForm::loadPage()
+void MainForm::loadPage(int index)
 {
     //graphicsInput->clearBlocks();
+    pages->makePageCurrent(index);
     graphicsInput->loadImage(pages->pixmap());
     QApplication::processEvents();
     for (int i = 0; i < pages->blockCount(); i++)
@@ -806,7 +808,7 @@ void MainForm::hideToolBar()
 void MainForm::on_ActionClearAllBlocks_activated()
 {
     pages->clearBlocks();
-    loadPage();
+    loadPage(pages->currentPageIndex());
 }
 
 void MainForm::rightMouseClicked(int x, int y, bool inTheBlock)
@@ -946,6 +948,11 @@ MainForm::~MainForm()
     delete graphicsInput;
     delete ba;
     delete pdfx;
+}
+
+void MainForm::setDispatcher(Dispatcher *disp)
+{
+    dispatcher = disp;
 }
 
 void MainForm::on_actionSave_block_activated()

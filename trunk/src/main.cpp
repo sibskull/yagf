@@ -23,6 +23,8 @@
 #include <QLibraryInfo>
 #include <QProcessEnvironment>
 #include "mainform.h"
+#include "tpagecollection.h"
+#include "dispatcher.h"
 #include "settings.h"
 #include "langselectdialog.h"
 
@@ -85,6 +87,7 @@ mtrace();
         //lsd.exec();
     }
     MainForm window;
+    Dispatcher dispatcher(PageCollection::instance(), &window);
     window.show();
     int res = app.exec();
 #ifdef MEM_DEBUG

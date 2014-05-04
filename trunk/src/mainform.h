@@ -46,13 +46,14 @@ const QString version = "0.9.3.2";
 
 class PageCollection;
 class ScannerBase;
-
+class Dispatcher;
 class MainForm : public QMainWindow, public Ui::MainWindow
 {
     Q_OBJECT
 public:
     MainForm(QWidget *parent = 0);
     ~MainForm();
+    void setDispatcher(Dispatcher * disp);
 signals:
     void windowShown();
 private slots:
@@ -135,12 +136,13 @@ private:
     QLabel * langLabel;
     QAction * slAction;
     bool globalDeskew;
+    Dispatcher * dispatcher;
 private slots:
     bool findEngine();
     void readyRead(int sig);
     void setResizingCusor();
     void setUnresizingCusor();
-    void loadPage();
+    void loadPage(int index);
     void rightMouseClicked(int x, int y, bool inTheBlock);
     void setupPDFPD();
     void onShowWindow();

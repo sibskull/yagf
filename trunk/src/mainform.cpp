@@ -139,7 +139,7 @@ MainForm::MainForm(QWidget *parent): QMainWindow(parent)
     connect(graphicsInput, SIGNAL(blockCreated(QRect)), pages, SLOT(addBlock(QRect)));
     connect(graphicsInput, SIGNAL(deleteBlock(QRect)), pages, SLOT(deleteBlock(QRect)));
     connect(sideBar, SIGNAL(fileRemoved(int)), pages, SLOT(pageRemoved(int)));
-    connect (pages, SIGNAL(addSnippet(int)), this, SLOT(addSnippet(int)));
+
     connect(actionSelect_languages, SIGNAL(triggered()), this, SLOT(selectLanguages()));
 
     selectLangsBox = new QComboBox();
@@ -501,7 +501,7 @@ void MainForm::loadFile(const QString &fn, bool loadIntoView)
 
         if (loadIntoView) {
             pages->makePageCurrent(pages->count()-1);
-            loadPage(pages->currentPageIndex());
+            loadPage(pages->count()-1);
             sideBar->item(sideBar->count()-1)->setSelected(true);
         }
     setCursor(oldCursor);
@@ -762,7 +762,7 @@ void MainForm::setUnresizingCusor()
 void MainForm::loadPage(int index)
 {
     //graphicsInput->clearBlocks();
-    pages->makePageCurrent(index);
+    pages->makePageCurrentByID(index);
     graphicsInput->loadImage(pages->pixmap());
     QApplication::processEvents();
     for (int i = 0; i < pages->blockCount(); i++)
@@ -1038,9 +1038,9 @@ void MainForm::selectTextArea()
     pages->blockAllText();
 }
 
-void MainForm::addSnippet(int index)
+void MainForm::addSnippet(QSnippet * snippet)
 {
-    sideBar->addItem(pages->snippet());
+    sideBar->addItem(snippet);
 }
 
 void MainForm::preprocessPage()

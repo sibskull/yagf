@@ -72,7 +72,7 @@ void PageCollection::appendPages(const QStringList &files)
                 for (int j = tiffFiles.count()-1; j>-1; j--)
                     localFiles.insert(i, tiffFiles.at(j)); // check if i is > count
             }
-            if (!appendPage(files.at(0))) {
+            if (!appendPage(files.at(i))) {
                 emit fileEndProgress(false);
                 return;
             }
@@ -93,7 +93,7 @@ void PageCollection::newPage(const QString &fileName, qreal rotation, bool prepr
         pages.append(p);
         p->rotate(rotation);
         index = pages.count() - 1;
-        emit addSnippet(index);
+        emit addSnippet(snippet());
         makePageCurrent(index);
     }
 
@@ -108,7 +108,7 @@ int PageCollection::count()
 
 bool PageCollection::makePageCurrent(int index)
 {
-    if (index < pages.count()) {
+    if ((index < pages.count())&&(index >=0)) {
         if (cp())
             cp()->unload();
         this->index = index;
@@ -137,8 +137,9 @@ bool PageCollection::makeNextPageCurrent()
     return false;
 }
 
-QSnippet *PageCollection::snippet()
+QSnippet * PageCollection::snippet()
 {
+
     if (!cp()) return NULL;
     QSnippet * s = new QSnippet();
     s->setPage(cp()->pageID(), cp()->fileName(), cp()->thumbnail());
@@ -325,7 +326,7 @@ void PageCollection::deskew()
     if (!cp()) return;
     if (cp()->textHorizontal())
         cp()->deskew();
-    emit loadPage(index);
+    emit loadPage(currentPageIndex());
 }
 
 void PageCollection::blockAllText()
@@ -401,7 +402,9 @@ bool PageCollection::appendPage(const QString &file)
                if (Settings::instance()->getAutoDeskew()) {
                    deskew();
                }
-               emit addSnippet(index);
+
+               emit addSnippet(snippet());
+              // emit loadPage(p->pageID());
                connect(p, SIGNAL(textOut(QString)), SLOT(textOut(QString)));
                return true;
     } else {
@@ -425,7 +428,7 @@ QStringList PageCollection::loadTIFF(const QString &fn)
 void PageCollection::pageSelected(int id)
 {
     makePageCurrent(id2Index(id));
-    emit loadPage(index);
+    emit loadPage(id);
 }
 
 void PageCollection::pageRemoved(int id)

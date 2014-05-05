@@ -146,7 +146,7 @@ private slots:
     void rightMouseClicked(int x, int y, bool inTheBlock);
     void setupPDFPD();
     void onShowWindow();
-    void addSnippet(int index);
+    void addSnippet(QSnippet *snippet);
     void preprocessPage();
     void saveProject();
     void loadProject();

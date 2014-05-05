@@ -21,8 +21,7 @@
 #define SIDEBAR_H
 
 #include <QListWidget>
-
-class QSnippet;
+#include "qsnippet.h"
 
 class SideBar : public QListWidget
 {

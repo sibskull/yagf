@@ -21,6 +21,7 @@
 #define TPAGECOLLECTION_H
 
 #include "tpage.h"
+#include "qsnippet.h"
 #include <QObject>
 #include <QPixmap>
 #include <QVector>
@@ -39,7 +40,6 @@ public:
     bool makePageCurrentByID(int id);
     void setBeforeFirst(); // the page pointer is set before the first page
     bool makeNextPageCurrent();
-    QSnippet * snippet();
     QPixmap pixmap();
     void savePageForRecognition(const QString &fileName);
     void saveRawBlockForRecognition(QRect r, const QString &fileName);
@@ -78,7 +78,7 @@ public slots:
     void clear();
 signals:
     void loadPage(int index);
-    void addSnippet(int index);
+    void addSnippet(QSnippet *);
     void cleared();
     void messagePosted(const QString &msg);
     void fileProgress(const QString &fn, int current, int total);
@@ -97,6 +97,7 @@ private:
      int id2Index(int id);
       bool appendPage(const QString &file);
      QStringList loadTIFF(const QString &fn);
+     QSnippet * snippet();
 private:
     QVector<Page *> pages;
     int index;

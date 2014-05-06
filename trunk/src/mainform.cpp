@@ -107,8 +107,9 @@ MainForm::MainForm(QWidget *parent): QMainWindow(parent)
     label->setListWidget(sideBar);
     pdfx = NULL;
 
-    connect(sideBar, SIGNAL(pageSelected(int)), pages, SLOT(pageSelected(int)));
-    connect(label, SIGNAL(pageRemoved(int)), pages, SLOT(pageRemoved(int)));
+    connect(sideBar, SIGNAL(pageSelected(int)), this, SIGNAL(pageSelected(int)));
+    connect(label, SIGNAL(pageRemoved(int)), this, SIGNAL(pageRemoved(int)));
+    connect(sideBar, SIGNAL(pageSelected(int)), this, SLOT(setCurrentPageID(int)));
 
     statusBar()->show();
     useXSane = TRUE;
@@ -116,6 +117,7 @@ MainForm::MainForm(QWidget *parent): QMainWindow(parent)
     //rotation = 0;
     m_menu = new QMenu(graphicsView);
     ifCounter = 0;
+    currentPageID = -1;
 
     connect(actionOpen, SIGNAL(triggered()), this, SLOT(loadImage()));
     connect(actionQuit, SIGNAL(triggered()), this, SLOT(close()));
@@ -432,12 +434,12 @@ void MainForm::rotate180ButtonClicked()
 
 void MainForm::enlargeButtonClicked()
 {
-    pages->makeLarger();
+    dispatcher->makeLarger();
 }
 
 void MainForm::decreaseButtonClicked()
 {
-    pages->makeSmaller();
+    dispatcher->makeSmaller();
 }
 
 void MainForm::initSettings()
@@ -727,9 +729,19 @@ void MainForm::fillLangBox()
     }
     selectLangsBox->setCurrentIndex(-1);
     connect(selectLangsBox, SIGNAL(currentIndexChanged(int)), this, SLOT(newLanguageSelected(int)));
-    if (selectLangsBox->model()->rowCount())
-        selectLangsBox->setCurrentIndex(0);
+    if (selectLangsBox->model()->rowCount()) {
+        int index = 0;
+        QString s = Settings::instance()->getLanguage();
+        for (int i =0; i < selectLangsBox->count(); i++) {
+            if (selectLangsBox->itemData(i) == s) {
+                index = i;
+                break;
+            }
+        }
+        selectLangsBox->setCurrentIndex(index);
+    }
 }
+
 
 void MainForm::preparePageForRecognition()
 {
@@ -759,10 +771,10 @@ void MainForm::setUnresizingCusor()
     //scrollArea->widget()->setCursor(QCursor(Qt::ArrowCursor));
 }
 
-void MainForm::loadPage(int index)
+void MainForm::loadPage(int id)
 {
     //graphicsInput->clearBlocks();
-    pages->makePageCurrentByID(index);
+    pages->makePageCurrentByID(id);
     graphicsInput->loadImage(pages->pixmap());
     QApplication::processEvents();
     for (int i = 0; i < pages->blockCount(); i++)
@@ -981,7 +993,7 @@ void MainForm::on_actionDeskew_activated()
 {
     QCursor oldCursor = cursor();
     setCursor(Qt::WaitCursor);
-    pages->deskew();
+    dispatcher->deskew();
     setCursor(oldCursor);
 }
 
@@ -1028,7 +1040,7 @@ void MainForm::deskewByBlock()
     QApplication::processEvents();
     if (!graphicsInput->getCurrentBlock().isNull()) {
         QImage img = graphicsInput->getCurrentBlock();*/
-        pages->deskew();
+        dispatcher->deskew();
     //}
     ///setCursor(oldCursor);
 }
@@ -1094,6 +1106,16 @@ void MainForm::loadProject()
         settings->setProjectDir(dir);
     setCursor(oldCursor);
 
+}
+
+void MainForm::setCurrentPageID(int id)
+{
+   currentPageID = id;
+}
+
+int MainForm::selectedPageID()
+{
+    return currentPageID;
 }
 
 void MainForm::selectBlocks()

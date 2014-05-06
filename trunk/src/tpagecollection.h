@@ -69,15 +69,15 @@ public slots:
     void rotate90CW();
     void rotate90CCW();
     void rotate180();
-    void deskew();
     void blockAllText();
     bool splitPage(bool preprocess);
     void addBlock(const QRect & rect);
     void deleteBlock(const QRect & rect);
     void clearBlocks();
     void clear();
+    void deskew();
 signals:
-    void loadPage(int index);
+    void loadPage(int id);
     void addSnippet(QSnippet *);
     void cleared();
     void messagePosted(const QString &msg);
@@ -89,6 +89,7 @@ private slots:
     void pageSelected(int id);
     void pageRemoved(int id);
     void textOut(const QString &msg);
+
 private:
     PageCollection(QObject *parent = 0);
     PageCollection(const PageCollection &);

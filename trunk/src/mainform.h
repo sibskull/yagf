@@ -56,6 +56,8 @@ public:
     void setDispatcher(Dispatcher * disp);
 signals:
     void windowShown();
+    void pageSelected(int);
+    void pageRemoved(int);
 private slots:
     //void on_actionRecognize_activated();
     void on_actionSelect_HTML_format_activated();
@@ -116,6 +118,7 @@ private:
     void loadFromCommandLine();
     void clearTmpFiles();
     void fillLangBox();
+    int selectedPageID();
 private:
     QComboBox *selectLangsBox;
     QGraphicsInput *graphicsInput;
@@ -137,12 +140,13 @@ private:
     QAction * slAction;
     bool globalDeskew;
     Dispatcher * dispatcher;
+    int currentPageID;
 private slots:
     bool findEngine();
     void readyRead(int sig);
     void setResizingCusor();
     void setUnresizingCusor();
-    void loadPage(int index);
+    void loadPage(int id);
     void rightMouseClicked(int x, int y, bool inTheBlock);
     void setupPDFPD();
     void onShowWindow();
@@ -150,4 +154,5 @@ private slots:
     void preprocessPage();
     void saveProject();
     void loadProject();
+    void setCurrentPageID(int id);
  };

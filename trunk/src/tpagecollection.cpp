@@ -290,14 +290,14 @@ void PageCollection::makeLarger()
 {
     if (!cp()) return;
     cp()->makeLarger();
-    emit loadPage(index);
+    emit loadPage(cp()->pageID());
 }
 
 void PageCollection::makeSmaller()
 {
     if (!cp()) return;
     cp()->makeSmaller();
-    emit loadPage(index);
+    emit loadPage(cp()->pageID());
 }
 
 void PageCollection::rotate90CW()
@@ -326,7 +326,7 @@ void PageCollection::deskew()
     if (!cp()) return;
     if (cp()->textHorizontal())
         cp()->deskew();
-    emit loadPage(currentPageIndex());
+    emit loadPage(cp()->pageID());
 }
 
 void PageCollection::blockAllText()

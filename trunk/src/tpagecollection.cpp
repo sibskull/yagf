@@ -304,21 +304,21 @@ void PageCollection::rotate90CW()
 {
     if (!cp()) return;
     cp()->rotate90CW();
-    emit loadPage(index);
+    emit loadPage(cp()->pageID());
 }
 
 void PageCollection::rotate90CCW()
 {
     if (!cp()) return;
     cp()->rotate90CCW();
-    emit loadPage(index);
+    emit loadPage(cp()->pageID());
 }
 
 void PageCollection::rotate180()
 {
     if (!cp()) return;
     cp()->rotate180();
-    emit loadPage(index);
+    emit loadPage(cp()->pageID());
 }
 
 void PageCollection::deskew()
@@ -333,15 +333,14 @@ void PageCollection::blockAllText()
 {
     if (!cp()) return;
     cp()->blockAllText();
-    emit loadPage(index);
+    emit loadPage(cp()->pageID());
 }
 
-bool PageCollection::splitPage(bool preprocess)
+void PageCollection::splitPage(bool preprocess)
 {
-    if (!cp()) return false;
-    bool res = cp()->splitPage(preprocess);
-    emit loadPage(index);
-    return res;
+    if (!cp()) return;
+    cp()->splitPage(preprocess);
+    emit loadPage(cp()->pageID());
 }
 
 void PageCollection::addBlock(const QRect &rect)

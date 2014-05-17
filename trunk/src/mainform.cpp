@@ -138,8 +138,6 @@ MainForm::MainForm(QWidget *parent): QMainWindow(parent)
     connect(graphicsInput, SIGNAL(decreaseMe()), this, SLOT(decreaseButtonClicked()));
     connect(sideBar, SIGNAL(filesDropped(QStringList)), SLOT(loadFiles(QStringList)));
 
-    connect(graphicsInput, SIGNAL(blockCreated(QRect)), pages, SLOT(addBlock(QRect)));
-    connect(graphicsInput, SIGNAL(deleteBlock(QRect)), pages, SLOT(deleteBlock(QRect)));
     connect(sideBar, SIGNAL(fileRemoved(int)), pages, SLOT(pageRemoved(int)));
 
     connect(actionSelect_languages, SIGNAL(triggered()), this, SLOT(selectLanguages()));
@@ -413,7 +411,7 @@ void MainForm::rotateCWButtonClicked()
 {
     QCursor oldCursor = cursor();
     setCursor(Qt::WaitCursor);
-    pages->rotate90CW();
+    dispatcher->rotate90CW();
     setCursor(oldCursor);
 }
 
@@ -421,14 +419,14 @@ void MainForm::rotateCCWButtonClicked()
 {
     QCursor oldCursor = cursor();
     setCursor(Qt::WaitCursor);
-    pages->rotate90CCW();
+    dispatcher->rotate90CCW();
     setCursor(oldCursor);
 }
 void MainForm::rotate180ButtonClicked()
 {
     QCursor oldCursor = cursor();
     setCursor(Qt::WaitCursor);
-    pages->rotate180();
+    dispatcher->rotate180();
     setCursor(oldCursor);
 }
 
@@ -773,14 +771,24 @@ void MainForm::setUnresizingCusor()
 
 void MainForm::loadPage(int id)
 {
-    //graphicsInput->clearBlocks();
-    pages->makePageCurrentByID(id);
-    graphicsInput->loadImage(pages->pixmap());
-    QApplication::processEvents();
-    for (int i = 0; i < pages->blockCount(); i++)
-    graphicsInput->addBlockColliding(pages->getBlock(i));
-    QFileInfo fi(pages->fileName());
+    dispatcher->enter();
+    if (dispatcher->refPageID() != id) {
+        dispatcher->leave();
+        return;
+    }
+
+    QPixmap pm = dispatcher->refPixmap();
+    if (pm.width() == 0) {
+        dispatcher->leave();
+        return;
+    }
+    graphicsInput->loadImage(pm);
+    QList<Block> blocks = dispatcher->refBlocks();
+    foreach(Block block, blocks)
+        graphicsInput->addBlockColliding(block);
+    QFileInfo fi(dispatcher->refFileName());
     setWindowTitle(QString("YAGF - %1").arg(fi.fileName()) );
+    dispatcher->leave();
 }
 
 void MainForm::recognizeAll()
@@ -819,7 +827,7 @@ void MainForm::hideToolBar()
 
 void MainForm::on_ActionClearAllBlocks_activated()
 {
-    pages->clearBlocks();
+    dispatcher->clearBlocks();
     loadPage(pages->currentPageIndex());
 }
 
@@ -965,6 +973,8 @@ MainForm::~MainForm()
 void MainForm::setDispatcher(Dispatcher *disp)
 {
     dispatcher = disp;
+    connect(graphicsInput, SIGNAL(blockCreated(QRect)), dispatcher, SLOT(addBlock(QRect)));
+    connect(graphicsInput, SIGNAL(deleteBlock(QRect)), dispatcher, SLOT(deleteBlock(QRect)));
 }
 
 void MainForm::on_actionSave_block_activated()
@@ -1059,8 +1069,7 @@ void MainForm::preprocessPage()
 {
     QCursor oldCursor = cursor();
     setCursor(Qt::WaitCursor);
-    if (!pages->splitPage(true))
-        QMessageBox::warning(this, trUtf8("Warning"), trUtf8("Failed to detect text areas on this page.\nThe page possibly lacks contrast. Try to select blocks manually."));
+    dispatcher->splitPage(true);
     setCursor(oldCursor);
 }
 
@@ -1122,8 +1131,7 @@ void MainForm::selectBlocks()
 {
     QCursor oldCursor = cursor();
     setCursor(Qt::WaitCursor);
-    if (!pages->splitPage(false))
-        QMessageBox::warning(this, trUtf8("Warning"), trUtf8("Failed to detect text areas on this page.\nThe page possibly lacks contrast. Try to select blocks manually."));
+    dispatcher->splitPage(false);
     setCursor(oldCursor);
 }
 

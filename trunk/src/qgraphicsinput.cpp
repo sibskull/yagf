@@ -94,9 +94,6 @@ bool QGraphicsInput::loadImage(const QPixmap &pixmap)
     m_image = addPixmap(pixmap);
     setSceneRect(pixmap.rect());
     m_image->setZValue(-1);
-    QApplication::processEvents();
-    //m_realImage->setData(1, "image");
-    //m_realImage->hide();
     this->setFocus();
     m_image->setFocus();
     m_image->setAcceptedMouseButtons(Qt::LeftButton | Qt::RightButton | Qt::MidButton);

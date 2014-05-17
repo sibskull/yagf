@@ -70,7 +70,7 @@ public slots:
     void rotate90CCW();
     void rotate180();
     void blockAllText();
-    bool splitPage(bool preprocess);
+    void splitPage(bool preprocess);
     void addBlock(const QRect & rect);
     void deleteBlock(const QRect & rect);
     void clearBlocks();

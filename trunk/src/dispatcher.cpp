@@ -27,6 +27,7 @@ Dispatcher::Dispatcher(PageCollection *pages, MainForm *gui, QObject *parent) :
     connect(this, SIGNAL(_clearBlocks()), mPages, SLOT(clearBlocks()), Qt::QueuedConnection);
     connect(this, SIGNAL(_addBlock(QRect)), mPages, SLOT(addBlock(QRect)), Qt::QueuedConnection);
     connect(this, SIGNAL(_deleteBlock(QRect)), mPages, SLOT(deleteBlock(QRect)), Qt::QueuedConnection);
+    connect (mPages, SIGNAL(textRecognized(QString)), gui, SLOT(textRecognized(QString)), Qt::QueuedConnection);
 }
 
 void Dispatcher::loadFiles(const QStringList &files)

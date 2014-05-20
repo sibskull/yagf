@@ -22,9 +22,18 @@
 #include "core/imageprocessor.h"
 #include "qsnippet.h"
 #include "settings.h"
+#include "utils.h"
 #include <QApplication>
 #include <QFile>
 #include <QImage>
+#include <QProcess>
+#include <QDir>
+
+const QString outputBase = "output";
+const QString outputExt = ".txt";
+const QString inputFile = "input.bmp";
+const QString outputFile = "output.txt";
+const QString scanOutputFile = "input.png";
 
 PageCollection * PageCollection::m_instance = NULL;
 
@@ -144,6 +153,123 @@ QSnippet * PageCollection::snippet()
     QSnippet * s = new QSnippet();
     s->setPage(cp()->pageID(), cp()->fileName(), cp()->thumbnail());
     return s;
+}
+
+bool PageCollection::useTesseract(const QString &inputFile)
+{
+    Settings * settings = Settings::instance();
+    QProcess proc;
+    proc.setWorkingDirectory(settings->workingDir());
+    QStringList sl;
+    sl.append(inputFile);
+    sl.append(outputBase);
+    sl.append("-l");
+    sl.append(settings->getLanguage());
+    QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
+    env.insert("TESSDATA_PREFIX", settings->getTessdataPath());
+    QDir dir(settings->getTessdataPath()+"tessdata/");
+    QStringList sl1;
+    sl1 << QString::fromUtf8("*%1.*").arg(settings->getLanguage());
+    if (dir.entryList(sl1, QDir::Files).count() == 0) {
+        textOut(trUtf8("You have selected recognising %1 language using tesseract OCR. Currently the data for this language is not installed in your system. Please install the tesseract data files for \"%2\" from your system repository.").arg(settings->getFullLanguageName(settings->getLanguage())).arg(settings->getLanguage()));
+        return false;
+    }
+    proc.setProcessEnvironment(env);
+    proc.start("tesseract", sl);
+    proc.waitForFinished(-1);
+    if (proc.exitCode()) {
+        QByteArray stdoutBytes = proc.readAllStandardOutput();
+        QByteArray stderrBytes = proc.readAllStandardError();
+        QString output = QString(stdoutBytes) + QString(stderrBytes);
+        textOut(trUtf8("Starting tesseract failed, the system said: ") + (output != "" ? output : trUtf8("program not found")));
+        return false;
+    }
+    return true;
+}
+
+bool PageCollection::useCuneiform(const QString &inputFile, const QString &outputFile)
+{
+    Settings * settings = Settings::instance();
+    QProcess proc;
+    proc.setWorkingDirectory(settings->workingDir());
+    QStringList sl;
+    sl.append("-l");
+    sl.append(settings->getLanguage());
+    sl.append("-f");
+    if (settings->getOutputFormat() == "text")
+        sl.append("text");
+    else
+        sl.append("html");
+    sl.append("-o");
+    sl.append(settings->workingDir() + outputFile);
+    sl.append(settings->workingDir() + inputFile);
+    proc.start("cuneiform", sl);
+    proc.waitForFinished(-1);
+    if (proc.exitCode()) {
+        QByteArray stdoutBytes = proc.readAllStandardOutput();
+        QByteArray stderrBytes = proc.readAllStandardError();
+        QString output = QString(stdoutBytes) + QString(stderrBytes);
+        textOut(trUtf8("Starting tesseract failed, the system said: ") + (output != "" ? output : trUtf8("program not found")));
+        return false;
+    }
+    return true;
+}
+
+void PageCollection::recognizeInternal()
+{
+    Settings * settings = Settings::instance();
+    if (settings->getSelectedEngine() == UseCuneiform) {
+        if (!useCuneiform(inputFile, outputFile)) {
+            emit textRecognized("");
+            return;
+        }
+    }
+    if (settings->getSelectedEngine() == UseTesseract) {
+        if (!useTesseract(inputFile)) {
+            emit textRecognized("");
+            return;
+        }
+    }
+    QFile textFile(settings->workingDir() + outputFile);
+    textFile.open(QIODevice::ReadOnly);
+    QByteArray text = textFile.readAll();
+    textFile.close();
+    QString textData;
+    QTextCodec *codec = QTextCodec::codecForName("UTF-8");
+    textData = codec->toUnicode(text); //QString::fromUtf8(text.data());
+    if (settings->getOutputFormat() == "text")
+        textData.prepend("<meta content=\"text/html; charset=utf-8\" http-equiv=\"content-type\" />");
+    textData.replace("<img src=output_files", "");
+    textData.replace(".bmp\">", "\"--");
+    textData.replace(".bmp>", "");
+    emit textRecognized(textData);
+}
+
+bool PageCollection::findEngine()
+{
+    if (settings->getSelectedEngine() == UseCuneiform) {
+            if (!findProgram("cuneiform")) {
+                if (findProgram("tesseract")) {
+                    textOut(trUtf8("cuneiform not found, switching to tesseract"));
+                    settings->setSelectedEngine(UseTesseract);
+                } else {
+                    textOut(trUtf8("No recognition engine found.\nPlease install either cuneiform or tesseract"));
+                    return false;
+                }
+            }
+        }
+        if (settings->getSelectedEngine() == UseTesseract) {
+            if (!findProgram("tesseract")) {
+                if (findProgram("cuneiform")) {
+                    textOut(trUtf8("tesseract not found, switching to cuneiform"));
+                    settings->setSelectedEngine(UseCuneiform);
+             } else {
+                    textOut(trUtf8("Warning"), trUtf8("No recognition engine found.\nPlease install either cuneiform or tesseract"));
+                    return false;
+            }
+        }
+     }
+    return true;
 }
 
 QPixmap PageCollection::pixmap()
@@ -360,6 +486,7 @@ void PageCollection::clearBlocks()
 {
     if (!cp()) return;
     cp()->clearBlocks();
+    emit loadPage(cp()->pageID());
 }
 
 void PageCollection::clear()

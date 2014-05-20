@@ -85,6 +85,7 @@ signals:
     void fileEndProgress(bool result);
     void fileBeginLoad(const QString &fn);
     void fileFinishLoad(const QString &fn, bool result);
+    void textRecognized(const QString &text);
 private slots:
     void pageSelected(int id);
     void pageRemoved(int id);
@@ -99,6 +100,10 @@ private:
       bool appendPage(const QString &file);
      QStringList loadTIFF(const QString &fn);
      QSnippet * snippet();
+     bool useTesseract(const QString &inputFile);
+     bool useCuneiform(const QString &inputFile, const QString &outputFile);
+     void recognizeInternal();
+     bool findEngine();
 private:
     QVector<Page *> pages;
     int index;

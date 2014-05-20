@@ -529,96 +529,9 @@ void MainForm::loadPreviousPage()
 {
 }
 
-// TODO: think on blocks/page recognition
-
-bool MainForm::useTesseract(const QString &inputFile)
+void MainForm::textRecognized(const QString &text)
 {
-    QProcess proc;
-    proc.setWorkingDirectory(settings->workingDir());
-    QStringList sl;
-    sl.append(inputFile);
-    sl.append(outputBase);
-    sl.append("-l");
-    sl.append(settings->getLanguage());
-    QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
-    env.insert("TESSDATA_PREFIX", settings->getTessdataPath());
-    QDir dir(settings->getTessdataPath()+"tessdata/");
-    QStringList sl1;
-    sl1 << QString::fromUtf8("*%1.*").arg(settings->getLanguage());
-    if (dir.entryList(sl1, QDir::Files).count() == 0) {
-        QMessageBox mb(this);
-        mb.setIconPixmap(QPixmap(":/warning.png"));
-        mb.setWindowTitle("tesseract");
-        mb.setText(trUtf8("You have selected recognising %1 language using tesseract OCR. Currently the data for this language is not installed in your system. Please install the tesseract data files for \"%2\" from your system repository.").arg(settings->getFullLanguageName(settings->getLanguage())).arg(settings->getLanguage()));
-        mb.addButton(QMessageBox::Ok);
-        mb.exec();
-        return false;
-    }
-    proc.setProcessEnvironment(env);
-    proc.start("tesseract", sl);
-    proc.waitForFinished(-1);
-    if (proc.exitCode()) {
-        QByteArray stdoutBytes = proc.readAllStandardOutput();
-        QByteArray stderrBytes = proc.readAllStandardError();
-        QString output = QString(stdoutBytes) + QString(stderrBytes);
-        QMessageBox::critical(this, trUtf8("Starting tesseract failed"), trUtf8("The system said: ") + (output != "" ? output : trUtf8("program not found")));
-        return false;
-    }
-    return true;
-}
-
-bool MainForm::useCuneiform(const QString &inputFile, const QString &outputFile)
-{
-    QProcess proc;
-    proc.setWorkingDirectory(settings->workingDir());
-    QStringList sl;
-    sl.append("-l");
-    sl.append(settings->getLanguage());
-    sl.append("-f");
-    if (settings->getOutputFormat() == "text")
-        sl.append("text");
-    else
-        sl.append("html");
-    sl.append("-o");
-    sl.append(settings->workingDir() + outputFile);
-    sl.append(settings->workingDir() + inputFile);
-    proc.start("cuneiform", sl);
-    proc.waitForFinished(-1);
-    if (proc.exitCode()) {
-        QByteArray stdoutBytes = proc.readAllStandardOutput();
-        QByteArray stderrBytes = proc.readAllStandardError();
-        QString output = QString(stdoutBytes) + QString(stderrBytes);
-        QMessageBox::critical(this, trUtf8("Starting cuneiform failed"), trUtf8("The system said: ") + (output != "" ? output : trUtf8("program not found")));
-        return false;
-    }
-    return true;
-}
-
-void MainForm::recognizeInternal()
-{
-    if (settings->getSelectedEngine() == UseCuneiform) {
-        if (!useCuneiform(inputFile, outputFile))
-            return;
-    }
-    if (settings->getSelectedEngine() == UseTesseract) {
-        if (!useTesseract(inputFile))
-           return;
-    }
-    QFile textFile(settings->workingDir() + outputFile);
-    textFile.open(QIODevice::ReadOnly);
-    QByteArray text = textFile.readAll();
-    textFile.close();
-    QString textData;
-    QTextCodec *codec = QTextCodec::codecForName("UTF-8");
-    textData = codec->toUnicode(text); //QString::fromUtf8(text.data());
-    if (settings->getOutputFormat() == "text")
-        textData.prepend("<meta content=\"text/html; charset=utf-8\" http-equiv=\"content-type\" />");
-    textData.replace("<img src=output_files", "");
-    textData.replace(".bmp\">", "\"--");
-    textData.replace(".bmp>", "");
-//       textData.replace("-</p><p>", "");
-//        textData.replace("-<br>", "");
-    textEdit->append(textData);
+    textEdit->append(text);
     textEdit->append(QString(" "));
     if (settings->getCheckSpelling()) {
         actionCheck_spelling->setChecked(textEdit->spellCheck(settings->getLanguage()));
@@ -637,11 +550,11 @@ void MainForm::recognize()
     if (pages->blockCount() > 0) {
         for (int i = 0; i < pages->blockCount(); i++) {
                 prepareBlockForRecognition(i);
-                recognizeInternal();
+                textRecognized();
         }
     } else {
         preparePageForRecognition();
-        recognizeInternal();
+        textRecognized();
     }
 }
 
@@ -828,7 +741,6 @@ void MainForm::hideToolBar()
 void MainForm::on_ActionClearAllBlocks_activated()
 {
     dispatcher->clearBlocks();
-    loadPage(pages->currentPageIndex());
 }
 
 void MainForm::rightMouseClicked(int x, int y, bool inTheBlock)
@@ -866,35 +778,7 @@ void MainForm::setupPDFPD()
 
 void MainForm::on_ActionDeleteBlock_activated()
 {
-    QRect r = graphicsInput->getCurrentBlock();
     graphicsInput->deleteCurrentBlock();
-    pages->deleteBlock(r);
-}
-
-bool MainForm::findEngine() {
-	if (settings->getSelectedEngine() == UseCuneiform) {
-        	if (!findProgram("cuneiform")) {
-        	    if (findProgram("tesseract")) {
-        	        QMessageBox::warning(this, trUtf8("Warning"), trUtf8("cuneiform not found, switching to tesseract"));
-        	        settings->setSelectedEngine(UseTesseract);
-        	    } else {
-        	        QMessageBox::warning(this, trUtf8("Warning"), trUtf8("No recognition engine found.\nPlease install either cuneiform or tesseract"));
-        	        return false;
-        	    }
-            }
-     	}
-    	if (settings->getSelectedEngine() == UseTesseract) {
-        	if (!findProgram("tesseract")) {
-        	    if (findProgram("cuneiform")) {
-        	        QMessageBox::warning(this, trUtf8("Warning"), trUtf8("tesseract not found, switching to cuneiform"));
-        	        settings->setSelectedEngine(UseCuneiform);
-       	     } else {
-        	        QMessageBox::warning(this, trUtf8("Warning"), trUtf8("No recognition engine found.\nPlease install either cuneiform or tesseract"));
-        	        return false;
-       	    }
-        }
-     }
-	return true;
 }
 
 void MainForm::on_actionRecognize_block_activated()
@@ -904,7 +788,7 @@ void MainForm::on_actionRecognize_block_activated()
         return;
     clearTmpFiles();
     pages->saveRawBlockForRecognition(graphicsInput->getCurrentBlock(), settings->workingDir() + inputFile);
-    recognizeInternal();
+    textRecognized();
 }
 
 /*void MainForm::on_actionRecognize_activated()

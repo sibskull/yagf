@@ -24,7 +24,7 @@ public:
     void rotate180();
     void blockAllText();
     void splitPage(bool preprocess);
-    void clearBlocks();    
+    void clearBlocks();
     void enter();
     void leave();
     int refPageID();

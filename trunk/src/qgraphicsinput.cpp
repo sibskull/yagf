@@ -416,8 +416,10 @@ QRect QGraphicsInput::getCurrentBlock()
 
 void QGraphicsInput::deleteCurrentBlock()
 {
-    if (m_CurrentBlockRect != 0)
+    if (m_CurrentBlockRect != 0) {
+        emit deleteBlock(QRectF2Rect(m_CurrentBlockRect->rect()));
         deleteBlockRect(m_CurrentBlockRect);
+    }
 }
 
 void QGraphicsInput::deleteBlock(int index)

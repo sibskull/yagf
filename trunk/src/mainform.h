@@ -58,6 +58,8 @@ signals:
     void windowShown();
     void pageSelected(int);
     void pageRemoved(int);
+public slots:
+    void textRecognized(const QString &text);
 private slots:
     //void on_actionRecognize_activated();
     void on_actionSelect_HTML_format_activated();
@@ -111,9 +113,6 @@ private:
     void preparePageForRecognition();
     void prepareBlockForRecognition(const QRect &r);
     void prepareBlockForRecognition(int index);
-    void recognizeInternal();
-    bool useCuneiform(const QString &inputFile, const QString &outputFile);
-    bool useTesseract(const QString &inputFile);
     QString getFileNameToSaveImage(QString &format);
     void loadFromCommandLine();
     void clearTmpFiles();
@@ -142,7 +141,6 @@ private:
     Dispatcher * dispatcher;
     int currentPageID;
 private slots:
-    bool findEngine();
     void readyRead(int sig);
     void setResizingCusor();
     void setUnresizingCusor();

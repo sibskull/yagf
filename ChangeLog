@@ -1,3 +1,39 @@
+* Mon Jun 30 2014 Andrei Borovsky - 0.9.4
+- to much new to mention here
+* Fri Mar 21 2014 Andrei Borovsky - 0.9.3.1
+- some GUI improvements
+- Multipage TIFF import added
+* Tue Feb 19 2014 Andrei Borovsky <anb@symmetrica.net> - 0.9.3
+- New image enchansement functions added
+- New languages added
+- Minor bugs fixed, stability improved
+* Mon Sep 3 2012 Andrei Borovsky <anb@symmetrica.net> - 0.9.2
+- Workspace may now be saved as a project
+- Prepare for recognition button
+- Small bug fixes and improvements
+* Fri Apr 20 2012 Andrei Borovsky <anb@symmetrica.net> - 0.9.1
+- Some minor bug fixes and improvements
+* Sun Apr 15 2012 Andrei Borovsky <anb@symmetrica.net> - 0.9.1
+- Toolbar icons size togling options is added
+- YAGF now stores its private data in according with freedesktop.org standard for configuration files
+* Mon Apr 09 2012 Andrei Borovsky <anb@symmetrica.net> - 0.9.1
+- Text-splitting capability for splitting text into blocks automatically is added 
+* Tue Feb 28 2012 Andrei Borovsky <anb@symmetrica.net> - 0.9
+- Genral program restructure. Images are loaded and processed much faster.
+* Mon Feb 27 2012 Andrei Borovsky <anb@symmetrica.net> - 0.9
+- Hebrew support added
+- corrected word suggestion added to the text editor context menu.
+* Sun Feb 26 2012 Andrei Borovsky <anb@symmetrica.net> - 0.9
+- Automatic cropping of the loaded images added
+* Sun Dec 22 2011 Stefan Grthe - 0.9
+- German Gothic and Swedish Gothic recognition is added (requires tesseract 3+)
+* Sun Dec 22 2011 Andrei Borovsky <anb@symmetrica.net> - 0.9
+- Hebrew recognition support added (requires tesseract 3.0.1+)
+* Fri Dec 16 2011 Andrei Borovsky <anb@symmetrica.net> - 0.8.9
+- Deskewing images improved
+- Pasting i,ages from clipboard added
+- Automatic text selection added (experimental)
+- Some minor bug fixes and improvements
 * Sun Aug 28 2011 Andrei Borovsky <anb@symmetrica.net> - 0.8.7
 - Tesseract support added
 - PDF import added

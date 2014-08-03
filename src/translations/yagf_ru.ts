@@ -122,6 +122,10 @@
         <source>Not installed</source>
         <translation>Не установлен</translation>
     </message>
+    <message>
+        <source>Digits Only</source>
+        <translation>Только цифры</translation>
+    </message>
 </context>
 <context>
     <name>MainForm</name>

@@ -360,11 +360,25 @@ void MainForm::importPDF(const QString &fileName)
 
 void MainForm::addPDFPage(QString pageName)
 {
+    if (pdfPD == 0)
+        return;
     QFile fl(pageName);
-    while(!fl.exists())
+    while(!fl.exists()) {
         sleep(1);
-    while (!pages->appendPage(pageName))
+        if (pdfPD == 0)
+            return;
+        else
+            if (!pdfPD->isVisible())
+               return;
+    }
+    while (!pages->appendPage(pageName)) {
         sleep(1);
+        if (pdfPD == 0)
+            return;
+        else
+            if (!pdfPD->isVisible())
+                return;
+    }
     int fr = pdfx->filesRemaining(pageName);
     if (fr > 0) {
         int ft = pdfx->filesTotal();
@@ -381,6 +395,7 @@ void MainForm::finishedPDF()
 {
     delete pdfPD;
     pdfPD = 0;
+    //pdfx->cancel();
     //setupPDFPD();
     settings->setAutoDeskew(globalDeskew);
 }
@@ -897,16 +912,17 @@ void MainForm::setupPDFPD()
 {
     pdfPD->setWindowTitle("YAGF");
     pdfPD->setLabelText(trUtf8("Importing pages from the PDF document..."));
-    pdfPD->setCancelButton(new QPushButton());
-    pdfPD->setCancelButtonText(trUtf8("Cancel"));
+    pdfPD->setCancelButton(0);
+   // pdfPD->setCancelButton(new QPushButton());
+    //pdfPD->setCancelButtonText(trUtf8("Cancel"));
     pdfPD->setMinimum(-1);
     pdfPD->setMaximum(-1);
     pdfPD->setModal(true);
     pdfPD->setWindowIcon(QIcon(":/yagf.png"));
-    if (pdfx) {
+    /*if (pdfx) {
         connect(pdfPD, SIGNAL(canceled()), pdfx, SLOT(cancel()));
         connect(pdfPD, SIGNAL(canceled()), this, SLOT(cancelPDF()));
-    }
+    }*/
 }
 
 void MainForm::on_ActionDeleteBlock_activated()

@@ -129,6 +129,7 @@ int PDFExtractor::getStopPage()
 
 void PDFExtractor::cancel()
 {
+    stopPage = 1;
     emit terminate();
 }
 
@@ -176,20 +177,30 @@ void PDFExtractor::execInternal(const QString &command, const QStringList &argum
             while (oldFil.count() + fil.count() < stopPage - (startPage == 0 ? startPage - prefil.count() - 4 : startPage - prefil.count() -1)) {
                 QApplication::processEvents();
                 fil = dir.entryInfoList(filters, QDir::Files, QDir::Name);
+                foreach (QFileInfo fi, fil) {
+                    if (!oldFil.contains(fi)) {
+                            oldFil.append(fi);
+                            emit addPage(fi.absoluteFilePath());
+                            QApplication::processEvents();
+                    }
+                    else
+                        QApplication::processEvents();
+                }
             }
         } else {
             QApplication::processEvents();
             fil = dir.entryInfoList(filters, QDir::Files, QDir::Name);
-        }
-        foreach (QFileInfo fi, fil) {
-            if (!oldFil.contains(fi)) {
-                    oldFil.append(fi);
-                    emit addPage(fi.absoluteFilePath());
+            foreach (QFileInfo fi, fil) {
+                if (!oldFil.contains(fi)) {
+                        oldFil.append(fi);
+                        emit addPage(fi.absoluteFilePath());
+                        QApplication::processEvents();
+                }
+                else
                     QApplication::processEvents();
             }
-            else
-                cont = false;
         }
+
     }
     emit finished();
 }

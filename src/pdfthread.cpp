@@ -20,9 +20,6 @@
 #include "pdfthread.h"
 #include "pdfextractor.h"
 #include <QProcess>
-#include <sys/types.h>
-#include <signal.h>
-#include <errno.h>
 
 PDFThread::PDFThread(PDFExtractor *parent) :
     QThread()

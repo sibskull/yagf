@@ -65,7 +65,14 @@ bool Page::loadFile(QString fileName, int tiled, bool loadIntoView)
     crop1.setHeight(0);
     scale = 0.5;
     ImageProcessor ip;
-    img = ip.loadFromFile(fileName);
+    try {
+        img = ip.loadFromFile(fileName);
+    }
+    catch (...)
+    {
+        return false;
+    }
+
     imageLoaded = !img.isNull();
     if (!imageLoaded)
         return false;

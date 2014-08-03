@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="64"
+   height="64"
+   id="svg6288"
+   version="1.1"
+   inkscape:version="0.48.5 r10040"
+   sodipodi:docname="Flip.svg">
+  <title
+     id="title3017">Flip</title>
+  <defs
+     id="defs6290" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="5.6568542"
+     inkscape:cx="-46.666306"
+     inkscape:cy="-5.5525901"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     inkscape:window-width="1920"
+     inkscape:window-height="1138"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1" />
+  <metadata
+     id="metadata6293">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title>Flip</dc:title>
+        <dc:creator>
+          <cc:Agent>
+            <dc:title>Nastya Bekassova</dc:title>
+          </cc:Agent>
+        </dc:creator>
+        <dc:rights>
+          <cc:Agent>
+            <dc:title>Nastya Bekassova</dc:title>
+          </cc:Agent>
+        </dc:rights>
+        <dc:description>More Air for YAGF icon set</dc:description>
+        <dc:source>symmetrica.net/~bekassova/</dc:source>
+        <cc:license
+           rdf:resource="http://www.gnu.org/copyleft/gpl.html" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(0,-988.36218)">
+    <path
+       inkscape:connector-curvature="0"
+       id="path3192-7"
+       style="font-size:medium;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-indent:0;text-align:start;text-decoration:none;line-height:normal;letter-spacing:normal;word-spacing:normal;text-transform:none;direction:ltr;block-progression:tb;writing-mode:lr-tb;text-anchor:start;baseline-shift:baseline;color:#000000;fill:#000092;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate;font-family:Sans;-inkscape-font-specification:Sans"
+       d="m 35.17073,1027.5864 -5.64385,-0.1059 0.31045,-11.9322 3.29028,-0.079 1.21875,-3e-4 -0.93233,-1.6602 -5.70356,-9.0873 -0.37507,-0.4194 -0.34368,0.4195 -3.21902,5.3322 -3.5394,5.6501 1.1875,-4e-4 3.41653,-0.1549 -0.30951,17.3835 c -0.004,0.2161 -0.0266,0.2598 0.0948,0.4169 0.11425,0.148 0.23868,0.2291 0.40533,0.231 l 12.98919,0.1435 c 0.0105,-0.1184 -1.15773,-1.2082 -0.9894,-1.3665 l -11.5,0 0.30951,-17.4215 0.0311,-0.6099 -0.53125,10e-5 -3.05134,-0.013 5.08116,-8.2658 4.57295,8.1941 -2.60277,0.079 -0.46875,10e-5 -0.0311,0.5719 -0.31024,13.1519 1.1e-4,0.6482 0.5,-3e-4 7.125,0.3026 z m -2.34146,-17.1524 5.64385,0.1059 -0.31045,11.9322 -3.29028,0.079 -1.21875,2e-4 2.34654,3.9247 4.28935,6.8232 0.37507,0.4193 0.34368,-0.4196 3.57257,-5.6554 3.18585,-5.3267 -1.1875,3e-4 -3.41653,0.1548 0.30951,-17.3834 c 0.004,-0.216 0.0266,-0.2597 -0.0948,-0.417 -0.11425,-0.1479 -0.23867,-0.2306 -0.40533,-0.2309 l -13.53664,-0.028 c -0.0105,0.117 0.85921,1.1047 0.91185,1.2901 l 12.125,-0.04 -0.30951,17.4217 -0.0311,0.6099 0.53125,-10e-5 3.09554,-0.1547 -5.12536,8.4276 -4.57295,-8.1942 2.60277,-0.079 0.46875,-10e-5 0.0311,-0.5718 0.31024,-13.1519 -1.1e-4,-0.6481 -0.5,10e-5 -7.1875,-0.15 z" />
+  </g>
+</svg>

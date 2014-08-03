@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="64"
+   height="64"
+   id="svg6288"
+   version="1.1"
+   inkscape:version="0.48.5 r10040"
+   sodipodi:docname="save.svg">
+  <title
+     id="title3017">Save</title>
+  <defs
+     id="defs6290" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.98994949"
+     inkscape:cx="-457.06972"
+     inkscape:cy="130.54731"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     inkscape:window-width="1920"
+     inkscape:window-height="1138"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1" />
+  <metadata
+     id="metadata6293">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title>Save</dc:title>
+        <dc:creator>
+          <cc:Agent>
+            <dc:title>Nastya Bekassova</dc:title>
+          </cc:Agent>
+        </dc:creator>
+        <dc:rights>
+          <cc:Agent>
+            <dc:title>Nastya Bekassova</dc:title>
+          </cc:Agent>
+        </dc:rights>
+        <dc:description>More Air for YAGF icon set</dc:description>
+        <dc:source>symmetrica.net/~bekassova/</dc:source>
+        <cc:license
+           rdf:resource="www.gnu.org/copyleft/gpl.html" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(0,-988.36218)">
+    <path
+       style="font-size:medium;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-indent:0;text-align:start;text-decoration:none;line-height:normal;letter-spacing:normal;word-spacing:normal;text-transform:none;direction:ltr;block-progression:tb;writing-mode:lr-tb;text-anchor:start;baseline-shift:baseline;color:#000000;fill:#000092;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate;font-family:Sans;-inkscape-font-specification:Sans"
+       d="m 31.314729,1011.6185 c -1.342104,0 -2.5,0.9724 -2.5,2.25 l 0,11.75 -5.5,0 -1.21875,0 0.875,0.8437 8,8 0.34375,0.375 0.34375,-0.375 8,-8 0.875,-0.8437 -1.21875,0 -5.5,0 0,-11.75 c 0,-1.2776 -1.157896,-2.25 -2.5,-2.25 z m 0,1 c 0.867896,0 1.5,0.5876 1.5,1.25 l 0,12.25 0,0.5 0.5,0 4.8125,0 -6.8125,6.8125 -6.8125,-6.8125 4.8125,0 0.5,0 0,-0.5 0,-12.25 c 0,-0.6624 0.632104,-1.25 1.5,-1.25 z m -14,13 c -1.376042,0 -2.5,1.1261 -2.5,2.5 l 0,14 c 0,1.3747 1.124259,2.5 2.5,2.5 l 28,0 c 1.374985,0 2.5,-1.125 2.5,-2.5 l 0,-14 c 0,-1.3742 -1.124713,-2.5 -2.5,-2.5 -1.375287,0 -2.5,1.1258 -2.5,2.5 l 0,11.5 -23,0 0,-11.5 c 0,-1.3739 -1.123958,-2.5 -2.5,-2.5 z m 0,1 c 0.835958,0 1.5,0.6659 1.5,1.5 l 0,12 0,0.5 0.5,0 24,0 0.5,0 0,-0.5 0,-12 c 0,-0.8338 0.665287,-1.5 1.5,-1.5 0.834713,0 1.5,0.6662 1.5,1.5 l 0,14 c 0,0.835 -0.664985,1.5 -1.5,1.5 l -28,0 c -0.836259,0 -1.5,-0.6647 -1.5,-1.5 l 0,-14 c 0,-0.8341 0.664042,-1.5 1.5,-1.5 z"
+       id="path5346"
+       inkscape:connector-curvature="0" />
+  </g>
+</svg>

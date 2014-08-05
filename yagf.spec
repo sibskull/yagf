@@ -1,8 +1,8 @@
-%define  snapshot a131416
+%define  snapshot %nil
 
 Name:    yagf
-Version: 0.9.3.2
-Release: alt1.git%snapshot
+Version: 0.9.4
+Release: alt1
 
 Summary: YAGF is a graphical front-end for cuneiform and tesseract OCR tools
 Summary(ru_RU.UTF-8): Оболочка YAGF предоставляет графический интерфейс для систем распознавания текста Cuneiform и Tesseract
@@ -11,7 +11,6 @@ Group:   Office
 URL:     http://symmetrica.net/cuneiform-linux/yagf-ru.html
 
 Source:  %{name}-%{version}.tar
-Patch:   %{name}-%{version}.patch
 
 BuildRequires(pre): cmake
 BuildRequires: gcc-c++ libqt4-devel
@@ -45,7 +44,6 @@ the online help for more details).
 
 %prep
 %setup -q
-%patch -p1
 subst "s,/usr/local,%buildroot/usr/,g" ./CMakeLists.txt
 
 %build
@@ -65,6 +63,9 @@ subst "s,/usr/local,%buildroot/usr/,g" ./CMakeLists.txt
 %_desktopdir/YAGF.desktop
 
 %changelog
+* Tue Aug 05 2014 Andrey Cherepanov <cas@altlinux.org> 0.9.4-alt1
+- New version
+
 * Thu Apr 03 2014 Andrey Cherepanov <cas@altlinux.org> 0.9.3.2-alt1.gita131416
 - New version
 - Multipage TIFF support

@@ -9,8 +9,10 @@ Summary(ru_RU.UTF-8): Оболочка YAGF предоставляет граф�
 License: GPLv3+
 Group:   Office
 URL:     http://symmetrica.net/cuneiform-linux/yagf-ru.html
+# VCS URL: https://code.google.com/p/yagf/
 
 Source:  %{name}-%{version}.tar
+Patch:	 yagf-fix-build-upstream-e852cd1.patch
 
 BuildRequires(pre): cmake
 BuildRequires: gcc-c++ libqt4-devel
@@ -44,6 +46,7 @@ the online help for more details).
 
 %prep
 %setup -q
+%patch -p1
 subst "s,/usr/local,%buildroot/usr/,g" ./CMakeLists.txt
 
 %build

@@ -255,6 +255,7 @@ private:
     void toGrayScaleByEntropyChannel(const QImage &input, bool maxEntropy);
     void histogramInternal(qreal *result, const IntRect &r) const;
     void copyInternal(const IntRect &r, uint * image) const;
+    void blendImageInternal(const IntRect &r, quint8 * p1, const quint8 * p2);
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(QIPGrayscaleImage::BinarizationMethods)

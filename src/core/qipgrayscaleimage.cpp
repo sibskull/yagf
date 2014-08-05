@@ -23,6 +23,11 @@
 #include "common.h"
 #include <QRect>
 #include <QFile>
+#include <QFuture>
+#include <QtConcurrentRun>
+
+
+#define IPRIT_MULTITHREADING
 
 const QString fheader = QString::fromUtf8("YGF1");
 
@@ -395,46 +400,81 @@ void QIPGrayscaleImage::wienerFilter()
 
 void QIPGrayscaleImage::blendImage(const QIPBlackAndWhiteImage &image)
 {
+#ifndef IPRIT_MULTITHREADING
+    IntRect r;
+    r.x1 = 0;
+    r.y1 = 0;
+    r.x2 = width();
+    r.y2 = height();
+    quint8 * d1 = data.data();
+    quint8 * d2 = image.data.data();
+    blendImageInternal(r, d1, d2);
+#endif
+#ifdef IPRIT_MULTITHREADING
+    quint8 * d1 = data.data();
+    quint8 * d2 = image.data.data();
+    IntRect r1;
+    r1.x1 = 0;
+    r1.y1 = 0;
+    r1.x2 = width();
+    r1.y2 = height()/2;
+
+    QFuture<void> future1 = QtConcurrent::run(this, &QIPGrayscaleImage::blendImageInternal, r1, d1, d2);
+    IntRect r2;
+    r2.x1 = 0;
+    r2.y1 = height()/2;
+    r2.x2 = width();
+    r2.y2 = height();
+    QFuture<void> future2 = QtConcurrent::run(this, &QIPGrayscaleImage::blendImageInternal, r2, d1, d2);
+    future1.waitForFinished();
+    future2.waitForFinished();
+#endif
+}
+
+void QIPGrayscaleImage::blendImageInternal(const IntRect &r, quint8 *  p1, const quint8 * p2)
+{
+    int w = r.x2 - r.x1;
+    int h = r.y2 - r.y1;
     if (w*h < 32) return;
-    if (h < 4) return;
-    const quint8 * bw = image.data.data();
-    quint8 * gs = data.data();
-    for (int i = 0; i < w; i++)
-        gs[i] = bw[i] == 1 ? qMin(gs[i] + 32, 255) : gs[i]*3/4;
-    for (int i = 0; i < w*h; i+=w) {
-        gs[i] = bw[i] == 1 ? qMin(gs[i] + 32, 255) : gs[i]*3/4;
-        gs[i+w-1] = bw[i+w-1] == 1 ? qMin(gs[i+w-1] + 32, 255) : gs[i+w-1]*3/4;
-    }
-    for (int i = w*(h-1); i < w*h; i++)
-        gs[i] = bw[i] == 1 ? qMin(gs[i] + 32, 255) : gs[i]*3/4;
-    int up =Settings::instance()->getForegroundBrightenFactor();
-    uint d1 = 3;
-    uint d2 = 4;
-    uint ra = 0;
-    uint c = 0;
+        if (h < 4) return;
+        const quint8 * bw = p2 + r.y1*w;
+        quint8 * gs = p1 + r.y1*w;
+        for (int i = 0; i < w; i++)
+            gs[i] = bw[i] == 1 ? qMin(gs[i] + 32, 255) : gs[i]*3/4;
+        for (int i = 0; i < w*h; i+=w) {
+            gs[i] = bw[i] == 1 ? qMin(gs[i] + 32, 255) : gs[i]*3/4;
+            gs[i+w-1] = bw[i+w-1] == 1 ? qMin(gs[i+w-1] + 32, 255) : gs[i+w-1]*3/4;
+        }
+        for (int i = w*(h-1); i < w*h; i++)
+            gs[i] = bw[i] == 1 ? qMin(gs[i] + 32, 255) : gs[i]*3/4;
+        int up =Settings::instance()->getForegroundBrightenFactor();
+        uint d1 = 3;
+        uint d2 = 4;
+        uint ra = 0;
+        uint c = 0;
 
-    for (int i = w+1; i < w*(h-1)-1; i++) {
-        if (bw[i] == 1) {
-            ra += gs[i];
-            c++;
-            if ((bw[i-1] != 0)||(bw[i+1] != 0))
-                if ((bw[i-2] != 0)||(bw[i+1] != 0))
-                if ((bw[i-w] != 0)||(bw[i+w] != 0))
-                    if ((bw[i-w-1] != 0)||(bw[i+w+1] != 0))
-                        if ((bw[i-w+1] != 0)||(bw[i+w-1] != 0))
-                                gs[i] = qMin(gs[i] + up, 255);
+        for (int i = w+1; i < w*(h-1)-1; i++) {
+            if (bw[i] == 1) {
+                ra += gs[i];
+                c++;
+                if ((bw[i-1] != 0)||(bw[i+1] != 0))
+                    if ((bw[i-2] != 0)||(bw[i+1] != 0))
+                    if ((bw[i-w] != 0)||(bw[i+w] != 0))
+                        if ((bw[i-w-1] != 0)||(bw[i+w+1] != 0))
+                            if ((bw[i-w+1] != 0)||(bw[i+w-1] != 0))
+                                    gs[i] = qMin(gs[i] + up, 255);
 
-        } else
-            gs[i] = gs[i]*d1/d2;
-    }
-    up = Settings::instance()->getGlobalBrightenFactor();
-    if (ra/c < Settings::instance()->getDarkBackgroundThreshold())
+            } else
+                gs[i] = gs[i]*d1/d2;
+        }
+        up = Settings::instance()->getGlobalBrightenFactor();
+        if (ra/c < Settings::instance()->getDarkBackgroundThreshold())
+            for (int i = w+1; i < w*(h-1)-1; i++)
+                gs[i] = qMin(gs[i]+up, 255);
+        up = Settings::instance()->getGlobalDarkenFactor();
+        int thr = Settings::instance()->getGlobalDarkenThreshold();
         for (int i = w+1; i < w*(h-1)-1; i++)
-            gs[i] = qMin(gs[i]+up, 255);
-    up = Settings::instance()->getGlobalDarkenFactor();
-    int thr = Settings::instance()->getGlobalDarkenThreshold();
-    for (int i = w+1; i < w*(h-1)-1; i++)
-        if ((gs[i] < thr)&&(gs[i]>up)) gs[i]-=up;
+            if ((gs[i] < thr)&&(gs[i]>up)) gs[i]-=up;
 }
 
 QIPGrayscaleImage::QIPGrayscaleImage(quint32 width, quint32 height) : data(new quint8[width*height])

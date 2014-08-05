@@ -83,6 +83,7 @@ void ImageProcessor::binarize()
     img.smoother();
     QIPBlackAndWhiteImage bwimg = img.binarize(QIPGrayscaleImage::GatosBinarization);
     img.blendImage(bwimg);
+    bwimg.width();
     //img->darken(235);
 }
 

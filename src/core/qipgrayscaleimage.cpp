@@ -323,6 +323,11 @@ quint32 QIPGrayscaleImage::height() const
 
 QIPGrayscaleImage QIPGrayscaleImage::copy(quint32 x1, quint32 x2, quint32 y1, quint32 y2) const
 {
+    if (y2 > h) y2 = h;
+    if (x2 > w) x2 = w;
+    if (x1 > x2) x1 = 0;
+    if (y1 > y2) y1 = 0;
+
     QIPGrayscaleImage result(x2 - x1, y2 - y1);
     for (uint y = y1; y < y2; y ++) {
         quint8 * src = &scanLine(y)[x1];

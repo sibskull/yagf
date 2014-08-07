@@ -69,6 +69,7 @@
 #include <QCursor>
 #include <QLineEdit>
 #include <QGtkStyle>
+#include <unistd.h>
 
 const QString outputBase = "output";
 const QString outputExt = ".txt";

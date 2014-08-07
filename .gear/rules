@@ -1,0 +1,2 @@
+tar:  @name@-@version@:. name=@name@-@version@ base=@name@-@version@
+diff:  upstream:. name=@name@-@version@.patch

@@ -139,7 +139,7 @@ void SpellChecker::setLanguage(const QString &lang)
     if (lang.isEmpty()) return;
     delete_aspell_speller(spell_checker1);
     delete_aspell_speller(spell_checker2);
-	bad_language.clear();
+    bad_language.clear();
 
     m_lang2 = "en";
     m_lang1 = m_map->value(lang, QString("en"));
@@ -189,11 +189,11 @@ void SpellChecker::setLanguage(const QString &lang)
     else
         delete_aspell_can_have_error(possible_err);
 
-	// Check absent dictionary
-	if (spell_checker1 == 0)
-		bad_language = m_lang1;
-	if (spell_checker2 == 0)
-		bad_language = m_lang2;
+    // Check absent dictionary
+    if (spell_checker1 == 0)
+        bad_language = m_lang1;
+    if (spell_checker2 == 0)
+        bad_language = m_lang2;
 
 }
 
@@ -202,7 +202,7 @@ bool SpellChecker::spellCheck()
     if ((spell_checker1 == 0) && (spell_checker2 == 0)) {
         QPixmap icon;
         icon.load(":/warning.png");
-		QMessageBox messageBox(QMessageBox::NoIcon, "YAGF", QObject::trUtf8("Required spelling dictionary (%1) is not found.\nSpell-checking is disabled.\nTry to install an appropriate aspell dictionary.").arg(bad_language),
+        QMessageBox messageBox(QMessageBox::NoIcon, "YAGF", QObject::trUtf8("Required spelling dictionary (%1) is not found.\nSpell-checking is disabled.\nTry to install an appropriate aspell dictionary.").arg(bad_language),
                                QMessageBox::Ok, 0);
         messageBox.setIconPixmap(icon);
         messageBox.exec();
@@ -286,8 +286,8 @@ void SpellChecker::_checkWord(QTextCursor *cursor)
     selText = selText.remove(QString::fromUtf8("«"));
     selText = selText.remove(QString::fromUtf8("»"));
     //selText = selText.remove("\"");
-    //selText = selText.remove("(");
-    //selText = selText.remove(")");
+    selText = selText.remove(QString::fromUtf8("("));
+    selText = selText.remove(QString::fromUtf8(")"));
 
     if (!checkWordSpelling(selText)) {
         QTextCharFormat fmt = cursor->charFormat();
@@ -310,7 +310,7 @@ bool SpellChecker::checkWordSpelling(const QString &word)
 
     QByteArray ba = tmp.toUtf8();
     return (aspell_speller_check(spell_checker1, ba.data(), ba.size()) != 0) ||
-            (aspell_speller_check((spell_checker2 != NULL ? spell_checker2 : spell_checker1), ba.data(), ba.size()) != 0);
+           (aspell_speller_check((spell_checker2 != NULL ? spell_checker2 : spell_checker1), ba.data(), ba.size()) != 0);
 }
 
 void SpellChecker::checkWord()
@@ -321,7 +321,7 @@ void SpellChecker::checkWord()
     _checkWord(&cursor);
 }
 
-bool SpellChecker::hasHyphen(QTextCursor * cursor)
+bool SpellChecker::hasHyphen(QTextCursor *cursor)
 {
     if ((spell_checker1 == 0) || (spell_checker2 == 0))
         return false;
@@ -369,12 +369,12 @@ QStringList SpellChecker::suggestions()
     QByteArray ba = word.toUtf8();
     if ((aspell_speller_check(spell_checker2, ba.data(), ba.size()) != 0)||(aspell_speller_check(spell_checker1, ba.data(), ba.size()) != 0))
         return sl;
-    const struct AspellWordList * awl = aspell_speller_suggest(spell_checker1, ba.data(), ba.size());
-    if(aspell_word_list_size(awl) > 0) {
-        struct AspellStringEnumeration * ase = aspell_word_list_elements(awl);
+    const struct AspellWordList *awl = aspell_speller_suggest(spell_checker1, ba.data(), ba.size());
+    if (aspell_word_list_size(awl) > 0) {
+        struct AspellStringEnumeration *ase = aspell_word_list_elements(awl);
         int i  = 0;
         while ((!aspell_string_enumeration_at_end(ase))&&(i < 10)) {
-            const char * text = aspell_string_enumeration_next(ase);
+            const char *text = aspell_string_enumeration_next(ase);
             sl << QString::fromUtf8(text);
             i++;
         }

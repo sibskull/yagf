@@ -21,6 +21,8 @@
 #include <QFileInfo>
 #include <QByteArray>
 #include <QDir>
+#include <QMessageBox>
+#include <QPixmap>
 #include <stdlib.h>
 #include "utils.h"
 
@@ -64,4 +66,34 @@ bool findProgram(const QString &name)
             return true;
     }
     return false;
+}
+
+bool styledWarningMessage(QWidget *parent, const QString &text)
+{
+    QMessageBox mb(parent);
+    mb.setIconPixmap(QPixmap(":warning.png"));
+    mb.setWindowTitle(QObject::trUtf8("Warning"));
+    mb.setText(text);
+    mb.setButtonText(0, QObject::trUtf8("OK"));
+    mb.exec();
+}
+
+bool styledInfoMessage(QWidget *parent, const QString &text)
+{
+    QMessageBox mb(parent);
+    mb.setIconPixmap(QPixmap(":/images/info.png"));
+    mb.setWindowTitle(QObject::trUtf8("Information"));
+    mb.setText(text);
+    mb.setButtonText(0, QObject::trUtf8("OK"));
+    mb.exec();
+}
+
+bool styledCriticalMessage(QWidget *parent, const QString &text)
+{
+    QMessageBox mb(parent);
+    mb.setIconPixmap(QPixmap(":/critical.png"));
+    mb.setWindowTitle(QObject::trUtf8("Error"));
+    mb.setText(text);
+    mb.setButtonText(0, QObject::trUtf8("OK"));
+    mb.exec();
 }

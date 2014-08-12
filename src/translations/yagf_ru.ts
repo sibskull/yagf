@@ -76,24 +76,16 @@
         <translation>Язык интерфейса</translation>
     </message>
     <message>
-        <source>Select Language of the Interface:</source>
-        <translation>Выбрать язык интерфейса:</translation>
-    </message>
-    <message>
-        <source>Toolbar Icon Size</source>
-        <translation>Размер иконок</translation>
-    </message>
-    <message>
-        <source>Normal</source>
-        <translation>Обычный</translation>
-    </message>
-    <message>
-        <source>Large</source>
-        <translation>Крупный</translation>
-    </message>
-    <message>
         <source>Tesseract Data Directory</source>
         <translation>Расположение данных Tesseract</translation>
+    </message>
+    <message>
+        <source>Force English Locale</source>
+        <translation>Использовать английский</translation>
+    </message>
+    <message>
+        <source>Default Font Size</source>
+        <translation>Размер шрифта по умолчанию</translation>
     </message>
 </context>
 <context>
@@ -146,24 +138,12 @@
         <translation>Предупреждение</translation>
     </message>
     <message>
-        <source>Error</source>
-        <translation>Ошибка</translation>
-    </message>
-    <message>
         <source>No image loaded</source>
         <translation>Изображение не загружено</translation>
     </message>
     <message>
         <source>Starting cuneiform failed</source>
         <translation>Не удалось запустить cuneiform</translation>
-    </message>
-    <message>
-        <source>The system said: </source>
-        <translation>Ответ системы:</translation>
-    </message>
-    <message>
-        <source>program not found</source>
-        <translation>программа не найдена</translation>
     </message>
     <message>
         <source>About YAGF</source>
@@ -190,10 +170,6 @@
         <translation>Импорт страниц из документа PDF...</translation>
     </message>
     <message>
-        <source>Cancel</source>
-        <translation>Отменить</translation>
-    </message>
-    <message>
         <source>No compatible PDF converter software could be found. Please install either the pdftoppm utility or the GhostScript package (from this the gs command will be required).</source>
         <translation>Не найдены подходящие конвертeры PDF. Установите, пожалуйста, утилиту pdftoppm или пакет GhostScript (из которого требуется программа gs).</translation>
     </message>
@@ -206,42 +182,12 @@
         <translation>Не удалось запустить tesseract</translation>
     </message>
     <message>
-        <source>cuneiform not found, switching to tesseract</source>
-        <translation>Программа cuneiform не найдена, переключаемся на tesseract</translation>
-    </message>
-    <message>
-        <source>No recognition engine found.
-Please install either cuneiform or tesseract</source>
-        <translation>Программа распознавания не найдена.
-Установите, пожалуйста, cuneiform или tesseract</translation>
-    </message>
-    <message>
-        <source>tesseract not found, switching to cuneiform</source>
-        <translation>Программа tesseract не найдена, переключаемся на cuneiform</translation>
-    </message>
-    <message>
-        <source>No PDF converter installed</source>
-        <translation>Конвертер PDF не установлен</translation>
-    </message>
-    <message>
         <source>Using Cuneiform</source>
         <translation>Используется Cuneiform</translation>
     </message>
     <message>
         <source>Using Tesseract</source>
         <translation>Используется Tesseract</translation>
-    </message>
-    <message>
-        <source>Scanning is impossible</source>
-        <translation>Сканирование невозможно</translation>
-    </message>
-    <message>
-        <source>No scanning front-end is found. Please install XSane in order to perform scanning.</source>
-        <translation>Программа сканирования не найдена. Необходимо установить XSane.</translation>
-    </message>
-    <message>
-        <source>Failed to Load Image</source>
-        <translation>Невозможно загрузить выбранное изображение</translation>
     </message>
     <message>
         <source>Failed to detect text areas on this page.
@@ -294,6 +240,48 @@ Falling back to cueniform. Please install cuneiform.</source>
     <message>
         <source>Image Files (*.png *.jpg *.jpeg *.bmp *.tiff *.tif *.gif *.pnm *.pgm *.pbm *.ppm *.pdf)</source>
         <translation>Файлы изображений (*.png *.jpg *.jpeg *.bmp *.tiff *.tif *.gif *.pnm *.pgm *.pbm *.ppm *.pdf)</translation>
+    </message>
+    <message>
+        <source>Scanning is impossible. No scanning front-end is found.
+Please install XSane in order to perform scanning.</source>
+        <translation>Сканирование невозможно, так как в систем не установлен XSane.</translation>
+    </message>
+    <message>
+        <source>Program not found.</source>
+        <translation>Программа не найдена.</translation>
+    </message>
+    <message>
+        <source>Click Me again!</source>
+        <translation>Нажми меня еще раз!</translation>
+    </message>
+    <message>
+        <source>Cuneiform not found, switching to Tesseract OCR</source>
+        <translation>Cuneiform не найден, переключаюсь на Tesseract</translation>
+    </message>
+    <message>
+        <source>No recognition engine found.
+Please install either Cuneiform or Tesseract OCR</source>
+        <translation>Программы распознавания не обнаружены. Установите Tesseract или Cuneiform</translation>
+    </message>
+    <message>
+        <source>Tesseract not found, switching to Cuneiform</source>
+        <translation>Tesseract не найден, переключаюсь на Cuneiform</translation>
+    </message>
+    <message>
+        <source>Clipboard doesn&apos;t contain an image.</source>
+        <translation>Буфер обмена не содержит изображений.</translation>
+    </message>
+    <message>
+        <source>OK</source>
+        <translation>Да</translation>
+    </message>
+    <message>
+        <source>Draw the line along a string of text with left mouse button</source>
+        <translation>Проведите линиии вдоль строки текста (левой кнопкой мыши)</translation>
+    </message>
+    <message>
+        <source>Failed to load image %1</source>
+        <translation>Невозможно открыть файл %1</translation>
     </message>
 </context>
 <context>
@@ -409,14 +397,6 @@ Falling back to cueniform. Please install cuneiform.</source>
     <message>
         <source>Select HTML format as recognition output</source>
         <translation>Выбрать HTML в качестве формата вывода распознанного текста</translation>
-    </message>
-    <message>
-        <source>Larger view</source>
-        <translation>Увеличить</translation>
-    </message>
-    <message>
-        <source>Smaller view</source>
-        <translation>Уменьшить</translation>
     </message>
     <message>
         <source>Rotate 90 CCW</source>
@@ -598,6 +578,22 @@ Falling back to cueniform. Please install cuneiform.</source>
         <source>Text manipulation</source>
         <translation>Работа с текстом</translation>
     </message>
+    <message>
+        <source>Larger view (Ctrl + Mouse Wheel)</source>
+        <translation>Приблизить (Ctrl+колесо мыши)</translation>
+    </message>
+    <message>
+        <source>Smaller view (Ctrl + Mouse Wheel)</source>
+        <translation>Отдалить (Ctrl+колесо мыши)</translation>
+    </message>
+    <message>
+        <source>Keep Lines</source>
+        <translation>Сохранять разбиение на строки</translation>
+    </message>
+    <message>
+        <source>Keep line-breaks in the scanned text</source>
+        <translation>Сохранять строки в отсканированном тексте, как в оригинале</translation>
+    </message>
 </context>
 <context>
     <name>PopplerDialog</name>
@@ -655,10 +651,6 @@ Try to install an appropriate aspell dictionary.</source>
         <translation>Требуемый орфографический словарь (%1) не найден.
 Проверка орфографии будет отключена.
 Попробуйте установить соответствующий словарь aspell.</translation>
-    </message>
-    <message>
-        <source>Warning</source>
-        <translation>Предупреждение</translation>
     </message>
     <message>
         <source>Select Project Directory</source>
@@ -847,6 +839,50 @@ Try to install an appropriate aspell dictionary.</source>
     <message>
         <source>Vietnamese</source>
         <translation>Вьетнамский</translation>
+    </message>
+    <message>
+        <source>Afrikaans</source>
+        <translation>Африкаанс</translation>
+    </message>
+    <message>
+        <source>Belarusian</source>
+        <translation>Белорусский</translation>
+    </message>
+    <message>
+        <source>Catalan</source>
+        <translation>Каталанский</translation>
+    </message>
+    <message>
+        <source>Chinese (Simplified)</source>
+        <translation>Китайский (упрощенный)</translation>
+    </message>
+    <message>
+        <source>Chinese (Tradtional)</source>
+        <translation>Китайский (традиционный)</translation>
+    </message>
+    <message>
+        <source>Esperanto</source>
+        <translation>Эсперанто</translation>
+    </message>
+    <message>
+        <source>Galician</source>
+        <translation>Галисийский</translation>
+    </message>
+    <message>
+        <source>Japanese</source>
+        <translation>Японский</translation>
+    </message>
+    <message>
+        <source>Kannada</source>
+        <translation>Каннада</translation>
+    </message>
+    <message>
+        <source>Korean</source>
+        <translation>Корейский</translation>
+    </message>
+    <message>
+        <source>Thai</source>
+        <translation>Тайский</translation>
     </message>
 </context>
 <context>

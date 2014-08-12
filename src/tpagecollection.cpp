@@ -24,8 +24,11 @@
 #include <QApplication>
 #include <QFile>
 #include <QImage>
+#include <QMutex>
 
-PageCollection * PageCollection::m_instance = NULL;
+static QMutex lsGate;
+
+PageCollection *PageCollection::m_instance = NULL;
 
 PageCollection::PageCollection(QObject *parent) :
     QObject(parent)
@@ -39,35 +42,34 @@ PageCollection::PageCollection(const PageCollection &)
 }
 
 PageCollection::~PageCollection()
-{
-    clear();
+{ clear();
 }
 
 bool PageCollection::appendPage(const QString &fileName)
 {
 
 
-        unloadAll();
-        Page * p = new Page(++pid);
-        connect(p,SIGNAL(refreshView()), this, SIGNAL(loadPage()));
-        if (p->loadFile(fileName, 1, false)) {
+    unloadAll();
+    Page *p = new Page(++pid);
+    connect(p,SIGNAL(refreshView()), this, SIGNAL(loadPage()));
+    if (p->loadFile(fileName, 1, false)) {
 
-            pages.append(p);
-            index = pages.count() - 1;
-           // if (Settings::instance()->getAutoDeskew()) {
-             //   deskew();
+        pages.append(p);
+        index = pages.count() - 1;
+        // if (Settings::instance()->getAutoDeskew()) {
+        //   deskew();
 
-                //p->cropYGF();
-                //p->reSaveTmpPage();
-         //   }
-            emit addSnippet(index);
-            connect(p, SIGNAL(textOut(QString)), SLOT(textOut(QString)));
-            return true;
-        } else {
-            delete p;
-            pid--;
-            return false;
-        }
+        //p->cropYGF();
+        //p->reSaveTmpPage();
+        //   }
+        emit addSnippet(index);
+        connect(p, SIGNAL(textOut(QString)), SLOT(textOut(QString)));
+        return true;
+    } else {
+        delete p;
+        pid--;
+        return false;
+    }
 
 }
 
@@ -75,7 +77,7 @@ void PageCollection::newPage(const QString &fileName, qreal rotation, bool prepr
 {
     if (cp())
         cp()->unload();
-    Page * p = new Page(++pid);
+    Page *p = new Page(++pid);
     connect(p,SIGNAL(refreshView()), this, SIGNAL(loadPage()));
     p->setDeskewed(deskewed);
     p->setPreprocessed(preprocessed);
@@ -128,8 +130,8 @@ bool PageCollection::makeNextPageCurrent()
 QSnippet *PageCollection::snippet()
 {
     if (!cp()) return NULL;
-    QSnippet * s = new QSnippet();
-    s->setPage(cp()->pageID(), cp()->fileName(), cp()->thumbnail());
+    QSnippet *s = new QSnippet();
+    s->setPage(cp()->pageID(), cp()->OriginalFileName(), cp()->thumbnail());
     return s;
 }
 
@@ -210,6 +212,18 @@ QString PageCollection::fileName()
     return cp()->fileName();
 }
 
+QString PageCollection::OriginalFileName()
+{
+    if (!cp())
+        return "";
+    return cp()->OriginalFileName();
+}
+
+bool PageCollection::hasPage()
+{
+    return (cp() != 0);
+}
+
 bool PageCollection::savePageAsImage(const QString &fileName, const QString &format)
 {
     if (!cp())
@@ -275,18 +289,30 @@ void PageCollection::deskew(int x1, int y1, int x2, int y2)
     emit loadPage();
 }
 
+QRect PageCollection::scaleRect(QRect &rect)
+{
+    if (cp())
+        return cp()->scaleRect(rect);
+}
+
 void PageCollection::makeLarger()
 {
     if (!cp()) return;
-    cp()->makeLarger();
-    emit loadPage();
+    if (lsGate.tryLock()) {
+        cp()->makeLarger();
+        emit loadPage();
+        lsGate.unlock();
+    }
 }
 
 void PageCollection::makeSmaller()
 {
     if (!cp()) return;
-    cp()->makeSmaller();
-    emit loadPage();
+    if (lsGate.tryLock()) {
+        cp()->makeSmaller();
+        emit loadPage();
+        lsGate.unlock();
+    }
 }
 
 void PageCollection::rotate90CW()
@@ -367,7 +393,7 @@ void PageCollection::clear()
 Page *PageCollection::cp()
 {
     if ((index < 0)|| (index >= count()))
-        return (Page*) 0;
+        return (Page *) 0;
     return pages.at(index);
 }
 

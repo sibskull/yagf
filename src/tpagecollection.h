@@ -27,11 +27,12 @@
 
 class QSnippet;
 
+
 class PageCollection : public QObject
 {
     Q_OBJECT
 public:
-    static PageCollection * instance();
+    static PageCollection *instance();
     static void clearCollection();
     bool appendPage(const QString &fileName);
     void newPage(const QString &fileName, qreal rotation, bool preprocessed, bool deskewed);
@@ -40,7 +41,7 @@ public:
     bool makePageCurrentByID(int id);
     void setBeforeFirst(); // the page pointer is set before the first page
     bool makeNextPageCurrent();
-    QSnippet * snippet();
+    QSnippet *snippet();
     QPixmap pixmap();
     void savePageForRecognition(const QString &fileName);
     void saveRawBlockForRecognition(QRect r, const QString &fileName);
@@ -53,6 +54,8 @@ public:
     Block getSelectedBlock();
     bool pageValid();
     QString fileName();
+    QString OriginalFileName();
+    bool hasPage();
     bool savePageAsImage(const QString &fileName, const QString &format);
     bool isDeskewed();
     bool isPreprocessed();
@@ -63,6 +66,7 @@ public:
     void reloadPage();
     void unloadAll();
     void deskew(int x1, int y1, int x2, int y2);
+    QRect scaleRect(QRect &rect);
 public slots:
     void makeLarger();
     void makeSmaller();
@@ -72,8 +76,8 @@ public slots:
     void deskew();
     void blockAllText();
     bool splitPage(bool preprocess);
-    void addBlock(const QRect & rect);
-    void deleteBlock(const QRect & rect);
+    void addBlock(const QRect &rect);
+    void deleteBlock(const QRect &rect);
     void clearBlocks();
     void clear();
 signals:
@@ -89,13 +93,13 @@ private:
     PageCollection(QObject *parent = 0);
     PageCollection(const PageCollection &);
     ~PageCollection();
-     Page * cp();
-     int id2Index(int id);
+    Page *cp();
+    int id2Index(int id);
 private:
     QVector<Page *> pages;
     int index;
     int pid;
-    static PageCollection * m_instance;
+    static PageCollection *m_instance;
 };
 
 #endif // TPAGECOLLECTION_H

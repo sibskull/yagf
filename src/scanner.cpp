@@ -25,8 +25,7 @@
 class XSaneScannerFE : public ScannerBase
 {
 public:
-    XSaneScannerFE(const QString &PLL, QObject *parent = 0) : ScannerBase(parent)
-    {
+    XSaneScannerFE(const QString &PLL, QObject *parent = 0) : ScannerBase(parent) {
 
         addParameter("-s");
         addParameter("-n");
@@ -37,8 +36,7 @@ public:
 
     }
 
-    void exec()
-    {
+    void exec() {
         waitFor();
         execInternal("xsane");
     }

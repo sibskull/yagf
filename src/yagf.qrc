@@ -3,7 +3,6 @@
         <file>images/smaller.png</file>
         <file>images/larger.png</file>
         <file alias="yagf.png">images/yagf.png</file>
-        <file>images/document_open.png</file>
         <file>images/document_save_as.png</file>
         <file>images/editcopy.png</file>
         <file>images/fileopen.png</file>
@@ -45,7 +44,6 @@
         <file>images/Recognize.png</file>
         <file>images/RemoveBlock.png</file>
         <file>images/Rotateat90.png</file>
-        <file>images/Rotateatm90.png</file>
         <file>images/save.png</file>
         <file>images/Settings.png</file>
         <file>images/SingleBlock.png</file>
@@ -57,5 +55,9 @@
         <file>images/Trashcan.png</file>
         <file>images/languages.png</file>
         <file>images/RemoveBlocks.png</file>
+        <file>images/disc.png</file>
+        <file>images/lines.png</file>
+        <file>images/question.png</file>
+        <file>images/Rotatem90.png</file>
     </qresource>
 </RCC>

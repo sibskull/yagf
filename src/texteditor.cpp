@@ -29,6 +29,7 @@
 #include <QApplication>
 #include <QClipboard>
 #include <QMenu>
+#include <QTextCursor>
 
 TextEditor::TextEditor(QWidget *parent) :
     QTextEdit(parent), spellChecker(this)
@@ -74,7 +75,7 @@ bool TextEditor::hasDict(const QString &shname)
 
 void TextEditor::saveText()
 {
-    Settings * settings = Settings::instance();
+    Settings *settings = Settings::instance();
     QString filter;
     if (settings->getOutputFormat() == "text")
         filter = trUtf8("Text Files (*.txt)");
@@ -134,7 +135,7 @@ void TextEditor::wheelEvent(QWheelEvent *e)
 
 void TextEditor::replaceWord()
 {
-    QAction * action =  (QAction *) sender();
+    QAction *action =  (QAction *) sender();
     QTextCursor cursor = textCursor();
     cursor.select(QTextCursor::WordUnderCursor);
     cursor.removeSelectedText();
@@ -149,7 +150,7 @@ void TextEditor::copyAvailable(bool yes)
 void TextEditor::textChanged()
 {
     mTextSaved = !(toPlainText().count());
-    Settings * settings = Settings::instance();
+    Settings *settings = Settings::instance();
     QFont f(font());
     f.setPointSize(settings->getFontSize());
     setFont(f);
@@ -178,10 +179,20 @@ void TextEditor::saveHtml(QFile *file)
     file->write(text.toAscii());
 }
 
+void TextEditor::globalReplace(const QString &what, const QString &with)
+{
+    moveCursor(QTextCursor::Start);
+    while (find(what)) {
+        QTextCursor cursor = textCursor();
+        cursor.removeSelectedText();
+        cursor.insertText(what);
+    }
+}
+
 void TextEditor::contextMenuRequested(const QPoint &point)
 {
     QAction *action;
-    QMenu * menu = new QMenu(this);
+    QMenu *menu = new QMenu(this);
     QStringList sl = spellChecker.suggestions();
     //if (sl.count() == 0) {
 
@@ -228,7 +239,7 @@ void TextEditor::contextMenuRequested(const QPoint &point)
     if (sl.count() > 0)
         menu->addSeparator();
     foreach(QString str, sl) {
-        QAction * action = menu->addAction(str);
+        QAction *action = menu->addAction(str);
         connect(action, SIGNAL(triggered()), this, SLOT(replaceWord()));
     }
     menu->exec(mapToGlobal(point));
@@ -237,7 +248,7 @@ void TextEditor::contextMenuRequested(const QPoint &point)
 
 void TextEditor::enlargeFont()
 {
-    Settings * settings = Settings::instance();
+    Settings *settings = Settings::instance();
     int fontSize = font().pointSize();
     fontSize++;
     QFont f(font());
@@ -248,7 +259,7 @@ void TextEditor::enlargeFont()
 
 void TextEditor::decreaseFont()
 {
-    Settings * settings = Settings::instance();
+    Settings *settings = Settings::instance();
     int fontSize = font().pointSize();
     if (fontSize > 1) fontSize--;
     QFont f(font());
@@ -259,7 +270,7 @@ void TextEditor::decreaseFont()
 
 void TextEditor::updateSP()
 {
-    Settings * settings = Settings::instance();
+    Settings *settings = Settings::instance();
     if (settings->getCheckSpelling())
         spellChecker.checkWord();
 }

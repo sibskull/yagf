@@ -20,7 +20,7 @@
 #include "pdfthread.h"
 #include "pdfextractor.h"
 #include "settings.h"
-#include <unistd.h>
+#include "utils.h"
 #include <QThread>
 #include <QProcess>
 #include  <QStringList>
@@ -140,7 +140,7 @@ void PDFExtractor::execInternal(const QString &command, const QStringList &argum
     PDFThread thread(this);
     thread.setProcess(command, arguments);
     thread.start();
-    sleep(1);
+     qSleep(1000); // dirty quick fix
     QDir dir;
     prepareDir(dir);
     QFileInfoList prefil = dir.entryInfoList(filters, QDir::Files, QDir::Name);
@@ -148,8 +148,8 @@ void PDFExtractor::execInternal(const QString &command, const QStringList &argum
     bool cont = true;
     while (cont) {
         if (oldFil.count() == 0)
-            usleep(500000);
-        else usleep(200000);
+            qSleep(500);
+        else qSleep(200);
         QDir dir;
         prepareDir(dir);
         QFileInfoList fil;

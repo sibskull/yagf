@@ -23,6 +23,7 @@
 #include <QDir>
 #include <QMessageBox>
 #include <QPixmap>
+#include <QThread>
 #include <stdlib.h>
 #include "utils.h"
 
@@ -96,4 +97,12 @@ bool styledCriticalMessage(QWidget *parent, const QString &text)
     mb.setText(text);
     mb.setButtonText(0, QObject::trUtf8("OK"));
     mb.exec();
+}
+
+
+struct SleepThread : public QThread { using QThread::msleep;};
+
+void qSleep(int msecs)
+{
+    SleepThread::msleep(msecs);
 }

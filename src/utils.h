@@ -29,6 +29,7 @@ bool findProgram(const QString &name);
 bool styledWarningMessage(QWidget *parent, const QString &text);
 bool styledInfoMessage(QWidget *parent, const QString &text);
 bool styledCriticalMessage(QWidget *parent, const QString &text);
+void qSleep(int msecs);
 inline bool _contains(qreal x1, qreal x2, qreal xc)
 {
     return ((xc >= x1) && (xc <= x2)) || ((xc <= x1) && (xc >= x2));

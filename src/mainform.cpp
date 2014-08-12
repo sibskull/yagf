@@ -362,14 +362,12 @@ void MainForm::addPDFPage(QString pageName)
         return;
     QFile fl(pageName);
     while (!fl.exists()) {
-        sleep(1);
         if (pdfPD == 0)
             return;
         else if (!pdfPD->isVisible())
             return;
     }
     while (!pages->appendPage(pageName)) {
-        sleep(1);
         if (pdfPD == 0)
             return;
         else if (!pdfPD->isVisible())

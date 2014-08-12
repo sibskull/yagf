@@ -41,8 +41,9 @@ class PDFExtractor;
 class ccbuilder;
 class QLabel;
 class QAction;
+class QPoint;
 
-const QString version = "0.9.4";
+const QString version = "0.9.4.2";
 
 class PageCollection;
 class ScannerBase;
@@ -123,20 +124,23 @@ private:
     QCursor *resizeCursor;
     QCursor *resizeBlockCursor;
     bool useXSane;
-    ScannerBase * scanner;
+    ScannerBase *scanner;
     QByteArray *ba;
     //SpellChecker *spellChecker;
     QMenu *m_menu;
-    PDFExtractor * pdfx;
-    QProgressDialog * pdfPD;
+    PDFExtractor *pdfx;
+    QProgressDialog *pdfPD;
     int ifCounter;
-    Settings * settings;
-    PageCollection * pages;
-    QLabel * engineLabel;
-    QLabel * langLabel;
-    QAction * slAction;
+    Settings *settings;
+    PageCollection *pages;
+    QLabel *engineLabel;
+    QLabel *langLabel;
+    QAction *slAction;
     bool globalDeskew;
+    QPoint actPos;
+    QString oldooltip;
 private slots:
+    void clickMeAgain();
     bool findEngine();
     void readyRead(int sig);
     void setResizingCusor();
@@ -149,4 +153,5 @@ private slots:
     void preprocessPage();
     void saveProject();
     void loadProject();
- };
+    void on_actionKeep_Lines_toggled(bool arg1);
+};

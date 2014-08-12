@@ -4,14 +4,15 @@
 #include <QDialog>
 #include <QListWidgetItem>
 
-namespace Ui {
+namespace Ui
+{
 class ConfigDialog;
 }
 
 class ConfigDialog : public QDialog
 {
     Q_OBJECT
-    
+
 public:
     explicit ConfigDialog(QWidget *parent = 0);
     ~ConfigDialog();
@@ -21,7 +22,7 @@ private slots:
 
     void on_pushButtonLangs_clicked();
 
-    void itemClicked(QListWidgetItem * item);
+    void itemClicked(QListWidgetItem *item);
 private:
     void init();
 private:

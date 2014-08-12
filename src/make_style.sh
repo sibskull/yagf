@@ -1,2 +1,2 @@
 #!/bin/sh
-astyle --style=k\&r -l --convert-tabs --pad=oper --pad-header --indent-switches --unpad=paren --align-pointer=name --indent=spaces=4 *.cpp *.h 
+astyle --style=k\&r -l --convert-tabs --pad-header --indent-switches --align-pointer=name --indent=spaces=4 *.cpp *.h 

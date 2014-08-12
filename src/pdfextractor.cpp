@@ -58,7 +58,7 @@ void PDFExtractor::setOutputDir()
         dir.setFilter(QDir::Files);
         QStringList sl = dir.entryList();
         foreach (QString s, sl)
-            dir.remove(pdfout+s);
+        dir.remove(pdfout+s);
     }
 }
 
@@ -157,9 +157,9 @@ void PDFExtractor::execInternal(const QString &command, const QStringList &argum
         fil = dir.entryInfoList(filters, QDir::Files, QDir::Name);
         foreach (QFileInfo fi, fil) {
             if (!oldFil.contains(fi)) {
-                    oldFil.append(fi);
-                    emit addPage(fi.absoluteFilePath());
-                    QApplication::processEvents();
+                oldFil.append(fi);
+                emit addPage(fi.absoluteFilePath());
+                QApplication::processEvents();
             }
         }
         if (!thread.isProcessRunning())
@@ -179,11 +179,10 @@ void PDFExtractor::execInternal(const QString &command, const QStringList &argum
                 fil = dir.entryInfoList(filters, QDir::Files, QDir::Name);
                 foreach (QFileInfo fi, fil) {
                     if (!oldFil.contains(fi)) {
-                            oldFil.append(fi);
-                            emit addPage(fi.absoluteFilePath());
-                            QApplication::processEvents();
-                    }
-                    else
+                        oldFil.append(fi);
+                        emit addPage(fi.absoluteFilePath());
+                        QApplication::processEvents();
+                    } else
                         QApplication::processEvents();
                 }
             }
@@ -192,11 +191,10 @@ void PDFExtractor::execInternal(const QString &command, const QStringList &argum
             fil = dir.entryInfoList(filters, QDir::Files, QDir::Name);
             foreach (QFileInfo fi, fil) {
                 if (!oldFil.contains(fi)) {
-                        oldFil.append(fi);
-                        emit addPage(fi.absoluteFilePath());
-                        QApplication::processEvents();
-                }
-                else
+                    oldFil.append(fi);
+                    emit addPage(fi.absoluteFilePath());
+                    QApplication::processEvents();
+                } else
                     QApplication::processEvents();
             }
         }
@@ -223,7 +221,7 @@ int PDFExtractor::filesRemaining(const QString &fileName)
     sl.sort();
     for (int i = 0; i < sl.count(); i++) {
         if (fileName.endsWith(sl.at(i)))
-        return sl.count() - i - 1;
+            return sl.count() - i - 1;
     }
     return -1;
 }

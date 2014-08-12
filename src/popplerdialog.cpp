@@ -35,7 +35,7 @@ PopplerDialog::~PopplerDialog()
 
 void PopplerDialog::setPDFFile(const QString fileName)
 {
-   ui->lineEdit->setText(fileName);
+    ui->lineEdit->setText(fileName);
 }
 
 void PopplerDialog::on_checkBox_toggled(bool checked)
@@ -47,7 +47,7 @@ void PopplerDialog::on_checkBox_toggled(bool checked)
 void PopplerDialog::on_pushButton_clicked()
 {
     QString fileName = QFileDialog::getOpenFileName(this,
-         trUtf8("Open PDF File"), "", trUtf8("PDF Files (*.pdf)"));
+                       trUtf8("Open PDF File"), "", trUtf8("PDF Files (*.pdf)"));
     if (!fileName.isEmpty())
         ui->lineEdit->setText(fileName);
 }

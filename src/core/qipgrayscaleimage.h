@@ -178,6 +178,9 @@ public:
      *  \sa toImage
     */
     QIPGrayscaleImage copy(quint32 x1, quint32 x2, quint32 y1, quint32 y2) const;
+    void copyInternal2(IntRect &r, quint8 *s, quint8 *d) const;
+
+    static quint8 * scanLinePtr(quint8 * ptr, int y, int wth) ;
 
     /*!
       Converts the grayscaled image to binary format using the specified method.

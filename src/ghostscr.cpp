@@ -32,7 +32,7 @@ void GhostScr::exec()
     args << "-SDEVICE=jpeg" << "-r1200x1200" << "-sPAPERSIZE=letter" << "-dNOPAUSE" << "-dBATCH";
     if (getStopPage() > 0) {
         if (getStartPage() == 0)
-              this->setStartPage("1");
+            this->setStartPage("1");
         args << QString("-dFirstPage=").append(QString::number(getStartPage())) << QString("-dLastPage=").append(QString::number(getStopPage()));
     }
     setOutputPrefix(getOutputDir().append("page"));

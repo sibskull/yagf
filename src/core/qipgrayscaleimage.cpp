@@ -329,12 +329,47 @@ QIPGrayscaleImage QIPGrayscaleImage::copy(quint32 x1, quint32 x2, quint32 y1, qu
     if (y1 > y2) y1 = 0;
 
     QIPGrayscaleImage result(x2 - x1, y2 - y1);
-    for (uint y = y1; y < y2; y ++) {
-        quint8 * src = &scanLine(y)[x1];
-        quint8 * dst = result.scanLine(y-y1);
-        memcpy(dst, src, result.w);
-    }
+    quint8 *s = data.data();
+    quint8 * d= result.data.data();
+
+    IntRect r1;
+    r1.x1 = x1;
+    r1.x2 = x2;
+    r1.y1 = y1;
+    r1.y2 = (y2 - y1)/2;
+    IntRect r2;
+    r2.x1 = x1;
+    r2.x2 = x2;
+    r2.y2 = y2;
+    r1.y1 = (y2 - y1)/2;
+
+#ifndef IPRIT_MULTITHREADING
+    IntRect r;
+    r.x1 = 0;
+    r.y1 = 0;
+    r.x2 = width();
+    r.y2 = height();
+    quint8 * d1 = data.data();
+    quint8 * d2 = image.data.data();
+    blendImageInternal(r, d1, d2);
+#endif
+#ifdef IPRIT_MULTITHREADING
+    QFuture<void> future1 = QtConcurrent::run(this, &QIPGrayscaleImage::copyInternal2, r1, s, d);
+    QFuture<void> future2 = QtConcurrent::run(this, &QIPGrayscaleImage::copyInternal2, r2, s, d);
+    future1.waitForFinished();
+    future2.waitForFinished();
+#endif
+
     return result;
+}
+
+void QIPGrayscaleImage::copyInternal2(IntRect &r, quint8 *s, quint8 *d) const
+{
+    for (uint y = r.y1; y < r.y2; y ++) {
+        quint8 * src = &scanLinePtr(s, y, w)[r.x1];
+        quint8 * dst = scanLinePtr(d, y-r.y1, r.x2 - r.x1);
+        memcpy(dst, src, r.x2 - r.x1);
+    }
 }
 
 QIPBlackAndWhiteImage QIPGrayscaleImage::binarize(QIPGrayscaleImage::BinarizationMethod method) const
@@ -1405,4 +1440,9 @@ QIPGrayscaleImage::QIPGrayscaleImage() : data(0)
 {
     w = 0;
     h = 0;
+}
+
+quint8 *QIPGrayscaleImage::scanLinePtr(quint8 *ptr, int y, int wth)
+{
+    return &(ptr[y*wth]);
 }

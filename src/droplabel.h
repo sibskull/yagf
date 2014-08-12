@@ -27,8 +27,8 @@ class DropLabel : public QLabel
 {
     Q_OBJECT
 public:
-    DropLabel(QWidget * parent = 0, Qt::WindowFlags f = 0);
-    void setListWidget(QListWidget * w);
+    DropLabel(QWidget *parent = 0, Qt::WindowFlags f = 0);
+    void setListWidget(QListWidget *w);
 signals:
     void pageRemoved(int id);
 protected:
@@ -36,7 +36,7 @@ protected:
     void dragLeaveEvent(QDragLeaveEvent *event);
     void dropEvent(QDropEvent *event);
 private:
-   QListWidget * lw;
+    QListWidget *lw;
 };
 
 #endif // DROPLABEL_H

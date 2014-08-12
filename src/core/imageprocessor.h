@@ -38,6 +38,7 @@ public:
     QImage gsImage() const;
     void binarize();
     void altBinarize();
+    void fastBinarize();
     static void saveForPDF(const QImage &image, const QString &fileName, int squish = 1);
     void saveYGF(const QImage &image, const QString &fileName);
     QImage loadYGF(const QString &fileName);

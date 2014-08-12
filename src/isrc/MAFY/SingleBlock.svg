@@ -13,8 +13,8 @@
    height="64"
    id="svg6288"
    version="1.1"
-   inkscape:version="0.48.5 r10040"
-   sodipodi:docname="Spellcheck.svg">
+   inkscape:version="0.48.3.1 r9886"
+   sodipodi:docname="SingleBlock.svg">
   <title
      id="title3077">Single Block</title>
   <defs
@@ -26,16 +26,16 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.98994949"
-     inkscape:cx="-614.65352"
-     inkscape:cy="130.54731"
+     inkscape:zoom="2.8"
+     inkscape:cx="-83.07143"
+     inkscape:cy="83.957379"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
-     inkscape:window-width="1920"
-     inkscape:window-height="1138"
-     inkscape:window-x="-8"
-     inkscape:window-y="-8"
+     inkscape:window-width="1423"
+     inkscape:window-height="906"
+     inkscape:window-x="65"
+     inkscape:window-y="24"
      inkscape:window-maximized="1" />
   <metadata
      id="metadata6293">
@@ -69,10 +69,13 @@
      id="layer1"
      transform="translate(0,-988.36218)">
     <path
-       style="fill:none;stroke:#000092;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       d="m 22.314729,1004.017 c -1.17851,1.1785 -1,2.3334 -1,4 0,4.1667 0,12.7917 0,18 0,5.2084 -0.17851,4.8215 1,6 1.17851,1.1785 1.875,1 5,1 3.125,0 6.5,0 9,0 1.66667,0 2.82149,0.1785 4,-1 1.17851,-1.1785 1,-2.3333 1,-4 0,-6.6666 0,-16.6666 0,-20 0,-1.6666 0.17851,-2.8215 -1,-4 -1.17851,-1.1785 -0.875,-1 -4,-1 -3.125,0 -7.5,0 -10,0 -1.66667,0 -2.82149,-0.1785 -4,1 z"
+       style="fill:#4446c8;stroke:#000092;stroke-width:1.09702933000000002px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;fill-opacity:0.32941177"
+       d="m 18.448737,1004.017 c -1.418305,1.1785 -1.203473,2.3334 -1.203473,4 0,4.1667 0,12.7917 0,18 0,5.2084 -0.214832,4.8215 1.203473,6 1.418305,1.1785 2.256513,1 6.017366,1 3.760854,0 7.822577,0 10.83126,0 2.005793,0 3.395587,0.1785 4.813893,-1 1.418305,-1.1785 1.203473,-2.3333 1.203473,-4 0,-6.6666 0,-16.6666 0,-20 0,-1.6666 0.214832,-2.8215 -1.203473,-4 -1.418306,-1.1785 -1.053039,-1 -4.813893,-1 -3.760854,0 -9.02605,0 -12.034733,0 -2.005793,0 -3.395588,-0.1785 -4.813893,1 z"
        id="path5594"
        inkscape:connector-curvature="0"
-       sodipodi:nodetypes="sssssssssssss" />
+       sodipodi:nodetypes="sssssssssssss"
+       inkscape:export-xdpi="68.542587"
+       inkscape:export-ydpi="68.542587"
+       inkscape:export-filename="/home/parallels/Downloads/yagf-0.9.4/src/isrc/MAFY/SingleBlock.png" />
   </g>
 </svg>

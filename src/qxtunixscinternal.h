@@ -23,8 +23,7 @@ class QXtUnixSignalCatcherInternal  : public QObject
 public:
     QXtUnixSignalCatcherInternal(QObject *parent = 0) :
         QObject(parent) {}
-    void emitSignal(int sig_num)
-    {
+    void emitSignal(int sig_num) {
         emit unixSignalInternal(sig_num);
     }
 

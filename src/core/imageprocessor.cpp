@@ -95,6 +95,11 @@ void ImageProcessor::altBinarize()
     img.blendImage(bwimg);
 }
 
+void ImageProcessor::fastBinarize()
+{
+    QIPBlackAndWhiteImage bwimg = img.binarize(QIPGrayscaleImage::BernsenBinarization);
+}
+
 void ImageProcessor::saveForPDF(const QImage &image, const QString &fileName, int squish)
 {
     QIPGrayscaleImage img;

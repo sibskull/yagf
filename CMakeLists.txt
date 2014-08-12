@@ -19,8 +19,8 @@ set(QML_DESTINATION share/yagf/translations/)
 set(QML_INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX})
 add_definitions( -DQML_INSTALL_PATH="${QML_INSTALL_PREFIX}${QML_DESTINATION}")
 
-set(SOURCES src/main.cpp src/mainform.cpp src/qgraphicsinput.cpp src/utils.cpp src/qxtunixsignalcatcher.cpp src/spellchecker.cpp src/BlockAnalysis.cpp src/PageAnalysis.cpp
-    src/SkewAnalysis.cpp src/CCAnalysis.cpp src/qxtgraphicsproxywidget.cpp src/popplerdialog.cpp src/pdfextractor.cpp src/pdf2ppt.cpp src/ghostscr.cpp 
+set(SOURCES src/main.cpp src/mainform.cpp src/qgraphicsinput.cpp src/utils.cpp src/qxtunixsignalcatcher.cpp src/spellchecker.cpp src/PageAnalysis.cpp
+    src/SkewAnalysis.cpp src/core/rotationcropper.cpp src/qxtgraphicsproxywidget.cpp src/popplerdialog.cpp src/pdfextractor.cpp src/pdf2ppt.cpp src/ghostscr.cpp
     src/configdialog.cpp src/core/ccbuilder.cpp src/core/analysis.cpp src/qsnippet.cpp src/sidebar.cpp src/droplabel.cpp src/projectmanager.cpp src/settings.cpp
     src/texteditor.cpp src/tblock.cpp src/tpage.cpp src/tpagecollection.cpp src/scanner.cpp src/core/imageprocessor.cpp
     src/langselectdialog.cpp src/busyform.cpp src/tiffimporter.cpp src/pdfthread.cpp src/QBusyIndicator.cpp
@@ -73,6 +73,9 @@ install(FILES ${QM_FILES} DESTINATION ${QML_DESTINATION})
 install(FILES yagf.png DESTINATION share/pixmaps/)
 install(FILES yagf.png DESTINATION share/icons/hicolor/96x96/apps/)
 install(FILES YAGF.desktop DESTINATION share/applications/)
+if (EXISTS /usr/share/appdata/)
+        install(FILES YAGF.appdata.xml DESTINATION /usr/share/appdata/)
+endif (EXISTS /usr/share/appdata/)
 
 #set(CPACK_PACKAGE_FILE_NAME yagf)
 set(CPACK_PACKAGE_VENDOR "Andrei Borovsky, anb@symmetrica.net")

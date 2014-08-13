@@ -43,9 +43,18 @@ ImageProcessor::~ImageProcessor()
 
 QRect ImageProcessor::crop()
 {
-    QIPBlackAndWhiteImage bwimg1 = QIPBlackAndWhiteImage(img.binarize(QIPGrayscaleImage::OtsuMABinarization));
-    QRect r = bwimg1.cropGrayScaleImage(img);
-    img = img.copy(r.x(), r.x()+r.width(), r.y(), r.y()+r.height());
+    QRect r;
+    try {
+        QIPBlackAndWhiteImage bwimg1 = QIPBlackAndWhiteImage(img.binarize(QIPGrayscaleImage::OtsuMABinarization));
+        r = bwimg1.cropGrayScaleImage(img);
+        img = img.copy(r.x(), r.x()+r.width(), r.y(), r.y()+r.height());
+    } catch(...) {
+        r.setX(0);
+        r.setY(0);
+        r.setWidth(img.width());
+        r.setHeight(img.height());
+    }
+
     return r;
 }
 

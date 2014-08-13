@@ -40,12 +40,10 @@ void PDFThread::run()
     done = false;
     QProcess process;
     connect(mparent, SIGNAL(terminate()), this, SLOT(politeStop()));
-    process.startDetached(command, arguments);
-
-    while (!done) {
-        sleep(1);
-        processRunning = (process.state() != QProcess::NotRunning);
-    }
+    process.start(command, arguments);
+    processRunning = true;
+    process.waitForFinished(800000);
+    processRunning = false;
     process.kill();
 }
 

@@ -293,6 +293,7 @@ QRect PageCollection::scaleRect(QRect &rect)
 {
     if (cp())
         return cp()->scaleRect(rect);
+    return QRect(0,0,0,0);
 }
 
 void PageCollection::makeLarger()

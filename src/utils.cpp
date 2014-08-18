@@ -16,6 +16,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "settings.h"
 #include <QString>
 #include <QStringList>
 #include <QFileInfo>
@@ -26,7 +27,6 @@
 #include <QThread>
 #include <stdlib.h>
 #include "utils.h"
-
 
 QString extractFileName(const QString &path)
 {
@@ -69,7 +69,7 @@ bool findProgram(const QString &name)
     return false;
 }
 
-bool styledWarningMessage(QWidget *parent, const QString &text)
+void styledWarningMessage(QWidget *parent, const QString &text)
 {
     QMessageBox mb(parent);
     mb.setIconPixmap(QPixmap(":warning.png"));
@@ -79,7 +79,7 @@ bool styledWarningMessage(QWidget *parent, const QString &text)
     mb.exec();
 }
 
-bool styledInfoMessage(QWidget *parent, const QString &text)
+void styledInfoMessage(QWidget *parent, const QString &text)
 {
     QMessageBox mb(parent);
     mb.setIconPixmap(QPixmap(":/images/info.png"));
@@ -89,7 +89,7 @@ bool styledInfoMessage(QWidget *parent, const QString &text)
     mb.exec();
 }
 
-bool styledCriticalMessage(QWidget *parent, const QString &text)
+void styledCriticalMessage(QWidget *parent, const QString &text)
 {
     QMessageBox mb(parent);
     mb.setIconPixmap(QPixmap(":/critical.png"));
@@ -105,4 +105,15 @@ struct SleepThread : public QThread { using QThread::msleep;};
 void qSleep(int msecs)
 {
     SleepThread::msleep(msecs);
+}
+
+void clearTmpFiles()
+{
+    Settings * settings = Settings::instance();
+    QFile::remove(settings->workingDir() + "tmp*.bmp");
+    QFile::remove(settings->workingDir() + "tmp*.ygf");
+    QFile f(settings->workingDir()+settings->getRecognizeInputFile());
+    f.remove();
+    f.setFileName(settings->workingDir()+settings->getRecognizeOutputFile());
+    f.remove();
 }

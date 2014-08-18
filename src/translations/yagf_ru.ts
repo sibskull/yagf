@@ -87,6 +87,10 @@
         <source>Default Font Size</source>
         <translation>Размер шрифта по умолчанию</translation>
     </message>
+    <message>
+        <source>Process after Deskew</source>
+        <translation>Обработка после исправления наклона</translation>
+    </message>
 </context>
 <context>
     <name>LangSelectDialog</name>
@@ -142,10 +146,6 @@
         <translation>Изображение не загружено</translation>
     </message>
     <message>
-        <source>Starting cuneiform failed</source>
-        <translation>Не удалось запустить cuneiform</translation>
-    </message>
-    <message>
         <source>About YAGF</source>
         <translation>О программе</translation>
     </message>
@@ -158,14 +158,6 @@
         <translation>Сохранить изображение</translation>
     </message>
     <message>
-        <source>Recognizing pages...</source>
-        <translation>Распознаем страницы...</translation>
-    </message>
-    <message>
-        <source>Abort</source>
-        <translation>Прервать</translation>
-    </message>
-    <message>
         <source>Importing pages from the PDF document...</source>
         <translation>Импорт страниц из документа PDF...</translation>
     </message>
@@ -176,10 +168,6 @@
     <message>
         <source>PDF file name may not be empty</source>
         <translation>Необходимо указать имя файла PDF</translation>
-    </message>
-    <message>
-        <source>Starting tesseract failed</source>
-        <translation>Не удалось запустить tesseract</translation>
     </message>
     <message>
         <source>Using Cuneiform</source>
@@ -210,10 +198,6 @@ The page possibly lacks contrast. Try to select blocks manually.</source>
         <source>Loading files...</source>
         <translatorcomment>Загрузка файлов...</translatorcomment>
         <translation></translation>
-    </message>
-    <message>
-        <source>You have selected recognising %1 language using tesseract OCR. Currently the data for this language is not installed in your system. Please install the tesseract data files for &quot;%2&quot; from your system repository.</source>
-        <translation>Вы выбрали %1 язык для распознавания, используя программу tesseract. Данные для распознавания этого языка в настоящее время не установлены. Пожалуйста установите языковой пакет %2 из репозитория вашей системы.</translation>
     </message>
     <message utf8="true">
         <source>&lt;p align=&quot;center&quot;&gt;&lt;b&gt;YAGF - Yet Another Graphical Front-end for cuneiform and tesseract OCR engines&lt;/b&gt;&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;Version %1&lt;/p&gt; &lt;p align=&quot;center&quot;&gt;Ⓒ 2009-2014 Andrei Borovsky&lt;/p&gt; This is a free software distributed under GPL v3. Visit &lt;a href=&quot;http://symmetrica.net/cuneiform-linux/yagf-en.html&quot;&gt;http://symmetrica.net/cuneiform-linux/yagf-en.html&lt;/a&gt; for more details.</source>
@@ -247,25 +231,8 @@ Please install XSane in order to perform scanning.</source>
         <translation>Сканирование невозможно, так как в систем не установлен XSane.</translation>
     </message>
     <message>
-        <source>Program not found.</source>
-        <translation>Программа не найдена.</translation>
-    </message>
-    <message>
         <source>Click Me again!</source>
         <translation>Нажми меня еще раз!</translation>
-    </message>
-    <message>
-        <source>Cuneiform not found, switching to Tesseract OCR</source>
-        <translation>Cuneiform не найден, переключаюсь на Tesseract</translation>
-    </message>
-    <message>
-        <source>No recognition engine found.
-Please install either Cuneiform or Tesseract OCR</source>
-        <translation>Программы распознавания не обнаружены. Установите Tesseract или Cuneiform</translation>
-    </message>
-    <message>
-        <source>Tesseract not found, switching to Cuneiform</source>
-        <translation>Tesseract не найден, переключаюсь на Cuneiform</translation>
     </message>
     <message>
         <source>Clipboard doesn&apos;t contain an image.</source>
@@ -282,6 +249,10 @@ Please install either Cuneiform or Tesseract OCR</source>
     <message>
         <source>Failed to load image %1</source>
         <translation>Невозможно открыть файл %1</translation>
+    </message>
+    <message>
+        <source>Selected recognition engine not found.</source>
+        <translation>Выбранная программа распознавания не найдена.</translation>
     </message>
 </context>
 <context>
@@ -883,6 +854,21 @@ Try to install an appropriate aspell dictionary.</source>
     <message>
         <source>Thai</source>
         <translation>Тайский</translation>
+    </message>
+</context>
+<context>
+    <name>RecognitionDialog</name>
+    <message>
+        <source>Recognizing...</source>
+        <translation>Распознавание...</translation>
+    </message>
+    <message>
+        <source>Cancel</source>
+        <translation>Отмена</translation>
+    </message>
+    <message>
+        <source>block # %1</source>
+        <translation>блок %1</translation>
     </message>
 </context>
 <context>

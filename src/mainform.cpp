@@ -31,6 +31,8 @@
 #include "langselectdialog.h"
 #include "tiffimporter.h"
 #include "busyform.h"
+#include "recognizerwrapper.h"
+#include "recognitiondialog.h"
 #include <signal.h>
 #include <QComboBox>
 #include <QLabel>
@@ -40,21 +42,13 @@
 #include <QPainter>
 #include <QSize>
 #include <QStringList>
-#include <QDir>
-#include <QFileInfo>
 #include <QList>
-#include <QProcess>
-#include <QFile>
-#include <QByteArray>
 #include <QRect>
 #include <QRectF>
 #include <QStatusBar>
 #include <QMessageBox>
 #include <QProgressDialog>
-#include <QImage>
 #include <QDesktopServices>
-#include <QUrl>
-#include <QRegExp>
 #include <QClipboard>
 #include <QMap>
 #include <QWidgetAction>
@@ -62,8 +56,7 @@
 #include "qgraphicsinput.h"
 #include "utils.h"
 #include "qxtunixsignalcatcher.h"
-#include "PageAnalysis.h"
-#include <QTextCodec>
+#include <QUrl>
 #include <QCheckBox>
 #include <QEvent>
 #include <QCursor>
@@ -71,13 +64,6 @@
 #include <QGtkStyle>
 #include <QToolTip>
 #include <QPoint>
-
-const QString outputBase = "output";
-const QString outputExt = ".txt";
-const QString inputFile = "input.bmp";
-const QString outputFile = "output.txt";
-const QString scanOutputFile = "input.png";
-
 
 MainForm::MainForm(QWidget *parent): QMainWindow(parent)
 {
@@ -198,7 +184,9 @@ MainForm::MainForm(QWidget *parent): QMainWindow(parent)
         connect(pdfx, SIGNAL(addPage(QString)), this, SLOT(addPDFPage(QString)), Qt::DirectConnection);
         connect (pdfx, SIGNAL(finished()), this, SLOT(finishedPDF()));
     }
-    //setupPDFPD();
+
+    rw = 0;
+    rd = 0;
 }
 
 void MainForm::onShowWindow()
@@ -266,7 +254,6 @@ void MainForm::LangTextChanged(const QString &text)
 {
     if (selectLangsBox->findText(text, Qt::MatchStartsWith) < 0)
         selectLangsBox->lineEdit()->setText("");
-
 }
 
 void MainForm::showConfigDlg()
@@ -542,7 +529,7 @@ void MainForm::scanImage()
             styledWarningMessage(this, trUtf8("Scanning is impossible. No scanning front-end is found.\nPlease install XSane in order to perform scanning."));
             return;
         }
-        scanner->setOutputFile(settings->workingDir() + scanOutputFile);
+        scanner->setOutputFile(settings->workingDir() + settings->getScanOutputFile());
         delete sf;
         scanner->exec();
 
@@ -605,131 +592,6 @@ void MainForm::loadPreviousPage()
 {
 }
 
-// TODO: think on blocks/page recognition
-
-bool MainForm::useTesseract(const QString &inputFile)
-{
-    QProcess proc;
-    proc.setWorkingDirectory(settings->workingDir());
-    QStringList sl;
-    sl.append(inputFile);
-    sl.append(outputBase);
-    if (settings->getLanguage() != "digits")
-        sl.append("-l");
-    sl.append(settings->getLanguage());
-    //sl.append("-psm");
-    //sl.append("0");
-    QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
-    env.insert("TESSDATA_PREFIX", settings->getTessdataPath());
-    QDir dir(settings->getTessdataPath()+"tessdata/");
-    QStringList sl1;
-    sl1 << QString::fromUtf8("*%1.*").arg(settings->getLanguage());
-    if ((!settings->getLanguage().contains("+"))&&(settings->getLanguage() != "digits"))
-        if (dir.entryList(sl1, QDir::Files).count() == 0) {
-            QMessageBox mb(this);
-            mb.setIconPixmap(QPixmap(":/warning.png"));
-            mb.setWindowTitle("tesseract");
-            mb.setText(trUtf8("You have selected recognising %1 language using tesseract OCR. Currently the data for this language is not installed in your system. Please install the tesseract data files for \"%2\" from your system repository.").arg(settings->getFullLanguageName(settings->getLanguage())).arg(settings->getLanguage()));
-            mb.addButton(QMessageBox::Ok);
-            mb.exec();
-            return false;
-        }
-    proc.setProcessEnvironment(env);
-    proc.start("tesseract", sl);
-    proc.waitForFinished(-1);
-    if (proc.exitCode()) {
-        QByteArray stdoutBytes = proc.readAllStandardOutput();
-        QByteArray stderrBytes = proc.readAllStandardError();
-        QString output = QString(stdoutBytes) + QString(stderrBytes);
-        styledCriticalMessage(this, trUtf8("Starting tesseract failed") + (output != "" ? "" : trUtf8("Program not found.")));
-        return false;
-    }
-    return true;
-}
-
-bool MainForm::useCuneiform(const QString &inputFile, const QString &outputFile)
-{
-    QProcess proc;
-    proc.setWorkingDirectory(settings->workingDir());
-    QStringList sl;
-    sl.append("-l");
-    sl.append(settings->getLanguage());
-    sl.append("-f");
-    if (settings->getOutputFormat() == "text")
-        sl.append("text");
-    else
-        sl.append("html");
-    sl.append("-o");
-    sl.append(settings->workingDir() + outputFile);
-    sl.append(settings->workingDir() + inputFile);
-    proc.start("cuneiform", sl);
-    proc.waitForFinished(-1);
-    if (proc.exitCode()) {
-        QByteArray stdoutBytes = proc.readAllStandardOutput();
-        QByteArray stderrBytes = proc.readAllStandardError();
-        QString output = QString(stdoutBytes) + QString(stderrBytes);
-        styledCriticalMessage(this, trUtf8("Starting cuneiform failed") + (output != "" ? "" : trUtf8("Program not found.")));
-        return false;
-    }
-    return true;
-}
-
-void MainForm::recognizeInternal()
-{
-    if (settings->getSelectedEngine() == UseCuneiform) {
-        if (!useCuneiform(inputFile, outputFile))
-            return;
-    }
-    if (settings->getSelectedEngine() == UseTesseract) {
-        if (!useTesseract(inputFile))
-            return;
-    }
-    QFile textFile(settings->workingDir() + outputFile);
-    textFile.open(QIODevice::ReadOnly);
-    QString textData;
-    QTextCodec *codec = QTextCodec::codecForName("UTF-8");
-    if (settings->getKeepLines()) {
-        while (!textFile.atEnd()) {
-            QByteArray text = textFile.readLine();
-            textData += codec->toUnicode(text);
-        }
-        textEdit-> append(textData);
-    } else {
-        QByteArray text = textFile.readAll();
-        textData = codec->toUnicode(text);
-        textData =textData.replace(QString::fromUtf8("—")+'\n', QString::fromUtf8("— "));
-        textData = textData.replace(QString::fromUtf8("-")+'\n', QString::fromUtf8("- "));
-        textData = textData.replace(QString::fromUtf8("\n"), QString::fromUtf8(" "));
-        textEdit->append(textData);
-    }
-    textData = textData.replace(" ,", ",");
-    textEdit->append(QString(" "));
-    textFile.close();
-    if (settings->getCheckSpelling()) {
-        actionCheck_spelling->setChecked(textEdit->spellCheck(settings->getLanguage()));
-    }
-
-}
-
-void MainForm::recognize()
-{
-    QFile::remove(settings->workingDir() + "input*.bmp");
-    if (!pages->pageValid()) {
-        styledWarningMessage(this, trUtf8("No image loaded"));
-        return;
-    }
-    if (!findEngine()) return;
-    if (pages->blockCount() > 0) {
-        for (int i = 0; i < pages->blockCount(); i++) {
-            prepareBlockForRecognition(i);
-            recognizeInternal();
-        }
-    } else {
-        preparePageForRecognition();
-        recognizeInternal();
-    }
-}
-
 void MainForm::showAboutDlg()
 {
     QPixmap icon;
@@ -752,7 +614,7 @@ void MainForm::showHelp()
 
 void MainForm::readyRead(int sig)
 {
-    QFile f(settings->workingDir() + scanOutputFile);
+    QFile f(settings->workingDir() + settings->getScanOutputFile());
     QString newName = QString(settings->workingDir() + "scan-input-%1.png").arg(ifCounter);
     ifCounter++;
     QFileInfo fi(newName);
@@ -778,16 +640,6 @@ void MainForm::delTmpDir()
 
 }
 
-
-void MainForm::clearTmpFiles()
-{
-    QFile::remove(settings->workingDir() + "tmp*.bmp");
-    QFile::remove(settings->workingDir() + "tmp*.ygf");
-    QFile f(settings->workingDir()+inputFile);
-    f.remove();
-    f.setFileName(settings->workingDir()+outputFile);
-    f.remove();
-}
 
 void MainForm::fillLangBox()
 {
@@ -825,27 +677,21 @@ void MainForm::fillLangBox()
     }
 }
 
+void MainForm::createRW()
+{
+    rw = new RecognizerWrapper(this);
+    connect(rw, SIGNAL(finished(int)), this, SLOT(recognitionFinished()), Qt::QueuedConnection);
+    connect(rw, SIGNAL(error(QString)), this, SLOT(recognitionError(QString)), Qt::QueuedConnection);
+    connect(rw, SIGNAL(readOutput(QString)), this, SLOT(readOutput(QString)), Qt::QueuedConnection);
+    rd = new RecognitionDialog(this);
+    connect(rd, SIGNAL(rejected()), this, SLOT(cancelRecognition()));
+    connect(rw, SIGNAL(blockRecognized(int)), rd, SLOT(blockRecognized(int)));
+    rd->show();
+}
+
 void MainForm::clickMeAgain()
 {
     QToolTip::showText(actPos, trUtf8("Click Me again!"));
-}
-
-void MainForm::preparePageForRecognition()
-{
-    clearTmpFiles();
-    pages->savePageForRecognition(settings->workingDir() + inputFile);
-}
-
-void MainForm::prepareBlockForRecognition(const QRect &r)
-{
-    clearTmpFiles();
-    pages->saveBlockForRecognition(r, settings->workingDir() + inputFile);
-}
-
-void MainForm::prepareBlockForRecognition(int index)
-{
-    clearTmpFiles();
-    pages->saveBlockForRecognition(index, settings->workingDir() + inputFile);
 }
 
 void MainForm::setResizingCusor()
@@ -869,7 +715,7 @@ void MainForm::loadPage()
     setWindowTitle(QString("YAGF - %1").arg(fi.fileName()));
 }
 
-void MainForm::recognizeAll()
+/*void MainForm::recognizeAll()
 {
     if (pages->count() == 0)
         return;
@@ -885,7 +731,7 @@ void MainForm::recognizeAll()
         pages->makeNextPageCurrent();
         recognize();
     }
-}
+}*/
 
 void MainForm::unalignButtonClicked()
 {
@@ -957,43 +803,28 @@ void MainForm::on_ActionDeleteBlock_activated()
     pages->deleteBlock(r);
 }
 
-bool MainForm::findEngine()
-{
-    if (settings->getSelectedEngine() == UseCuneiform) {
-        if (!findProgram("cuneiform")) {
-            if (findProgram("tesseract")) {
-                styledWarningMessage(this, trUtf8("Cuneiform not found, switching to Tesseract OCR"));
-                settings->setSelectedEngine(UseTesseract);
-            } else {
-                styledWarningMessage(this, trUtf8("No recognition engine found.\nPlease install either Cuneiform or Tesseract OCR"));
-                return false;
-            }
-        }
-    }
-    if (settings->getSelectedEngine() == UseTesseract) {
-        if (!findProgram("tesseract")) {
-            if (findProgram("cuneiform")) {
-                styledWarningMessage(this, trUtf8("Tesseract not found, switching to Cuneiform"));
-                settings->setSelectedEngine(UseCuneiform);
-            } else {
-                styledWarningMessage(this, trUtf8("No recognition engine found.\nPlease install either Cuneiform or Tesseract OCR"));
-                return false;
-            }
-        }
-    }
-    return true;
-}
+
 
 void MainForm::on_actionRecognize_block_activated()
 {
-    if (!findEngine()) return;
+    if (!RecognizerWrapper::findEngine(true)) {
+        styledWarningMessage(this, trUtf8("Selected recognition engine not found."));
+        return;
+    }
     if (graphicsInput->getCurrentBlock().isNull())
         return;
     clearTmpFiles();
     QRect r = graphicsInput->getCurrentBlock();
     r = pages->scaleRect(r);
-    pages->saveRawBlockForRecognition(r, settings->workingDir() + inputFile);
-    recognizeInternal();
+    pages->saveRawBlockForRecognition(r, settings->workingDir() + settings->getRecognizeInputFile());
+    createRW();
+    rw->startSingleBlock();
+}
+
+void MainForm::recognize()
+{
+    createRW();
+    rw->start();
 }
 
 /*void MainForm::on_actionRecognize_activated()
@@ -1264,4 +1095,44 @@ void MainForm::deskewByLine()
 void MainForm::on_actionKeep_Lines_toggled(bool arg1)
 {
     settings->setKeepLines(arg1);
+}
+
+void MainForm::readOutput(QString text)
+{
+    textEdit->append(text);
+    textEdit->append(QString(" "));
+    if (settings->getCheckSpelling()) {
+        actionCheck_spelling->setChecked(textEdit->spellCheck(settings->getLanguage()));
+    }
+}
+
+void MainForm::recognitionFinished()
+{
+    delete rw;
+    rw = 0;
+    if (rd)
+        delete(rd);
+    rd = 0;
+}
+
+void MainForm::recognitionError(const QString &text)
+{
+    if (rd)
+        delete(rd);
+    rd = 0;
+    styledWarningMessage(this, text);
+    delete rw;
+    rw = 0;
+
+}
+
+void MainForm::cancelRecognition()
+{
+    if (rw)
+        rw->cancel();
+    delete rw;
+    rw = 0;
+    if (rd)
+        delete(rd);
+    rd = 0;
 }

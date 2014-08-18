@@ -80,6 +80,7 @@ void Settings::readSettings(const QString &path)
     cropLoaded =  settings->value("processing/crop1", QVariant(true)).toBool();
     autoDeskew =  settings->value("processing/deskew", QVariant(true)).toBool();
     preprocess = settings->value("processing/preprocess", QVariant(true)).toBool();
+    doublePreprocess = settings->value("processing/dpreprocess", QVariant(false)).toBool();
     size = settings->value("mainwindow/size", QSize(800, 600)).toSize();
     iconSize = settings->value("mainwindow/iconSize", QSize(24, 24)).toSize();
     position = settings->value("mainwindow/pos", QPoint(0, 0)).toPoint();
@@ -127,8 +128,11 @@ void Settings::writeSettings()
     settings->setValue("ocr/engine", engine);
     settings->setValue("ocr/tessData", tessdataPath);
     settings->setValue("processing/crop1", cropLoaded);
+    if (doublePreprocess)
+        autoDeskew = true;
     settings->setValue("processing/deskew", autoDeskew);
     settings->setValue("processing/preprocess", preprocess);
+    settings->setValue("processing/dpreprocess", doublePreprocess);
     settings->setValue("ocr/keepLines", keepLines);
     settings->setValue("tweaks/darkBackgroundThreshold", darkBackgroundThreshold);
     settings->setValue("tweaks/foregroundBrightenFactor", foregroundBrightenFactor);
@@ -259,6 +263,11 @@ bool Settings::getPreprocessed()
     return preprocess;
 }
 
+bool Settings::getDoublePreprocessed()
+{
+    return doublePreprocess;
+}
+
 void Settings::setLanguage(const QString &value)
 {
     language = value;
@@ -329,6 +338,11 @@ void Settings::setPreprocessed(const bool value)
     preprocess = value;
 }
 
+void Settings::setDoublePreprocessed(const bool value)
+{
+    doublePreprocess = value;
+}
+
 void Settings::setUpscale(bool value)
 {
     upscale = value;
@@ -342,6 +356,31 @@ bool Settings::getUpscale()
 void Settings::setSkipWidth(int value)
 {
     skipWidth = value;
+}
+
+QString Settings::getRecognizeInputFile() const
+{
+    return "input.bmp";
+}
+
+QString Settings::getRecognizeOutputExt() const
+{
+    return ".txt";
+}
+
+QString Settings::getRecognizeOutputFile() const
+{
+    return "output.txt";
+}
+
+QString Settings::getRecognizeOutputBase() const
+{
+    return "output";
+}
+
+QString Settings::getScanOutputFile() const
+{
+    return "input.png";
 }
 
 int Settings::getSkipWidth()

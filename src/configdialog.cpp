@@ -41,6 +41,7 @@ void ConfigDialog::accept()
     settings->setCropLoaded(ui->checkBoxCrop->isChecked());
     settings->setAutoDeskew(ui->checkBoxDeskew->isChecked());
     settings->setPreprocessed(ui->checkBoxPreprocess->isChecked());
+    settings->setDoublePreprocessed(ui->checkBoxProcessAfterDeskew->isChecked());
     settings->setNoLocale(false);
     if (ui->checkBox->isChecked()) {
         settings->setNoLocale(true);
@@ -68,6 +69,7 @@ void ConfigDialog::init()
     ui->checkBoxCrop->setChecked(settings->getCropLoaded());
     ui->checkBoxDeskew->setChecked(settings->getAutoDeskew());
     ui->checkBoxPreprocess->setChecked(settings->getPreprocessed());
+    ui->checkBoxProcessAfterDeskew->setChecked(settings->getDoublePreprocessed());
     QStringList sl3;
     if (settings->useNoLocale())
         sl3 << "English";
@@ -104,4 +106,10 @@ void ConfigDialog::on_pushButtonLangs_clicked()
 void ConfigDialog::itemClicked(QListWidgetItem *item)
 {
     ui->stackedWidget->setCurrentIndex(ui->listWidget->row(item));
+}
+
+void ConfigDialog::on_checkBoxProcessAfterDeskew_toggled(bool checked)
+{
+    if (ui->checkBoxProcessAfterDeskew->isChecked())
+        ui->checkBoxDeskew->setChecked(true);
 }

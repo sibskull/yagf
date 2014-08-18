@@ -126,7 +126,6 @@ QIPGrayscaleImage::QIPGrayscaleImage(const QString &ygfFileName)
         f.close();
         return;
     }
-    //quint8 * d = ;
     data = QSharedPointer<quint8>(new quint8[w*h], deallocator<quint8>);
     f.read((char*)data.data(), w*h);
     f.flush();
@@ -135,7 +134,7 @@ QIPGrayscaleImage::QIPGrayscaleImage(const QString &ygfFileName)
 
 QIPGrayscaleImage::~QIPGrayscaleImage()
 {
-    //delete [] data;
+    data.clear();
 }
 
 QImage QIPGrayscaleImage::toImage() const
@@ -183,9 +182,9 @@ for (int i = 0; i < 256; i++)
 void QIPGrayscaleImage::histogramInternal(qreal * result, const IntRect &r) const
 {
     uint ht[256] = {0};
-    for (quint32 y = r.y1; y < r.y2; y++) {
+    for (int y = r.y1; y < r.y2; y++) {
        quint8 * lineIn = scanLine(y);
-       for(quint32 x = r.x1; x < r.x2; x++) {
+       for(int x = r.x1; x < r.x2; x++) {
            ht[lineIn[x]]++;
       }
     }
@@ -201,10 +200,10 @@ void QIPGrayscaleImage::histogramInternal(qreal * result, const IntRect &r) cons
 
 void QIPGrayscaleImage::copyInternal(const IntRect &r, uint *image) const
 {
-    for (uint y = r.y1; y < r.y2; y++) {
+    for (int y = r.y1; y < r.y2; y++) {
         quint8 * line = scanLine(y);
         uint * lineout = &image[y*w];
-        for (uint x = r.x1; x < r.x2; x++)
+        for (int x = r.x1; x < r.x2; x++)
             lineout[x] = line[x];
     }
 
@@ -232,7 +231,7 @@ void QIPGrayscaleImage::smoother()
     }
     int counter = 0;
     quint8 min_diff = 255;
-    for (int i = 255; i >= 0, counter < msn; i--) {
+    for (int i = 255; (i >= 0) && (counter < msn); i--) {
         if (steps[i] != 0) {
             min_diff = i;
             counter++;
@@ -311,17 +310,17 @@ bool QIPGrayscaleImage::saveGrayscale(const QImage &image, const QString &fileNa
     return true;
 }
 
-quint32 QIPGrayscaleImage::width() const
+int QIPGrayscaleImage::width() const
 {
     return w;
 }
 
-quint32 QIPGrayscaleImage::height() const
+int QIPGrayscaleImage::height() const
 {
     return h;
 }
 
-QIPGrayscaleImage QIPGrayscaleImage::copy(quint32 x1, quint32 x2, quint32 y1, quint32 y2) const
+QIPGrayscaleImage QIPGrayscaleImage::copy(int x1, int x2, int y1, int y2) const
 {
     if (y2 > h) y2 = h;
     if (x2 > w) x2 = w;
@@ -365,7 +364,7 @@ QIPGrayscaleImage QIPGrayscaleImage::copy(quint32 x1, quint32 x2, quint32 y1, qu
 
 void QIPGrayscaleImage::copyInternal2(IntRect &r, quint8 *s, quint8 *d) const
 {
-    for (uint y = r.y1; y < r.y2; y ++) {
+    for (int y = r.y1; y < r.y2; y ++) {
         quint8 * src = &scanLinePtr(s, y, w)[r.x1];
         quint8 * dst = scanLinePtr(d, y-r.y1, r.x2 - r.x1);
         memcpy(dst, src, r.x2 - r.x1);
@@ -426,9 +425,9 @@ void QIPGrayscaleImage::isolateEdges()
 
 void QIPGrayscaleImage::invert()
 {
-    for (uint y = 0; y < h; y++) {
+    for (int y = 0; y < h; y++) {
         quint8 * line = scanLine(y);
-        for (uint x = 0; x < w; x++)
+        for (int x = 0; x < w; x++)
             line[x] = 255 - line[x];
     }
 }
@@ -490,8 +489,8 @@ void QIPGrayscaleImage::blendImageInternal(const IntRect &r, quint8 *  p1, const
         int up =Settings::instance()->getForegroundBrightenFactor();
         uint d1 = 3;
         uint d2 = 4;
-        uint ra = 0;
-        uint c = 0;
+        int ra = 0;
+        int c = 0;
 
         for (int i = w+1; i < w*(h-1)-1; i++) {
             if (bw[i] == 1) {
@@ -568,11 +567,11 @@ void QIPGrayscaleImage::toImageInternal(uchar * image, const IntRect &rect, int 
         lut[i] = 0xFF000000 + (i << 16) + (i << 8) + i;
     }
     int im4 =4*imageWidth;
-    for (quint32 y = rect.y1; y < rect.y2; y++) {
+    for (int y = rect.y1; y < rect.y2; y++) {
 
         quint8 * line = scanLine(y);
         QRgb * lineOut = (QRgb *)&(image[im4*y]);
-        for (quint32 x = rect.x1; x < rect.x2; x++ ) {
+        for (int x = rect.x1; x < rect.x2; x++ ) {
             lineOut[x] = lut[line[x]];
         }
     }
@@ -649,7 +648,7 @@ quint8 QIPGrayscaleImage::maxEntropyThreshold(quint32 x1, quint32 x2, quint32 y1
     qreal epsilon = .1e-256;
     qreal hBlack[256] = {0.0};
     qreal hWhite[256] = {0.0};
-    for (uint t = 0; t < 256; t++) {
+    for (int t = 0; t < 256; t++) {
          if (cdv[t] > epsilon) {
            qreal hhB = 0;
            for (int i = 0; i <= t; i++) {
@@ -742,7 +741,7 @@ void QIPGrayscaleImage::equalize2()
     }
 }
 
-qreal QIPGrayscaleImage::lpcEntropy(quint32 x1, quint32 x2, quint32 y1, quint32 y2)
+qreal QIPGrayscaleImage::lpcEntropy(int x1, int x2, int y1, int y2)
 {
     uint ihist[256] = {0};
     if (x2 == 0) x2 = w;
@@ -753,7 +752,7 @@ qreal QIPGrayscaleImage::lpcEntropy(quint32 x1, quint32 x2, quint32 y1, quint32 
         ihist[lineOut[x1+1]]++;
         ihist[lineOut[x1+2]]++;
         quint8 cl = lineOut[x1+2];
-        for(uint x = x1 + 3; x < x2; x++) {
+        for(int x = x1 + 3; x < x2; x++) {
             quint8 cp = predictor(&lineOut[x]);
             if ((cp-lineOut[x])*(cp-lineOut[x]) < 2) {
                 ihist[cl]++;
@@ -796,7 +795,7 @@ quint8 *QIPGrayscaleImage::scanLine(quint32 y) const
 }
 
 
-inline quint8 AVERAGE(quint8 a, quint8 b) { return  (a + b >> 1); }
+inline quint8 AVERAGE(quint8 a, quint8 b) { return  ((a + b) >> 1); }
 
 QIPGrayscaleImage QIPGrayscaleImage::scaleX2()
 {
@@ -851,7 +850,7 @@ quint8 QIPGrayscaleImage::prevInColumn(quint32 x, quint32 &y)
 qreal QIPGrayscaleImage::cdf(QIPHistogram hist, quint8 x)
 {
     qreal result = 0;
-    for (uint i = 0; i < x+1; i++)
+    for (int i = 0; i < x+1; i++)
         result +=hist[i];
     return result;
 }
@@ -917,8 +916,8 @@ QIPBlackAndWhiteImage QIPGrayscaleImage::niblackSauvolaBinarize(bool sauvola) co
     const uint WindowSize  = 15;
     const uint halfWindowSize = WindowSize/2;
     const qreal weight = 0.2;
-    uint xMin = halfWindowSize;
-    uint yMin = halfWindowSize;
+    int xMin = halfWindowSize;
+    int yMin = halfWindowSize;
     int xMax = w - 1 - halfWindowSize;
     int yMax = h - 1 - halfWindowSize;
     quint8 * output = result.data.data();
@@ -935,7 +934,7 @@ QIPBlackAndWhiteImage QIPGrayscaleImage::niblackSauvolaBinarize(bool sauvola) co
     memset(sumCols, 0, w*sizeof(qreal));
     memset(sumSqCols, 0, w*sizeof(qreal));
     for (uint i = 0; i < WindowSize; i++){
-        for (uint x = 0; x < w; x++){
+        for (int x = 0; x < w; x++){
             sumCols[x]  += pixel(x, i);
             sumSqCols[x] += pixel(x, i)*pixel(x, i);
         }
@@ -956,7 +955,7 @@ QIPBlackAndWhiteImage QIPGrayscaleImage::niblackSauvolaBinarize(bool sauvola) co
                     }
                 }else{
                     if(j == yMin) {
-                        for (uint x = 0; x < w; x++) {
+                        for (int x = 0; x < w; x++) {
                            sumCols[x]  += (pixel(x, y+halfWindowSize) - pixel(x, y-halfWindowSize-1));
                            sumSqCols[x] += (pixel (x, y+halfWindowSize)*pixel (x, y+halfWindowSize) - pixel(x, y-halfWindowSize-1)*pixel(x, y-halfWindowSize-1));
                         }
@@ -992,8 +991,8 @@ QIPBlackAndWhiteImage QIPGrayscaleImage::niblackSauvolaBinarize(bool sauvola) co
             }
         }
 
-        for(uint y = 0; y < h; y++){
-            for(uint x = 0; x < w; x++){
+        for(int y = 0; y < h; y++){
+            for(int x = 0; x < w; x++){
                 if(y < yMin) output[y*w + x] = 1;
                 if(y > yMax) output[y*w + x] = 1;
                 if(x < xMin) output[y*w + x] = 1;
@@ -1009,10 +1008,10 @@ QIPBlackAndWhiteImage QIPGrayscaleImage::otsuBinarize() const
 {
     QIPBlackAndWhiteImage result(w, h);
     quint8 threshold = otsuThreshold();
-    for (uint y = 0; y < h; y ++) {
+    for (int y = 0; y < h; y ++) {
         quint8 * line = scanLine(y);
         quint8 * lineOut = result.scanLine(y);
-        for (uint x = 0; x < w; x++) {
+        for (int x = 0; x < w; x++) {
             if (line[x] > threshold) lineOut[x] = 1;
             else lineOut[x] = 0;
         }
@@ -1022,7 +1021,6 @@ QIPBlackAndWhiteImage QIPGrayscaleImage::otsuBinarize() const
 
 QIPBlackAndWhiteImage QIPGrayscaleImage::otsuBinarizeMA() const
 {
-    quint8 stack[3];
     quint32 sum;
     QIPBlackAndWhiteImage result(w, h);
     if (w*h < 4) return result;
@@ -1034,9 +1032,9 @@ QIPBlackAndWhiteImage QIPGrayscaleImage::otsuBinarizeMA() const
         d[i] = sum/8;
         sum = sum - d[i-3] + d[i+4];
     }
-    for (uint y = 0; y < h; y ++) {
+    for (int y = 0; y < h; y ++) {
         quint8 * lineOut = result.scanLine(y);
-        for (uint x = 0; x < w; x++) {
+        for (int x = 0; x < w; x++) {
             if (lineOut[x] > threshold) lineOut[x] = 1;
             else lineOut[x] = 0;
         }
@@ -1065,10 +1063,10 @@ QIPBlackAndWhiteImage QIPGrayscaleImage::maxEntropyBinarize() const
 {
     QIPBlackAndWhiteImage result(w, h);
     quint8 threshold = maxEntropyThreshold();
-    for (uint y = 0; y < h; y ++) {
+    for (int y = 0; y < h; y ++) {
         quint8 * line = scanLine(y);
         quint8 * lineOut = result.scanLine(y);
-        for (uint x = 0; x < w; x++) {
+        for (int x = 0; x < w; x++) {
             if (line[x] >= threshold) lineOut[x] = 1;
             else lineOut[x] = 0;
         }
@@ -1106,10 +1104,10 @@ QIPBlackAndWhiteImage QIPGrayscaleImage::iterativeBinarize() const
 {
     QIPBlackAndWhiteImage result(w, h);
     quint8 threshold = CalculateIterativeThreshold();
-    for (uint y = 0; y < h; y++) {
+    for (int y = 0; y < h; y++) {
         quint8 * line = scanLine(y);
         quint8 * lineOut = result.scanLine(y);
-        for (uint x = 0; x < w; x++)
+        for (int x = 0; x < w; x++)
             lineOut[x] = line[x] < threshold ? 0 : 1;
     }
     return result;
@@ -1117,11 +1115,11 @@ QIPBlackAndWhiteImage QIPGrayscaleImage::iterativeBinarize() const
 
 QIPBlackAndWhiteImage QIPGrayscaleImage::bernsenBinarize() const
 {
-    const uint regSize = 7;
+    const int regSize = 7;
     const quint8 contrastLimit = 120;
     const quint8 confused = 1;
     QIPBlackAndWhiteImage result(w, h);
-    for (uint y = 0; y < h; y++) {
+    for (int y = 0; y < h; y++) {
         const quint8 * line = scanLine(y);
         quint8 * lineOut = result.scanLine(y);
         int istart = y == 0 ? 0 : y - 1;
@@ -1130,15 +1128,15 @@ QIPBlackAndWhiteImage QIPGrayscaleImage::bernsenBinarize() const
         quint8 maximum = 0;
         int maxX = -1;
         int minX = -1;
-        for (uint x = 0; x < w; x++) {
+        for (int x = 0; x < w; x++) {
             int jstart = x == 0 ? 0 : x-1;
             int jstop = x+regSize >= w ? w : x + regSize - 1;
             if ((maxX < jstart)||(minX < jstart)) {
                 minimum = 255;
                 maximum = 0;
-                 for (uint i = istart; i < istop; i++) {
+                 for (int i = istart; i < istop; i++) {
                     const quint8 *  lineK = scanLine(i);
-                    for (uint j = jstart; j < jstop; j++) {
+                    for (int j = jstart; j < jstop; j++) {
                         if (minimum > lineK[j]) {
                             minimum = lineK[j];
                             minX = j;
@@ -1181,9 +1179,9 @@ QIPBlackAndWhiteImage QIPGrayscaleImage::bernsenBinarize() const
 quint8 QIPGrayscaleImage::CalculateIterativeThreshold() const
 {
     quint32 distribution[256] = {0};
-    for (uint y = 0; y < h; y++) {
+    for (int y = 0; y < h; y++) {
         quint8 * line = scanLine(y);
-        for (uint x = 0; x < w; x++)
+        for (int x = 0; x < w; x++)
             distribution[line[x]]++;
     }
     quint32 integralHist[256];

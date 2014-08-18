@@ -56,6 +56,7 @@ public:
     bool getAutoDeskew();
     bool getCropLoaded();
     bool getPreprocessed();
+    bool getDoublePreprocessed();
     void setLanguage(const QString &value);
     void setOutputFormat(const QString &value);
     void setLastDir(const QString &value);
@@ -71,9 +72,15 @@ public:
     void setCropLoaded(const bool value);
     void setAutoDeskew(const bool value);
     void setPreprocessed(const bool value);
+    void setDoublePreprocessed(const bool value);
     void setUpscale(bool value);
     bool getUpscale();
     void setSkipWidth(int value);
+    QString getRecognizeInputFile() const;
+    QString getRecognizeOutputExt() const;
+    QString getRecognizeOutputFile() const;
+    QString getRecognizeOutputBase() const;
+    QString getScanOutputFile() const;
     int getSkipWidth();
     QString uniqueSeed();
     QString tiffPageSize();
@@ -146,6 +153,7 @@ private:
     bool upscale;
     int skipWidth;
     bool keepLines;
+    bool doublePreprocess;
 };
 
 #endif

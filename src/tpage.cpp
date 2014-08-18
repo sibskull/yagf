@@ -115,6 +115,8 @@ bool Page::loadFile(QString fileName, int tiled, bool loadIntoView)
             }
     }
 
+
+
     rotateImageInternal(img, rotation);
     mFileName = saveTmpPage("YGF");
 
@@ -369,7 +371,6 @@ void Page::saveBlockForRecognition(QRect r, const QString &fileName, const QStri
     spp.removeNoise();
     //applyTransforms(image, 1);
     image.save(fileName, format.toAscii().data());
-    //ImageProcessor::saveForPDF(image, "AAA.png");
 }
 
 void Page::saveBlockForRecognition(int index, const QString &fileName)
@@ -401,49 +402,61 @@ bool Page::deskew(bool recreateCB)
     if (imageLoaded) {
         prepareCCBuilder();
         CCAnalysis *an = new CCAnalysis(ccbuilder);
+        qreal angle = 0;
         if (an->analize()) {
-            QImage timg;
-            //if ((img.height() > 3800)||(img.width() > 3800))
-            //    return false;
-            timg = tryRotate(img, -atan(an->getK())*360/6.283);
-            ImageProcessor ip;
-            //ip.bust(timg);
-            CCBuilder *cb2 = new CCBuilder(timg);
-            cb2->labelCCs();
-            CCAnalysis *an2 = new CCAnalysis(cb2);
-            an2->analize(true); // If use bars
-            Bars bars = an2->getBars();
-            qreal barsAngle = 0.0;
-            if (bars.count()) {
-                Rect bar = bars[0];
-                int maxdim = abs(bar.x2 - bar.x1) > abs(bar.y2 - bar.y1) ? abs(bar.x2 - bar.x1) : abs(bar.y2 - bar.y1);
-                for (int i = 1; i < bars.count(); i++) {
-                    int maxdim1 = abs(bars[i].x2 - bars[i].x1) > abs(bars[i].y2 - bars[i].y1) ? abs(bars[i].x2 - bars[i].x1) : abs(bars[i].y2 - bars[i].y1);
-                    if (maxdim1 > maxdim) bar = bars[i];
+            {
+                QImage timg;
+                timg = tryRotate(img, -atan(an->getK())*360/6.283);
+                CCBuilder *cb2 = new CCBuilder(timg);
+                cb2->labelCCs();
+                CCAnalysis *an2 = new CCAnalysis(cb2);
+                an2->analize(true); // If use bars
+                Bars bars = an2->getBars();
+                qreal barsAngle = 0.0;
+                if (bars.count()) {
+                    Rect bar = bars[0];
+                    int maxdim = abs(bar.x2 - bar.x1) > abs(bar.y2 - bar.y1) ? abs(bar.x2 - bar.x1) : abs(bar.y2 - bar.y1);
+                    for (int i = 1; i < bars.count(); i++) {
+                        int maxdim1 = abs(bars[i].x2 - bars[i].x1) > abs(bars[i].y2 - bars[i].y1) ? abs(bars[i].x2 - bars[i].x1) : abs(bars[i].y2 - bars[i].y1);
+                        if (maxdim1 > maxdim) bar = bars[i];
+                    }
+                    if ((bar.x2 - bar.x1 != 0) && (bar.y2 - bar.y1 !=0)) {
+                        if (abs(bar.x2 - bar.x1) > abs(bar.y2 - bar.y1))
+                            barsAngle = atan(float(bar.y2 - bar.y1)/float(bar.x2 - bar.x1));
+                        else
+                            barsAngle = atan(float(bar.x2 - bar.x1)/float(bar.y2 - bar.y1));
+                    }
+                    barsAngle=barsAngle*360/6.283;
                 }
-                if ((bar.x2 - bar.x1 != 0) && (bar.y2 - bar.y1 !=0))
-                    if (abs(bar.x2 - bar.x1) > abs(bar.y2 - bar.y1))
-                        barsAngle = atan(float(bar.y2 - bar.y1)/float(bar.x2 - bar.x1));
-                    else
-                        barsAngle = atan(float(bar.x2 - bar.x1)/float(bar.y2 - bar.y1));
-                barsAngle=barsAngle*360/6.283;
-            }
-            qreal angle = -atan(an2->getK())*360/6.283;
-            delete an2;
-            delete cb2;
+                angle = -atan(an2->getK())*360/6.283;
+                delete an2;
+                delete cb2;
 
-            if (abs(angle*10) >= abs(3))
-                angle += (-atan(an->getK())*360/6.283);
-            else
-                angle = -atan(an->getK())*360/6.283;
-            if ((barsAngle != 0)&&(angle == 0))
-                angle = -barsAngle;
-            if (abs(angle*100) < 1) {
-                deskewed = true;
-                return false;
+                if (abs(angle*10) >= abs(3))
+                    angle += (-atan(an->getK())*360/6.283);
+                else
+                    angle = -atan(an->getK())*360/6.283;
+                if ((barsAngle != 0)&&(angle == 0))
+                    angle = -barsAngle;
+                if (abs(angle*100) < 1) {
+                    deskewed = true;
+                    return false;
+                }
+                rotation = angle;
             }
-            rotate(angle);
-            rotation = angle;
+            if (settings->getDoublePreprocessed()) {
+                ImageProcessor ip;
+                QImage img1 = ip.loadFromFile(OriginalFileName());
+                if (img1.format() != QImage::Format_ARGB32)
+                    img1 = img1.convertToFormat(QImage::Format_ARGB32);
+                rotateImageInternal(img1, rotation);
+                ip.loadImage(img1);
+                ip.binarize();
+                img = ip.gsImage();
+            } else {
+                rotate(angle);
+            }
+
             ImageProcessor::cropAngles(img);
             QString fn = saveTmpPage("YGF");
             deskewed = true;

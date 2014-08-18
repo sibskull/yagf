@@ -22,21 +22,21 @@ add_definitions( -DQML_INSTALL_PATH="${QML_INSTALL_PREFIX}${QML_DESTINATION}")
 set(SOURCES src/main.cpp src/mainform.cpp src/qgraphicsinput.cpp src/utils.cpp src/qxtunixsignalcatcher.cpp src/spellchecker.cpp src/PageAnalysis.cpp
     src/SkewAnalysis.cpp src/core/rotationcropper.cpp src/qxtgraphicsproxywidget.cpp src/popplerdialog.cpp src/pdfextractor.cpp src/pdf2ppt.cpp src/ghostscr.cpp
     src/configdialog.cpp src/core/ccbuilder.cpp src/core/analysis.cpp src/qsnippet.cpp src/sidebar.cpp src/droplabel.cpp src/projectmanager.cpp src/settings.cpp
-    src/texteditor.cpp src/tblock.cpp src/tpage.cpp src/tpagecollection.cpp src/scanner.cpp src/core/imageprocessor.cpp
-    src/langselectdialog.cpp src/busyform.cpp src/tiffimporter.cpp src/pdfthread.cpp src/QBusyIndicator.cpp
+    src/texteditor.cpp src/tblock.cpp src/tpage.cpp src/tpagecollection.cpp src/scanner.cpp src/core/imageprocessor.cpp src/recognitiondialog.cpp
+    src/langselectdialog.cpp src/busyform.cpp src/tiffimporter.cpp src/pdfthread.cpp src/QBusyIndicator.cpp src/recognizerwrapper.cpp
     src/core/binarize.cpp src/core/util.cpp src/core/qipblackandwhiteimage.cpp src/core/qipgrayscaleimage.cpp src/core/subimagepp.cpp)
 
 set(HEADERS src/settings.h)
 
 set(INT_SOURCES src/preload.c)
 
-set(UIS src/mainform.ui src/popplerdialog.ui src/configdialog.ui src/langselectdialog.ui src/busyform.ui)
+set(UIS src/mainform.ui src/popplerdialog.ui src/configdialog.ui src/langselectdialog.ui src/busyform.ui src/recognitiondialog.ui)
 
 set(MOC_HEADERS src/mainform.h src/qxtunixsignalcatcher.h src/qxtunixscinternal.h src/qgraphicsinput.h src/qxtgraphicsproxywidget.h src/qxtgraphicsview.h
-    src/popplerdialog.h src/pdfextractor.h src/pdf2ppt.h src/configdialog.h src/core/ccbuilder.h src/qsnippet.h src/sidebar.h
-    src/droplabel.h src/projectmanager.h src/texteditor.h src/tblock.h src/tpage.h src/tpagecollection.h src/scanner.h src/core/imageprocessor.h
-    src/langselectdialog.h src/busyform.h src/tiffimporter.h src/pdfthread.h src/QBusyIndicator.h
-    src/core/binarize.h src/core/common.h src/core/util.h src/core/qipblackandwhiteimage.h src/core/qipgrayscaleimage.h src/core/subimagepp.h)
+    src/popplerdialog.h src/pdfextractor.h src/configdialog.h src/core/ccbuilder.h src/sidebar.h
+    src/droplabel.h src/projectmanager.h src/texteditor.h src/tpage.h src/tpagecollection.h src/scanner.h src/core/imageprocessor.h
+    src/langselectdialog.h src/busyform.h src/tiffimporter.h src/pdfthread.h src/QBusyIndicator.h src/recognizerwrapper.h
+    src/recognizerwrapperinternal.h src/recognitiondialog.h src/core/subimagepp.h)
 
 set(yagf_RCCS src/yagf.qrc)
 

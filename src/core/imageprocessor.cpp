@@ -47,6 +47,7 @@ QRect ImageProcessor::crop()
     try {
         QIPBlackAndWhiteImage bwimg1 = QIPBlackAndWhiteImage(img.binarize(QIPGrayscaleImage::OtsuMABinarization));
         r = bwimg1.cropGrayScaleImage(img);
+        //bwimg1.free();
         img = img.copy(r.x(), r.x()+r.width(), r.y(), r.y()+r.height());
     } catch(...) {
         r.setX(0);
@@ -69,7 +70,8 @@ QImage ImageProcessor::loadFromFile(const QString &fn)
         QImageReader ir(fn);
         if (!ir.canRead())
             return QImage(0,0,QImage::Format_ARGB32);
-        if ((ir.size().width() > 7500)||(ir.size().height() > 7500)) {
+        int total = ir.size().width()*ir.size().height();
+        if ( total > 0x8000000) {
             ir.setScaledSize(QSize(ir.size().width()/2, ir.size().height()/2));
         }
 
@@ -298,7 +300,7 @@ void ImageProcessor::cropAngles(QImage &image)
 void ImageProcessor::flatten()
 {
     int tr = Settings::instance()->getDarkBackgroundThreshold();
-    for (quint32 y = 0; y < img.height(); y++) {
+    for (int y = 0; y < img.height(); y++) {
         quint8 * line = img.scanLine(y);
         for (int x = 0; x < img.width(); x++) {
             line[x] = line[x] > tr ? 255 : line[x];
@@ -308,11 +310,10 @@ void ImageProcessor::flatten()
 
 void ImageProcessor::bust(QImage &image)
 {
-    for (quint32 y = 0; y < image.height(); y++) {
+    for (int y = 0; y < image.height(); y++) {
         QRgb * line = (QRgb *) image.scanLine(y);
         for (int x = 0; x < image.width(); x++) {
             quint8 ov = line[x] & 0x000000FF;
-            quint32 nv = (ov*(ov+1)) >> 8;
             quint32 np = (ov << 16) + (ov << 8) + ov + 0xFF000000;
             line[x] = np;
         }

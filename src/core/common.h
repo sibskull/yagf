@@ -30,7 +30,7 @@ void deallocator(T_ buf[])
 }
 
 typedef struct IntRect {
-    quint32 x1, y1, x2, y2;
+    int x1, y1, x2, y2;
 } _IntRect;
 
 

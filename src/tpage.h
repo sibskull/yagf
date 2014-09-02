@@ -66,6 +66,7 @@ public:
     bool splitPage(bool preprocess);
     bool textHorizontal();
     QString fileName();
+    QString OriginalFileName() const;
     int pageID();
     void sortBlocksInternal();
     bool isDeskewed();
@@ -76,6 +77,7 @@ public:
     void setPreprocessed(bool value);
     void reSaveTmpPage();
     void cropYGF();
+    QRect scaleRect(QRect &rect);
 signals:
     void refreshView();
     void textOut(const QString &msg);
@@ -84,7 +86,6 @@ private:
     void renumberBlocks();
     void applyTransforms(QImage &image, qreal scale);
     void rotateImageInternal(QImage &image, qreal angle);
-    QRect scaleRect(QRect &rect);
     QRect scaleRectToScale(QRect &rect);
     QImage tryRotate(QImage image, qreal angle);
     QImage currentImage();
@@ -94,6 +95,7 @@ private:
     Block includes(const QRect &rect);
     void clearIntersected();
 private:
+    QString originalFN;
     qreal scale;
     qreal rotation;
     QRect crop1;
@@ -106,8 +108,8 @@ private:
     bool loadedBefore;
     bool preprocessed;
     QString mFileName;
-    CCBuilder * ccbuilder;
-    Settings * settings;
+    CCBuilder *ccbuilder;
+    Settings *settings;
     int blockPointer;
     int pid;
     Block selectedBlock;

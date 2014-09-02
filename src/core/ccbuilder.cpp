@@ -231,12 +231,12 @@ CCBuilder::CCBuilder(const QImage &img, QObject *parent) :
     h = image.height();
     thr1 = 0;
     thr2 = 0;
-    for (int y = 0; y < img.height(); y++) {
+    for (int y = 64; y < img.height(); y++) {
 
         QRgb * line = (QRgb *) img.scanLine(y);
-        for(int x = 0; x < img.width()/2; x++)
+        for(int x = 32; x < img.width()/2; x++)
             thr1 = thr1 + (line[x]&0x000000FF);
-        for(int x= img.width()/2; x < img.width(); x++)
+        for(int x= img.width()/2; x < img.width()-32; x++)
             thr2 = thr2 + (line[x]&0x000000FF);
     }
     thr1 /= (w*h/2);

@@ -41,7 +41,7 @@ private:
     int m_height;
     int m_width;
     double phi;
-    QPoint * p1;
-    QPoint * p2;
+    QPoint *p1;
+    QPoint *p2;
 };
 #endif

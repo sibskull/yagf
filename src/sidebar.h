@@ -29,7 +29,7 @@ class SideBar : public QListWidget
     Q_OBJECT
 public:
     explicit SideBar(QWidget *parent = 0);
-    void addItem ( QSnippet * item );
+    void addItem ( QSnippet *item );
     void clearBlocks();
     void select(const QString &name);
     void selectFirstFile();
@@ -38,7 +38,7 @@ signals:
     void filesDropped(QStringList);
     void fileRemoved(int id);
 private slots:
-    void itemActive( QListWidgetItem * item, QListWidgetItem *item2 );
+    void itemActive( QListWidgetItem *item, QListWidgetItem *item2 );
 protected:
     QStringList mimeTypes () const;
     Qt::DropActions supportedDropActions () const;
@@ -46,8 +46,8 @@ protected:
     void startDrag(Qt::DropActions supportedActions);
 
 private:
-    QSnippet * getItemByName(const QString &name);
-    QSnippet * current;
+    QSnippet *getItemByName(const QString &name);
+    QSnippet *current;
     bool lock;
     bool dragging;
 };

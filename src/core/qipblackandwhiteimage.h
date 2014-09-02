@@ -42,6 +42,7 @@ class QIPBlackAndWhiteImage
 public:
     QIPBlackAndWhiteImage();
     QIPBlackAndWhiteImage(const QIPBlackAndWhiteImage &I);
+    ~QIPBlackAndWhiteImage();
     /*!
       Converts binary image to QImage object.
     */
@@ -122,8 +123,9 @@ public:
     QRect cropGrayScaleImage(const QIPGrayscaleImage &image);
 
     bool isNull() const;
+    void free();
 private:
-    quint32 w, h;
+    int w, h;
     QSharedPointer<quint8> data;
 private:
     void toImageInternal(uchar * image, const IntRect &rect, int imageWidth) const;
@@ -132,7 +134,7 @@ private:
     inline void setPixel(quint32 x, quint32 y, quint8 value);
     bool compareElements(quint8 **se, quint8 **w, int dimensions) const;
     IntRect cropInternal(bool upperLeft) const;
-    void copyInternal(quint8 * data, quint32 x1, quint32 x2, quint32 y1, quint32 y2) const;
+    void copyInternal(quint8 * data, int x1, int x2, int y1, int y2) const;
     friend class QIPGrayscaleImage;
     friend class QIPConnectedComponents;
 

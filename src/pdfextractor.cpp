@@ -20,7 +20,8 @@
 #include "pdfthread.h"
 #include "pdfextractor.h"
 #include "settings.h"
-#include <unistd.h>
+#include "utils.h"
+#include "busyform.h"
 #include <QThread>
 #include <QProcess>
 #include  <QStringList>
@@ -58,7 +59,7 @@ void PDFExtractor::setOutputDir()
         dir.setFilter(QDir::Files);
         QStringList sl = dir.entryList();
         foreach (QString s, sl)
-            dir.remove(pdfout+s);
+        dir.remove(pdfout+s);
     }
 }
 
@@ -138,30 +139,20 @@ void PDFExtractor::execInternal(const QString &command, const QStringList &argum
     filters.clear();
     filters << QString("page*.%1").arg(getOutputExtension());
     PDFThread thread(this);
-    thread.setProcess(command, arguments);
-    thread.start();
-    sleep(1);
     QDir dir;
     prepareDir(dir);
     QFileInfoList prefil = dir.entryInfoList(filters, QDir::Files, QDir::Name);
-    QFileInfoList oldFil;
+    foreach(QFileInfo fi, prefil) {
+        QFile f(fi.filePath());
+        f.remove();
+    }
+
+    thread.setProcess(command, arguments);
+    thread.start();
+    QApplication::processEvents();
     bool cont = true;
     while (cont) {
-        if (oldFil.count() == 0)
-            usleep(500000);
-        else usleep(200000);
-        QDir dir;
-        prepareDir(dir);
-        QFileInfoList fil;
         QApplication::processEvents();
-        fil = dir.entryInfoList(filters, QDir::Files, QDir::Name);
-        foreach (QFileInfo fi, fil) {
-            if (!oldFil.contains(fi)) {
-                    oldFil.append(fi);
-                    emit addPage(fi.absoluteFilePath());
-                    QApplication::processEvents();
-            }
-        }
         if (!thread.isProcessRunning())
             cont = false;
     }
@@ -169,38 +160,13 @@ void PDFExtractor::execInternal(const QString &command, const QStringList &argum
         QDir dir;
         prepareDir(dir);
         QFileInfoList fil;
-        if (stopPage < 0) {
-            stopPage = pageCount();
-            startPage = 1;
-        }
-        if (stopPage > 0) {
-            while (oldFil.count() + fil.count() < stopPage - (startPage == 0 ? startPage - prefil.count() - 4 : startPage - prefil.count() -1)) {
+        fil = dir.entryInfoList(filters, QDir::Files, QDir::Name);
+        int counter =  fil.count();
+        while (counter > 0) {
                 QApplication::processEvents();
-                fil = dir.entryInfoList(filters, QDir::Files, QDir::Name);
-                foreach (QFileInfo fi, fil) {
-                    if (!oldFil.contains(fi)) {
-                            oldFil.append(fi);
-                            emit addPage(fi.absoluteFilePath());
-                            QApplication::processEvents();
-                    }
-                    else
-                        QApplication::processEvents();
-                }
-            }
-        } else {
-            QApplication::processEvents();
-            fil = dir.entryInfoList(filters, QDir::Files, QDir::Name);
-            foreach (QFileInfo fi, fil) {
-                if (!oldFil.contains(fi)) {
-                        oldFil.append(fi);
-                        emit addPage(fi.absoluteFilePath());
-                        QApplication::processEvents();
-                }
-                else
-                    QApplication::processEvents();
-            }
+                        emit addPage(fil[fil.count() - counter].absoluteFilePath());
+                        counter--;
         }
-
     }
     emit finished();
 }
@@ -223,7 +189,7 @@ int PDFExtractor::filesRemaining(const QString &fileName)
     sl.sort();
     for (int i = 0; i < sl.count(); i++) {
         if (fileName.endsWith(sl.at(i)))
-        return sl.count() - i - 1;
+            return sl.count() - i - 1;
     }
     return -1;
 }

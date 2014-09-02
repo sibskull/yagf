@@ -31,13 +31,13 @@ bool QSnippet::setPage(int id, const QString &name, const QImage &image)
         if (img.isNull())
             return false;
         setIcon(QPixmap::fromImage(img));
-    }
-    else
+    } else
         setIcon(QPixmap::fromImage(image));
     this->name = name;
     setToolTip(name);
     pid = id;
-    ih = image.height();iw = image.width();
+    ih = image.height();
+    iw = image.width();
     return true;
 }
 

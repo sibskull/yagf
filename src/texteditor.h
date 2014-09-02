@@ -28,7 +28,7 @@
 class TextEditor : public QTextEdit
 {
     Q_OBJECT
-    
+
 public:
     explicit TextEditor(QWidget *parent = 0);
     ~TextEditor();
@@ -40,10 +40,10 @@ public:
 public slots:
     void saveText();
 protected:
-    void keyPressEvent ( QKeyEvent * e );
-    void wheelEvent ( QWheelEvent * e );
+    void keyPressEvent ( QKeyEvent *e );
+    void wheelEvent ( QWheelEvent *e );
 private slots:
-    void contextMenuRequested(const QPoint& point);
+    void contextMenuRequested(const QPoint &point);
     void enlargeFont();
     void decreaseFont();
     void updateSP();
@@ -53,6 +53,7 @@ private slots:
     void copyClipboard();
 private:
     void saveHtml(QFile *file);
+    void globalReplace(const QString &what, const QString &with);
 private:
     SpellChecker spellChecker;
     bool hasCopy;

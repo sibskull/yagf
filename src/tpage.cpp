@@ -1,26 +1,26 @@
- /*
-    YAGF - cuneiform and tesseract OCR graphical front-end
-    Copyright (C) 2009-2012 Andrei Borovsky <anb@symmetrica.net>
+/*
+   YAGF - cuneiform and tesseract OCR graphical front-end
+   Copyright (C) 2009-2012 Andrei Borovsky <anb@symmetrica.net>
 
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+   This program is free software: you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published by
+   the Free Software Foundation, either version 3 of the License, or
+   (at your option) any later version.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+   You should have received a copy of the GNU General Public License
+   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 */
 
 #include "tpage.h"
 #include "settings.h"
 #include "core/ccbuilder.h"
-#include "CCAnalysis.h"
+#include "core/rotationcropper.h"
 #include "PageAnalysis.h"
 #include "core/analysis.h"
 #include "core/imageprocessor.h"
@@ -41,6 +41,7 @@ Page::Page(const int pid, QObject *parent) :
     deskewed = false;
     preprocessed = false;
     cropped = false;
+    originalFN.clear();
     mFileName.clear();
     this->pid = pid;
 }
@@ -54,10 +55,11 @@ bool Page::loadFile(QString fileName, int tiled, bool loadIntoView)
 {
 
     if (fileName == "") {
-        if(mFileName.isEmpty()) return false;
+        if (mFileName.isEmpty()) return false;
         fileName = mFileName;
     }
-
+    if (!fileName.endsWith(".ygf", Qt::CaseInsensitive))
+        originalFN = fileName;
     rotation = 0;
     crop1.setX(0);
     crop1.setY(0);
@@ -67,9 +69,7 @@ bool Page::loadFile(QString fileName, int tiled, bool loadIntoView)
     ImageProcessor ip;
     try {
         img = ip.loadFromFile(fileName);
-    }
-    catch (...)
-    {
+    } catch (...) {
         return false;
     }
 
@@ -78,7 +78,7 @@ bool Page::loadFile(QString fileName, int tiled, bool loadIntoView)
         return false;
     if (img.format() != QImage::Format_ARGB32)
         img = img.convertToFormat(QImage::Format_ARGB32);
-    if (ccbuilder){
+    if (ccbuilder) {
         delete ccbuilder;
         ccbuilder = 0;
     }
@@ -86,19 +86,16 @@ bool Page::loadFile(QString fileName, int tiled, bool loadIntoView)
     settings = Settings::instance();
     if (settings->getCropLoaded()) {
         if (!cropped)
-        ip.crop();
+            ip.crop();
 
     }
     img = ip.gsImage();
-    //ip.start(img2);
-    //ip.tiledBinarize();
     if (settings->getPreprocessed()&&(!preprocessed)) {
         ip.loadImage(img);
 
         ip.binarize();
         img = ip.gsImage();
-        //ip.flatten();
-            preprocessed = true;
+        preprocessed = true;
     }
 
     if (Settings::instance()->getAutoDeskew()) {
@@ -110,16 +107,19 @@ bool Page::loadFile(QString fileName, int tiled, bool loadIntoView)
                     if (img1.format() != QImage::Format_ARGB32)
                         img1 = img1.convertToFormat(QImage::Format_ARGB32);
                     ip.loadImage(img1);
-                    ip.altBinarize();
+                    ip.binarize();
                     mFileName = Settings::instance()->tmpYGFFileName();
                     ip.saveYGF(ip.gsImage(), mFileName);
                 }
                 return true;
             }
     }
-    rotateImageInternal(img, rotation);
 
+
+
+    rotateImageInternal(img, rotation);
     mFileName = saveTmpPage("YGF");
+
     loadedBefore = true;
     return true;
 }
@@ -163,14 +163,14 @@ bool Page::makeLarger()
         return true;
     }
     if (scale < 1.0) {
-            scale = 1.0;
-            return true;
+        scale = 1.0;
+        return true;
     }
-    if (scale < 1.5){
+    if (scale < 1.5) {
         scale = 1.5;
         return true;
     }
-    if (scale < 2.0){
+    if (scale < 2.0) {
         scale = 2.0;
         return true;
     }
@@ -229,7 +229,7 @@ void Page::rotate(qreal angle)
 
 void Page::unload()
 {
-    if (ccbuilder){
+    if (ccbuilder) {
         delete ccbuilder;
         ccbuilder = 0;
     }
@@ -297,7 +297,6 @@ void Page::deleteBlock(const QRect &r)
 {
     QRect rx = r;
     scaleRect(rx);
-    //normalizeRect(rx);
     foreach (Block b, blocks) {
         QRect r1 = b;
         if (qrects_equal(rx, r1)) {
@@ -372,7 +371,6 @@ void Page::saveBlockForRecognition(QRect r, const QString &fileName, const QStri
     spp.removeNoise();
     //applyTransforms(image, 1);
     image.save(fileName, format.toAscii().data());
-    //ImageProcessor::saveForPDF(image, "AAA.png");
 }
 
 void Page::saveBlockForRecognition(int index, const QString &fileName)
@@ -403,50 +401,62 @@ bool Page::deskew(bool recreateCB)
     if (deskewed) return false;
     if (imageLoaded) {
         prepareCCBuilder();
-        CCAnalysis * an = new CCAnalysis(ccbuilder);
+        CCAnalysis *an = new CCAnalysis(ccbuilder);
+        qreal angle = 0;
         if (an->analize()) {
-            QImage timg;
-            //if ((img.height() > 3800)||(img.width() > 3800))
-            //    return false;
-            timg = tryRotate(img, -atan(an->getK())*360/6.283);
-            ImageProcessor ip;
-            //ip.bust(timg);
-            CCBuilder * cb2 = new CCBuilder(timg);
-            cb2->labelCCs();
-            CCAnalysis * an2 = new CCAnalysis(cb2);
-            an2->analize(true); // If use bars
-            Bars bars = an2->getBars();
-            qreal barsAngle = 0.0;
-            if (bars.count()) {
-                Rect bar = bars[0];
-                int maxdim = abs(bar.x2 - bar.x1) > abs(bar.y2 - bar.y1) ? abs(bar.x2 - bar.x1) : abs(bar.y2 - bar.y1);
-                for(int i = 1; i < bars.count(); i++) {
-                    int maxdim1 = abs(bars[i].x2 - bars[i].x1) > abs(bars[i].y2 - bars[i].y1) ? abs(bars[i].x2 - bars[i].x1) : abs(bars[i].y2 - bars[i].y1);
-                    if (maxdim1 > maxdim) bar = bars[i];
-                }
-                if ((bar.x2 - bar.x1 != 0) && (bar.y2 - bar.y1 !=0))
-                    if (abs(bar.x2 - bar.x1) > abs(bar.y2 - bar.y1))
-                        barsAngle = atan(float(bar.y2 - bar.y1)/float(bar.x2 - bar.x1));
-                    else
-                        barsAngle = atan(float(bar.x2 - bar.x1)/float(bar.y2 - bar.y1));
+            {
+                QImage timg;
+                timg = tryRotate(img, -atan(an->getK())*360/6.283);
+                CCBuilder *cb2 = new CCBuilder(timg);
+                cb2->labelCCs();
+                CCAnalysis *an2 = new CCAnalysis(cb2);
+                an2->analize(true); // If use bars
+                Bars bars = an2->getBars();
+                qreal barsAngle = 0.0;
+                if (bars.count()) {
+                    Rect bar = bars[0];
+                    int maxdim = abs(bar.x2 - bar.x1) > abs(bar.y2 - bar.y1) ? abs(bar.x2 - bar.x1) : abs(bar.y2 - bar.y1);
+                    for (int i = 1; i < bars.count(); i++) {
+                        int maxdim1 = abs(bars[i].x2 - bars[i].x1) > abs(bars[i].y2 - bars[i].y1) ? abs(bars[i].x2 - bars[i].x1) : abs(bars[i].y2 - bars[i].y1);
+                        if (maxdim1 > maxdim) bar = bars[i];
+                    }
+                    if ((bar.x2 - bar.x1 != 0) && (bar.y2 - bar.y1 !=0)) {
+                        if (abs(bar.x2 - bar.x1) > abs(bar.y2 - bar.y1))
+                            barsAngle = atan(float(bar.y2 - bar.y1)/float(bar.x2 - bar.x1));
+                        else
+                            barsAngle = atan(float(bar.x2 - bar.x1)/float(bar.y2 - bar.y1));
+                    }
                     barsAngle=barsAngle*360/6.283;
-            }
-           qreal angle = -atan(an2->getK())*360/6.283;
-            delete an2;
-            delete cb2;
+                }
+                angle = -atan(an2->getK())*360/6.283;
+                delete an2;
+                delete cb2;
 
-            if (abs(angle*10) >= abs(3))
-                angle += (-atan(an->getK())*360/6.283);
-            else
-                angle = -atan(an->getK())*360/6.283;
-           if ((barsAngle != 0)&&(angle == 0))
-                angle = -barsAngle;
-            if (abs(angle*100) < 1) {
-                deskewed = true;
-                return false;
+                if (abs(angle*10) >= abs(3))
+                    angle += (-atan(an->getK())*360/6.283);
+                else
+                    angle = -atan(an->getK())*360/6.283;
+                if ((barsAngle != 0)&&(angle == 0))
+                    angle = -barsAngle;
+                if (abs(angle*100) < 1) {
+                    deskewed = true;
+                    return false;
+                }
+                rotation = angle;
             }
-            rotate(angle);
-            rotation = angle;
+            if (settings->getDoublePreprocessed()) {
+                ImageProcessor ip;
+                QImage img1 = ip.loadFromFile(OriginalFileName());
+                if (img1.format() != QImage::Format_ARGB32)
+                    img1 = img1.convertToFormat(QImage::Format_ARGB32);
+                rotateImageInternal(img1, rotation);
+                ip.loadImage(img1);
+                ip.binarize();
+                img = ip.gsImage();
+            } else {
+                rotate(angle);
+            }
+
             ImageProcessor::cropAngles(img);
             QString fn = saveTmpPage("YGF");
             deskewed = true;
@@ -510,7 +520,8 @@ void Page::blockAllText()
     addBlock(r);
 }
 
-QList<Rect> Page::splitInternal() {
+QList<Rect> Page::splitInternal()
+{
     clearBlocks();
     BlockSplitter bs;
     //rotation  = 0;
@@ -536,14 +547,14 @@ bool Page::splitPage(bool preprocess)
         loadedBefore = false;
         loadFile(fn, 1);
         blocks = splitInternal();
-    /*if (blocks.count() == 0) {
-        deskew();
-        fn =Settings::instance()->workingDir() + QString::fromUtf8("tmp-%1.bmp").arg((quint64)img2.data_ptr());
-        saveTmpPage(fn, true, false);
-        loadedBefore = false;
-        loadFile(fn);
-        blocks = splitInternal();
-    }*/
+        /*if (blocks.count() == 0) {
+            deskew();
+            fn =Settings::instance()->workingDir() + QString::fromUtf8("tmp-%1.bmp").arg((quint64)img2.data_ptr());
+            saveTmpPage(fn, true, false);
+            loadedBefore = false;
+            loadFile(fn);
+            blocks = splitInternal();
+        }*/
         preprocessed = true;
     } else {
         deskew();
@@ -580,6 +591,13 @@ bool Page::textHorizontal()
 QString Page::fileName()
 {
     return mFileName;
+}
+
+QString Page::OriginalFileName() const
+{
+    if (originalFN.isEmpty())
+        return mFileName;
+    return originalFN;
 }
 
 int Page::pageID()
@@ -692,8 +710,7 @@ QString Page::saveTmpPage(const QString &format)
     if (format == "BMP") {
         fileName = fileName +".bmp";
         img.save(fileName, "BMP");
-    }
-    else {
+    } else {
         fileName = fileName +".ygf";
         ImageProcessor ip;
         ip.saveYGF(img, fileName);
@@ -714,8 +731,6 @@ void Page::cropYGF()
     ip.crop();
     saveTmpPage("YGF");
 }
-
-
 
 void Page::renumberBlocks()
 {

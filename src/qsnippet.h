@@ -42,6 +42,7 @@ private:
     int pid;
     int ih;
     int iw
-;};
+    ;
+};
 
 #endif // QSNIPPET_H

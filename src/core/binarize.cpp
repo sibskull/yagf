@@ -25,6 +25,7 @@ This program is free software: you can redistribute it and/or modify
 //#include "image.h"
 #include "binarize.h"
 
+#pragma GCC diagnostic ignored "-Wparentheses" //I afraid to fix this code. I simply supress warnings. Vadik.
 
 /*Binarization based on~\cite{GPP06}.
   @ARTICLE{GPP06,

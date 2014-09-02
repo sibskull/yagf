@@ -63,7 +63,7 @@ bool ProjectSaver::save(const QString &dir)
 
 void ProjectSaver::writePages()
 {
-    PageCollection * pc = PageCollection::instance();
+    PageCollection *pc = PageCollection::instance();
     for (int i =0; i < pc->count(); i++) {
         stream->writeStartElement(URI, "page");
         pc->makePageCurrent(i);
@@ -79,7 +79,7 @@ void ProjectSaver::writePages()
 
 void ProjectSaver::writeBlocks()
 {
-    PageCollection * pc = PageCollection::instance();
+    PageCollection *pc = PageCollection::instance();
     for (int i = 0; i < pc->blockCount(); i++) {
         stream->writeStartElement(URI, "block");
         Block b =pc->getBlock(i);
@@ -95,7 +95,7 @@ void ProjectSaver::writeBlocks()
 void ProjectSaver::writeSettings()
 {
     stream->writeStartElement(URI, "settings");
-    Settings * settings = Settings::instance();
+    Settings *settings = Settings::instance();
     QString engine;
     if (settings->getSelectedEngine() == UseCuneiform)
         engine = "cuneiform";
@@ -157,13 +157,13 @@ bool ProjectLoader::load(const QString &dir)
 
 bool ProjectLoader::readSettings()
 {
-    Settings * settings = Settings::instance();
+    Settings *settings = Settings::instance();
     if (!readNextElement())
         return false;
     QStringRef n;
 
     while ((n = stream->name()) != "settings")
-         if (!readNextElement())
+        if (!readNextElement())
             return false;
     QStringRef engine = stream->attributes().value(URI, "engine");
     if (engine == "tesseract")
@@ -184,7 +184,7 @@ void ProjectLoader::loadPage()
     QString fn = directory + image;
     bool oldcl = Settings::instance()->getCropLoaded();
     Settings::instance()->setCropLoaded(false);
-    PageCollection * pc = PageCollection::instance();
+    PageCollection *pc = PageCollection::instance();
     Settings::instance()->setCropLoaded(oldcl);
     //pc->appendPage(fn);
     QString value = stream->attributes().value(URI, "rotation").toString();
@@ -208,16 +208,16 @@ void ProjectLoader::loadPage()
 bool ProjectLoader::readPages()
 {
     if (!readNextElement())
-       return false;
+        return false;
     QString name;
     if ((name = stream->name().toString()) != "page")
         return false;
-    while(stream->name() == "page") {
+    while (stream->name() == "page") {
         loadPage();
 
         if (!readBlocks())
-           break;
-     }
+            break;
+    }
     PageCollection::instance()->reloadPage();
     return true;
 

@@ -41,8 +41,11 @@ class PDFExtractor;
 class ccbuilder;
 class QLabel;
 class QAction;
+class QPoint;
+class RecognizerWrapper;
+class RecognitionDialog;
 
-const QString version = "0.9.4";
+const QString version = "0.9.4.3";
 
 class PageCollection;
 class ScannerBase;
@@ -65,6 +68,7 @@ private slots:
     void on_actionSave_current_image_activated();
     void on_actionCheck_spelling_triggered();
     void on_actionRecognize_block_activated();
+    void recognize();
     void on_ActionDeleteBlock_activated();
     void on_ActionClearAllBlocks_activated();
     void loadImage();
@@ -78,8 +82,7 @@ private slots:
     void scanImage();
     void loadNextPage();
     void loadPreviousPage();
-    void recognize();
-    void recognizeAll();
+    //void recognizeAll();
     void showAboutDlg();
     void showHelp();
     void unalignButtonClicked();
@@ -106,16 +109,10 @@ private:
     //void loadFileWithPixmap(const QString &fn, const QPixmap &pixmap);
     void delTmpFiles();
     void delTmpDir();
-    void preparePageForRecognition();
-    void prepareBlockForRecognition(const QRect &r);
-    void prepareBlockForRecognition(int index);
-    void recognizeInternal();
-    bool useCuneiform(const QString &inputFile, const QString &outputFile);
-    bool useTesseract(const QString &inputFile);
     QString getFileNameToSaveImage(QString &format);
     void loadFromCommandLine();
-    void clearTmpFiles();
     void fillLangBox();
+    void createRW();
 private:
     QComboBox *selectLangsBox;
     QGraphicsInput *graphicsInput;
@@ -123,21 +120,25 @@ private:
     QCursor *resizeCursor;
     QCursor *resizeBlockCursor;
     bool useXSane;
-    ScannerBase * scanner;
+    ScannerBase *scanner;
     QByteArray *ba;
     //SpellChecker *spellChecker;
     QMenu *m_menu;
-    PDFExtractor * pdfx;
-    QProgressDialog * pdfPD;
+    PDFExtractor *pdfx;
+    QProgressDialog *pdfPD;
     int ifCounter;
-    Settings * settings;
-    PageCollection * pages;
-    QLabel * engineLabel;
-    QLabel * langLabel;
-    QAction * slAction;
+    Settings *settings;
+    PageCollection *pages;
+    QLabel *engineLabel;
+    QLabel *langLabel;
+    QAction *slAction;
     bool globalDeskew;
+    QPoint actPos;
+    QString oldooltip;
+    RecognizerWrapper * rw;
+    RecognitionDialog * rd;
 private slots:
-    bool findEngine();
+    void clickMeAgain();
     void readyRead(int sig);
     void setResizingCusor();
     void setUnresizingCusor();
@@ -149,4 +150,9 @@ private slots:
     void preprocessPage();
     void saveProject();
     void loadProject();
- };
+    void on_actionKeep_Lines_toggled(bool arg1);
+    void readOutput(QString text);
+    void recognitionFinished();
+    void recognitionError(const QString &text);
+    void cancelRecognition();
+};

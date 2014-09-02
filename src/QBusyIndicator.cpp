@@ -19,15 +19,15 @@
 
 const int defaultInterval = 64;
 
-QBusyIndicator::QBusyIndicator(QWidget* parent)
-        : QWidget(parent),
-        m_showBackground(false),
-        m_angle(0),
-        m_timerId(-1),
-        m_speed(1),
-        m_displayedWhenStopped(false),
-        m_color(Qt::black),
-        m_backgroundColor(Qt::white)
+QBusyIndicator::QBusyIndicator(QWidget *parent)
+    : QWidget(parent),
+      m_showBackground(false),
+      m_angle(0),
+      m_timerId(-1),
+      m_speed(1),
+      m_displayedWhenStopped(false),
+      m_color(Qt::black),
+      m_backgroundColor(Qt::white)
 {
     setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     setFocusPolicy(Qt::NoFocus);
@@ -79,7 +79,7 @@ void QBusyIndicator::setSpeed(double speed)
         m_timerId = startTimer(m_speed*defaultInterval);
 }
 
-void QBusyIndicator::setColor(const QColor & color)
+void QBusyIndicator::setColor(const QColor &color)
 {
     m_color = color;
 
@@ -121,10 +121,10 @@ void QBusyIndicator::paintEvent(QPaintEvent * /*event*/)
         return;
 
     int width = qMin(this->width(), this->height());
-    
+
     QPainter p(this);
     p.setRenderHint(QPainter::Antialiasing);
-    
+
     int outerRadius = m_showBackground ? (width-8)*0.5 : (width-4)*0.5;
     int innerRadius = m_showBackground ? (width-8)*0.5*0.38 : (width-4)*0.5*0.38;
     int boundingRadius = outerRadius + 2;
@@ -132,19 +132,17 @@ void QBusyIndicator::paintEvent(QPaintEvent * /*event*/)
     int capsuleWidth  = (width > 32 ) ? capsuleHeight *.23 : capsuleHeight *.35;
     int capsuleRadius = capsuleWidth/2;
 
-    if (m_showBackground)
-    {
+    if (m_showBackground) {
         p.setBrush(QColor(m_backgroundColor));
         p.setPen(QColor(m_backgroundColor));
         p.drawEllipse(rect().center(), boundingRadius, boundingRadius);
     }
 
-    for (int i=0; i<18; i++)
-    {
+    for (int i=0; i<18; i++) {
         QColor color = m_color;
         color.setAlphaF(qMax(1.0 - (i/16.0), 0.));
         p.setPen(Qt::NoPen);
-        p.setBrush(color);       
+        p.setBrush(color);
         p.save();
         p.translate(rect().center());
         p.rotate(m_angle - i*20.0f);

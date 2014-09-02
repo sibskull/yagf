@@ -45,6 +45,11 @@ QIPBlackAndWhiteImage::QIPBlackAndWhiteImage(const QIPBlackAndWhiteImage &I) : d
     h = I.h;
 }
 
+QIPBlackAndWhiteImage::~QIPBlackAndWhiteImage()
+{
+    data.clear();
+}
+
 quint8 *QIPBlackAndWhiteImage::scanLine(quint32 y) const
 {
     return &(data.data()[y*w]);
@@ -62,7 +67,6 @@ void QIPBlackAndWhiteImage::setPixel(quint32 x, quint32 y, quint8 value)
 
 bool QIPBlackAndWhiteImage::compareElements(quint8 **se, quint8 **w, int dimensions) const
 {
-    quint8 ise[dimensions][dimensions];
     for (int i = 0; i < dimensions; i++)
         for (int j = 0; j < dimensions; j++) // for (int j = 0; j < dimensions-2; j++)
             if (se[i][j] == 0)
@@ -136,7 +140,7 @@ IntRect QIPBlackAndWhiteImage::cropInternal(bool upperLeft) const
     return result;
 }
 
-void QIPBlackAndWhiteImage::copyInternal(quint8 * data, quint32 x1, quint32 x2, quint32 y1, quint32 y2) const
+void QIPBlackAndWhiteImage::copyInternal(quint8 * data, int x1, int x2, int y1, int y2) const
 {
     int wr = x2 - x1;
     for (int y = y1; y < y2; y++)
@@ -305,10 +309,10 @@ QIPBlackAndWhiteImage QIPBlackAndWhiteImage::close(quint8 *structuringElement, i
 QIPBlackAndWhiteImage QIPBlackAndWhiteImage::inverse() const
 {
     QIPBlackAndWhiteImage res(w, h);
-    for (quint32 y = 0; y < h; y++) {
+    for (int y = 0; y < h; y++) {
         quint8 * sline = scanLine(y);
         quint8 * dline = res.scanLine(y);
-        for (quint32 x = 0; x < w; x++)
+        for (int x = 0; x < w; x++)
             dline[x] = 1 - sline[x];
     }
     return res;
@@ -361,13 +365,18 @@ bool QIPBlackAndWhiteImage::isNull() const
     return w*h == 0;
 }
 
+void QIPBlackAndWhiteImage::free()
+{
+    data.clear();
+}
+
 void QIPBlackAndWhiteImage::toImageInternal(uchar *image, const IntRect &rect, int imageWidth) const
 {
     int im4 =4*imageWidth;
-    for (quint32 y = rect.y1; y < rect.y2; y++) {
+    for (int y = rect.y1; y < rect.y2; y++) {
         quint8 * line = scanLine(y);
         QRgb * lineOut = (QRgb *)&image[im4*y];
-        for (quint32 x = rect.x1; x < rect.x2; x++ )
+        for (int x = rect.x1; x < rect.x2; x++ )
             lineOut[x] = (line[x] == 0 ? black : white);
     }
 

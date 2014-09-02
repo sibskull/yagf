@@ -22,8 +22,9 @@
 
 #include <QDialog>
 
-namespace Ui {
-    class PopplerDialog;
+namespace Ui
+{
+class PopplerDialog;
 }
 
 class PopplerDialog : public QDialog

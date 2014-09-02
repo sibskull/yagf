@@ -88,8 +88,15 @@ void SubimagePP::removeNoise()
             noiseLabels.insert(r.label);
         if (abs((r.x2-r.x1)*(r.y2-r.y1)) >= mgw*mgw*sf)
             noiseLabels.insert(r.label);
-//        if(abs(r.y2-r.y1) >= mgh*4)
-//            noiseLabels.insert(r.label);
+        if ((r.y1 == 0)||(r.y2 == img.height()-1))
+            if (r.y2 - r.y1 < mgh/2)
+                noiseLabels.insert(r.label);
+        if ((r.x1 == 0)||(r.x2 == img.width()-1)) {
+                    if (r.y2 - r.y1 < mgh/2)
+                        noiseLabels.insert(r.label);
+                    if (r.y2 - r.y1 > 2*mgh)
+                        noiseLabels.insert(r.label);
+        }
     }
     labelsToBackground(noiseLabels);
 }

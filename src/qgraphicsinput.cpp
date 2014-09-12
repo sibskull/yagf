@@ -53,7 +53,7 @@ QGraphicsInput::QGraphicsInput(const QRectF &sceneRect, QGraphicsView *view) :
     deskewMode = false;
     deskLine = 0;
     deskewing = false;
- }
+}
 
 QGraphicsInput::~QGraphicsInput()
 {
@@ -122,8 +122,7 @@ void QGraphicsInput::mousePressEvent(QGraphicsSceneMouseEvent *event)
             }
             if (deskLine) {
                 clearDeskLine();
-            }
-            else {
+            } else {
                 setDeskLine(event->scenePos().x(), event->scenePos().y());
                 deskewing = true;
                 return;
@@ -137,7 +136,7 @@ void QGraphicsInput::mousePressEvent(QGraphicsSceneMouseEvent *event)
             if ((near_res = nearActiveBorder(event->scenePos().x(), event->scenePos().y())) != 0) {
                 m_CurrentBlockRect = m_LastSelected;
                 selecting = Selecting;
-                blockRect = m_CurrentBlockRect->rect();            
+                blockRect = m_CurrentBlockRect->rect();
                 emit deleteBlock(QRectF2Rect(blockRect));
             }  else {
                 selecting = StartSelect;
@@ -172,9 +171,7 @@ void QGraphicsInput::setDeskLine(int x, int y)
         pen.setWidth(2);
         deskLine->setPen(pen);
         deskLine->setLine(x, y, x, y);
-    }
-    else
-    {
+    } else {
         QLineF l = deskLine->line();
         deskLine->setLine(l.x1(), l.y1(), x, y);
         desData = deskLine->line();
@@ -200,8 +197,11 @@ void QGraphicsInput::clearDeskLine()
 void QGraphicsInput::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {
     QGraphicsScene::mouseReleaseEvent(mouseEvent);
-    deskewing = false;
+    if (deskewing)
+        emit clickMeAgain();
     if (buttonPressed == Qt::LeftButton) {
+        if (deskewing)
+            emit clickMeAgain();
         if (selecting == Selecting) {
             selecting = NoSelect;
             if ((blockRect.width() < 12) || (blockRect.height() < 12)) {
@@ -210,19 +210,19 @@ void QGraphicsInput::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
                 deleteBlockRect(m_CurrentBlockRect);
                 //clik!!!
                 leftMouseRelease(mouseEvent->scenePos().x(), mouseEvent->scenePos().y());
-            }
-            else emit blockCreated(QRectF2Rect(m_CurrentBlockRect->rect()));
+            } else emit blockCreated(QRectF2Rect(m_CurrentBlockRect->rect()));
             if (xred)
                 emit deleteBlock(redRect);
             xred = false;
             m_CurrentBlockRect = 0;
-        }
+        }        
         if (selecting == StartSelect) {
             selecting = NoSelect;
             m_CurrentBlockRect = 0;
             leftMouseRelease(mouseEvent->scenePos().x(), mouseEvent->scenePos().y());
         }
     }
+    deskewing = false;
     if (buttonPressed == Qt::RightButton) {
         this->rightMouseRelease(mouseEvent->scenePos().x(), mouseEvent->scenePos().y());
     }
@@ -230,7 +230,7 @@ void QGraphicsInput::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
 }
 
 
-QGraphicsRectItem *QGraphicsInput::newBlock(const QRectF &rect)
+QGraphicsRectItem *QGraphicsInput::newBlock(QRectF rect)
 {
     QPen p(Qt::SolidLine);
     QBrush b(Qt::SolidPattern);
@@ -238,12 +238,19 @@ QGraphicsRectItem *QGraphicsInput::newBlock(const QRectF &rect)
     p.setWidth(2);
     p.setColor(QColor(0, 0, 255));
     QGraphicsRectItem *res;
+    if (rect.width() + rect.x() > m_image->boundingRect().width())
+        rect.setWidth(m_image->boundingRect().width() - rect.x()-1);
+    if (rect.x() < 0)
+        rect.setX(0);
+    if (rect.height() + rect.y() > m_image->boundingRect().height())
+        rect.setHeight(m_image->boundingRect().height() - rect.y()-1);
+    if (rect.y() < 0)
+        rect.setY(0);
     res = this->addRect(rect, p, b);
     res->setAcceptHoverEvents(true);
     res->setZValue(1);
     res->setData(1, "block");
     res->setData(2, "no");
-
     return res;
 }
 
@@ -453,8 +460,50 @@ QRect QGraphicsInput::getActiveBlock()
 
 QRect QGraphicsInput::getCurrentBlock()
 {
-    if (m_CurrentBlockRect)
+    if (m_CurrentBlockRect) {
+        int x =m_CurrentBlockRect->rect().x();
+        int y = m_CurrentBlockRect->rect().y();
+        int w = m_CurrentBlockRect->rect().width();
+        int h = m_CurrentBlockRect->rect().height();
+        bool reframe = false;
+        if (x < 0) {
+            x = 0;
+            reframe = true;
+        }
+        if (y < 0) {
+            y = 0;
+            reframe = true;
+        }
+        if (x >= m_image->boundingRect().width()) {
+            x = 0;
+            reframe = true;
+        }
+        if (y >= m_image->boundingRect().height()) {
+            y = 0;
+            reframe = true;
+        }
+        if (w+x >= m_image->boundingRect().width()) {
+            w = m_image->boundingRect().width() - x -1;
+            reframe = true;
+        }
+        if (w+x < 0) {
+            w = -x + 1;
+            reframe = true;
+        }
+        if (h+y >= m_image->boundingRect().height()) {
+            w = m_image->boundingRect().height() - y - 1;
+            reframe = true;
+        }
+        if (w+y < 0) {
+            w = -y + 1;
+            reframe = true;
+        }
+        if (reframe) {
+            return QRect(x, y, w, h);
+        }
+
         return QRectF2Rect(m_CurrentBlockRect->rect());
+    }
     return QRectF2Rect(QRect(0,0,0,0));
 }
 
@@ -576,7 +625,7 @@ void QGraphicsInput::addBlockColliding(Block block)
 {
     QGraphicsRectItem *gi = newBlock(block);
     m_CurrentBlockRect = gi;
-    QGraphicsTextItem * gte = new QGraphicsTextItem(QString::number(block.blockNumber()), gi);
+    QGraphicsTextItem *gte = new QGraphicsTextItem(QString::number(block.blockNumber()), gi);
     gte->setFont(QFont("Arial", 16));
     gte->setDefaultTextColor(QColor("white"));
     gte->moveBy(block.x(), block.y());

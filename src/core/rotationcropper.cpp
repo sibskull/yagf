@@ -17,7 +17,7 @@
 
 */
 
-#include "CCAnalysis.h"
+#include "rotationcropper.h"
 #include <QImage>
 #include <QColor>
 

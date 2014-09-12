@@ -68,7 +68,7 @@ public:
     void cropWhiteFrame();
 
     void setMagnifierCursor(QCursor *cursor);
-    QGraphicsRectItem *newBlock(const QRectF &rect);
+    QGraphicsRectItem *newBlock(QRectF rect);
     bool loadImage(const QPixmap &pixmap);
     void setDeskewMode(bool value);
     bool getDeskewMode();
@@ -91,6 +91,7 @@ signals:
     void decreaseMe();
     void blockCreated(QRect rect);
     void deleteBlock(QRect rect);
+    void clickMeAgain();
 private slots:
 private:
     void leftMouseRelease(qreal x, qreal y);
@@ -103,7 +104,7 @@ private:
     QGraphicsPixmapItem *m_image;
     QGraphicsRectItem *m_CurrentBlockRect;
     QGraphicsRectItem *m_LastSelected;
-    QGraphicsLineItem * deskLine;
+    QGraphicsLineItem *deskLine;
     SelectStates selecting;
     QRectF blockRect;
     QRectF selBlockRect;

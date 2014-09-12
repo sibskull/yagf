@@ -160,24 +160,27 @@ public:
     */
     void equalize();
     void equalize2();
-    qreal lpcEntropy(quint32 x1 = 0, quint32 x2 = 0, quint32 y1 = 0, quint32 y2 = 0);
+    qreal lpcEntropy(int x1 = 0, int x2 = 0, int y1 = 0, int y2 = 0);
     qreal variance(quint32 x1, quint32 x2, quint32 y1, quint32 y2);
     /*!
      *  Returns the image's width.
      * \sa height
     */
-    quint32 width() const;
+    int width() const;
     /*!
      *  Returns the image's height.
      * \sa width
     */
-    quint32 height() const;
+    int height() const;
     /*!
      *  Returns the part of the original grayscale image bounded by the rectangle (x1,y1) (x2,y2) as a new instance of QIPGrayscaleImage.
      *  Note that the boundaries should not exceed those of the original image (this is not checked).
      *  \sa toImage
     */
-    QIPGrayscaleImage copy(quint32 x1, quint32 x2, quint32 y1, quint32 y2) const;
+    QIPGrayscaleImage copy(int x1, int x2, int y1, int y2) const;
+    void copyInternal2(IntRect &r, quint8 *s, quint8 *d) const;
+
+    static quint8 * scanLinePtr(quint8 * ptr, int y, int wth) ;
 
     /*!
       Converts the grayscaled image to binary format using the specified method.
@@ -217,7 +220,7 @@ public slots:
 protected:
     QIPGrayscaleImage(quint32 width, quint32 height);
 private:
-    quint32 w, h;
+    int w, h;
     QSharedPointer<quint8> data;
     enum {
         SharpenFilter,

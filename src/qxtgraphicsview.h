@@ -27,12 +27,10 @@ class QXtGraphicsView : public QGraphicsView
 {
     Q_OBJECT
 public:
-    QXtGraphicsView(QWidget * parent = 0):QGraphicsView(parent)
-    {
+    QXtGraphicsView(QWidget *parent = 0):QGraphicsView(parent) {
         connect(this, SIGNAL(scrolledDeferred()), this, SIGNAL(scrolled()), Qt::QueuedConnection);
     }
-    void sendScrollSignal()
-    {
+    void sendScrollSignal() {
         emit scrolledDeferred();
     }
 
@@ -40,8 +38,7 @@ signals:
     void scrolled();
     void scrolledDeferred();
 protected:
-    void scrollContentsBy (int dx, int dy)
-    {
+    void scrollContentsBy (int dx, int dy) {
         QGraphicsView::scrollContentsBy(dx, dy);
         emit scrolled();
     }

@@ -43,7 +43,7 @@ private:
     QRect *m_coords;
     qint64 mtreshold;
     quint16 *linesInfo;
-    QRgb * * lines;
+    QRgb **lines;
 
     void newBlock();
     void deleteBlock();

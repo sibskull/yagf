@@ -36,7 +36,7 @@ public:
 private:
     int number;
     QString language;
-    
+
 };
 
 typedef QList<Block> TBlocks;

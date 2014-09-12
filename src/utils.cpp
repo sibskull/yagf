@@ -16,14 +16,17 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "settings.h"
 #include <QString>
 #include <QStringList>
 #include <QFileInfo>
 #include <QByteArray>
 #include <QDir>
+#include <QMessageBox>
+#include <QPixmap>
+#include <QThread>
 #include <stdlib.h>
 #include "utils.h"
-
 
 QString extractFileName(const QString &path)
 {
@@ -64,4 +67,53 @@ bool findProgram(const QString &name)
             return true;
     }
     return false;
+}
+
+void styledWarningMessage(QWidget *parent, const QString &text)
+{
+    QMessageBox mb(parent);
+    mb.setIconPixmap(QPixmap(":warning.png"));
+    mb.setWindowTitle(QObject::trUtf8("Warning"));
+    mb.setText(text);
+    mb.setButtonText(0, QObject::trUtf8("OK"));
+    mb.exec();
+}
+
+void styledInfoMessage(QWidget *parent, const QString &text)
+{
+    QMessageBox mb(parent);
+    mb.setIconPixmap(QPixmap(":/images/info.png"));
+    mb.setWindowTitle(QObject::trUtf8("Information"));
+    mb.setText(text);
+    mb.setButtonText(0, QObject::trUtf8("OK"));
+    mb.exec();
+}
+
+void styledCriticalMessage(QWidget *parent, const QString &text)
+{
+    QMessageBox mb(parent);
+    mb.setIconPixmap(QPixmap(":/critical.png"));
+    mb.setWindowTitle(QObject::trUtf8("Error"));
+    mb.setText(text);
+    mb.setButtonText(0, QObject::trUtf8("OK"));
+    mb.exec();
+}
+
+
+struct SleepThread : public QThread { using QThread::msleep;};
+
+void qSleep(int msecs)
+{
+    SleepThread::msleep(msecs);
+}
+
+void clearTmpFiles()
+{
+    Settings * settings = Settings::instance();
+    QFile::remove(settings->workingDir() + "tmp*.bmp");
+    QFile::remove(settings->workingDir() + "tmp*.ygf");
+    QFile f(settings->workingDir()+settings->getRecognizeInputFile());
+    f.remove();
+    f.setFileName(settings->workingDir()+settings->getRecognizeOutputFile());
+    f.remove();
 }

@@ -17,8 +17,8 @@
 
 */
 
-#ifndef CCANALYSIS_H
-#define CCANALYSIS_H
+#ifndef ROTATIONCROPPER_H
+#define ROTATIONCROPPER_H
 
 #include <QRgb>
 #include <QRect>

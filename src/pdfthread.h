@@ -39,7 +39,7 @@ private:
     bool done;
     QString command;
     QStringList arguments;
-    PDFExtractor * mparent;
+    PDFExtractor *mparent;
     bool processRunning;
 };
 

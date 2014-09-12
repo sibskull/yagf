@@ -428,7 +428,7 @@ void CCAnalysis::fillComponents()
         quint32 * line =  builder->scanLine(y);
         for (int x = 0; x < builder->width(); x++) {
             quint32 label; //= builder->label(x,y);
-            if (label = line[x]) {
+            if ((label = line[x]) !=  0) {
                 Rect r;
                 r.dotCount = 0;
                 r.x1 = builder->width();

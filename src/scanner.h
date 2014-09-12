@@ -56,11 +56,12 @@ private:
     QString preloadLibrary;
 };
 
-class ScannerFactory {
+class ScannerFactory
+{
 public:
     ScannerFactory();
     QStringList frontEnds();
-    ScannerBase * createScannerFE(const QString &name);
+    ScannerBase *createScannerFE(const QString &name);
 private:
     QString findPreloadLibrary();
     void findFEs();

@@ -33,17 +33,17 @@
 
 void parseCmdLine(const QStringList &args)
 {
-    foreach (const QString &arg, args){
+    foreach (const QString &arg, args) {
         if (arg == "-h" || arg == "--help") {
             printf("Using:\n"
-                "  yagf\n"
-                "  yagf <Key>\n"
-                "  yagf <file name> [file name [file name]...]\n"
-                "YAGF is a graphical interface for cuneiform and tesseract.\n"
-                "\n"
-                "Keys:\n"
-                "  -h, --help\t Show this message and exit\n"
-                "  -V, --version\t Show version string and exit\n");
+                   "  yagf\n"
+                   "  yagf <Key>\n"
+                   "  yagf <file name> [file name [file name]...]\n"
+                   "YAGF is a graphical interface for cuneiform and tesseract.\n"
+                   "\n"
+                   "Keys:\n"
+                   "  -h, --help\t Show this message and exit\n"
+                   "  -V, --version\t Show version string and exit\n");
             exit(0);
         } else if (arg == "-V" || arg == "--version") {
             printf("YAGF version: %s\n", version.toUtf8().constData());
@@ -55,18 +55,16 @@ void parseCmdLine(const QStringList &args)
 int main(int argc, char *argv[])
 {
 #ifdef MEM_DEBUG
-mtrace();
+    mtrace();
 #endif
 
     QApplication app(argc, argv);
     parseCmdLine(app.arguments());
-    Settings * settings = Settings::instance();
+    Settings *settings = Settings::instance();
     settings->readSettings(settings->workingDir());
     settings->writeSettings();
     QTranslator translator;
     QString qmName = "yagf_" + QLocale::system().name();
-    if (settings->useRussianLocale())
-        qmName = "yagf_ru";
     if (!settings->useNoLocale()) {
         translator.load(qmName, QString(QML_INSTALL_PATH));
         app.installTranslator(&translator);
@@ -74,21 +72,14 @@ mtrace();
     }
     settings->makeLanguageMaps();
     QTranslator translator2;
-    if (settings->useRussianLocale())
-        translator2.load("qt_ru_RU", QLibraryInfo::location(QLibraryInfo::TranslationsPath));
-    else
-        translator2.load("qt_" + QLocale::system().name(), QLibraryInfo::location(QLibraryInfo::TranslationsPath));
+    translator2.load("qt_" + QLocale::system().name(), QLibraryInfo::location(QLibraryInfo::TranslationsPath));
     if (!settings->useNoLocale())
         app.installTranslator(&translator2);
-    if (settings->getSelectedLanguages().count() == 0) {
-        //LangSelectDialog lsd;
-        //lsd.exec();
-    }
     MainForm window;
     window.show();
     int res = app.exec();
 #ifdef MEM_DEBUG
-muntrace();
+    muntrace();
 #endif
     return res;
 }

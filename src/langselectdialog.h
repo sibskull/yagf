@@ -24,21 +24,22 @@
 #include <QList>
 #include <QListWidgetItem>
 
-namespace Ui {
+namespace Ui
+{
 class LangSelectDialog;
 }
 
 class LangSelectDialog : public QDialog
 {
     Q_OBJECT
-    
+
 public:
     explicit LangSelectDialog(QWidget *parent = 0);
     ~LangSelectDialog();
 protected:
     void accept();
 private slots:
-    void onItemClicked(QListWidgetItem * item);
+    void onItemClicked(QListWidgetItem *item);
 private:
     QStringList getRecognitionLanguages() const;
     void fillLangs();

@@ -38,7 +38,7 @@ public slots:
 private:
     QStringList files;
     QString tiffName;
-    
+
 };
 
 #endif // TIFFIMPORTER_H

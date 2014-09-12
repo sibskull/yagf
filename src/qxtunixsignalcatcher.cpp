@@ -17,9 +17,9 @@
 #include <QMutex>
 
 
-QXtUnixSignalCatcher * QXtUnixSignalCatcher::sc = NULL;
+QXtUnixSignalCatcher *QXtUnixSignalCatcher::sc = NULL;
 
-QMutex * QXtUnixSignalCatcher::mutex = NULL;
+QMutex *QXtUnixSignalCatcher::mutex = NULL;
 
 QXtUnixSignalCatcher::QXtUnixSignalCatcher(QObject *parent) :
     QObject(parent)

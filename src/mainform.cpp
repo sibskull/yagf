@@ -31,6 +31,8 @@
 #include "langselectdialog.h"
 #include "tiffimporter.h"
 #include "busyform.h"
+#include "recognizerwrapper.h"
+#include "recognitiondialog.h"
 #include <signal.h>
 #include <QComboBox>
 #include <QLabel>
@@ -40,21 +42,13 @@
 #include <QPainter>
 #include <QSize>
 #include <QStringList>
-#include <QDir>
-#include <QFileInfo>
 #include <QList>
-#include <QProcess>
-#include <QFile>
-#include <QByteArray>
 #include <QRect>
 #include <QRectF>
 #include <QStatusBar>
 #include <QMessageBox>
 #include <QProgressDialog>
-#include <QImage>
 #include <QDesktopServices>
-#include <QUrl>
-#include <QRegExp>
 #include <QClipboard>
 #include <QMap>
 #include <QWidgetAction>
@@ -62,21 +56,14 @@
 #include "qgraphicsinput.h"
 #include "utils.h"
 #include "qxtunixsignalcatcher.h"
-#include "PageAnalysis.h"
-#include <QTextCodec>
+#include <QUrl>
 #include <QCheckBox>
 #include <QEvent>
 #include <QCursor>
 #include <QLineEdit>
 #include <QGtkStyle>
-#include <unistd.h>
-
-const QString outputBase = "output";
-const QString outputExt = ".txt";
-const QString inputFile = "input.bmp";
-const QString outputFile = "output.txt";
-const QString scanOutputFile = "input.png";
-
+#include <QToolTip>
+#include <QPoint>
 
 MainForm::MainForm(QWidget *parent): QMainWindow(parent)
 {
@@ -130,12 +117,13 @@ MainForm::MainForm(QWidget *parent): QMainWindow(parent)
     connect(sideBar, SIGNAL(fileRemoved(int)), pages, SLOT(pageRemoved(int)));
     connect (pages, SIGNAL(addSnippet(int)), this, SLOT(addSnippet(int)));
     connect(actionSelect_languages, SIGNAL(triggered()), this, SLOT(selectLanguages()));
+    connect(graphicsInput, SIGNAL(clickMeAgain()), this, SLOT(clickMeAgain()), Qt::QueuedConnection);
 
     selectLangsBox = new QComboBox();
-    selectLangsBox->setStyleSheet("border: 1px solid blue; padding: 2px 18px 2px 3px; min-width: 6em; background-color: white; selection-background-color:blue; QComboBox::drop-down: { width: 0px; border-style: none}");
+    selectLangsBox->setStyleSheet("border: 1px solid blue; padding: 2px 2px 2px 18px; min-width: 6em; background-color: white; selection-background-color:blue; QComboBox::drop-down: { width: 0px; border-style: none}");
     selectLangsBox->setToolTip(trUtf8("Recognition language"));
 
-   // connect(selectLangsBox->lineEdit(), SIGNAL(textChanged(QString)), this, SLOT(LangTextChanged(QString)));
+    // connect(selectLangsBox->lineEdit(), SIGNAL(textChanged(QString)), this, SLOT(LangTextChanged(QString)));
 
     initSettings();
     engineLabel = new QLabel();
@@ -169,7 +157,7 @@ MainForm::MainForm(QWidget *parent): QMainWindow(parent)
     graphicsInput->setMagnifierCursor(resizeCursor);
     l_cursor.load(":/resize_block.png");
     resizeBlockCursor = new QCursor(l_cursor);
-   // textEdit->setContextMenuPolicy(Qt::ActionsContextMenu);
+    // textEdit->setContextMenuPolicy(Qt::ActionsContextMenu);
 
     this->sideBar->show();
 
@@ -188,25 +176,24 @@ MainForm::MainForm(QWidget *parent): QMainWindow(parent)
 
     if (findProgram("pdftoppm")) {
         pdfx = new PDF2PPT();
-    } else
-    if (findProgram("gs")) {
-         pdfx = new GhostScr();
+    } else if (findProgram("gs")) {
+        pdfx = new GhostScr();
     }
 
     if (pdfx) {
         connect(pdfx, SIGNAL(addPage(QString)), this, SLOT(addPDFPage(QString)), Qt::DirectConnection);
         connect (pdfx, SIGNAL(finished()), this, SLOT(finishedPDF()));
     }
-    //setupPDFPD();
+
+    rw = 0;
+    rd = 0;
 }
 
 void MainForm::onShowWindow()
 {
-    // actionCheck_spelling->setCheckable(true);
+    actionKeep_Lines->setChecked(settings->getKeepLines());
     connect(selectLangsBox, SIGNAL(currentIndexChanged(int)), this, SLOT(newLanguageSelected(int)));
     selectLangsBox->setCurrentIndex(selectLangsBox->findData(QVariant(settings->getLanguage())));
-    //spellChecker->setLanguage(language);
-    //actionCheck_spelling->setEnabled(spellChecker->spellCheck());
 }
 
 void MainForm::loadFromCommandLine()
@@ -249,7 +236,7 @@ void MainForm::loadFiles(const QStringList &files)
         if (QFile::exists(files.at(i))) {
             if (files.at(i).endsWith(".tiff", Qt::CaseInsensitive)||files.at(i).endsWith(".tif", Qt::CaseInsensitive))
                 loadTIFF(files.at(i));
-            else{
+            else {
                 if (files.at(i).endsWith(".pdf", Qt::CaseInsensitive))
                     importPDF(files.at(i));
                 else
@@ -267,7 +254,6 @@ void MainForm::LangTextChanged(const QString &text)
 {
     if (selectLangsBox->findText(text, Qt::MatchStartsWith) < 0)
         selectLangsBox->lineEdit()->setText("");
-
 }
 
 void MainForm::showConfigDlg()
@@ -276,40 +262,40 @@ void MainForm::showConfigDlg()
     if (dialog.exec()) {
 
         //if (settings->getSelectedEngine() != ose) {
-            QString oldLang = selectLangsBox->currentText();
-            selectLangsBox->clear();
-            if (settings->getSelectedEngine() == UseCuneiform) {
-                engineLabel->setText(trUtf8("Using Cuneiform"));
-                if (settings->selectedLanguagesAvailableTo("cuneiform").count() == 0) {
-                    QMessageBox::warning(this, trUtf8("Warning"), trUtf8("Cuneiform doesn't support any of selected recognition langualges.\nFalling back to tesseract. Please install tesseract."));
-                    settings->setSelectedEngine(UseTesseract);
-                    engineLabel->setText(trUtf8("Using Tesseract"));
-                }
-            }
-            if (settings->getSelectedEngine() == UseTesseract) {
+        QString oldLang = selectLangsBox->currentText();
+        selectLangsBox->clear();
+        if (settings->getSelectedEngine() == UseCuneiform) {
+            engineLabel->setText(trUtf8("Using Cuneiform"));
+            if (settings->selectedLanguagesAvailableTo("cuneiform").count() == 0) {
+                styledWarningMessage(this, trUtf8("Cuneiform doesn't support any of selected recognition langualges.\nFalling back to tesseract. Please install tesseract."));
+                settings->setSelectedEngine(UseTesseract);
                 engineLabel->setText(trUtf8("Using Tesseract"));
-                if (settings->selectedLanguagesAvailableTo("tesseract").count() == 0) {
-                    QMessageBox::warning(this, trUtf8("Warning"), trUtf8("Tesseract doesn't support any of selected recognition langualges.\nFalling back to cueniform. Please install cuneiform."));
-                    settings->setSelectedEngine(UseCuneiform);
-                    engineLabel->setText(trUtf8("Using Cuneiform"));
+            }
+        }
+        if (settings->getSelectedEngine() == UseTesseract) {
+            engineLabel->setText(trUtf8("Using Tesseract"));
+            if (settings->selectedLanguagesAvailableTo("tesseract").count() == 0) {
+                styledWarningMessage(this, trUtf8("Tesseract doesn't support any of selected recognition langualges.\nFalling back to cueniform. Please install cuneiform."));
+                settings->setSelectedEngine(UseCuneiform);
+                engineLabel->setText(trUtf8("Using Cuneiform"));
+            }
+        }
+        fillLangBox();
+        int newIndex = selectLangsBox->findText(oldLang);
+        if (newIndex >= 0) {
+            selectLangsBox->setCurrentIndex(newIndex);
+            settings->setLanguage(selectLangsBox->itemData(newIndex).toString());
+        } else {
+            settings->setLanguage("eng");
+            for (int i = 0; i < selectLangsBox->count(); i++) {
+                QString s = selectLangsBox->itemData(i).toString();
+                if (s == "eng") {
+                    newLanguageSelected(i);
+                    selectLangsBox->setCurrentIndex(i);
+                    break;
                 }
             }
-            fillLangBox();
-            int newIndex = selectLangsBox->findText(oldLang);
-            if (newIndex >= 0) {
-                selectLangsBox->setCurrentIndex(newIndex);
-                settings->setLanguage(selectLangsBox->itemData(newIndex).toString());
-            } else {
-                settings->setLanguage("eng");
-                for (int i = 0; i < selectLangsBox->count(); i++) {
-                    QString s = selectLangsBox->itemData(i).toString();
-                    if (s == "eng") {
-                        newLanguageSelected(i);
-                        selectLangsBox->setCurrentIndex(i);
-                        break;
-                    }
-                }
-            }
+        }
 
         //} else         fillLangBox();
 
@@ -318,12 +304,10 @@ void MainForm::showConfigDlg()
         if (selectLangsBox->count() > 1) {
             slAction->setVisible(true);
             langLabel->setText("");
-        }
-         else
-        {
-            if(settings->getSelectedLanguages().count() == 1) {
-                    slAction->setVisible(false);
-                    langLabel->setText(trUtf8("Recognition Language") + ": " + settings->getFullLanguageName(settings->getLanguage()));
+        } else {
+            if (settings->getSelectedLanguages().count() == 1) {
+                slAction->setVisible(false);
+                langLabel->setText(trUtf8("Recognition Language") + ": " + settings->getFullLanguageName(settings->getLanguage()));
             }
         }
     }
@@ -332,7 +316,7 @@ void MainForm::showConfigDlg()
 void MainForm::importPDF(const QString &fileName)
 {
     if (!pdfx) {
-        QMessageBox::critical(this, trUtf8("No PDF converter installed"), trUtf8("No compatible PDF converter software could be found. Please install either the pdftoppm utility or the GhostScript package (from this the gs command will be required)."));
+        styledCriticalMessage(this, trUtf8("No compatible PDF converter software could be found. Please install either the pdftoppm utility or the GhostScript package (from this the gs command will be required)."));
         return;
     }
     PopplerDialog dialog(this);
@@ -340,11 +324,11 @@ void MainForm::importPDF(const QString &fileName)
     if (dialog.exec()) {
         pdfx->setSourcePDF(dialog.getPDFFile());
         if (pdfx->getSourcePDF().isEmpty()) {
-            QMessageBox::information(this, trUtf8("Error"), trUtf8("PDF file name may not be empty"));
+            styledCriticalMessage(this, trUtf8("PDF file name may not be empty"));
             return;
         }
         pdfx->setStartPage(dialog.getStartPage());
-        pdfx->setStopPage(dialog.getStopPage());        
+        pdfx->setStopPage(dialog.getStopPage());
         pdfx->setOutputDir();
         QApplication::processEvents();
         pdfPD = new QProgressDialog(this, Qt::Dialog|Qt::WindowStaysOnTopHint);
@@ -364,21 +348,17 @@ void MainForm::addPDFPage(QString pageName)
     if (pdfPD == 0)
         return;
     QFile fl(pageName);
-    while(!fl.exists()) {
-        sleep(1);
+    while (!fl.exists()) {
         if (pdfPD == 0)
             return;
-        else
-            if (!pdfPD->isVisible())
-               return;
+        else if (!pdfPD->isVisible())
+            return;
     }
     while (!pages->appendPage(pageName)) {
-        sleep(1);
         if (pdfPD == 0)
             return;
-        else
-            if (!pdfPD->isVisible())
-                return;
+        else if (!pdfPD->isVisible())
+            return;
     }
     int fr = pdfx->filesRemaining(pageName);
     if (fr > 0) {
@@ -386,10 +366,10 @@ void MainForm::addPDFPage(QString pageName)
         if (ft != 0) {
             int ratio = ((ft-fr)*100)/ft;
             //if (ratio > pdfPD.value())
-                pdfPD->setValue(ratio);
+            pdfPD->setValue(ratio);
         }
     } else
-    pdfPD->setValue(pdfPD->value()+1);
+        pdfPD->setValue(pdfPD->value()+1);
 }
 
 void MainForm::finishedPDF()
@@ -433,7 +413,7 @@ void MainForm::closeEvent(QCloseEvent *event)
 {
     if (!textEdit->textSaved()) {
         QPixmap icon;
-        icon.load(":/info.png");
+        icon.load(":/images/question.png");
 
         QMessageBox messageBox(QMessageBox::NoIcon, "YAGF", trUtf8("There is an unsaved text in the editor window. Do you want to save it?"),
                                QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel, this);
@@ -467,6 +447,8 @@ void MainForm::rotateCWButtonClicked()
     setCursor(Qt::WaitCursor);
     pages->rotate90CW();
     setCursor(oldCursor);
+    if (!pages->hasPage())
+        styledWarningMessage(this, trUtf8("No image loaded"));
 }
 
 void MainForm::rotateCCWButtonClicked()
@@ -475,6 +457,8 @@ void MainForm::rotateCCWButtonClicked()
     setCursor(Qt::WaitCursor);
     pages->rotate90CCW();
     setCursor(oldCursor);
+    if (!pages->hasPage())
+        styledWarningMessage(this, trUtf8("No image loaded"));
 }
 void MainForm::rotate180ButtonClicked()
 {
@@ -482,15 +466,21 @@ void MainForm::rotate180ButtonClicked()
     setCursor(Qt::WaitCursor);
     pages->rotate180();
     setCursor(oldCursor);
+    if (!pages->hasPage())
+        styledWarningMessage(this, trUtf8("No image loaded"));
 }
 
 void MainForm::enlargeButtonClicked()
 {
+    if (!pages->hasPage())
+        styledWarningMessage(this, trUtf8("No image loaded"));
     pages->makeLarger();
 }
 
 void MainForm::decreaseButtonClicked()
 {
+    if (!pages->hasPage())
+        styledWarningMessage(this, trUtf8("No image loaded"));
     pages->makeSmaller();
 }
 
@@ -533,13 +523,13 @@ void MainForm::scanImage()
         if (scanner) {
             delete scanner;
         }
-        ScannerFactory * sf = new ScannerFactory();
+        ScannerFactory *sf = new ScannerFactory();
         scanner = sf->createScannerFE("xsane");
         if (scanner == NULL) {
-            QMessageBox::warning(this, trUtf8("Scanning is impossible"), trUtf8("No scanning front-end is found. Please install XSane in order to perform scanning."));
+            styledWarningMessage(this, trUtf8("Scanning is impossible. No scanning front-end is found.\nPlease install XSane in order to perform scanning."));
             return;
         }
-        scanner->setOutputFile(settings->workingDir() + scanOutputFile);
+        scanner->setOutputFile(settings->workingDir() + settings->getScanOutputFile());
         delete sf;
         scanner->exec();
 
@@ -558,7 +548,7 @@ void MainForm::loadFile(const QString &fn, bool loadIntoView)
             sideBar->item(sideBar->count()-1)->setSelected(true);
         }
     } else {
-        QMessageBox::warning(this, trUtf8("Failed to Load Image"), fn);
+        styledWarningMessage(this, trUtf8("Failed to load image %1").arg(fn));
     }
     setCursor(oldCursor);
 }
@@ -602,126 +592,6 @@ void MainForm::loadPreviousPage()
 {
 }
 
-// TODO: think on blocks/page recognition
-
-bool MainForm::useTesseract(const QString &inputFile)
-{
-    QProcess proc;
-    proc.setWorkingDirectory(settings->workingDir());
-    QStringList sl;
-    sl.append(inputFile);
-    sl.append(outputBase);
-    if (settings->getLanguage() != "digits")
-        sl.append("-l");
-    sl.append(settings->getLanguage());
-    //sl.append("-psm");
-    //sl.append("1");
-    QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
-    env.insert("TESSDATA_PREFIX", settings->getTessdataPath());
-    QDir dir(settings->getTessdataPath()+"tessdata/");
-    QStringList sl1;
-    sl1 << QString::fromUtf8("*%1.*").arg(settings->getLanguage());
-    if ((!settings->getLanguage().contains("+"))&&(settings->getLanguage() != "digits"))
-    if (dir.entryList(sl1, QDir::Files).count() == 0) {
-        QMessageBox mb(this);
-        mb.setIconPixmap(QPixmap(":/warning.png"));
-        mb.setWindowTitle("tesseract");
-        mb.setText(trUtf8("You have selected recognising %1 language using tesseract OCR. Currently the data for this language is not installed in your system. Please install the tesseract data files for \"%2\" from your system repository.").arg(settings->getFullLanguageName(settings->getLanguage())).arg(settings->getLanguage()));
-        mb.addButton(QMessageBox::Ok);
-        mb.exec();
-        return false;
-    }
-    proc.setProcessEnvironment(env);
-    proc.start("tesseract", sl);
-    proc.waitForFinished(-1);
-    if (proc.exitCode()) {
-        QByteArray stdoutBytes = proc.readAllStandardOutput();
-        QByteArray stderrBytes = proc.readAllStandardError();
-        QString output = QString(stdoutBytes) + QString(stderrBytes);
-        QMessageBox::critical(this, trUtf8("Starting tesseract failed"), trUtf8("The system said: ") + (output != "" ? output : trUtf8("program not found")));
-        return false;
-    }
-    return true;
-}
-
-bool MainForm::useCuneiform(const QString &inputFile, const QString &outputFile)
-{
-    QProcess proc;
-    proc.setWorkingDirectory(settings->workingDir());
-    QStringList sl;
-    sl.append("-l");
-    sl.append(settings->getLanguage());
-    sl.append("-f");
-    if (settings->getOutputFormat() == "text")
-        sl.append("text");
-    else
-        sl.append("html");
-    sl.append("-o");
-    sl.append(settings->workingDir() + outputFile);
-    sl.append(settings->workingDir() + inputFile);
-    proc.start("cuneiform", sl);
-    proc.waitForFinished(-1);
-    if (proc.exitCode()) {
-        QByteArray stdoutBytes = proc.readAllStandardOutput();
-        QByteArray stderrBytes = proc.readAllStandardError();
-        QString output = QString(stdoutBytes) + QString(stderrBytes);
-        QMessageBox::critical(this, trUtf8("Starting cuneiform failed"), trUtf8("The system said: ") + (output != "" ? output : trUtf8("program not found")));
-        return false;
-    }
-    return true;
-}
-
-void MainForm::recognizeInternal()
-{
-    if (settings->getSelectedEngine() == UseCuneiform) {
-        if (!useCuneiform(inputFile, outputFile))
-            return;
-    }
-    if (settings->getSelectedEngine() == UseTesseract) {
-        if (!useTesseract(inputFile))
-           return;
-    }
-    QFile textFile(settings->workingDir() + outputFile);
-    textFile.open(QIODevice::ReadOnly);
-    QByteArray text = textFile.readAll();
-    textFile.close();
-    QString textData;
-    QTextCodec *codec = QTextCodec::codecForName("UTF-8");
-    textData = codec->toUnicode(text); //QString::fromUtf8(text.data());
-    if (settings->getOutputFormat() == "text")
-        textData.prepend("<meta content=\"text/html; charset=utf-8\" http-equiv=\"content-type\" />");
-    textData.replace("<img src=output_files", "");
-    textData.replace(".bmp\">", "\"--");
-    textData.replace(".bmp>", "");
-//       textData.replace("-</p><p>", "");
-//        textData.replace("-<br>", "");
-    textEdit->append(textData);
-    textEdit->append(QString(" "));
-    if (settings->getCheckSpelling()) {
-        actionCheck_spelling->setChecked(textEdit->spellCheck(settings->getLanguage()));
-    }
-
-}
-
-void MainForm::recognize()
-{
-    QFile::remove(settings->workingDir() + "input*.bmp");
-    if (!pages->pageValid()) {
-        QMessageBox::critical(this, trUtf8("Error"), trUtf8("No image loaded"));
-        return;
-    }
-    if (!findEngine()) return;
-    if (pages->blockCount() > 0) {
-        for (int i = 0; i < pages->blockCount(); i++) {
-                prepareBlockForRecognition(i);
-                recognizeInternal();
-        }
-    } else {
-        preparePageForRecognition();
-        recognizeInternal();
-    }
-}
-
 void MainForm::showAboutDlg()
 {
     QPixmap icon;
@@ -744,7 +614,7 @@ void MainForm::showHelp()
 
 void MainForm::readyRead(int sig)
 {
-    QFile f(settings->workingDir() + scanOutputFile);
+    QFile f(settings->workingDir() + settings->getScanOutputFile());
     QString newName = QString(settings->workingDir() + "scan-input-%1.png").arg(ifCounter);
     ifCounter++;
     QFileInfo fi(newName);
@@ -771,16 +641,6 @@ void MainForm::delTmpDir()
 }
 
 
-void MainForm::clearTmpFiles()
-{
-    QFile::remove(settings->workingDir() + "tmp*.bmp");
-    QFile::remove(settings->workingDir() + "tmp*.ygf");
-    QFile f(settings->workingDir()+inputFile);
-    f.remove();
-    f.setFileName(settings->workingDir()+outputFile);
-    f.remove();
-}
-
 void MainForm::fillLangBox()
 {
     if (!slAction->isVisible()) {
@@ -798,7 +658,7 @@ void MainForm::fillLangBox()
     QString full;
     QString abbr;
     selectLangsBox->clear();
-    while(settings->getLangPair(full, abbr)) {
+    while (settings->getLangPair(full, abbr)) {
         if (sl.contains(full)||(sl.count()== 0))
             selectLangsBox->addItem(full, QVariant(abbr));
     }
@@ -817,22 +677,21 @@ void MainForm::fillLangBox()
     }
 }
 
-void MainForm::preparePageForRecognition()
+void MainForm::createRW()
 {
-    clearTmpFiles();
-    pages->savePageForRecognition(settings->workingDir() + inputFile);
+    rw = new RecognizerWrapper(this);
+    connect(rw, SIGNAL(finished(int)), this, SLOT(recognitionFinished()), Qt::QueuedConnection);
+    connect(rw, SIGNAL(error(QString)), this, SLOT(recognitionError(QString)), Qt::QueuedConnection);
+    connect(rw, SIGNAL(readOutput(QString)), this, SLOT(readOutput(QString)), Qt::QueuedConnection);
+    rd = new RecognitionDialog(this);
+    connect(rd, SIGNAL(rejected()), this, SLOT(cancelRecognition()));
+    connect(rw, SIGNAL(blockRecognized(int)), rd, SLOT(blockRecognized(int)));
+    rd->show();
 }
 
-void MainForm::prepareBlockForRecognition(const QRect &r)
+void MainForm::clickMeAgain()
 {
-    clearTmpFiles();
-    pages->saveBlockForRecognition(r, settings->workingDir() + inputFile);
-}
-
-void MainForm::prepareBlockForRecognition(int index)
-{
-    clearTmpFiles();
-    pages->saveBlockForRecognition(index, settings->workingDir() + inputFile);
+    QToolTip::showText(actPos, trUtf8("Click Me again!"));
 }
 
 void MainForm::setResizingCusor()
@@ -851,12 +710,12 @@ void MainForm::loadPage()
     graphicsInput->loadImage(pages->pixmap());
     QApplication::processEvents();
     for (int i = 0; i < pages->blockCount(); i++)
-    graphicsInput->addBlockColliding(pages->getBlock(i));
-    QFileInfo fi(pages->fileName());
-    setWindowTitle(QString("YAGF - %1").arg(fi.fileName()) );
+        graphicsInput->addBlockColliding(pages->getBlock(i));
+    QFileInfo fi(pages->OriginalFileName());
+    setWindowTitle(QString("YAGF - %1").arg(fi.fileName()));
 }
 
-void MainForm::recognizeAll()
+/*void MainForm::recognizeAll()
 {
     if (pages->count() == 0)
         return;
@@ -872,7 +731,7 @@ void MainForm::recognizeAll()
         pages->makeNextPageCurrent();
         recognize();
     }
-}
+}*/
 
 void MainForm::unalignButtonClicked()
 {
@@ -887,6 +746,10 @@ void MainForm::unalignButtonClicked()
 
 void MainForm::on_ActionClearAllBlocks_activated()
 {
+    if (!pages->hasPage()) {
+        styledWarningMessage(this, trUtf8("No image loaded"));
+        return;
+    }
     pages->clearBlocks();
     loadPage();
 }
@@ -914,7 +777,7 @@ void MainForm::setupPDFPD()
     pdfPD->setWindowTitle("YAGF");
     pdfPD->setLabelText(trUtf8("Importing pages from the PDF document..."));
     pdfPD->setCancelButton(0);
-   // pdfPD->setCancelButton(new QPushButton());
+    // pdfPD->setCancelButton(new QPushButton());
     //pdfPD->setCancelButtonText(trUtf8("Cancel"));
     pdfPD->setMinimum(-1);
     pdfPD->setMaximum(-1);
@@ -928,6 +791,10 @@ void MainForm::setupPDFPD()
 
 void MainForm::on_ActionDeleteBlock_activated()
 {
+    if (!pages->hasPage()) {
+        styledWarningMessage(this, trUtf8("No image loaded"));
+        return;
+    }
     QRect r = graphicsInput->getCurrentBlock();
     if (r.width() == 0)
         r = graphicsInput->getActiveBlock();
@@ -936,40 +803,28 @@ void MainForm::on_ActionDeleteBlock_activated()
     pages->deleteBlock(r);
 }
 
-bool MainForm::findEngine() {
-	if (settings->getSelectedEngine() == UseCuneiform) {
-        	if (!findProgram("cuneiform")) {
-        	    if (findProgram("tesseract")) {
-        	        QMessageBox::warning(this, trUtf8("Warning"), trUtf8("cuneiform not found, switching to tesseract"));
-        	        settings->setSelectedEngine(UseTesseract);
-        	    } else {
-        	        QMessageBox::warning(this, trUtf8("Warning"), trUtf8("No recognition engine found.\nPlease install either cuneiform or tesseract"));
-        	        return false;
-        	    }
-            }
-     	}
-    	if (settings->getSelectedEngine() == UseTesseract) {
-        	if (!findProgram("tesseract")) {
-        	    if (findProgram("cuneiform")) {
-        	        QMessageBox::warning(this, trUtf8("Warning"), trUtf8("tesseract not found, switching to cuneiform"));
-        	        settings->setSelectedEngine(UseCuneiform);
-       	     } else {
-        	        QMessageBox::warning(this, trUtf8("Warning"), trUtf8("No recognition engine found.\nPlease install either cuneiform or tesseract"));
-        	        return false;
-       	    }
-        }
-     }
-	return true;
-}
+
 
 void MainForm::on_actionRecognize_block_activated()
 {
-     if (!findEngine()) return;
-     if (graphicsInput->getCurrentBlock().isNull())
+    if (!RecognizerWrapper::findEngine(true)) {
+        styledWarningMessage(this, trUtf8("Selected recognition engine not found."));
+        return;
+    }
+    if (graphicsInput->getCurrentBlock().isNull())
         return;
     clearTmpFiles();
-    pages->saveRawBlockForRecognition(graphicsInput->getCurrentBlock(), settings->workingDir() + inputFile);
-    recognizeInternal();
+    QRect r = graphicsInput->getCurrentBlock();
+    r = pages->scaleRect(r);
+    pages->saveRawBlockForRecognition(r, settings->workingDir() + settings->getRecognizeInputFile());
+    createRW();
+    rw->startSingleBlock();
+}
+
+void MainForm::recognize()
+{
+    createRW();
+    rw->start();
 }
 
 /*void MainForm::on_actionRecognize_activated()
@@ -991,7 +846,7 @@ void MainForm::on_actionSave_current_image_activated()
     QString fn = getFileNameToSaveImage(format);
     if (!fn.isEmpty()) {
         if (!(pages->savePageAsImage(fn, format)))
-            QMessageBox::warning(this, QObject::trUtf8("Warning"), QObject::trUtf8("Failed to save the image"));
+            styledWarningMessage(this, QObject::trUtf8("Failed to save the image"));
     }
     setCursor(oc);
 }
@@ -1064,36 +919,30 @@ void MainForm::upscale()
 
 void MainForm::on_actionSelect_HTML_format_activated()
 {
-        if (actionSelect_HTML_format->isChecked())
-            settings->setOutputFormat("html");
-        else
-            settings->setOutputFormat("text");
+    if (actionSelect_HTML_format->isChecked())
+        settings->setOutputFormat("html");
+    else
+        settings->setOutputFormat("text");
 }
 
 void MainForm::pasteimage()
 {
     QClipboard *clipboard = QApplication::clipboard();
     QPixmap pm = clipboard->pixmap();
-    if (pm.isNull()) return;
+    if (pm.isNull()) {
+        QMessageBox mb(this);
+        mb.setIconPixmap(QPixmap(":/warning.png"));
+        mb.setWindowTitle(trUtf8("Warning"));
+        mb.setText(trUtf8("Clipboard doesn't contain an image."));
+        mb.setButtonText(0, trUtf8("OK"));
+        mb.exec();
+        return;
+    }
     QCursor oldCursor = cursor();
     setCursor(Qt::WaitCursor);
-    QString tmpFile = "input-01.png";
-    QFileInfo fi(settings->workingDir() + tmpFile);
-    while (fi.exists()) {
-        QString digits = extractDigits(tmpFile);
-        bool result;
-        int d = digits.toInt(&result);
-        if (!result) return;
-        d++;
-        if (d < 0) d = 0;
-        QString newDigits = QString::number(d);
-        while (newDigits.size() < digits.size())
-            newDigits = '0' + newDigits;
-        tmpFile = tmpFile.replace(digits, newDigits);
-        fi.setFile(settings->workingDir(), tmpFile);
-    }
-    pm.save(fi.absoluteFilePath(), "PNG");
-    loadFile(fi.absoluteFilePath());
+    QString tmpFile = settings->tmpFileName() + ".png";
+    pm.save(tmpFile, "PNG");
+    loadFile(tmpFile);
     setCursor(oldCursor);
 }
 
@@ -1105,13 +954,17 @@ void MainForm::deskewByBlock()
     QApplication::processEvents();
     if (!graphicsInput->getCurrentBlock().isNull()) {
         QImage img = graphicsInput->getCurrentBlock();*/
-        pages->deskew();
+    pages->deskew();
     //}
     ///setCursor(oldCursor);
 }
 
 void MainForm::selectTextArea()
 {
+    if (!pages->hasPage()) {
+        styledWarningMessage(this, trUtf8("No image loaded"));
+        return;
+    }
     pages->blockAllText();
 }
 
@@ -1122,10 +975,14 @@ void MainForm::addSnippet(int index)
 
 void MainForm::preprocessPage()
 {
+    if (!pages->hasPage()) {
+        styledWarningMessage(this, trUtf8("No image loaded"));
+        return;
+    }
     QCursor oldCursor = cursor();
     setCursor(Qt::WaitCursor);
     if (!pages->splitPage(true))
-        QMessageBox::warning(this, trUtf8("Warning"), trUtf8("Failed to detect text areas on this page.\nThe page possibly lacks contrast. Try to select blocks manually."));
+        styledWarningMessage(this, trUtf8("Failed to detect text areas on this page.\nThe page possibly lacks contrast. Try to select blocks manually."));
     setCursor(oldCursor);
 }
 
@@ -1138,11 +995,11 @@ void MainForm::saveProject()
         QCursor oldCursor = cursor();
         QDir dinfo(dir);
         if (dinfo.entryList().count() > 2) {
-            QMessageBox::warning(this, trUtf8("Warning"), trUtf8("The selected directoy is not empty. Please select or create another one."));
+            styledWarningMessage(this, trUtf8("The selected directoy is not empty. Please select or create another one."));
         } else {
             ProjectSaver ps;
             if (!ps.save(dir))
-                QMessageBox::warning(this, trUtf8("Warning"), trUtf8("Failed to save the project."));
+                styledWarningMessage(this, trUtf8("Failed to save the project."));
             else
                 settings->setProjectDir(dir);
         }
@@ -1151,11 +1008,11 @@ void MainForm::saveProject()
         QCursor oldCursor = cursor();
         ProjectSaver ps;
         if (!ps.save(settings->getProjectDir()))
-            QMessageBox::warning(this, trUtf8("Warning"), trUtf8("Failed to save the project."));
+            styledWarningMessage(this, trUtf8("Failed to save the project."));
         setCursor(oldCursor);
     }
 
- }
+}
 
 void MainForm::loadProject()
 {
@@ -1166,7 +1023,7 @@ void MainForm::loadProject()
     QCursor oldCursor = cursor();
     ProjectLoader pl;
     if (!pl.load(dir))
-        QMessageBox::warning(this, trUtf8("Warning"), trUtf8("Failed to load project."));
+        styledWarningMessage(this, trUtf8("Failed to load project."));
     else
         settings->setProjectDir(dir);
     setCursor(oldCursor);
@@ -1175,19 +1032,23 @@ void MainForm::loadProject()
 
 void MainForm::selectBlocks()
 {
+    if (!pages->hasPage()) {
+        styledWarningMessage(this, trUtf8("No image loaded"));
+        return;
+    }
     QCursor oldCursor = cursor();
     setCursor(Qt::WaitCursor);
     if (!pages->splitPage(false))
-        QMessageBox::warning(this, trUtf8("Warning"), trUtf8("Failed to detect text areas on this page.\nThe page possibly lacks contrast. Try to select blocks manually."));
+        styledWarningMessage(this, trUtf8("Failed to detect text areas on this page.\nThe page possibly lacks contrast. Try to select blocks manually."));
     setCursor(oldCursor);
 }
 
 void MainForm::selectHTMLformat()
 {
     if (actionSelect_HTML_format->isChecked())
-    settings->setOutputFormat("html");
+        settings->setOutputFormat("html");
     else
-    settings->setOutputFormat("text");
+        settings->setOutputFormat("text");
 
 }
 
@@ -1202,7 +1063,7 @@ void MainForm::SelectRecognitionLanguages()
 void MainForm::cancelPDF()
 {
     pdfx->removeRemaining();
-   //pdfPD.setLabelText(trUtf8("Opening already imported pages..."));
+    //pdfPD.setLabelText(trUtf8("Opening already imported pages..."));
     // pdfPD.setCancelButton(0);
 }
 
@@ -1215,14 +1076,63 @@ void MainForm::selectLanguages()
 
 void MainForm::deskewByLine()
 {
-
+    if (!pages->hasPage())
+        styledWarningMessage(this, trUtf8("No image loaded"));
     if (!graphicsInput->getDeskewMode()) {
         pages->clearBlocks();
         graphicsInput->setDeskewMode(true);
+        actPos = QCursor::pos();
+        QPoint gp = graphicsView->mapToGlobal(QPoint(16, 16));
+        QToolTip::showText(gp, trUtf8("Draw the line along a string of text with left mouse button"), graphicsView);
     } else {
         QLineF l = graphicsInput->getDeskData();
         graphicsInput->clearDeskLine();
         pages->deskew(l.x1(), l.y1(), l.x2(), l.y2());
 
     }
+}
+
+void MainForm::on_actionKeep_Lines_toggled(bool arg1)
+{
+    settings->setKeepLines(arg1);
+}
+
+void MainForm::readOutput(QString text)
+{
+    textEdit->append(text);
+    textEdit->append(QString(" "));
+    if (settings->getCheckSpelling()) {
+        actionCheck_spelling->setChecked(textEdit->spellCheck(settings->getLanguage()));
+    }
+}
+
+void MainForm::recognitionFinished()
+{
+    delete rw;
+    rw = 0;
+    if (rd)
+        delete(rd);
+    rd = 0;
+}
+
+void MainForm::recognitionError(const QString &text)
+{
+    if (rd)
+        delete(rd);
+    rd = 0;
+    styledWarningMessage(this, text);
+    delete rw;
+    rw = 0;
+
+}
+
+void MainForm::cancelRecognition()
+{
+    if (rw)
+        rw->cancel();
+    delete rw;
+    rw = 0;
+    if (rd)
+        delete(rd);
+    rd = 0;
 }

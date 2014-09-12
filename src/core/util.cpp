@@ -6,6 +6,8 @@
 #include <stdlib.h>
 #include "util.h"
 
+#pragma GCC diagnostic ignored "-Wparentheses"
+
 /*Computes floor(sqrt(_val)) exactly.*/
 unsigned qr_isqrt(unsigned _val){
   unsigned g;

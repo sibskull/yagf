@@ -35,16 +35,15 @@ DropLabel::DropLabel(QWidget *parent, Qt::WindowFlags f) : QLabel(parent, f)
 void DropLabel::dragEnterEvent(QDragEnterEvent *event)
 {
     //event->setDropAction(Qt::IgnoreAction);
-    const QMimeData * md = event->mimeData();
+    const QMimeData *md = event->mimeData();
     QStringList sl = md->formats();
     if (!md->formats().contains("text/uri-list")) {
-       setCursor(Qt::ForbiddenCursor);
-    }
-    else {
-    event->setDropAction(Qt::MoveAction);
-    event->accept();
-    //QCursor cur(lw->selectedItems().at(0)->icon().pixmap(96, 128));
-    //setCursor(cur);
+        setCursor(Qt::ForbiddenCursor);
+    } else {
+        event->setDropAction(Qt::MoveAction);
+        event->accept();
+        //QCursor cur(lw->selectedItems().at(0)->icon().pixmap(96, 128));
+        //setCursor(cur);
     }
 
 }

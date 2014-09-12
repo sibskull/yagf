@@ -22,12 +22,12 @@
 #include <QGraphicsItem>
 #include <QPointF>
 
-QXtGraphicsProxyWidget::QXtGraphicsProxyWidget(QGraphicsItem * parent, Qt::WindowFlags wFlags) : QGraphicsProxyWidget(parent, wFlags)
+QXtGraphicsProxyWidget::QXtGraphicsProxyWidget(QGraphicsItem *parent, Qt::WindowFlags wFlags) : QGraphicsProxyWidget(parent, wFlags)
 {
     setFlag(QGraphicsItem::ItemSendsGeometryChanges, true);
 }
 
-void QXtGraphicsProxyWidget::setView(QXtGraphicsView * view)
+void QXtGraphicsProxyWidget::setView(QXtGraphicsView *view)
 {
     mview = view;
     QPointF p = mview->mapToScene(0,0);
@@ -42,13 +42,13 @@ void QXtGraphicsProxyWidget::viewScrolled()
     setPos(p.x(), p.y());
 }
 
-QVariant QXtGraphicsProxyWidget::itemChange(GraphicsItemChange change, const QVariant & value)
+QVariant QXtGraphicsProxyWidget::itemChange(GraphicsItemChange change, const QVariant &value)
 {
     QVariant v;
     matrix().reset();
     if (change == QGraphicsItem::ItemTransformChange) {
-            v = QVariant(matrix());
-            return v;
+        v = QVariant(matrix());
+        return v;
     }
-            return value;
+    return value;
 }

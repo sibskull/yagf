@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright 2009-2014 Andrei Borovsky <anb@symmetrica.net> -->
+<application>
+ <id type="desktop">YAGF.desktop</id>
+ <metadata_license>CC0-1.0</metadata_license>
+ <project_license>GPL-3.0+</project_license>
+ <name>YAGF</name>
+ <summary>Graphics front-end for Tesseract OCR and Cuneiform</summary>
+ <description>
+  <p>
+   YAGF is a program used to control image scanning and text recognition operations from a single control center. Apart from th scanner almost any graphics file may be used as a source. Also YAGF possesses some image-enhancement capabilities like the auto-contrast adjustement and noise removal that make the scanned pages recognition less error-prone.
+  </p>
+<p>Other features include:</p> 
+<ul>
+<li>PDF and multi-page TIFF export with the subsequent text recognition</li> 
+<li>Recognizing text typed in very small letters</li> 
+<li>Spellchecker-assisted optional correction</li>
+<li>Text is split into blocks automatically</li>
+<li>Recognizing text written in two languages (like texts in textbooks or technical texts written in one language and containing some terms in other language.</li>
+</ul>
+<p>Once installed, YAGF inspects its environment and automatically finds required external programs (like Tesseract OCR and its data files) if they are present so that there is no need to configure it manually by finding and entering program paths. If some required tools are not present in the system the user will be notified of this.</p> 
+  <p>
+  YAGF's Intended audience includes everybody who needs to recognize scanned text, but the people who should benefit most are translators, teachers, digitized text libraries makers and those who switch their business from paper-based to paperless workflow.
+  </p>
+ </description>
+ <screenshots>
+  <screenshot type="default" width="1010" height="596">http://symmetrica.net/cuneiform-linux/yagf-main.png</screenshot>
+</screenshots>
+ <url type="homepage">http://symmetrica.net/cuneiform-linux/yagf-en.html</url>
+ <updatecontact>anb@symmetrica.net</updatecontact>
+</application>

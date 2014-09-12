@@ -37,7 +37,7 @@ private:
     void writeSettings();
     QString copyFile(const QString &source);
 private:
-    QXmlStreamWriter * stream;
+    QXmlStreamWriter *stream;
     QString directory;
 
 };
@@ -59,7 +59,7 @@ private:
     void loadPage();
     bool readNextElement();
 private:
-    QXmlStreamReader * stream;
+    QXmlStreamReader *stream;
     QString directory;
 
 };
